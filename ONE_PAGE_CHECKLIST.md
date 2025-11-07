@@ -262,6 +262,21 @@ Quarterly (every 3 months):
 
 ---
 
+## PERIODIC REVIEW ⏰
+
+For maintaining skill quality over time:
+
+- [ ] Run deep-dive review quarterly: `/review-skill <skill-name>`
+- [ ] After major package updates: Check GitHub changelog + run review
+- [ ] Before marketplace submission: Full audit required
+- [ ] Address all 🔴 Critical and 🟡 High issues found
+- [ ] Update "Last Verified" date in metadata after review
+- [ ] Create research log if significant research performed
+
+**Review Process**: See `planning/SKILL_REVIEW_PROCESS.md` for complete guide
+
+---
+
 ## FINAL SIGN-OFF
 
 I certify that:
