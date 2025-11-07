@@ -7,7 +7,7 @@ description: |
 license: MIT
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 metadata:
-  version: "2.1.0"
+  version: "2.1.1"
   last_verified: "2025-11-08"
   sdk_versions:
     mcp_sdk: "1.21.0"
@@ -141,6 +141,272 @@ Cloudflare maintains **15 production MCP servers** showing real-world integratio
 - Caching strategies
 - Real API integrations
 - Security best practices
+
+---
+
+## 🎯 Quick Start Workflow (Your Step-by-Step Guide)
+
+**Follow this workflow for your next MCP server to avoid errors and ship fast.**
+
+---
+
+### Step 1: Choose Your Starting Template
+
+**Decision tree:**
+
+```
+What are you building?
+
+├─ 🆓 Public/dev server (no auth needed)
+│  └─> Use: remote-mcp-authless ⭐ RECOMMENDED FOR MOST PROJECTS
+│
+├─ 🔐 GitHub integration
+│  └─> Use: remote-mcp-github-oauth (includes Workers AI example)
+│
+├─ 🔐 Google Workspace integration
+│  └─> Use: remote-mcp-google-oauth
+│
+├─ 🏢 Enterprise SSO (Auth0, Okta, etc.)
+│  └─> Use: remote-mcp-auth0 or remote-mcp-authkit
+│
+├─ 🔑 Custom auth system / API keys
+│  └─> Start with authless, then add bearer auth (see Step 3)
+│
+└─ 🏠 Internal company tool
+   └─> Use: remote-mcp-cf-access (Cloudflare Zero Trust)
+```
+
+**Not sure?** Start with `remote-mcp-authless` - you can add auth later!
+
+---
+
+### Step 2: Create from Template
+
+```bash
+# Replace [TEMPLATE] with your choice from Step 1
+npm create cloudflare@latest -- my-mcp-server \
+  --template=cloudflare/ai/demos/[TEMPLATE]
+
+# Example: authless template (most common)
+npm create cloudflare@latest -- my-mcp-server \
+  --template=cloudflare/ai/demos/remote-mcp-authless
+
+# Navigate and install
+cd my-mcp-server
+npm install
+
+# Start dev server
+npm run dev
+```
+
+**Your MCP server is now running at**: `http://localhost:8788/sse`
+
+---
+
+### Step 3: Customize with This Skill's Patterns
+
+**Now add features by copying patterns from this skill:**
+
+#### Need Workers AI (image/text generation)?
+```bash
+# Copy our Workers AI template
+cp ~/.claude/skills/cloudflare-mcp-server/templates/mcp-with-workers-ai.ts src/my-ai-tools.ts
+
+# Add AI binding to wrangler.jsonc:
+# { "ai": { "binding": "AI" } }
+```
+
+**Tools you get**: `generate_image`, `generate_text`, `list_ai_models`
+
+---
+
+#### Need a database (D1)?
+```bash
+# Copy our D1 template
+cp ~/.claude/skills/cloudflare-mcp-server/templates/mcp-with-d1.ts src/my-db-tools.ts
+
+# Create D1 database:
+npx wrangler d1 create my-database
+
+# Add binding to wrangler.jsonc
+```
+
+**Tools you get**: `create_user`, `get_user`, `list_users`, `update_user`, `delete_user`, `search_users`
+
+---
+
+#### Need bearer token auth?
+```bash
+# Copy our bearer auth template
+cp ~/.claude/skills/cloudflare-mcp-server/templates/mcp-bearer-auth.ts src/index.ts
+
+# Add token validation (KV, external API, or static)
+```
+
+**What you get**: Authorization header middleware, token validation, authenticated tools
+
+---
+
+### Step 4: Deploy to Cloudflare
+
+```bash
+# Login (first time only)
+npx wrangler login
+
+# Deploy to production
+npx wrangler deploy
+```
+
+**Output shows your deployed URL**:
+```
+✨ Deployment complete!
+https://my-mcp-server.YOUR_ACCOUNT.workers.dev
+```
+
+**⚠️ CRITICAL: Note this URL - you'll need it in Step 5!**
+
+---
+
+### Step 5: Test & Configure Client
+
+#### A. Test with curl (PREVENTS 80% OF ERRORS!)
+
+```bash
+# Test the exact URL you'll use in client config
+curl https://my-mcp-server.YOUR_ACCOUNT.workers.dev/sse
+```
+
+**Expected response**:
+```json
+{
+  "name": "My MCP Server",
+  "version": "1.0.0",
+  "transports": ["/sse", "/mcp"]
+}
+```
+
+**Got 404?** → Your client URL will be wrong! See "HTTP Transport Fundamentals" below.
+
+---
+
+#### B. Update Claude Desktop Config
+
+**Linux/Mac**: `~/.config/claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+
+**For authless servers**:
+```json
+{
+  "mcpServers": {
+    "my-mcp": {
+      "url": "https://my-mcp-server.YOUR_ACCOUNT.workers.dev/sse"
+    }
+  }
+}
+```
+
+**⚠️ CRITICAL**: URL must match the curl command that worked in Step 5A!
+
+**With OAuth**:
+```json
+{
+  "mcpServers": {
+    "my-mcp": {
+      "url": "https://my-mcp-server.YOUR_ACCOUNT.workers.dev/sse",
+      "auth": {
+        "type": "oauth",
+        "authorizationUrl": "https://my-mcp-server.YOUR_ACCOUNT.workers.dev/authorize",
+        "tokenUrl": "https://my-mcp-server.YOUR_ACCOUNT.workers.dev/token"
+      }
+    }
+  }
+}
+```
+
+**All three URLs must use the same domain!**
+
+---
+
+#### C. Restart Claude Desktop
+
+**Config only loads at startup:**
+1. Quit Claude Desktop completely
+2. Reopen
+3. Check for your MCP server in tools list
+
+---
+
+### Step 6: Verify It Works
+
+**Test a tool call:**
+1. Open Claude Desktop
+2. Type: "List available MCP tools"
+3. Your server's tools should appear
+4. Try calling one: "Use the add tool to add 5 + 3"
+
+**If tools don't appear** → See "Debugging Guide" in references/
+
+---
+
+### Post-Deployment Checklist
+
+Before declaring success, verify:
+
+- [ ] `curl https://worker.dev/sse` returns server info (not 404)
+- [ ] Client config URL matches curl URL exactly
+- [ ] Claude Desktop restarted after config update
+- [ ] Tools visible in Claude Desktop
+- [ ] Test tool call succeeds
+- [ ] (OAuth only) All three URLs use same domain
+- [ ] No errors in `npx wrangler tail` logs
+
+**All checked?** 🎉 **Your MCP server is live!**
+
+---
+
+### Common Next Steps
+
+**Want to add more features?**
+
+1. **More tools** - Add to `init()` method in your McpAgent class
+2. **Workers AI** - Copy patterns from `mcp-with-workers-ai.ts`
+3. **Database** - Copy patterns from `mcp-with-d1.ts`
+4. **Authentication** - Copy patterns from `mcp-bearer-auth.ts` or `mcp-oauth-proxy.ts`
+5. **Durable Objects state** - Copy patterns from `mcp-stateful-do.ts`
+
+**Want to avoid errors?**
+- Read "HTTP Transport Fundamentals" section below (prevents URL path errors)
+- Read "22 Known Errors" section (prevents all common mistakes)
+- Check `references/debugging-guide.md` when stuck
+
+---
+
+### TL;DR - The 5-Minute Workflow
+
+```bash
+# 1. Create from template (30 seconds)
+npm create cloudflare@latest -- my-mcp \
+  --template=cloudflare/ai/demos/remote-mcp-authless
+cd my-mcp && npm install
+
+# 2. Customize (optional, 2 minutes)
+# Copy patterns from this skill if needed
+
+# 3. Deploy (30 seconds)
+npx wrangler deploy
+
+# 4. Test (30 seconds)
+curl https://YOUR-WORKER.workers.dev/sse
+
+# 5. Configure client (1 minute)
+# Update claude_desktop_config.json with URL from step 4
+# Restart Claude Desktop
+
+# 6. Verify (30 seconds)
+# Test a tool call in Claude Desktop
+```
+
+**Total time**: ~5 minutes from zero to working MCP server! 🚀
 
 ---
 

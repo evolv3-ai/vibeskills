@@ -8,7 +8,7 @@
 
 A production-ready skill for **Claude Code CLI** that teaches you to build MCP servers on Cloudflare - the ONLY platform with official remote MCP support (as of 2025).
 
-**Version**: 2.1.0 | **Last Verified**: 2025-11-08
+**Version**: 2.1.1 | **Last Verified**: 2025-11-08
 
 ---
 
