@@ -7,6 +7,36 @@
  * Perfect for: Authenticated API access, user-scoped tools
  *
  * Based on: https://github.com/cloudflare/ai/tree/main/demos/remote-mcp-github-oauth
+ *
+ * ⚠️ CRITICAL OAuth URL CONFIGURATION:
+ *
+ * ALL OAuth URLs must use the SAME domain and protocol!
+ *
+ * Client configuration after deployment:
+ * {
+ *   "mcpServers": {
+ *     "github-mcp": {
+ *       "url": "https://YOUR-WORKER.workers.dev/sse",
+ *       "auth": {
+ *         "type": "oauth",
+ *         "authorizationUrl": "https://YOUR-WORKER.workers.dev/authorize",
+ *         "tokenUrl": "https://YOUR-WORKER.workers.dev/token"
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * Common mistakes:
+ * ❌ Mixed protocols: http://... and https://...
+ * ❌ Missing /sse in main URL
+ * ❌ Wrong domain after deployment (still using localhost)
+ * ❌ Typos in endpoint paths (/authorize vs /auth)
+ *
+ * Post-deployment checklist:
+ * 1. Deploy: npx wrangler deploy
+ * 2. Note deployed URL
+ * 3. Update ALL three URLs in client config
+ * 4. Test OAuth flow in Claude Desktop
  */
 
 import { McpAgent } from "agents/mcp";

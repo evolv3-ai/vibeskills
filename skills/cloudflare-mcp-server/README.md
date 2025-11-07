@@ -8,7 +8,91 @@
 
 A production-ready skill for **Claude Code CLI** that teaches you to build MCP servers on Cloudflare - the ONLY platform with official remote MCP support (as of 2025).
 
-**Version**: 1.0.0 | **Last Verified**: 2025-11-04
+**Version**: 2.0.0 | **Last Verified**: 2025-11-08
+
+---
+
+## ⚠️ Common Mistakes (Read This First!)
+
+**The #1 reason MCP servers fail to connect: URL path mismatches**
+
+### Mistake 1: Missing `/sse` in Client URL
+
+**Server code:**
+```typescript
+MyMCP.serveSSE("/sse").fetch(request, env, ctx)
+```
+
+**Client config (WRONG):**
+```json
+"url": "https://my-mcp.workers.dev"  // ❌ Missing /sse!
+```
+
+**Client config (CORRECT):**
+```json
+"url": "https://my-mcp.workers.dev/sse"  // ✅ Include /sse
+```
+
+**Result:** 404 Not Found → Connection fails
+
+---
+
+### Mistake 2: Localhost URL After Deployment
+
+**Client config (WRONG after deployment):**
+```json
+"url": "http://localhost:8788/sse"  // ❌ Worker is deployed!
+```
+
+**Client config (CORRECT):**
+```json
+"url": "https://my-mcp.YOUR_ACCOUNT.workers.dev/sse"  // ✅ Use deployed URL
+```
+
+**Always update config after `npx wrangler deploy`!**
+
+---
+
+### Mistake 3: OAuth URLs Don't Match
+
+**Client config (WRONG - mixed domains):**
+```json
+{
+  "url": "https://my-mcp.workers.dev/sse",
+  "auth": {
+    "authorizationUrl": "http://localhost:8788/authorize",  // ❌ localhost!
+    "tokenUrl": "https://my-mcp.workers.dev/token"
+  }
+}
+```
+
+**Client config (CORRECT - all match):**
+```json
+{
+  "url": "https://my-mcp.workers.dev/sse",
+  "auth": {
+    "authorizationUrl": "https://my-mcp.workers.dev/authorize",  // ✅ Same domain
+    "tokenUrl": "https://my-mcp.workers.dev/token"  // ✅ Same protocol
+  }
+}
+```
+
+**ALL OAuth URLs must use the same domain and protocol!**
+
+---
+
+### Quick Fix Checklist
+
+Before asking for help, verify:
+
+- [ ] Deployed Worker: `npx wrangler deploy` succeeded
+- [ ] Worker running: `curl https://worker.dev/` returns something
+- [ ] MCP endpoint: `curl https://worker.dev/sse` returns server info (not 404!)
+- [ ] Client URL matches curl test above
+- [ ] If using OAuth: All URLs match deployed domain
+- [ ] Restarted Claude Desktop after config changes
+
+**Still stuck?** See `references/debugging-guide.md` for complete troubleshooting.
 
 ---
 
