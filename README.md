@@ -50,9 +50,9 @@ Skills will be available in Claude Code and automatically suggested when relevan
 
 ---
 
-## 📦 Available Skills (61 Production-Ready)
+## 📦 Available Skills (65 Production-Ready)
 
-**📋 Full Catalog**: See [MARKETPLACE.md](MARKETPLACE.md) for the complete organized list of all 61 skills by category.
+**📋 Full Catalog**: See [MARKETPLACE.md](MARKETPLACE.md) for the complete organized list of all 65 skills by category.
 
 **Below**: Featured skills with detailed descriptions and trigger keywords.
 
@@ -705,8 +705,8 @@ Using skills vs manual setup (measured across 50 production skills):
 | **Average Tokens** | 12,000-15,000 | 4,000-5,000 | **~65%** |
 | **Typical Errors** | 2-4 per service | 0 (prevented) | **100%** |
 | **Setup Time** | 2-4 hours | 15-45 minutes | **~80%** |
-| **Total Skills** | - | 50 production-ready | - |
-| **Errors Prevented** | - | 380+ documented | - |
+| **Total Skills** | - | 65 production-ready | - |
+| **Errors Prevented** | - | 410+ documented | - |
 
 ### Real Examples:
 

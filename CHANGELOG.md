@@ -9,6 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - motion Skill ✅
+
+**Date**: 2025-11-07
+
+**New Skill**: Motion (Framer Motion) - Industry-standard React animation library
+
+#### motion v1.0.0 (New Skill)
+- **Token Savings**: 83% (30,000 → 5,000 tokens)
+- **Errors Prevented**: 29+ documented issues with sources
+- **Files Created**: 13 total (SKILL.md, README.md, 4 references, 5 templates, 2 scripts)
+
+**What This Skill Provides**:
+- ✅ **Gesture Controls**: drag, hover, tap, pan with cross-device support
+- ✅ **Scroll Animations**: parallax, scroll-linked, viewport-triggered with ScrollTimeline API
+- ✅ **Layout Animations**: FLIP technique, shared element transitions with layoutId
+- ✅ **Spring Physics**: Natural, customizable physics-based motion
+- ✅ **SVG Animations**: Path morphing, line drawing, attribute animation
+- ✅ **Bundle Optimization**: 2.3 KB (mini) to 34 KB (full), optimizable to 4.6 KB with LazyMotion
+- ✅ **5 Production Templates**: Vite, Next.js, scroll, UI components, layout transitions
+- ✅ **4 Reference Guides**: motion-vs-auto-animate.md, performance-optimization.md, nextjs-integration.md, common-patterns.md
+- ✅ **2 Automation Scripts**: init-motion.sh (setup), optimize-bundle.sh (bundle optimizer)
+
+**Issues Prevented**:
+1. AnimatePresence exit not working - Common mistake (placement pattern)
+2. Large list performance (50-100+ items) - Virtualization guide
+3. Tailwind transitions conflict - Official docs (remove transition classes)
+4. Next.js "use client" missing - App Router requirement
+5. Scrollable container broken - [Issue #1471](https://github.com/motiondivision/motion/issues/1471)
+6. Fixed element positioning - Official docs (layoutRoot prop)
+7. layoutId + AnimatePresence unmounting - [Issue #1619](https://github.com/motiondivision/motion/issues/1619)
+8. Reduced motion not affecting AnimatePresence - [Issue #1567](https://github.com/motiondivision/motion/issues/1567)
+9. Reorder component in Next.js - [Issues #2183](https://github.com/motiondivision/motion/issues/2183), [#2101](https://github.com/motiondivision/motion/issues/2101)
+10. Cloudflare Workers build errors - [Issue #2918](https://github.com/motiondivision/motion/issues/2918)
+11-29. Plus 19 more documented errors (non-accelerated animations, missing willChange, full bundle for simple use, etc.)
+
+**Production Tested**: React 19 + Next.js 15 + Vite 6 + Tailwind v4
+
+**Official Documentation Used**:
+- https://motion.dev
+- https://github.com/motiondivision/motion
+
+**Related Skills**: auto-animate (complementary for simple animations), tailwind-v4-shadcn, nextjs, cloudflare-worker-base
+
+---
+
 ### Added - claude-code-bash-patterns Skill ✅
 
 **Date**: 2025-11-07

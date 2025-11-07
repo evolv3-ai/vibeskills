@@ -3,7 +3,7 @@
 **Repository**: https://github.com/jezweb/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: Jeremy Dawes (Jez) | Jezweb
-**Status**: Active Development | 53 Skills Complete
+**Status**: Active Development | 65 Skills Complete
 **Last Updated**: 2025-11-07
 
 ---
@@ -55,7 +55,7 @@ claude-skills/
 ├── CHANGELOG.md                  # Version history
 ├── LICENSE                       # MIT License
 │
-├── skills/                       # ← All production skills (51 total)
+├── skills/                       # ← All production skills (65 total)
 │   ├── tailwind-v4-shadcn/       # Gold standard example
 │   ├── cloudflare-worker-base/   # Foundation skill
 │   ├── ai-sdk-core/              # AI integration
@@ -93,11 +93,11 @@ claude-skills/
 
 ---
 
-## Current Status (2025-11-04)
+## Current Status (2025-11-07)
 
-### ✅ Completed Skills (52)
+### ✅ Completed Skills (65)
 
-All 52 skills are production-ready and organized by domain:
+All 65 skills are production-ready and organized by domain:
 
 **Cloudflare Platform** (27 skills):
 - cloudflare-worker-base, cloudflare-d1, cloudflare-r2, cloudflare-kv
