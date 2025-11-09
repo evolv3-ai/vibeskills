@@ -27,7 +27,7 @@ Motion (package: `motion`, formerly `framer-motion`) is the industry-standard Re
 - **Exit Animations**: AnimatePresence for unmounting transitions
 - **Performance**: Hardware-accelerated, ScrollTimeline API, bundle optimization (2.3 KB - 34 KB)
 
-**Production Tested**: React 19, Next.js 15, Vite 6, Tailwind v4
+**Production Tested**: React 19, Next.js 16, Vite 7, Tailwind v4
 
 ---
 
@@ -77,9 +77,10 @@ Motion (package: `motion`, formerly `framer-motion`) is the industry-standard Re
 - No user interaction or animations needed
 - Server-rendered content without client interactivity
 
-**Cloudflare Workers Deployment** → **Known Issue**:
-- Motion has build compatibility issues with Wrangler (GitHub issue #2918)
-- **Workaround**: Use `framer-motion` v12.23.24 instead (same API, works with Workers)
+**Cloudflare Workers Deployment** → ✅ **Fixed (Dec 2024)**:
+- Previous build compatibility issues resolved (GitHub issue #2918 closed as completed)
+- Motion now works directly with Wrangler - no workaround needed
+- Both `motion` and `framer-motion` v12.23.24 work correctly
 
 **3D Animations** → Use dedicated 3D library:
 - Three.js for WebGL
@@ -102,12 +103,14 @@ npm install motion
 yarn add motion
 ```
 
-**Current Version**: 12.23.24 (verified 2025-11-07)
+**Current Version**: 12.23.24 (verified 2025-11-09)
 
-**Alternative for Cloudflare Workers**:
+**Note for Cloudflare Workers**:
 ```bash
-# Use framer-motion if deploying to Cloudflare Workers
-pnpm add framer-motion
+# Both packages work with Cloudflare Workers (issue #2918 fixed Dec 2024)
+pnpm add motion
+# OR
+pnpm add framer-motion  # Same version, same API
 ```
 
 ### Package Information
@@ -454,21 +457,22 @@ export default function Page() {
 
 **Why**: Motion uses inline styles or native browser animations, both override Tailwind's CSS transitions.
 
-### Cloudflare Workers (⚠️ Compatibility Issue)
+### Cloudflare Workers (✅ Now Supported)
 
-**Problem**: Motion has build errors with Wrangler (GitHub issue #2918).
+**Status**: ✅ **Fixed as of December 2024** (GitHub issue #2918 closed as completed)
 
-**Workaround**: Use `framer-motion` v12.23.24 instead:
+**Installation**:
 ```bash
-pnpm add framer-motion
+# Motion now works directly with Cloudflare Workers
+pnpm add motion
 ```
 
-**Import stays the same:**
+**Import:**
 ```tsx
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 ```
 
-**Status**: Monitor GitHub issue for resolution. The API is identical between `motion` and `framer-motion` v12.x.
+**Historical Note**: Prior to December 2024, there was a Wrangler ESM resolution issue requiring use of `framer-motion` as a workaround. This has been resolved, and both packages now work correctly with Cloudflare Workers.
 
 ---
 
@@ -596,9 +600,8 @@ import { MotionConfig } from "motion/react"
 - `reducedMotion` value is `"user"` (respects OS setting)
 - Can override with `"always"` (force instant) or `"never"` (ignore setting)
 
-**⚠️ Known Issue**: `reducedMotion` doesn't affect AnimatePresence components (GitHub issue #1567).
+**Note**: The `reducedMotion` setting now works correctly with AnimatePresence (GitHub issue #1567 fixed in Jan 2023). If you need fine-grained control, you can still manually check the user preference:
 
-**Workaround:**
 ```tsx
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
@@ -852,16 +855,17 @@ See `references/nextjs-integration.md` for App Router patterns.
 </motion.div>
 ```
 
-### Issue 6: Cloudflare Workers Build Errors
+### Issue 6: Cloudflare Workers Build Errors (✅ RESOLVED)
 
-**Symptom**: Wrangler build fails when using `motion` package.
+**Status**: ✅ **Fixed in December 2024** (GitHub issue #2918 closed as completed)
 
-**Solution**: Use `framer-motion` v12.23.24 instead:
-```bash
-pnpm add framer-motion
-```
+**Previous Symptom**: Wrangler build failed with React import errors when using `motion` package.
 
-GitHub issue: #2918 (monitor for resolution)
+**Current State**: Motion now works correctly with Cloudflare Workers. No workaround needed.
+
+**If you encounter build issues**: Ensure you're using Motion v12.23.24 or later and Wrangler v3+.
+
+GitHub issue: #2918 (closed as completed Dec 13, 2024)
 
 ### Issue 7: Fixed Position Layout Animations
 
@@ -893,11 +897,15 @@ import { LayoutGroup } from "motion/react"
 </LayoutGroup>
 ```
 
-### Issue 9: Reduced Motion Not Working with AnimatePresence
+### Issue 9: Reduced Motion with AnimatePresence (✅ RESOLVED)
 
-**Symptom**: MotionConfig reducedMotion doesn't disable AnimatePresence animations.
+**Status**: ✅ **Fixed in January 2023** (GitHub issue #1567 closed via PR #1891)
 
-**Solution**: Manual check:
+**Previous Symptom**: MotionConfig reducedMotion setting didn't affect AnimatePresence animations.
+
+**Current State**: MotionConfig now correctly applies reducedMotion to AnimatePresence components. The setting works as documented.
+
+**Optional Manual Control**: If you need custom behavior beyond the built-in support:
 ```tsx
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
@@ -908,7 +916,7 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 />
 ```
 
-GitHub issue: #1567
+GitHub issue: #1567 (closed as completed Jan 13, 2023)
 
 ### Issue 10: Reorder Component in Next.js
 
@@ -975,7 +983,7 @@ See `scripts/` directory for automation tools.
 - **auto-animate** - For simple list add/remove/sort animations (3.28 KB vs 34 KB)
 - **tailwind-v4-shadcn** - Styling integration
 - **nextjs** - Next.js App Router patterns
-- **cloudflare-worker-base** - Deployment (note: use framer-motion for Cloudflare)
+- **cloudflare-worker-base** - Deployment (Motion now fully compatible)
 
 ---
 
@@ -991,7 +999,7 @@ See `scripts/` directory for automation tools.
 | **Scroll Animations** | ❌ Not supported | ✅ Parallax, scroll-linked |
 | **Layout Animations** | ❌ Not supported | ✅ FLIP, shared elements |
 | **SVG** | ❌ Not supported | ✅ Path morphing, line drawing |
-| **Cloudflare Workers** | ✅ Full support | ⚠️ Use framer-motion instead |
+| **Cloudflare Workers** | ✅ Full support | ✅ Full support (fixed Dec 2024) |
 | **Accessibility** | ✅ Auto prefers-reduced-motion | ✅ Manual MotionConfig |
 
 **Rule of Thumb**: Use AutoAnimate for 90% of cases (list animations), Motion for 10% (complex interactions).
@@ -1012,14 +1020,15 @@ See `references/motion-vs-auto-animate.md` for detailed comparison.
 
 ---
 
-## Package Versions (Verified 2025-11-07)
+## Package Versions (Verified 2025-11-09)
 
 | Package | Version | Status |
 |---------|---------|--------|
 | motion | 12.23.24 | ✅ Latest stable |
-| framer-motion | 12.23.24 | ✅ Alternative for Cloudflare |
+| framer-motion | 12.23.24 | ✅ Same version as motion |
 | react | 19.2.0 | ✅ Latest stable |
-| vite | 6.0.0 | ✅ Latest stable |
+| next | 16.0.1 | ✅ Latest stable |
+| vite | 7.2.2 | ✅ Latest stable |
 
 ---
 
@@ -1031,7 +1040,7 @@ Found an issue or have a suggestion?
 
 ---
 
-**Production Tested**: ✅ React 19 + Next.js 15 + Vite 6 + Tailwind v4
+**Production Tested**: ✅ React 19 + Next.js 16 + Vite 7 + Tailwind v4
 **Token Savings**: ~83%
 **Error Prevention**: 100% (29+ documented errors prevented)
 **Bundle Size**: 2.3 KB (mini) - 34 KB (full), optimizable to 4.6 KB with LazyMotion
