@@ -587,20 +587,6 @@
       "repository": "https://github.com/jezweb/claude-skills"
     },
     {
-      "name": "auth-js",
-      "source": "./skills/auth-js",
-      "description": "Auth.js (NextAuth) open-source authentication with D1 adapter.",
-      "version": "1.0.0",
-      "category": "auth",
-      "keywords": ["authjs", "nextauth", "authentication", "oauth", "d1"],
-      "author": {
-        "name": "Jeremy Dawes",
-        "email": "jeremy@jezweb.net"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/jezweb/claude-skills"
-    },
-    {
       "name": "better-auth",
       "source": "./skills/better-auth",
       "description": "Better Auth authentication library integration.",

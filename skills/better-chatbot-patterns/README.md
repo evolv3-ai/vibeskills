@@ -146,7 +146,7 @@ export const updateProfile = validatedActionWithUser(
 - better-chatbot (optional - for project-specific conventions)
 - ai-sdk-core (optional - for Vercel AI SDK details)
 - clerk-auth (optional - for Clerk auth integration)
-- auth-js (optional - for Auth.js integration)
+- better-auth (optional - for Better Auth integration)
 
 ---
 
@@ -179,7 +179,7 @@ better-chatbot-patterns/
 - **better-chatbot** - Project-specific conventions for contributing to better-chatbot
 - **ai-sdk-core** - Vercel AI SDK core concepts (if available)
 - **clerk-auth** - Clerk authentication integration (if available)
-- **auth-js** - Auth.js integration (if available)
+- **better-auth** - Better Auth integration (if available)
 
 ---
 

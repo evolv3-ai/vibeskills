@@ -49,7 +49,7 @@ This skill provides production-ready patterns for **Next.js 16 App Router**, inc
 
 - **Cloudflare Workers deployment** → Use `cloudflare-nextjs` skill instead
 - **Pages Router** → This skill is App Router only (Pages Router is legacy)
-- **Authentication** → Use `clerk-auth`, `auth-js` skills
+- **Authentication** → Use `clerk-auth`, `better-auth` skills
 - **Database integration** → Use `cloudflare-d1`, `drizzle-orm-d1` skills
 - **UI components** → Use `tailwind-v4-shadcn` skill
 - **State management** → Use `zustand-state-management`, `tanstack-query` skills
@@ -459,7 +459,7 @@ MIT License - See [LICENSE](../../LICENSE)
 - `cloudflare-nextjs` - For Cloudflare Workers deployment
 - `tailwind-v4-shadcn` - For Tailwind v4 + shadcn/ui setup
 - `clerk-auth` - For Clerk authentication
-- `auth-js` - For Auth.js (NextAuth) integration
+- `better-auth` - For Better Auth integration
 - `cloudflare-d1` - For D1 database (if deploying to Cloudflare)
 - `drizzle-orm-d1` - For Drizzle ORM with D1
 - `react-hook-form-zod` - For form validation

@@ -99,14 +99,13 @@ React, Next.js, and modern UI components:
 | `hono-routing` | Hono for Workers and edge |
 | `firecrawl-scraper` | Web scraping API |
 
-### Authentication (3 skills)
+### Authentication (2 skills)
 
 User management and auth solutions:
 
 | Skill | Description |
 |-------|-------------|
 | `clerk-auth` | Clerk user management |
-| `auth-js` | Auth.js with D1 adapter |
 | `better-auth` | Better Auth library |
 
 ### Content Management (3 skills)

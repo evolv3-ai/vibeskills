@@ -80,7 +80,7 @@ Do NOT use this skill for:
 
 - **Cloudflare Workers deployment** → Use `cloudflare-nextjs` skill instead
 - **Pages Router patterns** → This skill covers App Router ONLY (Pages Router is legacy)
-- **Authentication libraries** → Use `clerk-auth`, `auth-js`, or other auth-specific skills
+- **Authentication libraries** → Use `clerk-auth`, `better-auth`, or other auth-specific skills
 - **Database integration** → Use `cloudflare-d1`, `drizzle-orm-d1`, or database-specific skills
 - **UI component libraries** → Use `tailwind-v4-shadcn` skill for Tailwind + shadcn/ui
 - **State management** → Use `zustand-state-management`, `tanstack-query` skills
@@ -93,7 +93,7 @@ Do NOT use this skill for:
 - **cloudflare-nextjs**: For deploying Next.js to Cloudflare Workers (use BOTH skills together if deploying to Cloudflare)
 - **tailwind-v4-shadcn**: For Tailwind v4 + shadcn/ui setup (composable with this skill)
 - **clerk-auth**: For Clerk authentication in Next.js (composable with this skill)
-- **auth-js**: For Auth.js (NextAuth) integration (composable with this skill)
+- **better-auth**: For Better Auth integration (composable with this skill)
 
 ---
 

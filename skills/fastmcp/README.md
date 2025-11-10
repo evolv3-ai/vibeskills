@@ -300,7 +300,7 @@ Example prompts:
 - `cloudflare-worker-base` - Deploy as Cloudflare Worker
 - `google-gemini-api` - Gemini API integration
 - `clerk-auth` - Alternative auth solution
-- `auth-js` - Auth.js for authentication
+- `better-auth` - Better Auth for authentication
 
 ## Skill Metadata
 

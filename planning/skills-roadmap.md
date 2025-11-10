@@ -1876,9 +1876,9 @@ Calculate:
 ## 📈 Progress Tracking
 
 ### Overall Progress:
-- **Completed**: 51 skills ✅
+- **Completed**: 50 skills ✅
 - **In Main Table Below**: 39 skills detailed
-- **Not in Table** (12 skills): vercel-kv, vercel-blob, neon-vercel-postgres, auth-js, fastmcp, typescript-mcp, project-planning, project-session-management, nextjs, sveltia-cms, zustand-state-management, open-source-contributions
+- **Not in Table** (11 skills): vercel-kv, vercel-blob, neon-vercel-postgres, fastmcp, typescript-mcp, project-planning, project-session-management, nextjs, sveltia-cms, zustand-state-management, open-source-contributions
 - **Batch 1 - Cloudflare Foundation**: 9/9 complete (100%) 🎯
 - **Batch 2 - AI SDK & Auth & Frameworks**: 6/6 complete (100%) 🎯
 - **Batch 3 - Cloudflare Advanced**: 6/6 complete (100%) 🎯
@@ -1928,8 +1928,8 @@ Calculate:
 | **thesys-generative-ui** | **✅ Complete** | **6h** | **~62%** | **8** | High |
 
 **Total Skills In Table**: 48 (all complete ✅)
-**Total Skills In Repo**: 51 (all complete ✅)
-**Not in Table**: 12 skills (all complete) - vercel-kv, vercel-blob, neon-vercel-postgres, auth-js, fastmcp, typescript-mcp, project-planning, project-session-management, nextjs, sveltia-cms, zustand-state-management, open-source-contributions
+**Total Skills In Repo**: 50 (all complete ✅)
+**Not in Table**: 11 skills (all complete) - vercel-kv, vercel-blob, neon-vercel-postgres, fastmcp, typescript-mcp, project-planning, project-session-management, nextjs, sveltia-cms, zustand-state-management, open-source-contributions
 **Planned Next**: cloudflare-sandboxing
 
 ---
