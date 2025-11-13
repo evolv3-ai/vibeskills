@@ -36,12 +36,13 @@ See [MARKETPLACE.md](MARKETPLACE.md) for complete marketplace documentation incl
 # Clone the repository
 git clone https://github.com/jezweb/claude-skills.git ~/Documents/claude-skills
 
-# Install all skills
+# Install individual skills (recommended)
 cd ~/Documents/claude-skills
-./scripts/install-all.sh
-
-# Or install individual skills
 ./scripts/install-skill.sh cloudflare-worker-base
+./scripts/install-skill.sh tailwind-v4-shadcn
+
+# Or install all skills at once
+./scripts/install-all.sh
 ```
 
 ### Verify Installation
