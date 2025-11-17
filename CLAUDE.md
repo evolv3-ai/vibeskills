@@ -3,7 +3,7 @@
 **Repository**: https://github.com/jezweb/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: Jeremy Dawes (Jez) | Jezweb
-**Status**: Active Development | 63 Skills Complete
+**Status**: Active Development | 59 Skills Complete (13 archived)
 **Last Updated**: 2025-11-17
 
 ---
@@ -55,13 +55,16 @@ claude-skills/
 ├── CHANGELOG.md                  # Version history
 ├── LICENSE                       # MIT License
 │
-├── skills/                       # ← All production skills (63 total)
+├── skills/                       # ← All production skills (59 total)
 │   ├── tailwind-v4-shadcn/       # Gold standard example
 │   ├── cloudflare-worker-base/   # Foundation skill
 │   ├── ai-sdk-core/              # AI integration
 │   ├── openai-agents/            # OpenAI Agents SDK
 │   ├── project-planning/         # Planning automation
-│   └── [58 more skills...]       # Run ls skills/ for full list
+│   └── [54 more skills...]       # Run ls skills/ for full list
+│
+├── archive/                      # Archived skills (preserved in branches)
+│   └── low-priority-skills/      # 13 skills archived 2025-11-17
 │
 ├── templates/                    # ← Templates for new skills
 │   ├── SKILL-TEMPLATE.md         # Copy-paste SKILL.md starter
@@ -100,18 +103,21 @@ claude-skills/
 
 ## Current Status (2025-11-17)
 
-### ✅ Completed Skills (63)
+### ✅ Active Skills (59)
 
-All 63 skills are production-ready and organized by domain:
+All 59 skills are production-ready and organized by domain:
 
-**Cloudflare Platform** (25 skills):
+**Cloudflare Platform** (20 skills):
 - cloudflare-worker-base, cloudflare-d1, cloudflare-r2, cloudflare-kv
 - cloudflare-workers-ai, cloudflare-vectorize, cloudflare-queues, cloudflare-workflows
 - cloudflare-durable-objects, cloudflare-agents, cloudflare-mcp-server, cloudflare-turnstile
-- cloudflare-nextjs, cloudflare-cron-triggers, cloudflare-email-routing
 - cloudflare-hyperdrive, cloudflare-images, cloudflare-browser-rendering
-- cloudflare-zero-trust-access, cloudflare-sandbox
 - And 5 more...
+
+**Archived Skills** (13):
+- Preserved in `archive/low-priority-skills` branch
+- Includes: hugo, cloudflare-nextjs, cloudflare-email-routing, cloudflare-cron-triggers, cloudflare-zero-trust-access, cloudflare-sandbox, better-chatbot, better-chatbot-patterns, multi-ai-consultant, ai-elements-chatbot, firecrawl-scraper, content-collections, base-ui-react
+- Can be restored anytime via git cherry-pick
 
 **AI & Machine Learning** (10 skills):
 - ai-sdk-core, ai-sdk-ui, openai-api, openai-agents, openai-assistants, openai-responses

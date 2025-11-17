@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Archived - 13 Low-Priority Skills 📦
+
+**Date**: 2025-11-17
+
+**Change**: Archived 13 skills to `archive/low-priority-skills` branch (not deleted)
+
+**Archived Skills**:
+1. **hugo** - 7.4MB mega-scaffold with 7 complete Hugo site templates
+2. **better-chatbot** - Project-specific contribution guide
+3. **better-chatbot-patterns** - Extracted patterns from better-chatbot
+4. **multi-ai-consultant** - Meta-behavior guide (not technical skill)
+5. **ai-elements-chatbot** - Overlaps with ai-sdk-ui
+6. **cloudflare-sandbox** - Beta/niche Cloudflare feature
+7. **firecrawl-scraper** - Third-party service integration
+8. **cloudflare-nextjs** - Framework-specific (Next.js has own docs)
+9. **cloudflare-email-routing** - Niche Cloudflare service
+10. **cloudflare-cron-triggers** - Simple feature, well-documented
+11. **cloudflare-zero-trust-access** - Enterprise/niche use case
+12. **content-collections** - Niche content management library
+13. **base-ui-react** - UI library alternative (similar to Radix/shadcn)
+
+**Rationale**:
+- Reduce maintenance burden (especially hugo's 7.4MB)
+- Focus on widely-used, atomic skills
+- Remove niche/enterprise features
+- Remove framework-specific skills (better covered by official docs)
+- Remove meta-skills and project-specific guides
+
+**Impact**:
+- Active skills: 63 → 59 (-4, but 13 archived total)
+- All skills preserved in `archive/low-priority-skills` branch
+- Can restore any skill via: `git checkout archive/low-priority-skills -- skills/SKILL_NAME/`
+
+**Recovery**: Skills not deleted, just moved to archive branch for later restoration if needed.
+
+---
+
 ### Removed - Deprecated Full-Stack Skills 🗑️
 
 **Date**: 2025-11-17
