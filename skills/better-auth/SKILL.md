@@ -6,9 +6,9 @@ description: |
   Keywords: better-auth, authentication, cloudflare d1 auth, drizzle orm auth, kysely auth, self-hosted auth, typescript auth, clerk alternative, auth.js alternative, social login, oauth providers, session management, jwt tokens, 2fa, two-factor, passkeys, webauthn, multi-tenant auth, organizations, teams, rbac, role-based access, google auth, github auth, microsoft auth, apple auth, magic links, email password, better-auth setup, drizzle d1, kysely d1, session serialization error, cors auth, d1 adapter
 license: MIT
 metadata:
-  version: 2.0.0
-  last_verified: 2025-11-08
-  production_tested: multiple (better-chatbot, zpg6/better-auth-cloudflare, matthewlynch/better-auth-react-router-cloudflare-d1)
+  version: 2.0.1
+  last_verified: 2025-11-17
+  production_tested: multiple (zpg6/better-auth-cloudflare, zwily/example-react-router-cloudflare-d1-drizzle-better-auth, foxlau/react-router-v7-better-auth, matthewlynch/better-auth-react-router-cloudflare-d1)
   package_version: 1.3.34
   token_savings: ~70%
   errors_prevented: 12
@@ -321,11 +321,18 @@ export function createAuth(db: Database, env: Env) {
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,
-      sendVerificationEmail: async ({ user, url, token }) => {
+    },
+
+    // Email verification configuration
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url }) => {
         // TODO: Implement email sending
         // Use Resend, SendGrid, or Cloudflare Email Routing
         console.log(`Verification email for ${user.email}: ${url}`);
       },
+      sendOnSignUp: true,
+      autoSignInAfterVerification: true,
+      expiresIn: 3600, // 1 hour
     },
 
     // Social providers
@@ -509,11 +516,16 @@ If your Drizzle schema uses `snake_case` column names (e.g., `email_verified`), 
 **File**: `src/lib/auth-client.ts`
 
 ```typescript
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8787",
 });
+
+// For other frameworks:
+// Vue: import { createAuthClient } from "better-auth/vue"
+// Svelte: import { createAuthClient } from "better-auth/svelte"
+// Vanilla: import { createAuthClient } from "better-auth/client"
 ```
 
 **File**: `src/components/LoginForm.tsx`
@@ -578,7 +590,7 @@ export function LoginForm() {
 ```typescript
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client"; // Uses better-auth/react
 
 export function UserProfile() {
   const { data: session, isPending } = authClient.useSession();
@@ -913,7 +925,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendVerificationEmail: async ({ user, url, token }) => {
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }) => {
       // Use your email service (SendGrid, Resend, etc.)
       await sendEmail({
         to: user.email,
@@ -921,10 +935,12 @@ export const auth = betterAuth({
         html: `
           <p>Click the link below to verify your email:</p>
           <a href="${url}">Verify Email</a>
-          <p>Or use this code: ${token}</p>
         `,
       });
     },
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    expiresIn: 3600, // 1 hour
   },
 });
 ```
@@ -1232,12 +1248,12 @@ Use `Read` tool to access these files when needed.
 
 ## Production Examples
 
-**Verified working repositories** (all use Drizzle or Kysely):
+**Verified working D1 repositories** (all use Drizzle or Kysely):
 
-1. **zwily/example-react-router-cloudflare-d1-drizzle-better-auth** - Drizzle
-2. **matthewlynch/better-auth-react-router-cloudflare-d1** - Kysely
-3. **foxlau/react-router-v7-better-auth** - Drizzle
-4. **zpg6/better-auth-cloudflare** - Drizzle (includes CLI)
+1. **zpg6/better-auth-cloudflare** - Drizzle + D1 (includes CLI)
+2. **zwily/example-react-router-cloudflare-d1-drizzle-better-auth** - Drizzle + D1
+3. **foxlau/react-router-v7-better-auth** - Drizzle + D1
+4. **matthewlynch/better-auth-react-router-cloudflare-d1** - Kysely + D1
 
 **None** use a direct `d1Adapter` - all require Drizzle/Kysely.
 
@@ -1259,4 +1275,4 @@ Use `Read` tool to access these files when needed.
 
 ---
 
-**Last verified**: 2025-11-08 | **Skill version**: 2.0.0 | **Breaking change**: Corrected D1 adapter patterns
+**Last verified**: 2025-11-17 | **Skill version**: 2.0.1 | **Changes**: Email verification config structure, React imports, production repo list

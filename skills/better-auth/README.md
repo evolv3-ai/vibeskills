@@ -170,10 +170,11 @@ npm install better-auth drizzle-orm drizzle-kit @cloudflare/workers-types hono
 
 ## Production Tested
 
-- **Project**: better-chatbot (https://github.com/cgoinglove/better-chatbot)
-- **Stars**: 852
-- **Status**: Active production deployment
-- **Stack**: Next.js + PostgreSQL + better-auth + Vercel AI SDK
+- **Projects**: 4 verified D1 production repos
+  - zpg6/better-auth-cloudflare (Drizzle + D1)
+  - zwily/example-react-router-cloudflare-d1-drizzle-better-auth
+  - foxlau/react-router-v7-better-auth (Drizzle + D1)
+  - matthewlynch/better-auth-react-router-cloudflare-d1 (Kysely + D1)
 
 ---
 
@@ -210,11 +211,11 @@ npm install pg drizzle-orm
 
 ## Version Info
 
-- **Skill Version**: 2.0.0 (Breaking Change - Corrected D1 adapter patterns)
+- **Skill Version**: 2.0.1 (Fixed email verification config, React imports)
 - **Package Version**: better-auth@1.3.34
 - **Drizzle ORM**: drizzle-orm@0.44.7, drizzle-kit@0.31.6
 - **Kysely**: kysely@0.28.8, kysely-d1@0.4.0
-- **Last Verified**: 2025-11-08
+- **Last Verified**: 2025-11-17
 - **Compatibility**: Node.js 18+, Bun 1.0+, Cloudflare Workers
 
 ---
