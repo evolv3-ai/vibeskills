@@ -78,7 +78,8 @@ declare -A ANTHROPIC_MODELS=(
 )
 
 declare -A GOOGLE_MODELS=(
-    ["gemini-2.5-pro"]="current|Latest Pro model"
+    ["gemini-3-pro-preview"]="current|Latest Gemini 3 (preview)"
+    ["gemini-2.5-pro"]="current|Stable Pro model"
     ["gemini-2.5-flash"]="current|Fast model"
     ["gemini-2.5-flash-lite"]="current|Lightweight (not in CLI)"
     ["gemini-2.5-flash-image"]="current|Image-optimized"

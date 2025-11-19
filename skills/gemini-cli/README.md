@@ -1,8 +1,8 @@
 # gemini-cli
 
-**Status**: ✅ Production-Ready | v2.0.0 | Last Updated: 2025-11-13
+**Status**: ✅ Production-Ready | v2.1.0 | Last Updated: 2025-11-19
 
-Use the official Google Gemini CLI directly from Claude Code for second opinions, architectural advice, debugging help, and comprehensive code reviews using Gemini's 1M+ context window.
+Use the official Google Gemini CLI directly from Claude Code for second opinions, architectural advice, debugging help, and comprehensive code reviews using Gemini's 1M+ context window. Now includes Gemini 3 Pro Preview (Nov 2025).
 
 ---
 
@@ -13,7 +13,7 @@ This skill should activate when Claude Code encounters these scenarios:
 ### Commands
 - `gemini` (official CLI tool)
 - `gemini-cli` (installation package)
-- `gemini-2.5-flash`, `gemini-2.5-pro` (model names)
+- `gemini-2.5-flash`, `gemini-2.5-pro`, `gemini-3-pro-preview` (model names)
 
 ### Use Cases
 - "second opinion"

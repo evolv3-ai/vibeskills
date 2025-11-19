@@ -1,10 +1,53 @@
 # Gemini Models Guide (2025)
 
-**Last Updated**: 2025-10-25
+**Last Updated**: 2025-11-19 (Gemini 3 preview release)
 
 ---
 
-## Current Production Models (Gemini 2.5)
+## Gemini 3 Series (Preview - November 2025)
+
+### gemini-3-pro-preview
+
+**Model ID**: `gemini-3-pro-preview`
+
+**Status**: 🆕 Preview release (November 18, 2025)
+
+**Context Windows**:
+- Input: TBD (documentation pending)
+- Output: TBD (documentation pending)
+
+**Description**: Google's newest and most intelligent AI model with state-of-the-art reasoning and multimodal understanding. Outperforms Gemini 2.5 Pro on every major AI benchmark.
+
+**Best For**:
+- Most complex reasoning tasks
+- Advanced multimodal analysis (images, videos, PDFs, audio)
+- Benchmark-critical applications
+- Cutting-edge projects requiring latest capabilities
+- Tasks requiring absolute best quality
+
+**Features**:
+- ✅ Enhanced multimodal understanding
+- ✅ Function calling
+- ✅ Streaming
+- ✅ System instructions
+- ✅ JSON mode
+- TBD Thinking mode (documentation pending)
+
+**Knowledge Cutoff**: TBD
+
+**Pricing**: Preview pricing (likely higher than 2.5 Pro)
+
+**⚠️ Preview Status**: Use for evaluation and testing. Consider `gemini-2.5-pro` for production-critical decisions until Gemini 3 reaches stable general availability.
+
+**New Capabilities**:
+- Record-breaking benchmark performance
+- Enhanced generative UI responses
+- Advanced coding capabilities (Google Antigravity integration)
+- State-of-the-art multimodal understanding
+
+---
+
+## Current Production Models (Gemini 2.5 - Stable)
 
 ### gemini-2.5-pro
 

@@ -5,15 +5,16 @@ description: |
 
   Use when: Need second opinion on architectural decisions, stuck debugging after 2+ attempts, writing security-sensitive code (auth, payments, data handling), planning large refactors (5+ files), approaching 70%+ context capacity, unfamiliar with technology stack, want to compare Flash vs Pro model recommendations, need comprehensive codebase analysis, or consulting Gemini for peer review on critical code changes.
 
-  Keywords: gemini-cli, google gemini, gemini command line, second opinion, model comparison, gemini-2.5-flash, gemini-2.5-pro, architectural decisions, debugging assistant, code review gemini, security audit gemini, 1M context window, AI pair programming, gemini consultation, flash vs pro, AI-to-AI prompting, peer review, codebase analysis, gemini CLI tool, shell gemini, command line AI assistant, gemini architecture advice, gemini debug help, gemini security scan, gemini code compare
+  Keywords: gemini-cli, google gemini, gemini command line, second opinion, model comparison, gemini-2.5-flash, gemini-2.5-pro, gemini-3-pro-preview, architectural decisions, debugging assistant, code review gemini, security audit gemini, 1M context window, AI pair programming, gemini consultation, flash vs pro, AI-to-AI prompting, peer review, codebase analysis, gemini CLI tool, shell gemini, command line AI assistant, gemini architecture advice, gemini debug help, gemini security scan, gemini code compare
 license: MIT
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   production_tested: true
   gemini_cli_version: 0.13.0+
-  last_verified: 2025-11-13
+  last_verified: 2025-11-19
   token_savings: ~60-70%
   errors_prevented: 6+
+  breaking_changes: Added Gemini 3 Pro Preview model (gemini-3-pro-preview)
 ---
 
 # Gemini CLI
@@ -247,14 +248,40 @@ gemini -m gemini-2.5-flash -p "Review this function for performance issues"
 gemini -m gemini-2.5-pro -p "Security audit this authentication system"
 ```
 
+### gemini-3-pro-preview (Preview - November 2025)
+
+**Characteristics**:
+- Google's newest and most intelligent AI model (announced Nov 18, 2025)
+- State-of-the-art reasoning and multimodal understanding
+- Outperforms Gemini 2.5 Pro on every major AI benchmark
+- Supports text, image, video, audio, and PDF inputs
+- Response time: TBD (in testing)
+- Higher cost (preview pricing)
+
+**Use For**:
+- Most complex reasoning tasks requiring deep analysis
+- Critical architectural decisions on cutting-edge projects
+- Advanced multimodal analysis (diagrams, videos, complex docs)
+- Benchmark-critical applications
+- When absolute best quality is required (and cost is secondary)
+
+**Example**:
+```bash
+gemini -m gemini-3-pro-preview -p "Deep architectural analysis of this distributed system"
+cat architecture-diagram.png | gemini -m gemini-3-pro-preview -p "Analyze this system design"
+```
+
+**⚠️ Preview Status**: Model is in preview. For production-critical decisions, consider using `gemini-2.5-pro` (stable) until Gemini 3 reaches general availability.
+
 ### How to Choose
 
 ```
 Quick question? → Flash
-Security/architecture? → Pro
+Security/architecture? → 3-Pro-Preview (cutting-edge) or 2.5-Pro (stable)
 Debugging? → Flash (try Pro if stuck)
 Code review? → Flash
-Refactoring 5+ files? → Pro
+Refactoring 5+ files? → 3-Pro-Preview or 2.5-Pro
+Multimodal analysis? → 3-Pro-Preview
 ```
 
 ---
@@ -621,6 +648,12 @@ Recommendation: [unified answer]"
 ---
 
 ## Version History
+
+**2.1.0** (2025-11-19):
+- Added Gemini 3 Pro Preview model (`gemini-3-pro-preview`)
+- Updated model selection guidance for Gemini 3
+- Added multimodal analysis use cases
+- Updated model comparison matrix
 
 **2.0.0** (2025-11-13):
 - Complete rewrite for official Gemini CLI (removed gemini-coach wrapper)
