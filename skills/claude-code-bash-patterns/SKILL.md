@@ -1,19 +1,7 @@
 ---
 name: claude-code-bash-patterns
 description: |
-  Comprehensive knowledge for using the Bash tool in Claude Code effectively. This skill
-  should be used when orchestrating CLI tools, configuring hooks, setting up automation
-  workflows, managing git operations, handling multi-command patterns, or encountering
-  Bash tool errors.
-
-  Covers: PreToolUse hooks, command chaining patterns, git workflow automation, CLI tool
-  integration, custom commands (.claude/commands/), security configurations, allowlisting,
-  session persistence, output handling, error prevention, and troubleshooting common issues.
-
-  Use when: setting up Claude Code hooks, configuring bash permissions, creating custom
-  commands, automating git workflows, orchestrating multiple CLI tools, debugging bash
-  command failures, implementing security guards, logging command execution, or preventing
-  dangerous operations.
+  Master Claude Code Bash tool with PreToolUse hooks, command chaining, git automation, custom commands. Use when: configuring hooks, orchestrating CLI tools, managing multi-command workflows, or troubleshooting "cygpath command not found", "pipe command failed", permission errors.
 license: MIT
 metadata:
   author: Jeremy Dawes (Jezweb)
@@ -23,6 +11,23 @@ metadata:
   token_savings: 55%
   errors_prevented: 12
   status: production_ready
+  keywords:
+    - claude code bash
+    - bash tool
+    - PreToolUse hooks
+    - command chaining
+    - git automation
+    - CLI orchestration
+    - .claude/commands
+    - security allowlisting
+    - session persistence
+    - bash patterns
+    - wrangler CLI
+    - npm automation
+    - pnpm scripts
+    - cygpath command not found
+    - pipe command failed
+    - no suitable shell found
 ---
 
 # Claude Code Bash Patterns
