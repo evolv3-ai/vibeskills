@@ -1,12 +1,21 @@
 ---
 name: claude-agent-sdk
 description: |
-  Build autonomous AI agents with Claude Agent SDK. Create multi-step reasoning workflows, orchestrate subagents, integrate MCP servers. Use when: building coding agents, SRE systems, security auditors, code review bots, or troubleshooting CLI not found, context length exceeded errors.
+  Build autonomous AI agents with Claude Agent SDK. Structured outputs (v0.1.45, Nov 2025) guarantee JSON schema validation, plugins system, hooks for event-driven workflows. Use when: building coding agents with validated JSON responses, SRE systems, security auditors, or troubleshooting CLI not found, structured output validation, session forking errors.
 license: MIT
 metadata:
+  version: 2.0.0
+  last_verified: 2025-11-22
+  package_version: 0.1.50
+  token_savings: ~70%
+  errors_prevented: 12
+  breaking_changes: v0.1.45 - Structured outputs (Nov 2025), v0.1.0 - No default system prompt, settingSources required
   keywords:
     - claude agent sdk
     - "@anthropic-ai/claude-agent-sdk"
+    - structured outputs
+    - json schema validation
+    - outputFormat
     - query()
     - createSdkMcpServer
     - AgentDefinition
@@ -14,68 +23,89 @@ metadata:
     - claude subagents
     - mcp servers
     - autonomous agents
-    - agentic loops
+    - plugins system
+    - hooks system
     - session management
+    - session forking
     - permissionMode
     - canUseTool
     - multi-agent orchestration
     - settingSources
     - CLI not found
     - context length exceeded
+    - structured output validation
+    - zod schema
 ---
 
-# Claude Agent SDK
+# Claude Agent SDK - Structured Outputs & Error Prevention Guide
 
-**Status**: Production Ready
-**Last Updated**: 2025-10-25
-**Dependencies**: @anthropic-ai/claude-agent-sdk, zod
-**Latest Versions**: @anthropic-ai/claude-agent-sdk@0.1.0+, zod@3.23.0+
+**Package**: @anthropic-ai/claude-agent-sdk@0.1.50 (Nov 21, 2025)
+**Breaking Changes**: v0.1.45 - Structured outputs (Nov 2025), v0.1.0 - No default system prompt, settingSources required
 
 ---
 
-## Quick Start (5 Minutes)
+## What's New in v0.1.45+ (Nov 2025)
 
-### 1. Install SDK
+**Major Features:**
 
-```bash
-npm install @anthropic-ai/claude-agent-sdk zod
-```
+### 1. Structured Outputs (v0.1.45, Nov 14, 2025)
+- **JSON schema validation** - Guarantees responses match exact schemas
+- **`outputFormat` parameter** - Define output structure with JSON schema or Zod
+- **Access validated results** - Via `message.structured_output`
+- **Beta header required**: `structured-outputs-2025-11-13`
+- **Type safety** - Full TypeScript inference with Zod schemas
 
-**Why these packages:**
-- `@anthropic-ai/claude-agent-sdk` - Main Agent SDK
-- `zod` - Type-safe schema validation for tools
-
-### 2. Set API Key
-
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
-```
-
-**CRITICAL:**
-- API key required for all agent operations
-- Never commit API keys to version control
-- Use environment variables
-
-### 3. Basic Query
-
+**Example:**
 ```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
+import { z } from "zod";
+
+const schema = z.object({
+  summary: z.string(),
+  sentiment: z.enum(['positive', 'neutral', 'negative']),
+  confidence: z.number().min(0).max(1)
+});
 
 const response = query({
-  prompt: "Analyze the codebase and suggest improvements",
+  prompt: "Analyze this code review feedback",
   options: {
     model: "claude-sonnet-4-5",
-    workingDirectory: process.cwd(),
-    allowedTools: ["Read", "Grep", "Glob"]
+    outputFormat: {
+      type: "json_schema",
+      json_schema: {
+        name: "AnalysisResult",
+        strict: true,
+        schema: zodToJsonSchema(schema)
+      }
+    }
   }
 });
 
 for await (const message of response) {
-  if (message.type === 'assistant') {
-    console.log(message.content);
+  if (message.type === 'result' && message.structured_output) {
+    // Guaranteed to match schema
+    const validated = schema.parse(message.structured_output);
+    console.log(`Sentiment: ${validated.sentiment}`);
   }
 }
 ```
+
+### 2. Plugins System (v0.1.27)
+- **`plugins` array** - Load local plugin paths
+- **Custom plugin support** - Extend agent capabilities
+
+### 3. Hooks System (v0.1.0+)
+- **Event-driven callbacks** - PreToolUse, PostToolUse, Notification, UserPromptSubmit
+- **Session event hooks** - Monitor and control agent behavior
+
+### 4. Additional Options
+- **`fallbackModel`** - Automatic model fallback on failures
+- **`maxThinkingTokens`** - Control extended thinking budget
+- **`strictMcpConfig`** - Strict MCP configuration validation
+- **`continue`** - Resume with new prompt (differs from `resume`)
+- **`permissionMode: 'plan'`** - New permission mode for planning workflows
+
+📚 **Docs**: https://platform.claude.com/docs/en/agent-sdk/structured-outputs
 
 ---
 
@@ -98,334 +128,47 @@ for await (const message of response) {
 
 ## Core Query API
 
-### The `query()` Function
-
-The primary interface for interacting with Claude Code CLI programmatically.
-
+**Key signature:**
 ```typescript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-const response = query({
-  prompt: string | AsyncIterable<SDKUserMessage>,
-  options?: Options
-});
-
-// Response is AsyncGenerator<SDKMessage, void>
-for await (const message of response) {
-  // Process streaming messages
-}
+query(prompt: string | AsyncIterable<SDKUserMessage>, options?: Options)
+  -> AsyncGenerator<SDKMessage>
 ```
 
-### Basic Options
-
-```typescript
-const response = query({
-  prompt: "Review this code for bugs",
-  options: {
-    model: "claude-sonnet-4-5",        // or "haiku", "opus"
-    workingDirectory: "/path/to/project",
-    systemPrompt: "You are a security-focused code reviewer.",
-    allowedTools: ["Read", "Grep", "Glob"],
-    disallowedTools: ["Write", "Edit", "Bash"],
-    permissionMode: "default"           // or "acceptEdits", "bypassPermissions"
-  }
-});
-```
-
-### Model Selection
-
-| Model | ID | Best For | Speed | Capability |
-|-------|-----|----------|-------|------------|
-| **Haiku** | `"haiku"` | Fast tasks, monitoring | Fastest | Basic |
-| **Sonnet** | `"sonnet"` or `"claude-sonnet-4-5"` | Balanced | Medium | High |
-| **Opus** | `"opus"` | Complex reasoning | Slowest | Highest |
-| **Inherit** | `"inherit"` | Use parent model | - | - |
-
-**Default**: `"sonnet"` if not specified
-
-### System Prompts
-
-```typescript
-const response = query({
-  prompt: "Implement user authentication",
-  options: {
-    systemPrompt: `You are an expert backend developer.
-
-Follow these principles:
-- Always use TypeScript with strict types
-- Implement comprehensive error handling
-- Add detailed logging for debugging
-- Write unit tests for all functions
-- Follow OWASP security guidelines`
-  }
-});
-```
-
-**CRITICAL:**
-- System prompt sets agent behavior for entire session
-- Should be clear and specific
-- Can be 1-10k tokens (affects context window)
-
-### Working Directory
-
-```typescript
-const response = query({
-  prompt: "Refactor the user service",
-  options: {
-    workingDirectory: "/Users/dev/projects/my-app",
-    // Agent operates within this directory
-    // Relative paths resolved from here
-  }
-});
-```
-
-**Best Practices:**
-- Use absolute paths for clarity
-- Agent stays within this directory scope
-- Critical for multi-project environments
+**Critical Options:**
+- `outputFormat` - Structured JSON schema validation (v0.1.45+)
+- `settingSources` - Filesystem settings loading ('user'|'project'|'local')
+- `canUseTool` - Custom permission logic callback
+- `agents` - Programmatic subagent definitions
+- `mcpServers` - MCP server configuration
+- `permissionMode` - 'default'|'acceptEdits'|'bypassPermissions'|'plan'
 
 ---
 
 ## Tool Integration (Built-in + Custom)
 
-### Built-in Tools
+**Tool Control:**
+- `allowedTools` - Whitelist (takes precedence)
+- `disallowedTools` - Blacklist
+- `canUseTool` - Custom permission callback (see Permission Control section)
 
-The SDK provides access to Claude Code's built-in tools:
-
-| Tool | Description | Use Case |
-|------|-------------|----------|
-| `Read` | Read file contents | Code analysis |
-| `Write` | Create new files | Generate code |
-| `Edit` | Modify existing files | Refactoring |
-| `Bash` | Execute shell commands | Run tests, git |
-| `Grep` | Search file contents | Find patterns |
-| `Glob` | Find files by pattern | File discovery |
-| `WebSearch` | Search the web | Research |
-| `WebFetch` | Fetch URL content | Documentation |
-| `Task` | Delegate to subagent | Orchestration |
-
-### Allowing/Disallowing Tools
-
-```typescript
-// Whitelist approach (recommended)
-const response = query({
-  prompt: "Analyze code but don't modify anything",
-  options: {
-    allowedTools: ["Read", "Grep", "Glob"]
-    // ONLY these tools can be used
-  }
-});
-
-// Blacklist approach
-const response = query({
-  prompt: "Review and fix issues",
-  options: {
-    disallowedTools: ["Bash"]
-    // Everything except Bash allowed
-  }
-});
-
-// Combination (allowedTools takes precedence)
-const response = query({
-  prompt: "Safe code review",
-  options: {
-    allowedTools: ["Read", "Grep", "Glob", "Edit"],
-    disallowedTools: ["Edit"]  // Edit still blocked (allowedTools overridden)
-  }
-});
-```
-
-**CRITICAL:**
-- `allowedTools` = whitelist (only these tools)
-- `disallowedTools` = blacklist (everything except these)
-- If both specified, `allowedTools` wins
-
-### Custom Tool Execution Monitoring
-
-```typescript
-const response = query({
-  prompt: "Implement feature X",
-  options: {
-    allowedTools: ["Read", "Write", "Edit", "Bash"]
-  }
-});
-
-for await (const message of response) {
-  if (message.type === 'tool_call') {
-    console.log(`Tool requested: ${message.tool_name}`);
-    console.log(`Input:`, message.input);
-  } else if (message.type === 'tool_result') {
-    console.log(`Tool ${message.tool_name} completed`);
-  }
-}
-```
+**Built-in Tools:** Read, Write, Edit, Bash, Grep, Glob, WebSearch, WebFetch, Task, NotebookEdit, BashOutput, KillBash, ListMcpResources, ReadMcpResource
 
 ---
 
 ## MCP Servers (Model Context Protocol)
 
-### Overview
+**Server Types:**
+- **In-process** - `createSdkMcpServer()` with `tool()` definitions
+- **External** - stdio, HTTP, SSE transport
 
-MCP servers extend agent capabilities with custom tools. The SDK supports:
-- **In-process servers** (`createSdkMcpServer`) - Run in same process
-- **External servers** (stdio, HTTP, SSE) - Separate processes
-
-### Creating In-Process MCP Servers
-
+**Tool Definition:**
 ```typescript
-import { createSdkMcpServer, tool } from "@anthropic-ai/claude-agent-sdk";
-import { z } from "zod";
-
-const weatherServer = createSdkMcpServer({
-  name: "weather-service",
-  version: "1.0.0",
-  tools: [
-    tool(
-      "get_weather",
-      "Get current weather for a location",
-      {
-        location: z.string().describe("City name or coordinates"),
-        units: z.enum(["celsius", "fahrenheit"]).default("celsius")
-      },
-      async (args) => {
-        // Tool implementation
-        const response = await fetch(
-          `https://api.weather.com/v1/current?location=${args.location}&units=${args.units}`
-        );
-        const data = await response.json();
-
-        return {
-          content: [{
-            type: "text",
-            text: `Temperature: ${data.temp}° ${args.units}
-Conditions: ${data.conditions}
-Humidity: ${data.humidity}%`
-          }]
-        };
-      }
-    )
-  ]
-});
-
-// Use in query
-const response = query({
-  prompt: "What's the weather in San Francisco?",
-  options: {
-    mcpServers: {
-      "weather-service": weatherServer
-    },
-    allowedTools: ["mcp__weather-service__get_weather"]
-  }
-});
+tool(name: string, description: string, zodSchema, handler)
 ```
 
-### Tool Definition Pattern
-
+**Handler Return:**
 ```typescript
-tool(
-  name: string,                    // Tool identifier
-  description: string,             // What the tool does
-  inputSchema: ZodSchema,          // Input validation
-  handler: async (args) => Result // Implementation
-)
-```
-
-**Input Schema Options:**
-
-```typescript
-// Simple object schema
-{
-  email: z.string().email(),
-  limit: z.number().min(1).max(100).default(10),
-  enabled: z.boolean().optional()
-}
-
-// Complex nested schema
-{
-  user: z.object({
-    name: z.string(),
-    age: z.number().min(0)
-  }),
-  filters: z.array(z.string()).optional()
-}
-
-// Enum types
-{
-  status: z.enum(["pending", "active", "completed"]),
-  priority: z.union([z.literal("low"), z.literal("high")])
-}
-```
-
-**Handler Return Format:**
-
-```typescript
-// Success
-return {
-  content: [{
-    type: "text",
-    text: "Result data here"
-  }]
-};
-
-// Error
-return {
-  content: [{
-    type: "text",
-    text: "Error description"
-  }],
-  isError: true
-};
-```
-
-### Multiple Tools in One Server
-
-```typescript
-const databaseServer = createSdkMcpServer({
-  name: "database",
-  version: "1.0.0",
-  tools: [
-    tool(
-      "query_users",
-      "Query user records from database",
-      {
-        email: z.string().email().optional(),
-        limit: z.number().min(1).max(100).default(10)
-      },
-      async (args) => {
-        const results = await db.query("SELECT * FROM users WHERE...");
-        return {
-          content: [{ type: "text", text: JSON.stringify(results, null, 2) }]
-        };
-      }
-    ),
-    tool(
-      "create_user",
-      "Create a new user record",
-      {
-        email: z.string().email(),
-        name: z.string(),
-        role: z.enum(["admin", "user", "guest"])
-      },
-      async (args) => {
-        const user = await db.insert("users", args);
-        return {
-          content: [{ type: "text", text: `User created: ${user.id}` }]
-        };
-      }
-    ),
-    tool(
-      "delete_user",
-      "Delete a user by ID",
-      { userId: z.string().uuid() },
-      async (args) => {
-        await db.delete("users", args.userId);
-        return {
-          content: [{ type: "text", text: "User deleted" }]
-        };
-      }
-    )
-  ]
-});
+{ content: [{ type: "text", text: "..." }], isError?: boolean }
 ```
 
 ### External MCP Servers (stdio)
@@ -486,59 +229,16 @@ const response = query({
 
 **Format**: `mcp__<server-name>__<tool-name>`
 
-Examples:
-- `mcp__weather-service__get_weather`
-- `mcp__database__query_users`
-- `mcp__filesystem__read_file`
-- `mcp__git__log`
-
 **CRITICAL:**
 - Server name and tool name MUST match configuration
 - Use double underscores (`__`) as separators
 - Include in `allowedTools` array
 
+**Examples:** `mcp__weather-service__get_weather`, `mcp__filesystem__read_file`
+
 ---
 
 ## Subagent Orchestration
-
-### What Are Subagents?
-
-Specialized agents with:
-- **Specific expertise** - Focused on one domain
-- **Custom tools** - Only tools they need
-- **Different models** - Match capability to task
-- **Dedicated prompts** - Tailored instructions
-
-### Defining Subagents
-
-```typescript
-const response = query({
-  prompt: "Deploy the application to production",
-  options: {
-    model: "claude-sonnet-4-5",
-    agents: {
-      "test-runner": {
-        description: "Run test suites and verify coverage",
-        prompt: "You run tests. Always verify 100% pass before approving deployment. Report failures clearly.",
-        tools: ["Bash", "Read", "Grep"],
-        model: "haiku"  // Fast, cost-effective for testing
-      },
-      "security-checker": {
-        description: "Security validation and vulnerability scanning",
-        prompt: "You check security. Verify no secrets committed, dependencies updated, OWASP compliance.",
-        tools: ["Read", "Grep", "Bash"],
-        model: "sonnet"  // Balance for security analysis
-      },
-      "deployer": {
-        description: "Handle deployments and rollbacks",
-        prompt: "You deploy. Deploy to staging first, verify health checks, then production. Always have rollback plan.",
-        tools: ["Bash", "Read"],
-        model: "sonnet"  // Reliable for critical operations
-      }
-    }
-  }
-});
-```
 
 ### AgentDefinition Type
 
@@ -553,283 +253,67 @@ type AgentDefinition = {
 
 **Field Details:**
 
-- **description**: Natural language description of when to use agent
-  - Used by main agent to decide which subagent to invoke
-  - Should be clear and specific
-  - Examples: "Handle database queries", "Deploy to production"
+- **description**: When to use agent (used by main agent for delegation)
+- **prompt**: System prompt (defines role, inherits main context)
+- **tools**: Allowed tools (if omitted, inherits from main agent)
+- **model**: Model override (`haiku`/`sonnet`/`opus`/`inherit`)
 
-- **prompt**: System prompt for the subagent
-  - Defines agent's role and behavior
-  - Can include instructions, constraints, formatting
-  - Inherits main agent's context
-
-- **tools**: Array of allowed tool names
-  - If omitted, inherits all tools from main agent
-  - Use to restrict agent to specific tools
-  - Examples: `["Read", "Grep"]` for read-only agent
-
-- **model**: Model override
-  - `"haiku"` - Fast, cost-effective tasks
-  - `"sonnet"` - Balanced capability
-  - `"opus"` - Maximum reasoning
-  - `"inherit"` - Use main agent's model
-  - If omitted, inherits main agent's model
-
-### Multi-Agent Workflow Example
-
+**Usage:**
 ```typescript
-async function runDevOpsAgent(task: string) {
-  const response = query({
-    prompt: task,
-    options: {
-      model: "claude-sonnet-4-5",
-      workingDirectory: process.cwd(),
-      systemPrompt: `You are a DevOps orchestrator.
-Coordinate specialized agents to:
-- Run tests (test-runner agent)
-- Check security (security-checker agent)
-- Deploy application (deployer agent)
-- Monitor systems (monitoring-agent agent)`,
-
-      agents: {
-        "test-runner": {
-          description: "Run automated test suites",
-          prompt: "You run tests. Execute test commands, parse results, report coverage. Fail if any tests fail.",
-          tools: ["Bash", "Read"],
-          model: "haiku"
-        },
-        "security-checker": {
-          description: "Security audits and vulnerability scanning",
-          prompt: "You check security. Scan for secrets, check dependencies, validate permissions, verify OWASP compliance.",
-          tools: ["Read", "Grep", "Bash"],
-          model: "sonnet"
-        },
-        "deployer": {
-          description: "Application deployment and rollbacks",
-          prompt: "You deploy. Deploy to staging, verify health checks, deploy to production, have rollback ready.",
-          tools: ["Bash", "Read"],
-          model: "sonnet"
-        },
-        "monitoring-agent": {
-          description: "System monitoring and alerting",
-          prompt: "You monitor. Check metrics, detect anomalies, alert on issues, track SLAs.",
-          tools: ["Bash", "Read"],
-          model: "haiku"
-        }
-      }
-    }
-  });
-
-  for await (const message of response) {
-    if (message.type === 'assistant') {
-      console.log('Orchestrator:', message.content);
-    }
+agents: {
+  "security-checker": {
+    description: "Security audits and vulnerability scanning",
+    prompt: "You check security. Scan for secrets, verify OWASP compliance.",
+    tools: ["Read", "Grep", "Bash"],
+    model: "sonnet"
   }
 }
-
-// Usage
-await runDevOpsAgent("Deploy version 2.5.0 to production with full validation");
 ```
-
-### When to Use Subagents
-
-✅ **Use subagents when:**
-- Task requires different expertise areas
-- Some subtasks need different models (cost optimization)
-- Tool access should be restricted per role
-- Clear separation of concerns needed
-- Multiple steps with specialized knowledge
-
-❌ **Don't use subagents when:**
-- Single straightforward task
-- All work can be done by one agent
-- Overhead of orchestration > benefit
-- Tools/permissions don't vary
 
 ---
 
 ## Session Management
 
-### Overview
+**Options:**
+- `resume: sessionId` - Continue previous session
+- `forkSession: true` - Create new branch from session
+- `continue: prompt` - Resume with new prompt (differs from `resume`)
 
-Sessions allow:
-- **Persistent conversations** - Resume where you left off
-- **Context preservation** - Agent remembers previous interactions
-- **Alternative paths** - Fork to explore different approaches
-
-### Starting a Session
+**Session Forking Pattern (Unique Capability):**
 
 ```typescript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-let sessionId: string | undefined;
-
-const response = query({
-  prompt: "Build a REST API with user authentication",
-  options: {
-    model: "claude-sonnet-4-5"
-  }
-});
-
-for await (const message of response) {
-  if (message.type === 'system' && message.subtype === 'init') {
-    sessionId = message.session_id;
-    console.log(`Session started: ${sessionId}`);
-  } else if (message.type === 'assistant') {
-    console.log(message.content);
-  }
-}
-
-// Save sessionId for later use
-```
-
-### Resuming a Session
-
-```typescript
-// Continue the conversation
-const resumed = query({
-  prompt: "Now add rate limiting to the API endpoints",
-  options: {
-    resume: sessionId,  // Resume previous session
-    model: "claude-sonnet-4-5"
-  }
-});
-
-for await (const message of resumed) {
-  // Agent has full context from previous session
-  if (message.type === 'assistant') {
-    console.log(message.content);
-  }
-}
-```
-
-### Forking a Session
-
-```typescript
-// Explore alternative approach without modifying original
+// Explore alternative without modifying original
 const forked = query({
-  prompt: "Actually, let's redesign this as a GraphQL API instead",
+  prompt: "Try GraphQL instead of REST",
   options: {
     resume: sessionId,
-    forkSession: true,  // Creates new branch
-    model: "claude-sonnet-4-5"
+    forkSession: true  // Creates new branch, original session unchanged
   }
 });
+```
 
-for await (const message of forked) {
-  // New conversation path
-  // Original session unchanged
+**Capture Session ID:**
+```typescript
+for await (const message of response) {
+  if (message.type === 'system' && message.subtype === 'init') {
+    sessionId = message.session_id;  // Save for later resume/fork
+  }
 }
-```
-
-### Session Management Patterns
-
-**Pattern 1: Sequential Development**
-
-```typescript
-// Step 1: Initial implementation
-let session = await startSession("Create user authentication system");
-
-// Step 2: Add feature
-session = await resumeSession(session, "Add OAuth support");
-
-// Step 3: Add tests
-session = await resumeSession(session, "Write integration tests");
-
-// Step 4: Deploy
-session = await resumeSession(session, "Deploy to production");
-```
-
-**Pattern 2: Exploration & Decision**
-
-```typescript
-// Start main conversation
-let mainSession = await startSession("Design payment processing system");
-
-// Explore option A
-let optionA = await forkSession(mainSession, "Use Stripe integration");
-
-// Explore option B
-let optionB = await forkSession(mainSession, "Use PayPal integration");
-
-// Choose winner and continue
-let chosenSession = optionA;  // Decision made
-await resumeSession(chosenSession, "Implement the chosen approach");
-```
-
-**Pattern 3: Multi-User Collaboration**
-
-```typescript
-// Developer A starts work
-let sessionA = await startSession("Implement user profile page");
-
-// Developer B forks for different feature
-let sessionB = await forkSession(sessionA, "Add avatar upload");
-
-// Both can work independently
-// Sessions don't interfere
 ```
 
 ---
 
 ## Permission Control
 
-### Permission Modes
-
+**Permission Modes:**
 ```typescript
-type PermissionMode =
-  | "default"             // Standard permission checks
-  | "acceptEdits"         // Auto-approve file edits
-  | "bypassPermissions";  // Skip ALL checks (use with caution)
+type PermissionMode = "default" | "acceptEdits" | "bypassPermissions" | "plan";
 ```
 
-### Default Mode
-
-```typescript
-const response = query({
-  prompt: "Analyze and modify code",
-  options: {
-    permissionMode: "default"
-    // User prompted for:
-    // - File writes/edits
-    // - Potentially dangerous bash commands
-    // - Sensitive operations
-  }
-});
-```
-
-### Accept Edits Mode
-
-```typescript
-const response = query({
-  prompt: "Refactor the user service to use async/await",
-  options: {
-    permissionMode: "acceptEdits"
-    // Automatically approves:
-    // - File edits
-    // - File writes
-    // Still prompts for:
-    // - Dangerous bash commands
-    // - Sensitive operations
-  }
-});
-```
-
-### Bypass Permissions Mode
-
-```typescript
-const response = query({
-  prompt: "Run comprehensive test suite and fix all failures",
-  options: {
-    permissionMode: "bypassPermissions"
-    // ⚠️ CAUTION: Skips ALL permission checks
-    // Use only in:
-    // - Trusted environments
-    // - CI/CD pipelines
-    // - Sandboxed containers
-  }
-});
-```
+- `default` - Standard permission checks
+- `acceptEdits` - Auto-approve file edits
+- `bypassPermissions` - Skip ALL checks (use in CI/CD only)
+- `plan` - Planning mode (v0.1.45+)
 
 ### Custom Permission Logic
 
@@ -920,72 +404,16 @@ canUseTool: async (toolName, input) => {
 
 ## Filesystem Settings
 
-### Setting Sources
-
+**Setting Sources:**
 ```typescript
 type SettingSource = 'user' | 'project' | 'local';
 ```
 
-- **user**: `~/.claude/settings.json` (global user settings)
-- **project**: `.claude/settings.json` (team-shared, version controlled)
-- **local**: `.claude/settings.local.json` (local overrides, gitignored)
+- `user` - `~/.claude/settings.json` (global)
+- `project` - `.claude/settings.json` (team-shared)
+- `local` - `.claude/settings.local.json` (gitignored overrides)
 
-### Default Behavior
-
-```typescript
-// By default, NO filesystem settings loaded (isolated)
-const response = query({
-  prompt: "Review code",
-  options: {
-    // settingSources: [] is default (no files loaded)
-  }
-});
-```
-
-### Load All Settings
-
-```typescript
-const response = query({
-  prompt: "Build feature with project conventions",
-  options: {
-    settingSources: ["user", "project", "local"]
-    // Loads all settings files
-    // Priority (highest first):
-    // 1. local (overrides everything)
-    // 2. project (team settings)
-    // 3. user (global defaults)
-  }
-});
-```
-
-### Load Project Settings Only
-
-```typescript
-const response = query({
-  prompt: "Run CI checks",
-  options: {
-    settingSources: ["project"]
-    // Only .claude/settings.json
-    // Useful for CI/CD (consistent behavior)
-    // Ignores user and local settings
-  }
-});
-```
-
-### Load CLAUDE.md
-
-```typescript
-const response = query({
-  prompt: "Implement feature according to project guidelines",
-  options: {
-    settingSources: ["project"],  // Reads CLAUDE.md from project
-    systemPrompt: {
-      type: 'preset',
-      preset: 'claude_code'         // Required to use CLAUDE.md
-    }
-  }
-});
-```
+**Default:** NO settings loaded (`settingSources: []`)
 
 ### Settings Priority
 
@@ -1020,237 +448,29 @@ const response = query({
 // Actual allowedTools: ["Read", "Grep"]
 ```
 
-### Use Cases
-
-**CI/CD Environments:**
-
-```typescript
-const response = query({
-  prompt: "Run automated tests",
-  options: {
-    settingSources: ["project"],      // Only team-shared settings
-    permissionMode: "bypassPermissions"  // No interactive prompts
-  }
-});
-```
-
-**SDK-Only Applications:**
-
-```typescript
-const response = query({
-  prompt: "Analyze code snippet",
-  options: {
-    settingSources: [],               // No filesystem dependencies
-    workingDirectory: "/tmp/sandbox",
-    allowedTools: ["Read", "Grep"],
-    systemPrompt: "You are a code analyzer."
-  }
-});
-```
-
-**Hybrid Approach:**
-
-```typescript
-const response = query({
-  prompt: "Implement authentication",
-  options: {
-    settingSources: ["project"],      // Load CLAUDE.md and settings
-    systemPrompt: "Follow security best practices.",
-    agents: {                         // Add programmatic agents
-      "security-checker": { /* ... */ }
-    }
-  }
-});
-```
+**Best Practice:** Use `settingSources: ["project"]` in CI/CD for consistent behavior.
 
 ---
 
 ## Message Types & Streaming
 
-### Message Types
+**Message Types:**
+- `system` - Session init/completion (includes `session_id`)
+- `assistant` - Agent responses
+- `tool_call` - Tool execution requests
+- `tool_result` - Tool execution results
+- `error` - Error messages
+- `result` - Final result (includes `structured_output` for v0.1.45+)
 
-```typescript
-type SDKMessage =
-  | SystemMessage
-  | AssistantMessage
-  | ToolCallMessage
-  | ToolResultMessage
-  | ErrorMessage;
-```
-
-### System Messages
-
-```typescript
-type SystemMessage = {
-  type: 'system';
-  subtype: 'init' | 'completion';
-  uuid: string;
-  session_id: string;
-  apiKeySource?: 'user' | 'project' | 'org' | 'temporary';
-  cwd?: string;
-  tools?: string[];
-  mcp_servers?: { name: string; status: string }[];
-  model?: string;
-  permissionMode?: string;
-  slash_commands?: string[];
-  output_style?: string;
-};
-```
-
-**Usage:**
-
+**Streaming Pattern:**
 ```typescript
 for await (const message of response) {
-  if (message.type === 'system') {
-    if (message.subtype === 'init') {
-      console.log(`Session ID: ${message.session_id}`);
-      console.log(`Model: ${message.model}`);
-      console.log(`Available tools: ${message.tools.join(', ')}`);
-    } else if (message.subtype === 'completion') {
-      console.log('Task completed');
-    }
+  if (message.type === 'system' && message.subtype === 'init') {
+    sessionId = message.session_id;  // Capture for resume/fork
   }
-}
-```
-
-### Assistant Messages
-
-```typescript
-type AssistantMessage = {
-  type: 'assistant';
-  content: string | ContentBlock[];
-  model?: string;
-};
-
-type ContentBlock =
-  | { type: 'text'; text: string }
-  | { type: 'tool_use'; id: string; name: string; input: any };
-```
-
-**Usage:**
-
-```typescript
-for await (const message of response) {
-  if (message.type === 'assistant') {
-    if (typeof message.content === 'string') {
-      console.log('Assistant:', message.content);
-    } else {
-      message.content.forEach(block => {
-        if (block.type === 'text') {
-          console.log('Text:', block.text);
-        } else if (block.type === 'tool_use') {
-          console.log(`Tool request: ${block.name}`, block.input);
-        }
-      });
-    }
-  }
-}
-```
-
-### Tool Call Messages
-
-```typescript
-type ToolCallMessage = {
-  type: 'tool_call';
-  tool_name: string;
-  input: any;
-};
-```
-
-**Usage:**
-
-```typescript
-for await (const message of response) {
-  if (message.type === 'tool_call') {
-    console.log(`Executing tool: ${message.tool_name}`);
-    console.log(`Input:`, JSON.stringify(message.input, null, 2));
-  }
-}
-```
-
-### Tool Result Messages
-
-```typescript
-type ToolResultMessage = {
-  type: 'tool_result';
-  tool_name: string;
-  result: any;
-};
-```
-
-**Usage:**
-
-```typescript
-for await (const message of response) {
-  if (message.type === 'tool_result') {
-    console.log(`Tool ${message.tool_name} completed`);
-    console.log(`Result:`, message.result);
-  }
-}
-```
-
-### Error Messages
-
-```typescript
-type ErrorMessage = {
-  type: 'error';
-  error: {
-    type: string;
-    message: string;
-    tool?: string;
-  };
-};
-```
-
-**Usage:**
-
-```typescript
-for await (const message of response) {
-  if (message.type === 'error') {
-    console.error('Error:', message.error.message);
-    if (message.error.type === 'permission_denied') {
-      console.log('Permission was denied for:', message.error.tool);
-    }
-  }
-}
-```
-
-### Complete Message Processing
-
-```typescript
-async function processAgent(prompt: string) {
-  const response = query({ prompt, options: { model: "sonnet" } });
-
-  try {
-    for await (const message of response) {
-      switch (message.type) {
-        case 'system':
-          if (message.subtype === 'init') {
-            console.log(`Session: ${message.session_id}`);
-          }
-          break;
-
-        case 'assistant':
-          if (typeof message.content === 'string') {
-            console.log('Assistant:', message.content);
-          }
-          break;
-
-        case 'tool_call':
-          console.log(`Executing: ${message.tool_name}`);
-          break;
-
-        case 'tool_result':
-          console.log(`Completed: ${message.tool_name}`);
-          break;
-
-        case 'error':
-          console.error('Error:', message.error.message);
-          break;
-      }
-    }
-  } catch (error) {
-    console.error('Fatal error:', error);
+  if (message.type === 'result' && message.structured_output) {
+    // Structured output available (v0.1.45+)
+    const validated = schema.parse(message.structured_output);
   }
 }
 ```
@@ -1259,35 +479,7 @@ async function processAgent(prompt: string) {
 
 ## Error Handling
 
-### SDK Errors
-
-```typescript
-import { query } from "@anthropic-ai/claude-agent-sdk";
-
-try {
-  const response = query({
-    prompt: "Analyze code",
-    options: { model: "sonnet" }
-  });
-
-  for await (const message of response) {
-    // Process messages
-  }
-} catch (error) {
-  // Handle SDK errors
-  if (error.code === 'AUTHENTICATION_FAILED') {
-    console.error('Invalid API key');
-  } else if (error.code === 'RATE_LIMIT_EXCEEDED') {
-    console.error('Rate limit exceeded, retry after delay');
-  } else if (error.code === 'CONTEXT_LENGTH_EXCEEDED') {
-    console.error('Context too large, use session compaction');
-  } else if (error.code === 'CLI_NOT_FOUND') {
-    console.error('Claude Code CLI not installed');
-  }
-}
-```
-
-### Common Error Codes
+**Error Codes:**
 
 | Error Code | Cause | Solution |
 |------------|-------|----------|
@@ -1299,87 +491,6 @@ try {
 | `TOOL_EXECUTION_FAILED` | Tool error | Check tool implementation |
 | `SESSION_NOT_FOUND` | Invalid session ID | Verify session ID |
 | `MCP_SERVER_FAILED` | Server error | Check server configuration |
-
-### Error Handling Pattern
-
-```typescript
-async function safeAgentExecution(prompt: string) {
-  try {
-    const response = query({
-      prompt,
-      options: {
-        model: "sonnet",
-        permissionMode: "default"
-      }
-    });
-
-    const results: string[] = [];
-
-    for await (const message of response) {
-      if (message.type === 'assistant') {
-        results.push(message.content);
-      } else if (message.type === 'error') {
-        console.warn('Agent error:', message.error);
-        if (message.error.type === 'permission_denied') {
-          // Handle permission errors gracefully
-          console.log('Skipping restricted operation');
-        }
-      }
-    }
-
-    return results;
-  } catch (error) {
-    console.error('Fatal error:', error);
-
-    // Specific error handling
-    if (error.code === 'CLI_NOT_FOUND') {
-      throw new Error('Please install Claude Code CLI first');
-    } else if (error.code === 'AUTHENTICATION_FAILED') {
-      throw new Error('Invalid API key. Check ANTHROPIC_API_KEY');
-    } else if (error.code === 'RATE_LIMIT_EXCEEDED') {
-      // Retry with exponential backoff
-      await delay(5000);
-      return safeAgentExecution(prompt);  // Retry
-    } else {
-      throw error;
-    }
-  }
-}
-```
-
----
-
-## Critical Rules
-
-### Always Do
-
-✅ Install Claude Code CLI before using SDK
-✅ Set `ANTHROPIC_API_KEY` environment variable
-✅ Capture `session_id` from `system` messages for resuming
-✅ Use `allowedTools` to restrict agent capabilities
-✅ Implement `canUseTool` for custom permission logic
-✅ Handle all message types in streaming loop
-✅ Use Zod schemas for tool input validation
-✅ Set `workingDirectory` for multi-project environments
-✅ Test MCP servers in isolation before integration
-✅ Use `settingSources: ["project"]` in CI/CD
-✅ Monitor tool execution with `tool_call` messages
-✅ Implement error handling for all queries
-
-### Never Do
-
-❌ Commit API keys to version control
-❌ Use `bypassPermissions` in production (unless sandboxed)
-❌ Assume tools executed (check `tool_result` messages)
-❌ Ignore error messages in stream
-❌ Skip session ID capture if planning to resume
-❌ Use duplicate tool names across MCP servers
-❌ Allow unrestricted Bash access without `canUseTool`
-❌ Load settings from user in CI/CD (`settingSources: ["user"]`)
-❌ Trust tool results without validation
-❌ Hardcode file paths (use `workingDirectory`)
-❌ Use `acceptEdits` mode with untrusted prompts
-❌ Skip Zod validation for tool inputs
 
 ---
 
@@ -1461,112 +572,24 @@ This skill prevents **12** documented issues:
 
 ---
 
-## Dependencies
-
-**Required**:
-- `@anthropic-ai/claude-agent-sdk@0.1.0+` - Agent SDK
-- `zod@3.23.0+` - Schema validation
-
-**Optional**:
-- `@types/node@20.0.0+` - TypeScript types
-- `@modelcontextprotocol/sdk@latest` - MCP server development
-
-**System Requirements**:
-- Node.js 18.0.0+
-- Claude Code CLI (install: `npm install -g @anthropic-ai/claude-code`)
-- Valid ANTHROPIC_API_KEY
-
----
-
 ## Official Documentation
 
-- **Agent SDK Overview**: https://docs.claude.com/en/api/agent-sdk/overview
-- **TypeScript API**: https://docs.claude.com/en/api/agent-sdk/typescript
-- **Python API**: https://docs.claude.com/en/api/agent-sdk/python
-- **Model Context Protocol**: https://modelcontextprotocol.io/
+- **Agent SDK Overview**: https://platform.claude.com/docs/en/api/agent-sdk/overview
+- **TypeScript API**: https://platform.claude.com/docs/en/api/agent-sdk/typescript
+- **Structured Outputs**: https://platform.claude.com/docs/en/agent-sdk/structured-outputs
 - **GitHub (TypeScript)**: https://github.com/anthropics/claude-agent-sdk-typescript
-- **GitHub (Python)**: https://github.com/anthropics/claude-agent-sdk-python
-- **Context7 Library ID**: /anthropics/claude-agent-sdk-typescript
+- **CHANGELOG**: https://github.com/anthropics/claude-agent-sdk-typescript/blob/main/CHANGELOG.md
 
 ---
 
-## Package Versions (Verified 2025-10-25)
+**Token Efficiency**:
+- **Without skill**: ~12,000 tokens (MCP setup, permission patterns, session forking, structured outputs, error handling)
+- **With skill**: ~3,600 tokens (focused on v0.1.45+ features + error prevention + advanced patterns)
+- **Savings**: ~70% (~8,400 tokens)
 
-```json
-{
-  "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
-    "zod": "^3.23.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.3.0"
-  }
-}
-```
+**Errors prevented**: 12 documented issues with exact solutions
+**Key value**: Structured outputs (v0.1.45+), session forking, canUseTool patterns, settingSources priority, MCP naming, error codes
 
 ---
 
-## Production Examples
-
-This skill is based on official Anthropic documentation and SDK patterns:
-- **Documentation**: https://docs.claude.com/en/api/agent-sdk/
-- **Validation**: ✅ All patterns tested with SDK 0.1.0+
-- **Use Cases**: Coding agents, SRE systems, security auditors, CI/CD automation
-- **Platform Support**: Node.js 18+, TypeScript 5.3+
-
----
-
-## Troubleshooting
-
-### Problem: CLI not found error
-**Solution**: Install Claude Code CLI: `npm install -g @anthropic-ai/claude-code`
-
-### Problem: Permission denied on tool execution
-**Solution**: Check `allowedTools`, implement custom `canUseTool`, or use `permissionMode: "acceptEdits"`
-
-### Problem: MCP server not connecting
-**Solution**: Verify command/URL, test server independently, check logs
-
-### Problem: Context length exceeded
-**Solution**: SDK auto-compacts, but consider shorter prompts, session forking, or reducing allowed tools
-
-### Problem: Session not found
-**Solution**: Verify `session_id` captured from system init message, check session hasn't expired
-
-### Problem: Tool name collision
-**Solution**: Use unique tool names, prefix with server name if needed
-
-**Full Error Reference**: [references/top-errors.md](references/top-errors.md)
-
----
-
-## Complete Setup Checklist
-
-- [ ] Node.js 18.0.0+ installed
-- [ ] Claude Code CLI installed (`npm install -g @anthropic-ai/claude-code`)
-- [ ] SDK installed (`npm install @anthropic-ai/claude-agent-sdk zod`)
-- [ ] ANTHROPIC_API_KEY environment variable set
-- [ ] workingDirectory set for project
-- [ ] allowedTools configured (or using default)
-- [ ] permissionMode chosen (default recommended)
-- [ ] Error handling implemented
-- [ ] Session management (if needed)
-- [ ] MCP servers configured (if using custom tools)
-- [ ] Subagents defined (if needed)
-
----
-
-**Questions? Issues?**
-
-1. Check [references/query-api-reference.md](references/query-api-reference.md) for complete API details
-2. Review [references/mcp-servers-guide.md](references/mcp-servers-guide.md) for custom tools
-3. See [references/subagents-patterns.md](references/subagents-patterns.md) for orchestration
-4. Check [references/top-errors.md](references/top-errors.md) for common issues
-5. Consult official docs: https://docs.claude.com/en/api/agent-sdk/
-
----
-
-**Token Efficiency**: ~65% savings vs manual Agent SDK integration (estimated)
-**Error Prevention**: 100% (all 12 documented issues prevented)
-**Development Time**: 30 minutes with skill vs 3-4 hours manual
+**Last verified**: 2025-11-22 | **Skill version**: 2.0.0 | **Changes**: Added v0.1.45 structured outputs, plugins, hooks, new options. Removed tutorial/basic examples (~750 lines). Focused on knowledge gaps + error prevention + advanced patterns.
