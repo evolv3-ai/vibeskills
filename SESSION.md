@@ -1003,6 +1003,163 @@ accessible animations (auto prefers-reduced-motion), or want drop-in transitions
 
 ---
 
+## Better-Auth Skill Audit ✅
+
+**Analysis Date**: 2025-11-22
+**Skill Size**: 2,092 lines (~7,000 tokens)
+**Status**: **COMPLETE** - Trimmed to 1,226 lines (~4,100 tokens)
+**Actual Savings**: **41.4%** (~2,900 tokens)
+
+### Research Phase Findings ✅
+
+**better-auth Updates (Post-Dec 2024):**
+1. **Latest Version**: v1.4.0 (Nov 22, 2025) - Released TODAY
+   - Skill had v1.3.34 (Oct 29, 2025)
+
+2. **v1.4.0 Major Features (Nov 22, 2025):**
+   - **Stateless session management** - Sessions without database storage
+   - **ESM-only package** ⚠️ Breaking: CommonJS no longer supported
+   - **JWT key rotation** - Automatic key rotation for security
+   - **SCIM provisioning** - Enterprise user provisioning protocol
+   - **@standard-schema/spec** - Replaces ZodType for validation
+   - **CaptchaFox integration** - Built-in CAPTCHA support
+   - Automatic server-side IP detection
+   - Cookie-based account data storage
+   - Multiple passkey origins support
+   - RP-Initiated Logout endpoint (OIDC)
+
+3. **v1.3 Major Features (July 2025):**
+   - **SSO with SAML 2.0** - Enterprise single sign-on
+   - **Multi-team support** ⚠️ Breaking: `teamId` removed from member table, new `teamMembers` table required
+   - Additional fields for organization/member/invitation models
+
+**Skill Coverage**: ALL v1.3 and v1.4.0 features were MISSING from skill
+
+### Audit Phase Analysis ✅
+
+**Content REMOVED (~866 lines):**
+
+**Tutorial/Setup Sections** (~700 lines):
+- ✅ Overview (use this skill when...) (~25 lines)
+- ✅ Installation (npm install commands) (~40 lines)
+- ✅ Quick Start Steps 1-8 full tutorial (~350 lines)
+  - Step 1: Create D1 Database
+  - Step 2: Define Database Schema (full schema code)
+  - Step 3: Configure Drizzle
+  - Step 4: Generate and Apply Migrations
+  - Step 5: Initialize Database and Auth
+  - Step 6: Create Worker with Auth Routes
+  - Step 7: Set Secrets
+  - Step 8: Deploy
+- ✅ Client Integration React (~95 lines) - LoginForm, UserProfile examples
+- ✅ Advanced Features basic examples (~115 lines) - 2FA, Organizations, Rate Limiting
+- ✅ Verbose plugin examples (~150 lines) - multi-session, generic OAuth, API key full implementations
+- ✅ Comparison table (~25 lines) - vs Clerk/Auth.js
+- ✅ Best Practices (~65 lines) - Security, Performance, Development Workflow
+- ✅ Bundled Resources catalog (~15 lines)
+
+**Why Removed**: All pre-Jan 2025 content well-covered by LLM training + official docs
+
+### Content Retained (100%)
+
+**Knowledge Gaps:**
+- ✅ **v1.4.0 Features** (~15 lines) - Stateless sessions, ESM-only, JWT rotation, SCIM, CaptchaFox
+- ✅ **v1.3 Features** (~10 lines) - SSO/SAML, multi-team breaking changes
+- ✅ **Kysely Adapter Pattern** (~45 lines) - Alternative to Drizzle with CamelCasePlugin
+
+**Error Prevention:**
+- ✅ **13 Known Issues** (~310 lines) - All with exact error messages + solutions
+  - Issue 1: "d1Adapter is not exported" (CRITICAL: must use Drizzle/Kysely)
+  - Issue 2: Schema generation fails
+  - Issue 3: CamelCase vs snake_case column mismatch
+  - Issue 4: D1 eventual consistency
+  - Issue 5: CORS errors for SPA applications
+  - Issue 6: OAuth redirect URI mismatch
+  - Issue 7: Missing dependencies
+  - Issue 8: Email verification not sending
+  - Issue 9: Session expires too quickly
+  - Issue 10: Social provider missing user data
+  - Issue 11: TypeScript errors with Drizzle schema
+  - Issue 12: Wrangler dev mode not working
+  - Issue 13: User data updates not reflecting (TanStack Query + nanostore invalidation pattern)
+
+**Framework Integrations:**
+- ✅ **TanStack Start** (~40 lines) - Critical `reactStartCookies` plugin requirement (addresses cookie setting error)
+
+**Available Plugins Table:**
+- ✅ **Plugin reference** (~10 lines) - Links to OIDC Provider, SSO, Stripe, MCP, Expo
+
+**API Reference (UNIQUE VALUE):**
+- ✅ **80+ Auto-Generated Endpoints** (~230 lines) - Core auth, social OAuth, plugin endpoints
+- ✅ **Server-Side API Methods** (~65 lines) - `auth.api.*` methods for middleware/background jobs
+- ✅ **When to Use Which** (~30 lines) - Client vs server-side method usage
+- ✅ **Discovering Endpoints** (~20 lines) - OpenAPI plugin for interactive docs
+- ✅ **Quantified Time Savings** (~15 lines) - 220 hours manual → 4-8 hours with better-auth (97% reduction)
+
+**Migration Guides:**
+- ✅ **From Clerk** (~35 lines) - Export data, replace SDK, update middleware
+- ✅ **From Auth.js** (~30 lines) - Schema differences, config replacement, client hooks
+
+**Additional Resources:**
+- ✅ **Official Documentation Links** (~80 lines) - Core concepts, plugins, integrations, community
+- ✅ **Production Examples** (~10 lines) - 4 verified D1 repositories
+- ✅ **Version Compatibility** (~10 lines) - Tested versions, breaking changes link
+
+### Updated Description
+
+**Before** (227 chars):
+```
+Build authentication systems for TypeScript/Cloudflare Workers with social auth, 2FA, passkeys, organizations, and RBAC. Self-hosted alternative to Clerk/Auth.js.
+
+IMPORTANT: Requires Drizzle ORM or Kysely for D1 - no direct D1 adapter.
+
+Use when: self-hosting auth on Cloudflare D1, migrating from Clerk, implementing multi-tenant SaaS, or troubleshooting D1 adapter errors, session serialization, OAuth flows.
+```
+
+**After** (334 chars, knowledge-gap focused):
+```
+Build authentication systems for TypeScript/Cloudflare Workers with social auth, 2FA, passkeys, organizations, and RBAC. Self-hosted alternative to Clerk/Auth.js.
+
+IMPORTANT: Requires Drizzle ORM or Kysely for D1 - no direct D1 adapter. v1.4.0 (Nov 2025) adds stateless sessions, ESM-only (breaking), JWT key rotation, SCIM provisioning. v1.3 adds SSO/SAML, multi-team support.
+
+Use when: self-hosting auth on Cloudflare D1, migrating from Clerk, implementing multi-tenant SaaS, or troubleshooting D1 adapter errors, session serialization, OAuth flows, TanStack Start cookie issues, nanostore session invalidation.
+```
+
+### Metadata Updates
+
+- **Version**: 2.2.1 → 3.0.0
+- **Last verified**: 2025-11-18 → 2025-11-22
+- **Package version**: 1.3.34 → 1.4.0
+- **Token savings**: ~75% → ~80%
+- **Breaking changes**: Added v1.4.0 (ESM-only), v1.3 (multi-team table changes)
+- **Keywords added**: TanStack Start cookie issues, nanostore session invalidation, v1.4.0 features, v1.3 features
+
+### Key Learnings
+
+**Skill now exclusively focuses on:**
+1. v1.4.0 breaking changes and new features (ESM-only, stateless sessions, SCIM)
+2. v1.3 breaking changes (SSO/SAML, multi-team table structure)
+3. D1 adapter requirement (no direct adapter, must use Drizzle/Kysely)
+4. 13 Known Issues with exact error messages + solutions
+5. TanStack Start reactStartCookies plugin requirement
+6. 80+ auto-generated endpoint reference (unique value - hard to find elsewhere)
+7. Migration guides (Clerk, Auth.js)
+
+**All tutorials removed** - users can reference official better-auth docs for setup patterns.
+
+**Unique Value Preserved**:
+- API Reference (80+ endpoints documented) - not easily found in official docs
+- Error prevention patterns (13 issues) - community-discovered solutions
+- Framework integration fixes (TanStack Start, nanostore invalidation)
+- Breaking changes documentation (v1.3, v1.4.0)
+
+**Before**: 2,092 lines (~7,000 tokens)
+**After**: 1,226 lines (~4,100 tokens)
+**Removed**: 866 lines (~2,900 tokens)
+**Savings**: **41.4%**
+
+---
+
 ## Phase 2 Summary So Far
 
 **Skills Completed:**
@@ -1012,18 +1169,19 @@ accessible animations (auto prefers-reduced-motion), or want drop-in transitions
 4. ✅ ai-sdk-core (1,850→849 lines, 54% reduction, AI SDK 6 beta added)
 5. ✅ ai-sdk-ui (1,075→510 lines, 53% reduction, AI SDK 6 beta UI + useAssistant added)
 6. ✅ auto-animate (411→199 lines, 51.5% reduction, Solid/Preact support added)
+7. ✅ better-auth (2,092→1,226 lines, 41.4% reduction, v1.3/v1.4.0 breaking changes added)
 
 **Documents Created:**
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 6 of 59 (10%)
-- Lines removed: ~3,038 lines
-- Tokens saved: ~10,115 tokens per invocation (across these 6 skills)
-- Average reduction: 47.5% (excluding new skill)
-- Annual savings (5 uses/month): ~606,900 tokens across these 6 skills
+- Skills audited: 7 of 59 (12%)
+- Lines removed: ~3,904 lines
+- Tokens saved: ~13,015 tokens per invocation (across these 7 skills)
+- Average reduction: 46.1% (excluding new skill)
+- Annual savings (5 uses/month): ~780,900 tokens across these 7 skills
 
-**Next:** Continue A-Z systematic audit (next: better-auth)
+**Next:** Continue A-Z systematic audit (next: claude-agent-sdk)
 
 ---
 
@@ -1042,12 +1200,14 @@ accessible animations (auto prefers-reduced-motion), or want drop-in transitions
 10. ✅ Trimmed ai-sdk-ui (510 lines, 53% reduction, AI SDK 6 beta UI + useAssistant added)
 11. ✅ Audited auto-animate (research phase + trim)
 12. ✅ Trimmed auto-animate (199 lines, 51.5% reduction, Solid/Preact support added)
+13. ✅ Audited better-auth (research phase + trim)
+14. ✅ Trimmed better-auth (1,226 lines, 41.4% reduction, v1.3/v1.4.0 breaking changes added)
 
 **Next Session:**
-1. Continue A-Z systematic audit (next: better-auth)
+1. Continue A-Z systematic audit (next: claude-agent-sdk)
 2. Follow KNOWLEDGE_GAP_AUDIT_CHECKLIST.md process
 3. Research → Audit → Trim → Commit (one skill per session)
-4. Pattern validated: ~47.5% average reduction across 6 skills (excluding new skill)
+4. Pattern validated: ~46% average reduction across 7 skills (excluding new skill)
 
 **Long Term:**
 - Audit remaining 53 skills alphabetically
@@ -1060,7 +1220,7 @@ accessible animations (auto prefers-reduced-motion), or want drop-in transitions
 ## Last Checkpoint
 
 **Date**: 2025-11-22
-**Commit**: 18b916c
-**Message**: "docs: Update SESSION.md with auto-animate audit results"
+**Commit**: [pending]
+**Message**: "checkpoint: Phase 2 In Progress - Better-Auth audit complete (7/59 skills)"
 
-**Status**: Phase 2 in progress - 6 skills complete (auto-animate 51.5%, ai-sdk-ui 53%, ai-sdk-core 54%, vectorize 37%, nextjs 43%, react-native-expo NEW), audit process documented, A-Z systematic audits continuing
+**Status**: Phase 2 in progress - 7 skills complete (better-auth 41.4%, auto-animate 51.5%, ai-sdk-ui 53%, ai-sdk-core 54%, vectorize 37%, nextjs 43%, react-native-expo NEW), audit process documented, A-Z systematic audits continuing
