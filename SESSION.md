@@ -877,6 +877,132 @@ stream", "useChat no response", or "stale body values" errors, or integrating Op
 
 ---
 
+## AutoAnimate Skill Audit ✅
+
+**Analysis Date**: 2025-11-22
+**Skill Size**: 411 lines (~1,370 tokens)
+**Status**: **COMPLETE** - Trimmed to 199 lines (~665 tokens)
+**Actual Savings**: **51.5%** (~705 tokens)
+
+### Research Phase Findings ✅
+
+**AutoAnimate Updates (Post-Dec 2024):**
+1. **Latest Version**: v0.9.0 (Sept 5, 2025) - ✅ Skill was current
+2. **2025 Framework Support Added**:
+   - **Solid support** (2025 release) - NOT mentioned in skill
+   - **Preact support** (2025 release) - NOT mentioned in skill
+   - Skill only mentioned React, Vue, Svelte
+
+3. **2025 Improvements** (internal, not user-facing):
+   - Page scroll animation for bottom-removed items (prevents scroll jump)
+   - Fixed animations inside scroll containers
+   - Plugin system enhancements (custom "remove" styles)
+   - React optimizations (reduced renders, callback refs)
+   - TypeScript improvements
+   - Bug fixes for re-used elements (KeepAlive compatibility)
+   - Removed peerDependencies
+
+**Research Sources:**
+- WebSearch: "AutoAnimate formkit updates 2025"
+- npm view @formkit/auto-animate: v0.9.0 (Sept 5, 2025)
+- WebSearch: "@formkit/auto-animate changelog releases 2024 2025"
+
+**Assessment**: Skill is error-prevention focused (10 documented issues), NOT feature-focused. Most 2025 updates are bug fixes/optimizations. Only knowledge gap: framework support list missing Solid and Preact.
+
+### Content Removed (~212 lines - Obvious Knowledge)
+
+**Sections Removed:**
+1. **Quick Start basics** (~40 lines) - Installation, basic usage patterns
+2. **When to Use AutoAnimate vs Motion** (~23 lines) - Library comparison guide
+3. **Configuration section** (~16 lines) - Zero-config is the point, config is obvious
+4. **Bundled Resources verbose catalog** (~24 lines) - Template/reference listings
+5. **Cloudflare Workers compatibility** (~18 lines) - Generic compatibility statement
+6. **Accessibility verbose explanation** (~11 lines) - One fact: respects prefers-reduced-motion
+7. **Production Example validation** (~17 lines) - Validation claims (bundle size, setup time)
+8. **Troubleshooting section DUPLICATE** (~29 lines) - Duplicate of Known Issues section
+9. **Complete Setup Checklist** (~12 lines) - Generic checklist
+10. **Questions redirect section** (~7 lines) - Redirect to templates/references
+
+**Total Removed**: 197 lines of obvious pre-2025 content
+
+**Why Removed**: All pre-Jan 2025 content covered by LLM training. Skill value is error prevention, not basic usage.
+
+### Content Retained (100% of Knowledge Gaps + Error Prevention)
+
+**Knowledge Gaps:**
+- ✅ **Framework support updated** - Added Solid, Preact (2025 releases)
+- ✅ **Package version updated** - v0.9.0 (Sept 5, 2025)
+- ✅ **Frontmatter updated** - Error-focused keywords, metadata added
+
+**Error Prevention (Core Value):**
+- ✅ **SSR-safe pattern** (~19 lines) - Prevents Issue #1 (SSR/Next.js import errors)
+- ✅ **All 10 Known Issues** (~67 lines) - Exact error messages + sources + solutions:
+  1. SSR/Next.js Import Errors
+  2. Conditional Parent Rendering
+  3. Missing Unique Keys
+  4. Flexbox Width Issues
+  5. Table Row Display Issues
+  6. Jest Testing Errors
+  7. esbuild Compatibility
+  8. CSS Position Side Effects
+  9. Vue/Nuxt Registration Errors
+  10. Angular ESM Issues
+- ✅ **Critical Rules** (~22 lines) - Always Do / Never Do error prevention patterns
+- ✅ **Package versions** (~13 lines) - v0.9.0 with framework compatibility
+- ✅ **Official documentation** (~7 lines) - Links to official docs
+- ✅ **Templates & references** (~7 lines) - Compressed mention
+
+### Updated Description
+
+**Before** (151 chars):
+```
+Add zero-config automatic animations to React UIs with AutoAnimate (@formkit/auto-animate).
+Lightweight (2kb) with built-in accessibility support. Smooth transitions for DOM changes
+(add/remove/move) without animation code.
+
+Use when: animating dynamic lists, building accordions, implementing toast notifications,
+adding form validation messages, or encountering SSR errors with animation libraries.
+```
+
+**After** (300 chars, error-focused):
+```
+Zero-config animations for React, Vue, Solid, Svelte, Preact with @formkit/auto-animate (3.28kb).
+Prevents 10+ documented errors: SSR/Next.js imports, conditional parents, missing keys, flexbox width,
+table display, Jest/esbuild config, CSS position conflicts, Vue/Nuxt registration, Angular ESM.
+
+Use when: animating lists/accordions/toasts/forms, troubleshooting SSR animation errors, need
+accessible animations (auto prefers-reduced-motion), or want drop-in transitions without Motion overhead.
+```
+
+### Metadata Updates
+
+- **Version**: Added 1.1.0
+- **Last verified**: 2025-11-22
+- **Package version**: 0.9.0
+- **Framework support**: React, Vue, Solid, Svelte, Preact
+- **Keywords updated**: Added Solid support, Preact support, error-specific keywords
+
+### Key Learnings
+
+**Error-prevention skills have different value proposition:**
+- AutoAnimate's value is preventing 10 documented issues, not cutting-edge features
+- 2025 updates were mostly internal optimizations (not user-facing)
+- Skill correctly focuses on SSR errors, config pitfalls, framework gotchas
+- Knowledge gap was minor: framework support list (Solid, Preact)
+
+**Still achieved 51.5% reduction** by removing obvious usage patterns and keeping only:
+1. SSR-safe pattern (critical for Cloudflare Workers/Next.js)
+2. All 10 Known Issues (exact error messages)
+3. Critical Rules (error prevention patterns)
+4. 2025 framework support update
+
+**Before**: 411 lines (~1,370 tokens)
+**After**: 199 lines (~665 tokens)
+**Removed**: 212 lines (~705 tokens)
+**Savings**: **51.5%**
+
+---
+
 ## Phase 2 Summary So Far
 
 **Skills Completed:**
@@ -884,19 +1010,20 @@ stream", "useChat no response", or "stale body values" errors, or integrating Op
 2. ✅ cloudflare-vectorize (613→387 lines, 37% reduction, V2 knowledge gaps added)
 3. ✅ nextjs (2,414→1,383 lines, 43% reduction)
 4. ✅ ai-sdk-core (1,850→849 lines, 54% reduction, AI SDK 6 beta added)
-5. ✅ ai-sdk-ui (1,075→510 lines, 53% reduction, AI SDK 6 beta UI features + useAssistant added)
+5. ✅ ai-sdk-ui (1,075→510 lines, 53% reduction, AI SDK 6 beta UI + useAssistant added)
+6. ✅ auto-animate (411→199 lines, 51.5% reduction, Solid/Preact support added)
 
 **Documents Created:**
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 5 of 59 (8%)
-- Lines removed: ~2,826 lines
-- Tokens saved: ~9,410 tokens per invocation (across these 5 skills)
-- Average reduction: 47% (excluding new skill)
-- Annual savings (5 uses/month): ~565,000 tokens across these 5 skills
+- Skills audited: 6 of 59 (10%)
+- Lines removed: ~3,038 lines
+- Tokens saved: ~10,115 tokens per invocation (across these 6 skills)
+- Average reduction: 47.5% (excluding new skill)
+- Annual savings (5 uses/month): ~606,900 tokens across these 6 skills
 
-**Next:** Continue A-Z systematic audit (next: auto-animate)
+**Next:** Continue A-Z systematic audit (next: better-auth)
 
 ---
 
@@ -913,15 +1040,17 @@ stream", "useChat no response", or "stale body values" errors, or integrating Op
 8. ✅ Trimmed ai-sdk-core (849 lines, 54% reduction, AI SDK 6 beta added)
 9. ✅ Audited ai-sdk-ui (research phase + trim)
 10. ✅ Trimmed ai-sdk-ui (510 lines, 53% reduction, AI SDK 6 beta UI + useAssistant added)
+11. ✅ Audited auto-animate (research phase + trim)
+12. ✅ Trimmed auto-animate (199 lines, 51.5% reduction, Solid/Preact support added)
 
 **Next Session:**
-1. Continue A-Z systematic audit (next: auto-animate)
+1. Continue A-Z systematic audit (next: better-auth)
 2. Follow KNOWLEDGE_GAP_AUDIT_CHECKLIST.md process
 3. Research → Audit → Trim → Commit (one skill per session)
-4. Pattern validated: ~47% average reduction possible (excluding new skill)
+4. Pattern validated: ~47.5% average reduction across 6 skills (excluding new skill)
 
 **Long Term:**
-- Audit remaining 55 skills alphabetically
+- Audit remaining 53 skills alphabetically
 - Update skill creation guidelines with "knowledge gap test"
 - Establish quarterly review process for skills
 - Target: 50-70% additional token savings across all skills
@@ -931,7 +1060,7 @@ stream", "useChat no response", or "stale body values" errors, or integrating Op
 ## Last Checkpoint
 
 **Date**: 2025-11-22
-**Commit**: b9ec8c6
-**Message**: "docs: Update SESSION.md with ai-sdk-ui audit results"
+**Commit**: 40a04d5
+**Message**: "refactor(auto-animate): Knowledge-gap audit - Add Solid/Preact support, trim basics"
 
-**Status**: Phase 2 in progress - 5 skills complete (ai-sdk-ui 53%, ai-sdk-core 54%, vectorize 37%, nextjs 43%, react-native-expo NEW), audit process documented, A-Z systematic audits in progress
+**Status**: Phase 2 in progress - 6 skills complete (auto-animate 51.5%, ai-sdk-ui 53%, ai-sdk-core 54%, vectorize 37%, nextjs 43%, react-native-expo NEW), audit process documented, A-Z systematic audits continuing
