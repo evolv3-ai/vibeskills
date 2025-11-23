@@ -8,1402 +8,468 @@ license: MIT
 # Cloudflare Durable Objects
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-10-22
+**Last Updated**: 2025-11-23
 **Dependencies**: cloudflare-worker-base (recommended)
-**Latest Versions**: wrangler@4.43.0+, @cloudflare/workers-types@4.20251014.0+
+**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
 **Official Docs**: https://developers.cloudflare.com/durable-objects/
 
----
-
-## What are Durable Objects?
-
-Cloudflare Durable Objects are **globally unique, stateful objects** that provide:
-
-- **Single-point coordination** - Each Durable Object instance is globally unique across Cloudflare's network
-- **Strong consistency** - Transactional, serializable storage (ACID guarantees)
-- **Real-time communication** - WebSocket Hibernation API for thousands of connections per instance
-- **Persistent state** - Built-in SQLite database (up to 1GB) or key-value storage
-- **Scheduled tasks** - Alarms API for future task execution
-- **Global distribution** - Automatically routed to optimal location
-- **Automatic scaling** - Millions of independent instances
-
-**Use Cases**:
-- Chat rooms and real-time collaboration
-- Multiplayer game servers
-- Rate limiting and session management
-- Leader election and coordination
-- WebSocket servers with hibernation
-- Stateful workflows and queues
-- Per-user or per-room logic
+**Recent Updates (2025)**:
+- **Oct 2025**: WebSocket message size 1 MiB → 32 MiB, Data Studio UI for SQLite DOs (view/edit storage in dashboard)
+- **Aug 2025**: `getByName()` API shortcut for named DOs
+- **June 2025**: @cloudflare/actors library (beta) - recommended SDK with migrations, alarms, Actor class pattern
+- **May 2025**: Python Workers support for Durable Objects
+- **April 2025**: SQLite GA with 10GB storage (beta → GA, 1GB → 10GB), Free tier access
+- **Feb 2025**: PRAGMA optimize support, improved error diagnostics with reference IDs
 
 ---
 
-## Quick Start (10 Minutes)
+## Quick Start
 
-### Option 1: Scaffold New DO Project
-
+**Scaffold new DO project:**
 ```bash
-npm create cloudflare@latest my-durable-app -- \
-  --template=cloudflare/durable-objects-template \
-  --ts \
-  --git \
-  --deploy false
-
-cd my-durable-app
-npm install
-npm run dev
+npm create cloudflare@latest my-durable-app -- --template=cloudflare/durable-objects-template --ts
 ```
 
-**What this creates:**
-- Complete Durable Objects project structure
-- TypeScript configuration
-- wrangler.jsonc with bindings and migrations
-- Example DO class implementation
-- Worker to call the DO
-
-### Option 2: Add to Existing Worker
-
-```bash
-cd my-existing-worker
-npm install -D @cloudflare/workers-types
-```
-
-**Create a Durable Object class** (`src/counter.ts`):
+**Or add to existing Worker:**
 
 ```typescript
+// src/counter.ts - Durable Object class
 import { DurableObject } from 'cloudflare:workers';
 
 export class Counter extends DurableObject {
   async increment(): Promise<number> {
-    // Get current value from storage (default to 0)
-    let value: number = (await this.ctx.storage.get('value')) || 0;
-
-    // Increment
-    value += 1;
-
-    // Save back to storage
-    await this.ctx.storage.put('value', value);
-
+    let value = (await this.ctx.storage.get<number>('value')) || 0;
+    await this.ctx.storage.put('value', ++value);
     return value;
   }
-
-  async get(): Promise<number> {
-    return (await this.ctx.storage.get('value')) || 0;
-  }
 }
-
-// CRITICAL: Export the class
-export default Counter;
+export default Counter;  // CRITICAL: Export required
 ```
 
-**Configure wrangler.jsonc:**
-
 ```jsonc
+// wrangler.jsonc - Configuration
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-worker",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-10-22",
-
-  // Durable Objects binding
   "durable_objects": {
-    "bindings": [
-      {
-        "name": "COUNTER",           // How you access it: env.COUNTER
-        "class_name": "Counter"      // MUST match exported class name
-      }
-    ]
+    "bindings": [{ "name": "COUNTER", "class_name": "Counter" }]
   },
-
-  // REQUIRED: Migration for new DO class
   "migrations": [
-    {
-      "tag": "v1",                   // Unique migration identifier
-      "new_sqlite_classes": [        // Use SQLite backend (recommended)
-        "Counter"
-      ]
-    }
+    { "tag": "v1", "new_sqlite_classes": ["Counter"] }  // SQLite backend (10GB limit)
   ]
 }
 ```
 
-**Call from Worker** (`src/index.ts`):
-
 ```typescript
+// src/index.ts - Worker
 import { Counter } from './counter';
-
-interface Env {
-  COUNTER: DurableObjectNamespace<Counter>;
-}
-
 export { Counter };
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    // Get Durable Object stub by name
-    const id = env.COUNTER.idFromName('global-counter');
-    const stub = env.COUNTER.get(id);
-
-    // Call RPC method on the DO
-    const count = await stub.increment();
-
-    return new Response(`Count: ${count}`);
-  },
+  async fetch(request: Request, env: { COUNTER: DurableObjectNamespace<Counter> }) {
+    const stub = env.COUNTER.getByName('global-counter');  // Aug 2025: getByName() shortcut
+    return new Response(`Count: ${await stub.increment()}`);
+  }
 };
-```
-
-**Deploy:**
-
-```bash
-npx wrangler deploy
 ```
 
 ---
 
-## Durable Object Class Structure
-
-### Base Class Pattern
-
-All Durable Objects **MUST extend `DurableObject`** from `cloudflare:workers`:
+## DO Class Essentials
 
 ```typescript
 import { DurableObject } from 'cloudflare:workers';
 
-export class MyDurableObject extends DurableObject {
+export class MyDO extends DurableObject {
   constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
+    super(ctx, env);  // REQUIRED first line
 
-    // Optional: Initialize from storage
+    // Load state before requests (optional)
     ctx.blockConcurrencyWhile(async () => {
-      // Load state before handling requests
-      this.someValue = await ctx.storage.get('someKey') || defaultValue;
+      this.value = await ctx.storage.get('key') || defaultValue;
     });
   }
 
   // RPC methods (recommended)
-  async myMethod(): Promise<string> {
-    return 'Hello from DO!';
-  }
+  async myMethod(): Promise<string> { return 'Hello'; }
 
-  // Optional: HTTP fetch handler
-  async fetch(request: Request): Promise<Response> {
-    return new Response('Hello from DO fetch!');
-  }
+  // HTTP fetch handler (optional)
+  async fetch(request: Request): Promise<Response> { return new Response('OK'); }
 }
 
-// CRITICAL: Export the class
-export default MyDurableObject;
+export default MyDO;  // CRITICAL: Export required
+
+// Worker must export DO class too
+import { MyDO } from './my-do';
+export { MyDO };
 ```
 
-### Constructor Pattern
-
-```typescript
-constructor(ctx: DurableObjectState, env: Env) {
-  super(ctx, env);  // REQUIRED
-
-  // Access to environment bindings
-  this.env = env;
-
-  // this.ctx provides:
-  // - this.ctx.storage      (storage API)
-  // - this.ctx.id           (unique ID)
-  // - this.ctx.waitUntil()  (background tasks)
-  // - this.ctx.acceptWebSocket() (WebSocket hibernation)
-}
-```
-
-**CRITICAL Rules:**
-- ✅ **Always call `super(ctx, env)`** first
-- ✅ **Keep constructor minimal** - heavy work blocks hibernation wake-up
-- ✅ **Use `ctx.blockConcurrencyWhile()`** to initialize from storage before requests
-- ❌ **Never use `setTimeout` or `setInterval`** - breaks hibernation (use alarms instead)
-- ❌ **Don't rely only on in-memory state** with WebSockets - persist to storage
-
-### Exporting the Class
-
-```typescript
-// Export as default (required for Worker to use it)
-export default MyDurableObject;
-
-// Also export as named export (for type inference in Worker)
-export { MyDurableObject };
-```
-
-**In Worker:**
-
-```typescript
-// Import the class for types
-import { MyDurableObject } from './my-durable-object';
-
-// Export it so Worker can instantiate it
-export { MyDurableObject };
-
-interface Env {
-  MY_DO: DurableObjectNamespace<MyDurableObject>;
-}
-```
+**Constructor Rules:**
+- ✅ Call `super(ctx, env)` first
+- ✅ Keep minimal - heavy work blocks hibernation wake
+- ✅ Use `ctx.blockConcurrencyWhile()` for storage initialization
+- ❌ Never `setTimeout`/`setInterval` (use alarms)
+- ❌ Don't rely on in-memory state with WebSockets (persist to storage)
 
 ---
 
-## State API - Persistent Storage
+## Storage API
 
-Durable Objects provide **two storage APIs** depending on the backend:
+**Two backends available:**
+- **SQLite** (recommended): 10GB storage, SQL queries, atomic operations, PITR
+- **KV**: 128MB storage, key-value only
 
-1. **SQL API** (SQLite backend) - **Recommended**
-2. **Key-Value API** (KV or SQLite backend)
-
-### Enable SQLite Backend (Recommended)
-
-In `wrangler.jsonc` migrations:
-
+**Enable SQLite in migrations:**
 ```jsonc
-{
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["MyDurableObject"]  // ← Use this for SQLite
-    }
-  ]
-}
+{ "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MyDO"] }] }
 ```
 
-**Why SQLite?**
-- ✅ Up to **1GB storage** (vs 128MB for KV backend)
-- ✅ **Atomic operations** (deleteAll is all-or-nothing)
-- ✅ **SQL queries** with transactions
-- ✅ **Point-in-time recovery** (PITR)
-- ✅ Synchronous KV API available too
-
-### SQL API
-
-Access via `ctx.storage.sql`:
+### SQL API (SQLite backend)
 
 ```typescript
-import { DurableObject } from 'cloudflare:workers';
-
-export class MyDurableObject extends DurableObject {
+export class MyDO extends DurableObject {
   sql: SqlStorage;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
 
-    // Create table on first run
     this.sql.exec(`
-      CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        text TEXT NOT NULL,
-        user TEXT NOT NULL,
-        created_at INTEGER NOT NULL
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_created_at ON messages(created_at);
+      CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY, text TEXT, created_at INTEGER);
+      CREATE INDEX IF NOT EXISTS idx_created ON messages(created_at);
+      PRAGMA optimize;  // Feb 2025: Query performance optimization
     `);
   }
 
-  async addMessage(text: string, user: string): Promise<number> {
-    // Insert with exec (returns cursor)
-    const cursor = this.sql.exec(
-      'INSERT INTO messages (text, user, created_at) VALUES (?, ?, ?) RETURNING id',
-      text,
-      user,
-      Date.now()
-    );
-
-    const row = cursor.one<{ id: number }>();
-    return row.id;
+  async addMessage(text: string): Promise<number> {
+    const cursor = this.sql.exec('INSERT INTO messages (text, created_at) VALUES (?, ?) RETURNING id', text, Date.now());
+    return cursor.one<{ id: number }>().id;
   }
 
-  async getMessages(limit: number = 50): Promise<any[]> {
-    const cursor = this.sql.exec(
-      'SELECT * FROM messages ORDER BY created_at DESC LIMIT ?',
-      limit
-    );
-
-    // Convert cursor to array
-    return cursor.toArray();
-  }
-
-  async deleteOldMessages(beforeTimestamp: number): Promise<void> {
-    this.sql.exec(
-      'DELETE FROM messages WHERE created_at < ?',
-      beforeTimestamp
-    );
+  async getMessages(limit = 50): Promise<any[]> {
+    return this.sql.exec('SELECT * FROM messages ORDER BY created_at DESC LIMIT ?', limit).toArray();
   }
 }
 ```
 
-**SQL API Methods:**
+**SQL Methods:**
+- `sql.exec(query, ...params)` → cursor
+- `cursor.one<T>()` → single row (throws if none)
+- `cursor.one<T>({ allowNone: true })` → row or null
+- `cursor.toArray<T>()` → all rows
+- `ctx.storage.transactionSync(() => { ... })` → atomic multi-statement
+
+**Rules:** Always use `?` placeholders, create indexes, use PRAGMA optimize after schema changes
+
+### Key-Value API (both backends)
 
 ```typescript
-// Execute query (returns cursor)
-const cursor = this.sql.exec('SELECT * FROM table WHERE id = ?', id);
-
-// Get single row
-const row = cursor.one<RowType>();
-
-// Get first row or null
-const row = cursor.one<RowType>({ allowNone: true });
-
-// Get all rows as array
-const rows = cursor.toArray<RowType>();
-
-// Iterate cursor
-for (const row of cursor) {
-  // Process row
-}
-
-// Transactions (synchronous)
-this.ctx.storage.transactionSync(() => {
-  this.sql.exec('INSERT INTO table1 ...');
-  this.sql.exec('UPDATE table2 ...');
-  // All or nothing
-});
-```
-
-**CRITICAL SQL Rules:**
-- ✅ Always use **parameterized queries** with `?` placeholders
-- ✅ Create indexes for frequently queried columns
-- ✅ Use transactions for multi-statement operations
-- ❌ Don't access the hidden `__cf_kv` table (used internally for KV API)
-- ❌ Don't enable SQLite on existing deployed KV-backed DOs (not supported)
-
-### Key-Value API
-
-Available on **both SQLite and KV backends** via `ctx.storage`:
-
-```typescript
-import { DurableObject } from 'cloudflare:workers';
-
-export class MyDurableObject extends DurableObject {
-  async increment(): Promise<number> {
-    // Get value
-    let count = await this.ctx.storage.get<number>('count') || 0;
-
-    // Increment
-    count += 1;
-
-    // Put value back
-    await this.ctx.storage.put('count', count);
-
-    return count;
-  }
-
-  async batchOperations(): Promise<void> {
-    // Get multiple keys
-    const map = await this.ctx.storage.get<number>(['key1', 'key2', 'key3']);
-
-    // Put multiple keys
-    await this.ctx.storage.put({
-      key1: 'value1',
-      key2: 'value2',
-      key3: 'value3',
-    });
-
-    // Delete key
-    await this.ctx.storage.delete('key1');
-
-    // Delete multiple keys
-    await this.ctx.storage.delete(['key2', 'key3']);
-  }
-
-  async listKeys(): Promise<string[]> {
-    // List all keys
-    const map = await this.ctx.storage.list();
-    return Array.from(map.keys());
-
-    // List with prefix
-    const mapWithPrefix = await this.ctx.storage.list({
-      prefix: 'user:',
-      limit: 100,
-    });
-  }
-
-  async deleteAllStorage(): Promise<void> {
-    // Delete alarm first (if set)
-    await this.ctx.storage.deleteAlarm();
-
-    // Delete all storage (DO will cease to exist after shutdown)
-    await this.ctx.storage.deleteAll();
-  }
-}
-```
-
-**KV API Methods:**
-
-```typescript
-// Get single value
-const value = await this.ctx.storage.get<T>('key');
-
-// Get multiple values (returns Map)
-const map = await this.ctx.storage.get<T>(['key1', 'key2']);
-
-// Put single value
+// Single operations
 await this.ctx.storage.put('key', value);
-
-// Put multiple values
-await this.ctx.storage.put({ key1: value1, key2: value2 });
-
-// Delete single key
+const value = await this.ctx.storage.get<T>('key');
 await this.ctx.storage.delete('key');
 
-// Delete multiple keys
+// Batch operations
+await this.ctx.storage.put({ key1: val1, key2: val2 });
+const map = await this.ctx.storage.get(['key1', 'key2']);
 await this.ctx.storage.delete(['key1', 'key2']);
 
-// List keys
-const map = await this.ctx.storage.list<T>({
-  prefix: 'user:',
-  limit: 100,
-  reverse: false
-});
+// List and delete all
+const map = await this.ctx.storage.list({ prefix: 'user:', limit: 100 });
+await this.ctx.storage.deleteAll();  // Atomic on SQLite only
 
-// Delete all (atomic on SQLite, may be partial on KV backend)
-await this.ctx.storage.deleteAll();
-
-// Transactions (async)
+// Transactions
 await this.ctx.storage.transaction(async (txn) => {
-  await txn.put('key1', value1);
-  await txn.put('key2', value2);
-  // All or nothing
+  await txn.put('key1', val1);
+  await txn.put('key2', val2);
 });
 ```
 
-**Storage Limits:**
-- **SQLite backend**: Up to **1GB** storage per DO instance
-- **KV backend**: Up to **128MB** storage per DO instance
+**Storage Limits:** SQLite 10GB (April 2025 GA) | KV 128MB
 
 ---
 
 ## WebSocket Hibernation API
 
-The **WebSocket Hibernation API** allows Durable Objects to:
-- Handle **thousands of WebSocket connections** per instance
-- **Hibernate** when idle (no messages, no events) to save costs
-- **Wake up** automatically when messages arrive
-- Maintain connections without incurring duration charges during idle periods
+**Capabilities:**
+- Thousands of WebSocket connections per instance
+- Hibernate when idle (~10s no activity) to save costs
+- Auto wake-up when messages arrive
+- **Message size limit**: 32 MiB (Oct 2025, up from 1 MiB)
 
-**Use for:** Chat rooms, real-time collaboration, multiplayer games, live updates
-
-### How Hibernation Works
-
-1. **Active state** - DO is in memory, handling messages
-2. **Idle state** - No messages for ~10 seconds, DO can hibernate
-3. **Hibernation** - In-memory state cleared, WebSockets stay connected to Cloudflare edge
-4. **Wake up** - New message arrives → constructor runs → handler method called
+**How it works:**
+1. Active → handles messages
+2. Idle → ~10s no activity
+3. Hibernation → in-memory state **cleared**, WebSockets stay connected
+4. Wake → message arrives → constructor runs → handler called
 
 **CRITICAL:** In-memory state is **lost on hibernation**. Use `serializeAttachment()` to persist per-WebSocket metadata.
 
-### WebSocket Server Pattern
+### Hibernation-Safe Pattern
 
 ```typescript
-import { DurableObject } from 'cloudflare:workers';
-
 export class ChatRoom extends DurableObject {
   sessions: Map<WebSocket, { userId: string; username: string }>;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
-
-    // Restore WebSocket connections after hibernation
     this.sessions = new Map();
 
+    // CRITICAL: Restore WebSocket metadata after hibernation
     ctx.getWebSockets().forEach((ws) => {
-      // Deserialize attachment (persisted metadata)
-      const attachment = ws.deserializeAttachment();
-      this.sessions.set(ws, attachment);
+      this.sessions.set(ws, ws.deserializeAttachment());
     });
   }
 
   async fetch(request: Request): Promise<Response> {
-    // Expect WebSocket upgrade request
-    const upgradeHeader = request.headers.get('Upgrade');
-    if (upgradeHeader !== 'websocket') {
-      return new Response('Expected websocket', { status: 426 });
-    }
+    const pair = new WebSocketPair();
+    const [client, server] = Object.values(pair);
 
-    // Create WebSocket pair
-    const webSocketPair = new WebSocketPair();
-    const [client, server] = Object.values(webSocketPair);
-
-    // Get user info from URL or headers
     const url = new URL(request.url);
-    const userId = url.searchParams.get('userId') || 'anonymous';
-    const username = url.searchParams.get('username') || 'Anonymous';
+    const metadata = { userId: url.searchParams.get('userId'), username: url.searchParams.get('username') };
 
-    // Accept WebSocket with hibernation
     // CRITICAL: Use ctx.acceptWebSocket(), NOT ws.accept()
     this.ctx.acceptWebSocket(server);
-
-    // Serialize metadata to persist across hibernation
-    const metadata = { userId, username };
-    server.serializeAttachment(metadata);
-
-    // Track in-memory (will be restored after hibernation)
+    server.serializeAttachment(metadata);  // Persist across hibernation
     this.sessions.set(server, metadata);
 
-    // Notify others
-    this.broadcast(`${username} joined`, server);
-
-    // Return client WebSocket to browser
-    return new Response(null, {
-      status: 101,
-      webSocket: client,
-    });
+    return new Response(null, { status: 101, webSocket: client });
   }
 
-  // Called when WebSocket receives a message
   async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
     const session = this.sessions.get(ws);
-
-    if (typeof message === 'string') {
-      const data = JSON.parse(message);
-
-      if (data.type === 'chat') {
-        // Broadcast to all connections
-        this.broadcast(`${session?.username}: ${data.text}`, ws);
-      }
-    }
+    // Handle message (max 32 MiB since Oct 2025)
   }
 
-  // Called when WebSocket closes
   async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): Promise<void> {
-    const session = this.sessions.get(ws);
     this.sessions.delete(ws);
-
-    // Close the WebSocket
-    ws.close(code, 'Durable Object closing WebSocket');
-
-    // Notify others
-    if (session) {
-      this.broadcast(`${session.username} left`);
-    }
+    ws.close(code, 'Closing');
   }
 
-  // Called on WebSocket errors
   async webSocketError(ws: WebSocket, error: any): Promise<void> {
-    console.error('WebSocket error:', error);
-    const session = this.sessions.get(ws);
     this.sessions.delete(ws);
   }
-
-  // Helper to broadcast to all connections
-  broadcast(message: string, except?: WebSocket): void {
-    this.sessions.forEach((session, ws) => {
-      if (ws !== except && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'message', text: message }));
-      }
-    });
-  }
 }
 ```
 
-**WebSocket Handler Methods:**
-
-```typescript
-// Receive message from client
-async webSocketMessage(
-  ws: WebSocket,
-  message: string | ArrayBuffer
-): Promise<void> {
-  // Handle message
-}
-
-// WebSocket closed by client
-async webSocketClose(
-  ws: WebSocket,
-  code: number,
-  reason: string,
-  wasClean: boolean
-): Promise<void> {
-  // Cleanup
-}
-
-// WebSocket error occurred
-async webSocketError(
-  ws: WebSocket,
-  error: any
-): Promise<void> {
-  // Handle error
-}
-```
-
-**Hibernation-Safe Patterns:**
-
-```typescript
-// ✅ CORRECT: Use ctx.acceptWebSocket (enables hibernation)
-this.ctx.acceptWebSocket(server);
-
-// ❌ WRONG: Don't use ws.accept() (standard API, no hibernation)
-server.accept();
-
-// ✅ CORRECT: Persist metadata across hibernation
-server.serializeAttachment({ userId: '123', username: 'Alice' });
-
-// ✅ CORRECT: Restore metadata in constructor
-constructor(ctx, env) {
-  super(ctx, env);
-
-  ctx.getWebSockets().forEach((ws) => {
-    const metadata = ws.deserializeAttachment();
-    this.sessions.set(ws, metadata);
-  });
-}
-
-// ❌ WRONG: Don't use setTimeout/setInterval (prevents hibernation)
-setTimeout(() => { /* ... */ }, 1000);  // ❌ NEVER DO THIS
-
-// ✅ CORRECT: Use alarms for scheduled tasks
-await this.ctx.storage.setAlarm(Date.now() + 60000);
-```
-
-**When Hibernation Does NOT Occur:**
-- `setTimeout` or `setInterval` callbacks are pending
-- In-progress `fetch()` request (awaited I/O)
-- Standard WebSocket API is used (not hibernation API)
-- Request/event is still being processed
+**Hibernation Rules:**
+- ✅ `ctx.acceptWebSocket(ws)` - enables hibernation
+- ✅ `ws.serializeAttachment(data)` - persist metadata
+- ✅ `ctx.getWebSockets().forEach()` - restore in constructor
+- ✅ Use alarms instead of `setTimeout`/`setInterval`
+- ❌ `ws.accept()` - standard API, no hibernation
+- ❌ `setTimeout`/`setInterval` - prevents hibernation
+- ❌ In-progress `fetch()` - blocks hibernation
 
 ---
 
-## Alarms API - Scheduled Tasks
+## Alarms API
 
-The **Alarms API** allows Durable Objects to schedule themselves to wake up at a specific time in the future.
-
-**Use for:** Batching, cleanup jobs, reminders, periodic tasks, delayed operations
-
-### Basic Alarm Pattern
+Schedule DO to wake at future time. **Use for:** batching, cleanup, reminders, periodic tasks.
 
 ```typescript
-import { DurableObject } from 'cloudflare:workers';
-
 export class Batcher extends DurableObject {
-  buffer: string[];
-
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
-
-    ctx.blockConcurrencyWhile(async () => {
-      // Restore buffer from storage
-      this.buffer = await ctx.storage.get('buffer') || [];
-    });
-  }
-
   async addItem(item: string): Promise<void> {
-    this.buffer.push(item);
-    await this.ctx.storage.put('buffer', this.buffer);
+    // Add to buffer
+    const buffer = await this.ctx.storage.get<string[]>('buffer') || [];
+    buffer.push(item);
+    await this.ctx.storage.put('buffer', buffer);
 
-    // Schedule alarm for 10 seconds from now (if not already set)
-    const currentAlarm = await this.ctx.storage.getAlarm();
-    if (currentAlarm === null) {
-      await this.ctx.storage.setAlarm(Date.now() + 10000);
+    // Schedule alarm if not set
+    if ((await this.ctx.storage.getAlarm()) === null) {
+      await this.ctx.storage.setAlarm(Date.now() + 10000);  // 10 seconds
     }
   }
 
-  // Called when alarm fires
-  async alarm(alarmInfo: { retryCount: number; isRetry: boolean }): Promise<void> {
-    console.log(`Alarm fired (retry count: ${alarmInfo.retryCount})`);
+  async alarm(info: { retryCount: number; isRetry: boolean }): Promise<void> {
+    if (info.retryCount > 3) return;  // Give up after 3 retries
 
-    // Process batch
-    if (this.buffer.length > 0) {
-      await this.processBatch(this.buffer);
-
-      // Clear buffer
-      this.buffer = [];
-      await this.ctx.storage.put('buffer', []);
-    }
-
-    // Alarm is automatically deleted after successful execution
-  }
-
-  async processBatch(items: string[]): Promise<void> {
-    // Send to external API, write to database, etc.
-    console.log(`Processing ${items.length} items:`, items);
+    const buffer = await this.ctx.storage.get<string[]>('buffer') || [];
+    await this.processBatch(buffer);
+    await this.ctx.storage.put('buffer', []);
+    // Alarm auto-deleted after success
   }
 }
 ```
 
-**Alarm API Methods:**
+**API Methods:**
+- `await ctx.storage.setAlarm(Date.now() + 60000)` - set alarm (overwrites existing)
+- `await ctx.storage.getAlarm()` - get timestamp or null
+- `await ctx.storage.deleteAlarm()` - cancel alarm
+- `async alarm(info)` - handler called when alarm fires
 
-```typescript
-// Set alarm to fire at specific timestamp
-await this.ctx.storage.setAlarm(Date.now() + 60000);  // 60 seconds from now
-
-// Set alarm to fire at specific date
-await this.ctx.storage.setAlarm(new Date('2025-12-31T23:59:59Z'));
-
-// Get current alarm (null if not set)
-const alarmTime = await this.ctx.storage.getAlarm();
-
-// Delete alarm
-await this.ctx.storage.deleteAlarm();
-
-// Alarm handler (called when alarm fires)
-async alarm(alarmInfo: { retryCount: number; isRetry: boolean }): Promise<void> {
-  // Do work
-}
-```
-
-**Alarm Behavior:**
-- ✅ **Guaranteed at-least-once execution** - will retry on failure
-- ✅ **Automatic retries** - up to 6 retries with exponential backoff (starting at 2 seconds)
-- ✅ **Persistent** - survives DO hibernation and eviction
-- ✅ **Automatically deleted** after successful execution
-- ⚠️ **One alarm per DO** - setting a new alarm overwrites the previous one
-
-**Retry Pattern (Idempotent Operations):**
-
-```typescript
-async alarm(alarmInfo: { retryCount: number; isRetry: boolean }): Promise<void> {
-  if (alarmInfo.retryCount > 3) {
-    console.error('Alarm failed after 3 retries, giving up');
-    return;
-  }
-
-  try {
-    // Idempotent operation (safe to retry)
-    await this.sendNotification();
-  } catch (error) {
-    console.error('Alarm failed:', error);
-    throw error;  // Will trigger retry
-  }
-}
-```
+**Behavior:**
+- ✅ At-least-once execution, auto-retries (up to 6x, exponential backoff)
+- ✅ Survives hibernation/eviction
+- ✅ Auto-deleted after success
+- ⚠️ One alarm per DO (new alarm overwrites)
 
 ---
 
 ## RPC vs HTTP Fetch
 
-Durable Objects support **two invocation patterns**:
-
-1. **RPC (Remote Procedure Call)** - Recommended for new projects
-2. **HTTP Fetch** - For HTTP request/response flows or legacy compatibility
-
-### RPC Pattern (Recommended)
-
-**Enable RPC** with compatibility date `>= 2024-04-03`:
-
-```jsonc
-{
-  "compatibility_date": "2025-10-22"
-}
-```
-
-**Define RPC methods** on DO class:
+**RPC (Recommended):** Direct method calls, type-safe, simple
 
 ```typescript
+// DO class
 export class Counter extends DurableObject {
-  // Public RPC methods (automatically exposed)
   async increment(): Promise<number> {
-    let value = await this.ctx.storage.get<number>('count') || 0;
-    value += 1;
-    await this.ctx.storage.put('count', value);
+    let value = (await this.ctx.storage.get<number>('count')) || 0;
+    await this.ctx.storage.put('count', ++value);
     return value;
-  }
-
-  async decrement(): Promise<number> {
-    let value = await this.ctx.storage.get<number>('count') || 0;
-    value -= 1;
-    await this.ctx.storage.put('count', value);
-    return value;
-  }
-
-  async get(): Promise<number> {
-    return await this.ctx.storage.get<number>('count') || 0;
   }
 }
+
+// Worker calls
+const stub = env.COUNTER.getByName('my-counter');
+const count = await stub.increment();  // Type-safe!
 ```
 
-**Call from Worker:**
+**HTTP Fetch:** Request/response pattern, required for WebSocket upgrades
 
 ```typescript
-// Get stub
-const id = env.COUNTER.idFromName('my-counter');
-const stub = env.COUNTER.get(id);
-
-// Call RPC methods directly
-const count = await stub.increment();
-const current = await stub.get();
-```
-
-**RPC Benefits:**
-- ✅ **Type-safe** - TypeScript knows method signatures
-- ✅ **Simple** - Direct method calls, no HTTP ceremony
-- ✅ **Automatic serialization** - Handles structured data
-- ✅ **Exception propagation** - Errors thrown in DO are received in Worker
-
-### HTTP Fetch Pattern
-
-**Define `fetch()` handler** on DO class:
-
-```typescript
+// DO class
 export class Counter extends DurableObject {
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
-
-    if (url.pathname === '/increment' && request.method === 'POST') {
-      let value = await this.ctx.storage.get<number>('count') || 0;
-      value += 1;
-      await this.ctx.storage.put('count', value);
+    if (url.pathname === '/increment') {
+      let value = (await this.ctx.storage.get<number>('count')) || 0;
+      await this.ctx.storage.put('count', ++value);
       return new Response(JSON.stringify({ count: value }));
     }
-
-    if (url.pathname === '/get' && request.method === 'GET') {
-      let value = await this.ctx.storage.get<number>('count') || 0;
-      return new Response(JSON.stringify({ count: value }));
-    }
-
     return new Response('Not found', { status: 404 });
   }
 }
-```
 
-**Call from Worker:**
-
-```typescript
-// Get stub
-const id = env.COUNTER.idFromName('my-counter');
-const stub = env.COUNTER.get(id);
-
-// Call fetch
-const response = await stub.fetch('https://fake-host/increment', {
-  method: 'POST',
-});
-
+// Worker calls
+const stub = env.COUNTER.getByName('my-counter');
+const response = await stub.fetch('https://fake-host/increment', { method: 'POST' });
 const data = await response.json();
 ```
 
-### When to Use Each
-
-| Use Case | Recommendation |
-|----------|----------------|
-| **New project** | ✅ RPC (simpler, type-safe) |
-| **HTTP request/response flow** | HTTP Fetch |
-| **Complex routing logic** | HTTP Fetch |
-| **Type safety important** | ✅ RPC |
-| **Legacy compatibility** | HTTP Fetch |
-| **WebSocket upgrades** | HTTP Fetch (required) |
+**When to use:** RPC for new projects (simpler), HTTP Fetch for WebSocket upgrades or complex routing
 
 ---
 
-## Creating Durable Object Stubs and Routing
+## Getting DO Stubs
 
-To interact with a Durable Object from a Worker, you need to:
-1. Get a **Durable Object ID**
-2. Create a **stub** from the ID
-3. Call methods on the stub
+**Three ways to get IDs:**
 
-### Getting Durable Object IDs
-
-**Three methods to create IDs:**
-
-#### 1. `idFromName(name)` - Named DOs (Most Common)
-
-Use when you want **consistent routing** to the same DO instance based on a name:
-
+1. **`idFromName(name)`** - Consistent routing (same name = same DO)
 ```typescript
-// Same name always routes to same DO instance globally
-const roomId = env.CHAT_ROOM.idFromName('room-123');
-const userId = env.USER_SESSION.idFromName('user-alice');
-const globalCounter = env.COUNTER.idFromName('global');
+const stub = env.CHAT_ROOM.getByName('room-123');  // Aug 2025: Shortcut for idFromName + get
+// Use for: chat rooms, user sessions, per-tenant logic, singletons
 ```
 
-**Use for:**
-- Chat rooms (name = room ID)
-- User sessions (name = user ID)
-- Per-tenant logic (name = tenant ID)
-- Global singletons (name = 'global')
-
-**Characteristics:**
-- ✅ **Deterministic** - same name = same DO instance
-- ✅ **Easy to reference** - just need the name string
-- ⚠️ **First access latency** - ~100-300ms for global uniqueness check
-- ⚠️ **Cached after first use** - subsequent access is fast
-
-#### 2. `newUniqueId()` - Random IDs
-
-Use when you need a **new, unique DO instance**:
-
+2. **`newUniqueId()`** - Random unique ID (must store for reuse)
 ```typescript
-// Creates a random, globally unique ID
-const id = env.MY_DO.newUniqueId();
-
-// With jurisdiction restriction (EU data residency)
-const euId = env.MY_DO.newUniqueId({ jurisdiction: 'eu' });
-
-// Store the ID for future use
-const idString = id.toString();
-await env.KV.put('session:123', idString);
+const id = env.MY_DO.newUniqueId({ jurisdiction: 'eu' });  // Optional: EU compliance
+const idString = id.toString();  // Save to KV/D1 for later
 ```
 
-**Use for:**
-- Creating new sessions/rooms that don't exist yet
-- One-time use DOs
-- When you don't have a natural name
-
-**Characteristics:**
-- ✅ **Lower latency** on first use (no global uniqueness check)
-- ⚠️ **Must store ID** to access same DO later
-- ⚠️ **ID format is opaque** - can't derive meaning from it
-
-#### 3. `idFromString(idString)` - Recreate from Saved ID
-
-Use when you've **previously stored an ID** and need to recreate it:
-
+3. **`idFromString(idString)`** - Recreate from saved ID
 ```typescript
-// Get stored ID string (from KV, D1, cookie, etc.)
-const idString = await env.KV.get('session:123');
-
-// Recreate ID
-const id = env.MY_DO.idFromString(idString);
-
-// Get stub
+const id = env.MY_DO.idFromString(await env.KV.get('session:123'));
 const stub = env.MY_DO.get(id);
 ```
 
-**Throws exception** if:
-- ID string is invalid
-- ID was not created from the same `DurableObjectNamespace`
-
-### Getting Stubs
-
-#### Method 1: `get(id)` - From ID
-
+**Location hints (best-effort):**
 ```typescript
-const id = env.MY_DO.idFromName('my-instance');
-const stub = env.MY_DO.get(id);
-
-// Call methods
-await stub.myMethod();
+const stub = env.MY_DO.get(id, { locationHint: 'enam' });  // wnam, enam, sam, weur, eeur, apac, oc, afr, me
 ```
 
-#### Method 2: `getByName(name)` - Shortcut for Named DOs
-
+**Jurisdiction (strict enforcement):**
 ```typescript
-// Shortcut that combines idFromName + get
-const stub = env.MY_DO.getByName('my-instance');
-
-// Equivalent to:
-// const id = env.MY_DO.idFromName('my-instance');
-// const stub = env.MY_DO.get(id);
-
-await stub.myMethod();
+const id = env.MY_DO.newUniqueId({ jurisdiction: 'eu' });  // Options: 'eu', 'fedramp'
+// Cannot combine with location hints, higher latency outside jurisdiction
 ```
-
-**Recommended** for named DOs (cleaner code).
-
-### Location Hints (Geographic Routing)
-
-**Control WHERE a Durable Object is created** with location hints:
-
-```typescript
-// Create DO near specific location
-const id = env.MY_DO.idFromName('user-alice');
-const stub = env.MY_DO.get(id, { locationHint: 'enam' });  // Eastern North America
-
-// Available location hints:
-// - 'wnam' - Western North America
-// - 'enam' - Eastern North America
-// - 'sam'  - South America
-// - 'weur' - Western Europe
-// - 'eeur' - Eastern Europe
-// - 'apac' - Asia-Pacific
-// - 'oc'   - Oceania
-// - 'afr'  - Africa
-// - 'me'   - Middle East
-```
-
-**When to use:**
-- ✅ Create DO near user's location (lower latency)
-- ✅ Data residency requirements (e.g., EU users → weur/eeur)
-
-**Limitations:**
-- ⚠️ **Hints are best-effort** - not guaranteed
-- ⚠️ **Only affects first creation** - subsequent access uses existing location
-- ⚠️ **Cannot move existing DOs** - once created, location is fixed
-
-### Jurisdiction Restriction (Data Residency)
-
-**Enforce strict data location** requirements:
-
-```typescript
-// Create DO that MUST stay in EU
-const euId = env.MY_DO.newUniqueId({ jurisdiction: 'eu' });
-
-// Available jurisdictions:
-// - 'eu' - European Union
-// - 'fedramp' - FedRAMP (US government)
-```
-
-**Use for:**
-- Regulatory compliance (GDPR, FedRAMP)
-- Data sovereignty requirements
-
-**CRITICAL:**
-- ✅ **Strictly enforced** - DO will never leave jurisdiction
-- ⚠️ **Cannot combine** jurisdiction with location hints
-- ⚠️ **Higher latency** for users outside jurisdiction
 
 ---
 
-## Migrations - Managing DO Classes
+## Migrations
 
-**Migrations are REQUIRED** when you:
-- Create a new DO class
-- Rename a DO class
-- Delete a DO class
-- Transfer a DO class to another Worker
+**Required for:** create, rename, delete, transfer DO classes
 
-**Migration Types:**
-
-### 1. Create New DO Class
-
+**1. Create:**
 ```jsonc
-{
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "COUNTER",
-        "class_name": "Counter"
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",                    // Unique identifier for this migration
-      "new_sqlite_classes": [         // SQLite backend (recommended)
-        "Counter"
-      ]
-    }
-  ]
-}
+{ "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Counter"] }] }  // SQLite 10GB
+// Or: "new_classes": ["Counter"]  // KV 128MB (legacy)
 ```
 
-**For KV backend (legacy):**
-
+**2. Rename:**
 ```jsonc
-{
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["Counter"]      // KV backend (128MB limit)
-    }
-  ]
-}
+{ "migrations": [
+  { "tag": "v1", "new_sqlite_classes": ["OldName"] },
+  { "tag": "v2", "renamed_classes": [{ "from": "OldName", "to": "NewName" }] }
+]}
 ```
 
-**CRITICAL:**
-- ✅ Use `new_sqlite_classes` for new DOs (up to 1GB storage)
-- ❌ Cannot enable SQLite on existing deployed KV-backed DOs
-
-### 2. Rename DO Class
-
+**3. Delete:**
 ```jsonc
-{
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "MY_DO",
-        "class_name": "NewClassName"    // New class name
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["OldClassName"]
-    },
-    {
-      "tag": "v2",                      // New migration tag
-      "renamed_classes": [
-        {
-          "from": "OldClassName",
-          "to": "NewClassName"
-        }
-      ]
-    }
-  ]
-}
+{ "migrations": [
+  { "tag": "v1", "new_sqlite_classes": ["Counter"] },
+  { "tag": "v2", "deleted_classes": ["Counter"] }  // Immediate deletion, cannot undo
+]}
 ```
 
-**What happens:**
-- ✅ Existing DO instances keep their data
-- ✅ Old bindings automatically forward to new class
-- ⚠️ **Must export new class** in Worker code
-
-### 3. Delete DO Class
-
+**4. Transfer:**
 ```jsonc
-{
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["Counter"]
-    },
-    {
-      "tag": "v2",
-      "deleted_classes": ["Counter"]    // Mark as deleted
-    }
-  ]
-}
+{ "migrations": [{ "tag": "v1", "transferred_classes": [
+  { "from": "OldClass", "from_script": "old-worker", "to": "NewClass" }
+]}]}
 ```
 
-**What happens:**
-- ✅ Existing DO instances are **deleted immediately**
-- ✅ All storage is deleted
-- ⚠️ **Cannot undo** - data is permanently lost
-
-**Before deleting:**
-- Export data if needed
-- Update Workers that reference this DO
-
-### 4. Transfer DO Class to Another Worker
-
-```jsonc
-// In destination Worker:
-{
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "TRANSFERRED_DO",
-        "class_name": "TransferredClass"
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "transferred_classes": [
-        {
-          "from": "OriginalClass",
-          "from_script": "original-worker",  // Source Worker name
-          "to": "TransferredClass"
-        }
-      ]
-    }
-  ]
-}
-```
-
-**What happens:**
-- ✅ DO instances move to new Worker
-- ✅ All storage is transferred
-- ✅ Old bindings automatically forward
-- ⚠️ **Destination class must be exported**
-
-### Migration Rules
-
-**CRITICAL Migration Gotchas:**
-
-❌ **Migrations are ATOMIC** - cannot gradual deploy
-- All instances migrate at once when you deploy
-- No partial rollout support
-
-❌ **Migration tags must be unique**
-- Cannot reuse tags
-- Tags are append-only
-
-❌ **Cannot enable SQLite on existing KV-backed DOs**
-- Must create new DO class instead
-
-✅ **Code changes don't need migrations**
-- Only schema changes (new/rename/delete/transfer) need migrations
-- You can deploy code updates freely
-
-✅ **Global uniqueness is per account**
-- DO class names are unique across your entire account
-- Even across different Workers
+**Migration Rules:**
+- ❌ Atomic (all instances migrate at once, no gradual rollout)
+- ❌ Tags are unique and append-only
+- ❌ Cannot enable SQLite on existing KV-backed DOs
+- ✅ Code changes don't need migrations (only schema changes)
+- ✅ Class names globally unique per account
 
 ---
 
 ## Common Patterns
 
-### Pattern 1: Rate Limiting (Per-User)
-
+**Rate Limiting:**
 ```typescript
-export class RateLimiter extends DurableObject {
-  async checkLimit(userId: string, limit: number, window: number): Promise<boolean> {
-    const key = `rate:${userId}`;
-    const now = Date.now();
-
-    // Get recent requests
-    const requests = await this.ctx.storage.get<number[]>(key) || [];
-
-    // Remove requests outside window
-    const validRequests = requests.filter(timestamp => now - timestamp < window);
-
-    // Check limit
-    if (validRequests.length >= limit) {
-      return false;  // Rate limit exceeded
-    }
-
-    // Add current request
-    validRequests.push(now);
-    await this.ctx.storage.put(key, validRequests);
-
-    return true;  // Within limit
-  }
-}
-
-// Worker usage:
-const limiter = env.RATE_LIMITER.getByName(userId);
-const allowed = await limiter.checkLimit(userId, 100, 60000);  // 100 req/min
-
-if (!allowed) {
-  return new Response('Rate limit exceeded', { status: 429 });
+async checkLimit(userId: string, limit: number, window: number): Promise<boolean> {
+  const requests = (await this.ctx.storage.get<number[]>(`rate:${userId}`)) || [];
+  const valid = requests.filter(t => Date.now() - t < window);
+  if (valid.length >= limit) return false;
+  valid.push(Date.now());
+  await this.ctx.storage.put(`rate:${userId}`, valid);
+  return true;
 }
 ```
 
-### Pattern 2: Session Management
-
+**Session Management with TTL:**
 ```typescript
-export class UserSession extends DurableObject {
-  sql: SqlStorage;
+async set(key: string, value: any, ttl?: number): Promise<void> {
+  const expiresAt = ttl ? Date.now() + ttl : null;
+  this.sql.exec('INSERT OR REPLACE INTO session (key, value, expires_at) VALUES (?, ?, ?)',
+    key, JSON.stringify(value), expiresAt);
+}
 
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
-    this.sql = ctx.storage.sql;
-
-    this.sql.exec(`
-      CREATE TABLE IF NOT EXISTS session (
-        key TEXT PRIMARY KEY,
-        value TEXT NOT NULL,
-        expires_at INTEGER
-      );
-    `);
-
-    // Schedule cleanup alarm
-    ctx.blockConcurrencyWhile(async () => {
-      const alarm = await ctx.storage.getAlarm();
-      if (alarm === null) {
-        await ctx.storage.setAlarm(Date.now() + 3600000);  // 1 hour
-      }
-    });
-  }
-
-  async set(key: string, value: any, ttl?: number): Promise<void> {
-    const expiresAt = ttl ? Date.now() + ttl : null;
-
-    this.sql.exec(
-      'INSERT OR REPLACE INTO session (key, value, expires_at) VALUES (?, ?, ?)',
-      key,
-      JSON.stringify(value),
-      expiresAt
-    );
-  }
-
-  async get(key: string): Promise<any | null> {
-    const cursor = this.sql.exec(
-      'SELECT value, expires_at FROM session WHERE key = ?',
-      key
-    );
-
-    const row = cursor.one<{ value: string; expires_at: number | null }>({ allowNone: true });
-
-    if (!row) {
-      return null;
-    }
-
-    // Check expiration
-    if (row.expires_at && row.expires_at < Date.now()) {
-      this.sql.exec('DELETE FROM session WHERE key = ?', key);
-      return null;
-    }
-
-    return JSON.parse(row.value);
-  }
-
-  async alarm(): Promise<void> {
-    // Cleanup expired sessions
-    this.sql.exec('DELETE FROM session WHERE expires_at < ?', Date.now());
-
-    // Schedule next cleanup
-    await this.ctx.storage.setAlarm(Date.now() + 3600000);
-  }
+async alarm(): Promise<void> {
+  this.sql.exec('DELETE FROM session WHERE expires_at < ?', Date.now());
+  await this.ctx.storage.setAlarm(Date.now() + 3600000);  // Hourly cleanup
 }
 ```
 
-### Pattern 3: Leader Election
-
+**Leader Election:**
 ```typescript
-export class LeaderElection extends DurableObject {
-  sql: SqlStorage;
-
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
-    this.sql = ctx.storage.sql;
-
-    this.sql.exec(`
-      CREATE TABLE IF NOT EXISTS leader (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        worker_id TEXT NOT NULL,
-        elected_at INTEGER NOT NULL
-      );
-    `);
-  }
-
-  async electLeader(workerId: string): Promise<boolean> {
-    // Try to become leader
-    try {
-      this.sql.exec(
-        'INSERT INTO leader (id, worker_id, elected_at) VALUES (1, ?, ?)',
-        workerId,
-        Date.now()
-      );
-      return true;  // Became leader
-    } catch (error) {
-      return false;  // Someone else is leader
-    }
-  }
-
-  async getLeader(): Promise<string | null> {
-    const cursor = this.sql.exec('SELECT worker_id FROM leader WHERE id = 1');
-    const row = cursor.one<{ worker_id: string }>({ allowNone: true });
-    return row?.worker_id || null;
-  }
-
-  async releaseLeadership(workerId: string): Promise<void> {
-    this.sql.exec('DELETE FROM leader WHERE id = 1 AND worker_id = ?', workerId);
-  }
+async electLeader(workerId: string): Promise<boolean> {
+  try {
+    this.sql.exec('INSERT INTO leader (id, worker_id, elected_at) VALUES (1, ?, ?)', workerId, Date.now());
+    return true;
+  } catch { return false; }  // Already has leader
 }
 ```
 
-### Pattern 4: Multi-DO Coordination
-
+**Multi-DO Coordination:**
 ```typescript
-// Coordinator DO
-export class GameCoordinator extends DurableObject {
-  async createGame(gameId: string, env: Env): Promise<void> {
-    // Create game room DO
-    const gameRoom = env.GAME_ROOM.getByName(gameId);
-    await gameRoom.initialize();
-
-    // Track in coordinator
-    await this.ctx.storage.put(`game:${gameId}`, {
-      id: gameId,
-      created: Date.now(),
-    });
-  }
-
-  async listGames(): Promise<string[]> {
-    const games = await this.ctx.storage.list({ prefix: 'game:' });
-    return Array.from(games.keys()).map(key => key.replace('game:', ''));
-  }
-}
-
-// Game room DO
-export class GameRoom extends DurableObject {
-  async initialize(): Promise<void> {
-    await this.ctx.storage.put('state', {
-      players: [],
-      started: false,
-    });
-  }
-
-  async addPlayer(playerId: string): Promise<void> {
-    const state = await this.ctx.storage.get('state');
-    state.players.push(playerId);
-    await this.ctx.storage.put('state', state);
-  }
-}
+// Coordinator delegates to child DOs
+const gameRoom = env.GAME_ROOM.getByName(gameId);
+await gameRoom.initialize();
+await this.ctx.storage.put(`game:${gameId}`, { created: Date.now() });
 ```
 
 ---
@@ -1654,80 +720,32 @@ async alarm(info: { retryCount: number }): Promise<void> {
 
 ---
 
-## Configuration Reference
+## Configuration & Types
 
-### Complete wrangler.jsonc Example
-
+**wrangler.jsonc:**
 ```jsonc
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-worker",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-10-22",
-
-  // Durable Objects configuration
+  "compatibility_date": "2025-11-23",
   "durable_objects": {
-    "bindings": [
-      {
-        "name": "COUNTER",              // Binding name (use as env.COUNTER)
-        "class_name": "Counter"         // Must match exported class
-      },
-      {
-        "name": "CHAT_ROOM",
-        "class_name": "ChatRoom"
-      }
-    ]
+    "bindings": [{ "name": "COUNTER", "class_name": "Counter" }]
   },
-
-  // Migrations (required for all DO changes)
   "migrations": [
-    {
-      "tag": "v1",                      // Initial migration
-      "new_sqlite_classes": [
-        "Counter",
-        "ChatRoom"
-      ]
-    },
-    {
-      "tag": "v2",                      // Rename example
-      "renamed_classes": [
-        {
-          "from": "Counter",
-          "to": "CounterV2"
-        }
-      ]
-    }
+    { "tag": "v1", "new_sqlite_classes": ["Counter"] },
+    { "tag": "v2", "renamed_classes": [{ "from": "Counter", "to": "CounterV2" }] }
   ]
 }
 ```
 
----
-
-## TypeScript Types
-
+**TypeScript:**
 ```typescript
 import { DurableObject, DurableObjectState, DurableObjectNamespace } from 'cloudflare:workers';
 
-// Environment bindings
-interface Env {
-  MY_DO: DurableObjectNamespace<MyDurableObject>;
-  DB: D1Database;
-  // ... other bindings
-}
+interface Env { MY_DO: DurableObjectNamespace<MyDurableObject>; }
 
-// Durable Object class
 export class MyDurableObject extends DurableObject<Env> {
-  sql: SqlStorage;
-
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
-  }
-
-  async myMethod(): Promise<string> {
-    // Access env bindings
-    await this.env.DB.prepare('...').run();
-    return 'Hello';
   }
 }
 ```
