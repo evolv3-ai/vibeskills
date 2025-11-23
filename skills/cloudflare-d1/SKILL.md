@@ -8,9 +8,18 @@ license: MIT
 # Cloudflare D1 Database
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-10-21
+**Last Updated**: 2025-11-23
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.43.0, @cloudflare/workers-types@4.20251014.0
+**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+
+**Recent Updates (2025)**:
+- **Nov 2025**: Jurisdiction support (data localization compliance), remote bindings GA (wrangler@4.37.0+), automatic resource provisioning
+- **Sept 2025**: Automatic read-only query retries (up to 2 attempts), remote bindings public beta
+- **July 2025**: Storage limits increased (250GB → 1TB), alpha backup access removed, REST API 50-500ms faster
+- **May 2025**: HTTP API permissions security fix (D1:Edit required for writes)
+- **April 2025**: Read replication public beta (read-only replicas across regions)
+- **Feb 2025**: PRAGMA optimize support, read-only access permission bug fix
+- **Jan 2025**: Free tier limits enforcement (Feb 10 start), Worker API 40-60% faster queries
 
 ---
 
@@ -234,158 +243,43 @@ ALTER TABLE posts ADD COLUMN user_id INTEGER REFERENCES users(user_id);
 
 ## D1 Workers API
 
-### Type Definitions
-
+**Type Definitions:**
 ```typescript
-// Add to env.d.ts or worker-configuration.d.ts
-interface Env {
-  DB: D1Database;
-  // ... other bindings
-}
-
-// For Hono
-type Bindings = {
-  DB: D1Database;
-};
-
+interface Env { DB: D1Database; }
+type Bindings = { DB: D1Database; };
 const app = new Hono<{ Bindings: Bindings }>();
 ```
 
-### prepare() - Prepared Statements (PRIMARY METHOD)
-
-**Always use prepared statements for queries with user input.**
-
+**prepare() - PRIMARY METHOD (always use for user input):**
 ```typescript
-// Basic prepared statement
-const stmt = env.DB.prepare('SELECT * FROM users WHERE user_id = ?');
-const bound = stmt.bind(userId);
-const result = await bound.first();
-
-// Chained (most common pattern)
 const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?')
-  .bind(email)
-  .first();
+  .bind(email).first();
 ```
+Why: Prevents SQL injection, reusable, better performance, type-safe
 
-**Why use prepare():**
-- ✅ Prevents SQL injection
-- ✅ Can be reused with different parameters
-- ✅ Better performance (query plan caching)
-- ✅ Type-safe with TypeScript
+**Query Result Methods:**
+- `.all()` → `{ results, meta }` - Get all rows
+- `.first()` → row object or null - Get first row
+- `.first('column')` → value - Get single column value (e.g., COUNT)
+- `.run()` → `{ success, meta }` - Execute INSERT/UPDATE/DELETE (no results)
 
-### Query Result Methods
-
-#### .all() - Get All Rows
-
+**batch() - CRITICAL FOR PERFORMANCE:**
 ```typescript
-const { results, meta } = await env.DB.prepare(
-  'SELECT * FROM users WHERE created_at > ?'
-)
-.bind(timestamp)
-.all();
-
-console.log(results);  // Array of rows
-console.log(meta);     // { duration, rows_read, rows_written }
-```
-
-#### .first() - Get First Row
-
-```typescript
-// Returns first row or null
-const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?')
-  .bind('user@example.com')
-  .first();
-
-if (!user) {
-  return c.json({ error: 'Not found' }, 404);
-}
-```
-
-#### .first(column) - Get Single Column Value
-
-```typescript
-// Returns the value of a specific column from first row
-const count = await env.DB.prepare('SELECT COUNT(*) as total FROM users')
-  .first('total');
-
-console.log(count);  // 42 (just the number, not an object)
-```
-
-#### .run() - Execute Without Results
-
-```typescript
-// For INSERT, UPDATE, DELETE
-const { success, meta } = await env.DB.prepare(
-  'INSERT INTO users (email, username, created_at) VALUES (?, ?, ?)'
-)
-.bind(email, username, Date.now())
-.run();
-
-console.log(meta);  // { duration, rows_read, rows_written, last_row_id }
-```
-
-### batch() - Execute Multiple Queries
-
-**CRITICAL FOR PERFORMANCE**: Use batch() to reduce latency.
-
-```typescript
-// Prepare multiple statements
-const stmt1 = env.DB.prepare('SELECT * FROM users WHERE user_id = ?').bind(1);
-const stmt2 = env.DB.prepare('SELECT * FROM users WHERE user_id = ?').bind(2);
-const stmt3 = env.DB.prepare('SELECT * FROM posts WHERE user_id = ?').bind(1);
-
-// Execute all in one round trip
-const results = await env.DB.batch([stmt1, stmt2, stmt3]);
-
-console.log(results[0].results);  // Users query 1
-console.log(results[1].results);  // Users query 2
-console.log(results[2].results);  // Posts query
-```
-
-**Batch Behavior:**
-- Executes sequentially (in order)
-- Each statement commits individually (auto-commit mode)
-- If one fails, remaining statements don't execute
-- Much faster than individual queries (single network round trip)
-
-**Batch Use Cases:**
-```typescript
-// ✅ Insert multiple rows efficiently
-const inserts = users.map(user =>
-  env.DB.prepare('INSERT INTO users (email, username) VALUES (?, ?)')
-    .bind(user.email, user.username)
-);
-await env.DB.batch(inserts);
-
-// ✅ Fetch related data in parallel
-const [user, posts, comments] = await env.DB.batch([
-  env.DB.prepare('SELECT * FROM users WHERE user_id = ?').bind(userId),
-  env.DB.prepare('SELECT * FROM posts WHERE user_id = ?').bind(userId),
-  env.DB.prepare('SELECT * FROM comments WHERE user_id = ?').bind(userId)
+const results = await env.DB.batch([
+  env.DB.prepare('SELECT * FROM users WHERE user_id = ?').bind(1),
+  env.DB.prepare('SELECT * FROM posts WHERE user_id = ?').bind(1)
 ]);
 ```
+- Executes sequentially, single network round trip
+- If one fails, remaining statements don't execute
+- Use for: bulk inserts, fetching related data
 
-### exec() - Execute Raw SQL (AVOID IN PRODUCTION)
-
+**exec() - AVOID IN PRODUCTION:**
 ```typescript
-// Only for migrations, maintenance, and one-off tasks
-const result = await env.DB.exec(`
-  SELECT * FROM users;
-  SELECT * FROM posts;
-`);
-
-console.log(result);  // { count: 2, duration: 5 }
+await env.DB.exec('SELECT * FROM users;'); // Only for migrations/maintenance
 ```
-
-**NEVER use exec() for:**
-- ❌ Queries with user input (SQL injection risk)
-- ❌ Production queries (poor performance)
-- ❌ Queries that need results (exec doesn't return data)
-
-**ONLY use exec() for:**
-- ✅ Running migration SQL files locally
-- ✅ One-off maintenance tasks
-- ✅ Database initialization scripts
+- ❌ Never use with user input (SQL injection risk)
+- ✅ Only use for: migration files, one-off tasks
 
 ---
 
@@ -393,413 +287,139 @@ console.log(result);  // { count: 2, duration: 5 }
 
 ### Basic CRUD Operations
 
-#### Create (INSERT)
-
 ```typescript
-// Single insert
+// CREATE
 const { meta } = await env.DB.prepare(
   'INSERT INTO users (email, username, created_at) VALUES (?, ?, ?)'
-)
-.bind(email, username, Date.now())
-.run();
-
+).bind(email, username, Date.now()).run();
 const newUserId = meta.last_row_id;
 
-// Bulk insert with batch()
-const users = [
-  { email: 'user1@example.com', username: 'user1' },
-  { email: 'user2@example.com', username: 'user2' }
-];
-
-const inserts = users.map(u =>
-  env.DB.prepare('INSERT INTO users (email, username, created_at) VALUES (?, ?, ?)')
-    .bind(u.email, u.username, Date.now())
-);
-
-await env.DB.batch(inserts);
-```
-
-#### Read (SELECT)
-
-```typescript
-// Single row
+// READ (single)
 const user = await env.DB.prepare('SELECT * FROM users WHERE user_id = ?')
-  .bind(userId)
-  .first();
+  .bind(userId).first();
 
-// Multiple rows
-const { results } = await env.DB.prepare(
-  'SELECT * FROM users WHERE created_at > ? ORDER BY created_at DESC LIMIT ?'
-)
-.bind(timestamp, 10)
-.all();
+// READ (multiple)
+const { results } = await env.DB.prepare('SELECT * FROM users LIMIT ?')
+  .bind(10).all();
 
-// Count
-const count = await env.DB.prepare('SELECT COUNT(*) as total FROM users')
-  .first('total');
-
-// Exists check
-const exists = await env.DB.prepare('SELECT 1 FROM users WHERE email = ? LIMIT 1')
-  .bind(email)
-  .first();
-
-if (exists) {
-  // Email already registered
-}
-```
-
-#### Update (UPDATE)
-
-```typescript
-const { meta } = await env.DB.prepare(
-  'UPDATE users SET username = ?, updated_at = ? WHERE user_id = ?'
-)
-.bind(newUsername, Date.now(), userId)
-.run();
-
+// UPDATE
+const { meta } = await env.DB.prepare('UPDATE users SET username = ? WHERE user_id = ?')
+  .bind(newUsername, userId).run();
 const rowsAffected = meta.rows_written;
 
-if (rowsAffected === 0) {
-  // User not found
-}
+// DELETE
+await env.DB.prepare('DELETE FROM users WHERE user_id = ?').bind(userId).run();
+
+// COUNT
+const count = await env.DB.prepare('SELECT COUNT(*) as total FROM users').first('total');
+
+// EXISTS check
+const exists = await env.DB.prepare('SELECT 1 FROM users WHERE email = ? LIMIT 1')
+  .bind(email).first();
 ```
 
-#### Delete (DELETE)
+### Pagination Pattern
 
 ```typescript
-const { meta } = await env.DB.prepare('DELETE FROM users WHERE user_id = ?')
-  .bind(userId)
-  .run();
+const page = parseInt(c.req.query('page') || '1');
+const limit = 20;
+const offset = (page - 1) * limit;
 
-const rowsDeleted = meta.rows_written;
-```
+const [countResult, usersResult] = await c.env.DB.batch([
+  c.env.DB.prepare('SELECT COUNT(*) as total FROM users'),
+  c.env.DB.prepare('SELECT * FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?')
+    .bind(limit, offset)
+]);
 
-### Advanced Queries
-
-#### Pagination
-
-```typescript
-app.get('/api/users', async (c) => {
-  const page = parseInt(c.req.query('page') || '1');
-  const limit = parseInt(c.req.query('limit') || '20');
-  const offset = (page - 1) * limit;
-
-  const [countResult, usersResult] = await c.env.DB.batch([
-    c.env.DB.prepare('SELECT COUNT(*) as total FROM users'),
-    c.env.DB.prepare('SELECT * FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?')
-      .bind(limit, offset)
-  ]);
-
-  const total = countResult.results[0].total as number;
-  const users = usersResult.results;
-
-  return c.json({
-    users,
-    pagination: {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit)
-    }
-  });
+return c.json({
+  users: usersResult.results,
+  pagination: { page, limit, total: countResult.results[0].total }
 });
 ```
 
-#### Joins
+### Batch Pattern (Pseudo-Transactions)
 
 ```typescript
-const { results } = await env.DB.prepare(`
-  SELECT
-    posts.*,
-    users.username as author_name,
-    users.email as author_email
-  FROM posts
-  INNER JOIN users ON posts.user_id = users.user_id
-  WHERE posts.published = ?
-  ORDER BY posts.created_at DESC
-  LIMIT ?
-`)
-.bind(1, 10)
-.all();
-```
-
-#### Transactions (Batch Pattern)
-
-D1 doesn't support multi-statement transactions, but batch() provides sequential execution:
-
-```typescript
-// Transfer credits between users (pseudo-transaction)
+// D1 doesn't support multi-statement transactions, but batch() provides sequential execution
 await env.DB.batch([
-  env.DB.prepare('UPDATE users SET credits = credits - ? WHERE user_id = ?')
-    .bind(amount, fromUserId),
-  env.DB.prepare('UPDATE users SET credits = credits + ? WHERE user_id = ?')
-    .bind(amount, toUserId),
-  env.DB.prepare('INSERT INTO transactions (from_user, to_user, amount) VALUES (?, ?, ?)')
-    .bind(fromUserId, toUserId, amount)
+  env.DB.prepare('UPDATE users SET credits = credits - ? WHERE user_id = ?').bind(amount, fromUserId),
+  env.DB.prepare('UPDATE users SET credits = credits + ? WHERE user_id = ?').bind(amount, toUserId),
+  env.DB.prepare('INSERT INTO transactions (from_user, to_user, amount) VALUES (?, ?, ?)').bind(fromUserId, toUserId, amount)
 ]);
+// If any statement fails, batch stops (transaction-like behavior)
 ```
-
-**Note**: If any statement fails, the batch stops. This provides some transaction-like behavior.
 
 ---
 
 ## Error Handling
 
-### Error Types
+**Common Error Types:**
+- `D1_ERROR` - General D1 error
+- `D1_EXEC_ERROR` - SQL syntax error
+- `D1_TYPE_ERROR` - Type mismatch (undefined instead of null)
+- `D1_COLUMN_NOTFOUND` - Column doesn't exist
 
-```typescript
-try {
-  const result = await env.DB.prepare('SELECT * FROM users WHERE user_id = ?')
-    .bind(userId)
-    .first();
-} catch (error: any) {
-  // D1 errors have a message property
-  const errorMessage = error.message;
+**Common Errors and Fixes:**
 
-  if (errorMessage.includes('D1_ERROR')) {
-    // D1-specific error
-  } else if (errorMessage.includes('D1_EXEC_ERROR')) {
-    // SQL syntax error
-  } else if (errorMessage.includes('D1_TYPE_ERROR')) {
-    // Type mismatch (e.g., undefined instead of null)
-  } else if (errorMessage.includes('D1_COLUMN_NOTFOUND')) {
-    // Column doesn't exist
-  }
+| Error | Cause | Solution |
+|-------|-------|----------|
+| **Statement too long** | Large INSERT with 1000+ rows | Break into batches of 100-250 using `batch()` |
+| **Too many requests queued** | Individual queries in loop | Use `batch()` instead of loop |
+| **D1_TYPE_ERROR** | Using `undefined` in bind | Use `null` for optional values: `.bind(email, bio \|\| null)` |
+| **Transaction conflicts** | BEGIN TRANSACTION in migration | Remove BEGIN/COMMIT (D1 handles automatically) |
+| **Foreign key violations** | Schema changes break constraints | Use `PRAGMA defer_foreign_keys = true` |
 
-  console.error('Database error:', errorMessage);
-  return c.json({ error: 'Database operation failed' }, 500);
-}
-```
-
-### Common Errors and Fixes
-
-#### "Statement too long"
-
-```typescript
-// ❌ DON'T: Single massive INSERT
-await env.DB.exec(`
-  INSERT INTO users (email) VALUES
-    ('user1@example.com'),
-    ('user2@example.com'),
-    ... // 1000 more rows
-`);
-
-// ✅ DO: Break into batches
-const batchSize = 100;
-for (let i = 0; i < users.length; i += batchSize) {
-  const batch = users.slice(i, i + batchSize);
-  const inserts = batch.map(u =>
-    env.DB.prepare('INSERT INTO users (email) VALUES (?)').bind(u.email)
-  );
-  await env.DB.batch(inserts);
-}
-```
-
-#### "Too many requests queued"
-
-```typescript
-// ❌ DON'T: Fire off many individual queries
-for (const user of users) {
-  await env.DB.prepare('INSERT INTO users (email) VALUES (?)').bind(user.email).run();
-}
-
-// ✅ DO: Use batch()
-const inserts = users.map(u =>
-  env.DB.prepare('INSERT INTO users (email) VALUES (?)').bind(u.email)
-);
-await env.DB.batch(inserts);
-```
-
-#### "D1_TYPE_ERROR" (undefined vs null)
-
-```typescript
-// ❌ DON'T: Use undefined
-await env.DB.prepare('INSERT INTO users (email, bio) VALUES (?, ?)')
-  .bind(email, undefined);  // ❌ D1 doesn't support undefined
-
-// ✅ DO: Use null for optional values
-await env.DB.prepare('INSERT INTO users (email, bio) VALUES (?, ?)')
-  .bind(email, bio || null);
-```
-
-### Retry Logic
-
-```typescript
-async function queryWithRetry<T>(
-  queryFn: () => Promise<T>,
-  maxRetries = 3
-): Promise<T> {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await queryFn();
-    } catch (error: any) {
-      const message = error.message;
-
-      // Retry on transient errors
-      const isRetryable =
-        message.includes('Network connection lost') ||
-        message.includes('storage caused object to be reset') ||
-        message.includes('reset because its code was updated');
-
-      if (!isRetryable || attempt === maxRetries - 1) {
-        throw error;
-      }
-
-      // Exponential backoff
-      const delay = Math.min(1000 * Math.pow(2, attempt), 5000);
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-
-  throw new Error('Retry logic failed');
-}
-
-// Usage
-const user = await queryWithRetry(() =>
-  env.DB.prepare('SELECT * FROM users WHERE user_id = ?')
-    .bind(userId)
-    .first()
-);
-```
+**Automatic Retries (Sept 2025):**
+D1 automatically retries read-only queries (SELECT, EXPLAIN, WITH) up to 2 times on retryable errors. Check `meta.total_attempts` in response for retry count.
 
 ---
 
 ## Performance Optimization
 
-### Indexes
+**Index Best Practices:**
+- ✅ Index columns in WHERE clauses: `CREATE INDEX idx_users_email ON users(email)`
+- ✅ Index foreign keys: `CREATE INDEX idx_posts_user_id ON posts(user_id)`
+- ✅ Index columns for sorting: `CREATE INDEX idx_posts_created_at ON posts(created_at DESC)`
+- ✅ Multi-column indexes: `CREATE INDEX idx_posts_user_published ON posts(user_id, published)`
+- ✅ Partial indexes: `CREATE INDEX idx_users_active ON users(email) WHERE deleted = 0`
+- ✅ Test with: `EXPLAIN QUERY PLAN SELECT ...`
 
-Indexes dramatically improve query performance for filtered columns.
-
-#### When to Create Indexes
-
-```typescript
-// ✅ Index columns used in WHERE clauses
+**PRAGMA optimize (Feb 2025):**
+```sql
 CREATE INDEX idx_users_email ON users(email);
-
-// ✅ Index foreign keys
-CREATE INDEX idx_posts_user_id ON posts(user_id);
-
-// ✅ Index columns used for sorting
-CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
-
-// ✅ Multi-column indexes for complex queries
-CREATE INDEX idx_posts_user_published ON posts(user_id, published);
+PRAGMA optimize;  -- Run after schema changes
 ```
 
-#### Test Index Usage
-
-```sql
--- Check if index is being used
-EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = 'user@example.com';
-
--- Should see: SEARCH users USING INDEX idx_users_email
-```
-
-#### Partial Indexes
-
-```sql
--- Index only non-deleted records
-CREATE INDEX idx_users_active ON users(email) WHERE deleted = 0;
-
--- Index only published posts
-CREATE INDEX idx_posts_published ON posts(created_at DESC) WHERE published = 1;
-```
-
-### PRAGMA optimize
-
-Run after creating indexes or making schema changes:
-
-```sql
--- In your migration file
-CREATE INDEX idx_users_email ON users(email);
-PRAGMA optimize;
-```
-
-Or from Worker:
-
-```typescript
-await env.DB.exec('PRAGMA optimize');
-```
-
-### Query Optimization Tips
-
-```typescript
-// ✅ Use specific columns instead of SELECT *
-const users = await env.DB.prepare(
-  'SELECT user_id, email, username FROM users'
-).all();
-
-// ✅ Use LIMIT to prevent scanning entire table
-const latest = await env.DB.prepare(
-  'SELECT * FROM posts ORDER BY created_at DESC LIMIT 10'
-).all();
-
-// ✅ Use indexes for WHERE conditions
-// Create index first: CREATE INDEX idx_users_email ON users(email)
-const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?')
-  .bind(email)
-  .first();
-
-// ❌ Avoid functions in WHERE (can't use indexes)
-// Bad: WHERE LOWER(email) = 'user@example.com'
-// Good: WHERE email = 'user@example.com' (store email lowercase)
-```
+**Query Optimization:**
+- ✅ Use specific columns (not `SELECT *`)
+- ✅ Always include LIMIT on large result sets
+- ✅ Use indexes for WHERE conditions
+- ❌ Avoid functions in WHERE (can't use indexes): `WHERE LOWER(email)` → store lowercase instead
 
 ---
 
 ## Local Development
 
-### Local vs Remote Databases
-
+**Local vs Remote (Nov 2025 - Remote Bindings GA):**
 ```bash
-# Create local database (automatic on first --local command)
+# Local database (automatic creation)
 npx wrangler d1 migrations apply my-database --local
-
-# Query local database
 npx wrangler d1 execute my-database --local --command "SELECT * FROM users"
 
-# Query remote database
+# Remote database
 npx wrangler d1 execute my-database --remote --command "SELECT * FROM users"
+
+# Remote bindings (wrangler@4.37.0+) - connect local Worker to deployed D1
+# Add to wrangler.jsonc: { "binding": "DB", "remote": true }
 ```
 
-### Local Database Location
+**Local Database Location:**
+`.wrangler/state/v3/d1/miniflare-D1DatabaseObject/<database_id>.sqlite`
 
-Local D1 databases are stored in:
-```
-.wrangler/state/v3/d1/miniflare-D1DatabaseObject/<database_id>.sqlite
-```
-
-### Seeding Local Database
-
+**Seed Local Database:**
 ```bash
-# Create seed file
-cat > seed.sql << 'EOF'
-INSERT INTO users (email, username, created_at) VALUES
-  ('alice@example.com', 'alice', 1698000000),
-  ('bob@example.com', 'bob', 1698000060);
-EOF
-
-# Apply seed
 npx wrangler d1 execute my-database --local --file=seed.sql
 ```
-
----
-
-## Drizzle ORM (Optional)
-
-While D1 works great with raw SQL, some developers prefer ORMs. Drizzle ORM supports D1:
-
-```bash
-npm install drizzle-orm
-npm install -D drizzle-kit
-```
-
-**Note**: Drizzle adds complexity and another layer to learn. For most D1 use cases, **raw SQL with wrangler is simpler and more direct**. Only consider Drizzle if you:
-- Prefer TypeScript schema definitions over SQL
-- Want auto-complete for queries
-- Are building a very large application with complex schemas
-
-**Official Drizzle D1 docs**: https://orm.drizzle.team/docs/get-started-sqlite#cloudflare-d1
 
 ---
 
