@@ -2602,6 +2602,78 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 
 ---
 
+## Cloudflare-Turnstile Skill Audit ✅
+
+**Analysis Date**: 2025-11-24
+**Skill Size**: 908 lines (~3,027 tokens)
+**Status**: **COMPLETE** - Trimmed to 432 lines (~1,440 tokens)
+**Actual Savings**: **52.4%** (~1,587 tokens)
+
+### Research Phase Findings ✅
+
+**Package Version Updates:**
+- @marsidev/react-turnstile: 1.3.1 (current, no update)
+- turnstile-types: 1.2.3 (current, no update)
+
+**Major Knowledge Gaps (6 from 2025):**
+
+1. **Upgraded Turnstile Analytics** (March 2025) - Major analytics overhaul
+   - New TopN section with 7 statistics views:
+     - Top Hostnames, Browsers, Countries, User Agents
+     - Top ASNs (autonomous systems), Operating Systems, Source IPs
+   - Anomaly detection in traffic patterns and solve rates
+   - Enhanced bot behavior monitoring and attack investigation
+   - Challenge outcomes: issued/solved/unsolved, likely human/bot
+   - Lookback: Free (7 days), Enterprise (30 days)
+
+2. **Widget Limits Clarification** (2025)
+   - Free plan: 20 widgets max
+   - Enterprise: Unlimited widgets
+
+3. **Any Hostname Feature** (Enterprise only)
+   - No pre-configured hostnames required
+   - For large domain portfolios, multi-tenant SaaS, dynamic subdomains
+
+4. **WCAG 2.1 AA Compliance** - Now explicitly documented standard
+
+5. **Ephemeral IDs** (Enterprise only) - Advanced privacy feature
+
+6. **Offlabel** (Enterprise only) - Remove Cloudflare branding
+
+### Audit Results
+
+**Metrics:**
+- Before: 908 lines (~3,027 tokens)
+- After: 432 lines (~1,440 tokens)
+- Savings: 476 lines (52.4% reduction), ~1,587 tokens
+- Target: 60% ⚠️ **Slightly under by 7.6%** (still good savings)
+- Errors prevented: 12 documented errors (100% preserved, verified with grep)
+- Knowledge gaps: 6 major 2025 updates added
+
+**What Makes This Unique:**
+1. **Error prevention for 12 documented issues**
+   - Safari 18 "Hide IP" issue (Error 300010) - Document workaround
+   - Brave Browser confetti animation failure (GitHub issue #45608, April 2025) - Handle success before animation
+   - Next.js + Jest incompatibility (Issue #112, Oct 2025) - Jest mocking solution
+   - CSP blocking (Error 200500) - Required CSP directives
+   - Token reuse attempt - Single-use constraint, token refresh patterns
+   - Token expiration (5 min TTL) - Token refresh on expiration
+   - Hostname allowlist (Error 110200) - localhost requirement for dev
+   - Widget crash (Error 300030) - Known Cloudflare-side issue, retry logic
+   - Configuration error (Error 600010) - Missing hostname in widget config
+   - Missing server-side validation - Zero token validation in analytics
+   - GET request to Siteverify (405 error) - POST required
+   - Secret key exposed in frontend - Security bypass prevention
+2. **Dummy test keys** - 6 sitekeys + 3 secret keys for all test scenarios
+3. **Token constraints** - 5 min TTL, single-use only, server validation mandatory
+4. **CSP configuration requirements** - Exact directives for challenges.cloudflare.com
+5. **2025 Knowledge Gaps** (6 major updates: Analytics upgrade, WCAG compliance, Free/Enterprise limits, Any hostname, Ephemeral IDs, Offlabel)
+6. **Integration patterns** - Hono + React examples with complete validation
+
+**Commit**: 9e8b38e
+
+---
+
 ## Phase 2 Summary So Far
 
 **Skills Completed:**
@@ -2625,6 +2697,7 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 18. ✅ cloudflare-mcp-server (1,932→1,001 lines, 48.2% reduction, 10 major 2025 updates, workers-oauth-provider 0.1.0 breaking, 22 error patterns preserved)
 19. ✅ cloudflare-queues (1,250→558 lines, 55.4% reduction, 4 major 2025 updates, pull consumer limits 5000msg/s, pause/purge APIs, 4 errors + 4 troubleshooting issues preserved)
 20. ✅ cloudflare-r2 (1,166→385 lines, 67.0% reduction, 14 major 2025 updates, R2 SQL + Pipelines + Remote Bindings + bucket limit 1M, 6 errors preserved)
+21. ✅ cloudflare-turnstile (908→432 lines, 52.4% reduction, 6 major 2025 updates, Analytics upgrade + WCAG + Free/Enterprise limits + Any hostname + Ephemeral IDs + Offlabel, 12 errors preserved)
 
 **Skills Deleted:**
 1. ✅ claude-code-bash-patterns (1,186 lines removed - redundant with official Claude Code docs)
@@ -2633,14 +2706,14 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 20 of 59 (34%)
+- Skills audited: 21 of 59 (36%)
 - Skills deleted: 1
-- Lines removed: ~13,400 lines
-- Tokens saved: ~44,530 tokens per invocation (across 20 audited skills)
-- Average reduction: 50.1% (excluding new skill)
-- Annual savings (5 uses/month): ~2,671,800 tokens across these 20 skills
+- Lines removed: ~13,876 lines (476 from cloudflare-turnstile)
+- Tokens saved: ~46,117 tokens per invocation (across 21 audited skills)
+- Average reduction: 50.3% (excluding new skill)
+- Annual savings (5 uses/month): ~2,767,020 tokens across these 21 skills
 
-**Next:** Continue A-Z systematic audit (next skill: cloudflare-turnstile)
+**Next:** Continue A-Z systematic audit (next skill: cloudflare-worker-base)
 
 ---
 
