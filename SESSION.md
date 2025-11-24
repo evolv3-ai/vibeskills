@@ -2277,6 +2277,112 @@ Build with Claude Messages API using structured outputs (v0.69.0+, Nov 2025) for
 
 ---
 
+## Cloudflare-Queues Skill Audit ✅
+
+**Analysis Date**: 2025-11-24
+**Skill Size**: 1,250 lines (~4,170 tokens)
+**Status**: **COMPLETE** - Trimmed to 558 lines (~1,860 tokens)
+**Actual Savings**: **55.4%** (~2,310 tokens)
+
+### Research Phase Findings ✅
+
+**Package Version Updates:**
+- wrangler: 4.43.0 → **4.50.0** (7 minor versions)
+- @cloudflare/workers-types: 4.20251014.0 → **4.20251121.0** (current)
+
+**Major Knowledge Gaps (4 from 2025):**
+
+1. **Pull Consumers Increased Limits** (April 17, 2025)
+   - Pull consumers now handle **5,000 messages/second per queue**
+   - Previously: 1,200 requests / 5 minutes aggregate limit
+   - Available on all new and existing queues
+   - 4x+ throughput increase
+
+2. **Pause & Purge APIs** (March 27, 2025)
+   - New wrangler commands: `queues pause-delivery`, `queues purge`
+   - Use cases: Clean up dev messages, clear stale backlogs, maintenance
+   - Paused queues continue receiving messages (delivery stopped to consumers)
+   - Purge permanently deletes all messages in queue
+
+3. **Customizable Message Retention**
+   - Now: 60 seconds to 14 days (configurable via `--message-retention-period-secs`)
+   - Previously: Fixed at 4 days
+   - Allows fine-tuning retention for cost and compliance
+
+4. **Increased Queue Limits**
+   - Now: **10,000 queues per account**
+   - Previously: 10 queues per account
+   - **1000x increase** enables multi-tenant architectures
+
+**No Breaking Changes** - All updates are additive improvements
+
+---
+
+### Trim Phase Analysis
+
+**Content Distribution Analysis:**
+1. Quick Start tutorial: 155 lines (verbose step-by-step)
+2. Producer API reference: 104 lines (with many examples)
+3. Consumer API reference: 113 lines (verbose interface docs)
+4. Consumer patterns: 235 lines (5 patterns, some basic)
+5. Consumer configuration: 119 lines (verbose explanations)
+6. Wrangler commands: 106 lines (comprehensive reference)
+7. TypeScript types: 54 lines (duplicates @cloudflare/workers-types)
+8. Error handling: 54 lines (**UNIQUE VALUE** - 4 errors with solutions)
+9. Always/Never Do: 29 lines (best practices)
+10. Troubleshooting: 100 lines (**UNIQUE VALUE** - 4 issues with fixes)
+11. Production checklist: 18 lines (generic)
+12. Limits/Pricing/Docs: 63 lines (concise already)
+
+**What's Obvious Knowledge:**
+- Quick Start tutorial (well-documented in official Cloudflare Queues docs)
+- Complete Producer/Consumer API tutorials (basic usage examples)
+- Basic consumer patterns (implicit ack, multiple queues)
+- TypeScript types reference (available in @cloudflare/workers-types package)
+- Verbose configuration explanations (covered in official docs)
+- Wrangler commands verbose reference (CLI --help available)
+- Production checklist (generic best practices)
+
+**Trim Strategy Applied:**
+1. **Quick Start condensed**: 155 → 30 lines (kept TL;DR workflow)
+2. **Producer API condensed**: 104 → 23 lines (kept essential patterns + critical limits)
+3. **Consumer API condensed**: 113 → 29 lines (kept critical info only)
+4. **Consumer Patterns trimmed**: 235 → 90 lines (kept only error-prone patterns: explicit ack, exponential backoff, DLQ)
+5. **Consumer Configuration condensed**: 119 → 27 lines (single example with all settings)
+6. **Wrangler Commands condensed**: 106 → 22 lines (essentials + 2025 pause/purge commands)
+7. **TypeScript Types removed**: 54 → 0 lines (duplicates @cloudflare/workers-types package)
+8. **Error Handling preserved**: 100% (all 4 errors with exact solutions)
+9. **Always/Never Do condensed**: 29 → 19 lines (kept critical rules)
+10. **Troubleshooting preserved**: 100% (all 4 issues with fixes)
+11. **Production Checklist removed**: 18 → 0 lines (generic)
+12. **Limits/Pricing/Docs preserved**: Kept concise as-is
+
+### Audit Results
+
+**Metrics:**
+- Before: 1,250 lines (~4,170 tokens)
+- After: 558 lines (~1,860 tokens)
+- Savings: 692 lines (55.4% reduction), ~2,310 tokens
+- Target: 50% ✅ **Exceeded by 5.4%**
+- Errors prevented: 4 documented errors + 4 troubleshooting issues (100% preserved, verified with grep)
+- Knowledge gaps: 4 major 2025 updates added
+
+**What Makes This Unique:**
+1. **Error prevention for 8 documented issues** (4 errors + 4 troubleshooting scenarios)
+   - Message Too Large (>128 KB) - exact solution with R2 workaround
+   - Throughput Exceeded (>5,000 msg/s) - sendBatch pattern with rate limiting
+   - Consumer Timeout - CPU limit increase guidance
+   - Backlog Growing - auto-scaling + batch optimization patterns
+2. **Dead Letter Queue critical warning** - "Without DLQ, messages DELETED PERMANENTLY"
+3. **Explicit acknowledgement pattern** - Critical for non-idempotent ops (DB writes, payments)
+4. **Exponential backoff formula** - Exact pattern for rate-limited APIs
+5. **2025 Knowledge Gaps** (4 major updates: pull consumer limits, pause/purge APIs, retention, queue limits)
+6. **Critical limits** - 128 KB message size, 5,000 msg/s throughput, 12 hour max delay
+
+**Commit**: 4851e9c
+
+---
+
 ## Phase 2 Summary So Far
 
 **Skills Completed:**
@@ -2298,6 +2404,7 @@ Build with Claude Messages API using structured outputs (v0.69.0+, Nov 2025) for
 16. ✅ cloudflare-images (1,126→563 lines, 50.0% reduction, AI face cropping GA, Media Transformations origin restrictions, 13 error codes preserved)
 17. ✅ cloudflare-kv (1,042→429 lines, 58.8% reduction, Aug 2025 architecture redesign 40x perf gain, namespace limit 200→1,000, 4 error patterns preserved)
 18. ✅ cloudflare-mcp-server (1,932→1,001 lines, 48.2% reduction, 10 major 2025 updates, workers-oauth-provider 0.1.0 breaking, 22 error patterns preserved)
+19. ✅ cloudflare-queues (1,250→558 lines, 55.4% reduction, 4 major 2025 updates, pull consumer limits 5000msg/s, pause/purge APIs, 4 errors + 4 troubleshooting issues preserved)
 
 **Skills Deleted:**
 1. ✅ claude-code-bash-patterns (1,186 lines removed - redundant with official Claude Code docs)
@@ -2306,14 +2413,14 @@ Build with Claude Messages API using structured outputs (v0.69.0+, Nov 2025) for
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 18 of 59 (31%)
+- Skills audited: 19 of 59 (32%)
 - Skills deleted: 1
-- Lines removed: ~11,928 lines (10,767 from audits + 1,161 from cloudflare-agents)
-- Tokens saved: ~39,620 tokens per invocation (across 18 audited skills)
-- Average reduction: 49.2% (excluding new skill)
-- Annual savings (5 uses/month): ~2,377,200 tokens across these 18 skills
+- Lines removed: ~12,620 lines
+- Tokens saved: ~41,930 tokens per invocation (across 19 audited skills)
+- Average reduction: 49.8% (excluding new skill)
+- Annual savings (5 uses/month): ~2,515,800 tokens across these 19 skills
 
-**Next:** Continue A-Z systematic audit (next skill: cloudflare-queues)
+**Next:** Continue A-Z systematic audit (next skill: cloudflare-r2)
 
 ---
 
