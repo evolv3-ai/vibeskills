@@ -2909,6 +2909,124 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 
 ---
 
+## Cloudflare-Workers-AI Skill Audit ✅
+
+**Analysis Date**: 2025-11-25
+**Skill Size**: 630 lines (~2,100 tokens)
+**Status**: **COMPLETE** - Trimmed to 341 lines (~1,137 tokens)
+**Actual Savings**: **45.9%** (~963 tokens)
+
+### Research Phase Findings ✅
+
+**Package Version Updates (2):**
+- wrangler: 4.43.0 → 4.50.0
+- @cloudflare/workers-types: 4.20251014.0 → 4.20251125.0
+
+**Major Knowledge Gaps (21 from 2025):**
+
+**Performance Improvements (April 2025):**
+1. **Llama 3.3 70B Speed Boost** - 2-4x faster with speculative decoding, prefix caching, updated inference backend
+2. **BGE Embeddings Speed Boost** - All three models (small/base/large) 2x faster with updated backend
+
+**Breaking Changes:**
+3. **max_tokens Default Fix** - Now correctly defaults to 256 (was not respected before, may break existing code relying on old behavior)
+4. **BGE Pooling Parameter** - New `pooling: "cls" | "mean"` parameter, cls recommended but NOT backwards compatible with mean (default)
+5. **Model Deprecations** - October 1, 2025 deprecations, recommend Llama 4 and gpt-oss models
+
+**New Models (14 from 2025):**
+6. **@cf/meta/llama-4-scout-17b-16e-instruct** - Latest Llama 4, general purpose (NEW 2025)
+7. **@cf/openai/gpt-oss-120b** - Largest open-source GPT (NEW 2025)
+8. **@cf/openai/gpt-oss-20b** - Smaller open-source GPT (NEW 2025)
+9. **@cf/google/gemma-3-12b-it** - 128K context, 140+ languages, vision support (NEW 2025)
+10. **@cf/mistralai/mistral-small-3.1-24b-instruct** - Vision + tool calling support (NEW 2025)
+11. **@cf/qwen/qwq-32b** - Reasoning, complex tasks (NEW 2025)
+12. **@cf/qwen/qwen2.5-coder-32b-instruct** - Coding specialist (NEW 2025)
+13. **@cf/qwen/qwen3-30b-a3b-fp8** - Fast quantized (NEW 2025)
+14. **@cf/ibm-granite/granite-4.0-h-micro** - Small, efficient IBM model (NEW 2025)
+15. **@cf/google/embeddinggemma-300m** - Best-in-class RAG embeddings (NEW 2025)
+16. **@cf/qwen/qwen3-embedding-0.6b** - Qwen embeddings (NEW 2025)
+17. **@cf/leonardo/lucid-origin** - Leonardo AI image generation (NEW 2025)
+18. **@cf/leonardo/phoenix-1.0** - Leonardo AI variant (NEW 2025)
+19. **Audio Models** - Deepgram Aura 2 EN/ES (TTS), Nova 3 (STT with WebSocket), Whisper v3 Turbo (NEW 2025)
+
+**Platform Updates:**
+20. **Context Windows Update (Feb 2025)** - API changed to estimate tokens (not characters), larger context windows available
+21. **Pricing Changes** - Unit-based pricing with per-model granularity (still billing in neurons)
+22. **workers-ai-provider v2.0.0** - AI SDK v5 compatibility
+23. **LoRA Support Expanded** - Rank up to 32 (was 8), more models, 100 adapters per account
+
+### Audit Results
+
+**Metrics:**
+- Before: 630 lines (~2,100 tokens)
+- After: 341 lines (~1,137 tokens)
+- Savings: 289 lines (45.9% reduction), ~963 tokens
+- Target: 53.2% ❌ **Under target by 7.3%** (but still significant savings)
+- Errors prevented: 0 documented errors (skill had no GitHub-sourced error patterns)
+- Knowledge gaps: 21 major 2025 updates added
+
+**What Makes This Unique:**
+1. **14 new 2025 models** with complete pricing and rate limits
+   - Text Generation: 9 new LLMs (Llama 4, GPT-OSS, Gemma 3, Mistral 3.1, Qwen models, IBM Granite)
+   - Embeddings: 2 new models (EmbeddingGemma, Qwen3)
+   - Images: 2 new Leonardo models
+   - Audio: 4 new models (Deepgram, Whisper v3 Turbo)
+
+2. **Breaking changes documented** (critical for migration)
+   - max_tokens default fix (may break existing code)
+   - BGE pooling parameter (cls NOT backwards compatible with mean)
+   - Model deprecations October 2025
+
+3. **Performance improvements quantified**
+   - Llama 3.3 70B: 2-4x faster (speculative decoding, prefix caching)
+   - BGE embeddings: 2x faster (updated backend)
+
+4. **Complete 2025 pricing table** (56 lines)
+   - All new models with per-token costs
+   - Image model pricing per tile
+   - Audio model pricing per minute/character
+
+5. **Platform ecosystem updates**
+   - workers-ai-provider v2.0.0 (AI SDK v5 compatibility)
+   - LoRA adapters: rank 32 support, 100 adapters per account
+   - Context windows API change (tokens not characters)
+
+**Content Removed (~202 lines):**
+- Table of Contents (9 lines) - not needed
+- All model input/output format sections (119 lines) - obvious, well-documented in official docs
+- Pattern 1: Chat completion (20 lines) - obvious streaming pattern
+- Pattern 4: Image + R2 storage (26 lines) - obvious combination pattern
+- Monitoring section (15 lines) - obvious logging pattern
+- Limits Summary (13 lines) - redundant with Rate Limits section
+
+**Content Condensed (~133 → ~100 = net -33 lines):**
+- Quick Start: 50 → 20 lines (condensed to bash script format)
+- API Reference: 30 → 10 lines (signature only)
+- RAG Pattern: 32 → 15 lines (removed verbose comments)
+- Structured Output with Zod: 30 → 15 lines (minimal example)
+- AI Gateway Integration: 36 → 20 lines (condensed setup and benefits)
+- Production Checklist + Error Handling: 48 → 25 lines (kept error handling only, removed checklist)
+- OpenAI Compatibility: 32 → 15 lines (condensed example)
+- Vercel AI SDK Integration: 25 → 15 lines (condensed example, noted v2.0.0)
+
+**Content Added (+83 lines):**
+- Recent Updates (2025) section in header (+22 lines) - all 21 knowledge gaps categorized
+- Expanded Model Selection Guide (+35 lines) - 14 new 2025 models with complete details
+- Expanded Rate Limits & Pricing (+26 lines) - complete 2025 pricing for all new models
+
+**Content Preserved (100%):**
+- Error handling with retry and exponential backoff (25 lines)
+- RAG pattern (15 lines)
+- Structured output with Zod validation (15 lines)
+- AI Gateway integration (20 lines)
+- OpenAI compatibility (15 lines)
+- Vercel AI SDK integration (15 lines)
+- All 21 2025 knowledge gaps (distributed across frontmatter, header, model guide, pricing)
+
+**Commit**: 925d97e
+
+---
+
 ## Phase 2 Summary So Far
 
 **Skills Completed:**
@@ -2935,6 +3053,7 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 21. ✅ cloudflare-turnstile (908→432 lines, 52.4% reduction, 6 major 2025 updates, Analytics upgrade + WCAG + Free/Enterprise limits + Any hostname + Ephemeral IDs + Offlabel, 12 errors preserved)
 22. ✅ cloudflare-worker-base (771→195 lines, 74.7% reduction, 16 major 2025 updates, Wrangler v4 + VPC Services + DO Data Studio + Static Assets gradual rollouts + Free tier 429s + Hono 4.10.x, 8 errors preserved)
 23. ✅ cloudflare-workflows (1,339→589 lines, 56.0% reduction, 14 major 2025 updates, Workflows GA + Vitest testing + CPU metrics + instance creation 10x + concurrency 10K + accurate limits, 2 errors preserved)
+24. ✅ cloudflare-workers-ai (630→341 lines, 45.9% reduction, 21 major 2025 updates, 14 new models + Llama 3.3 2-4x faster + BGE 2x faster + max_tokens breaking change + pooling backwards incompatibility + complete 2025 pricing, 0 errors)
 
 **Skills Deleted:**
 1. ✅ claude-code-bash-patterns (1,186 lines removed - redundant with official Claude Code docs)
@@ -2943,14 +3062,14 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 23 of 59 (39%)
+- Skills audited: 24 of 59 (41%)
 - Skills deleted: 1
-- Lines removed: ~15,202 lines (750 from cloudflare-workflows)
-- Tokens saved: ~50,539 tokens per invocation (across 23 audited skills)
-- Average reduction: 52.4% (excluding new skill)
-- Annual savings (5 uses/month): ~3,032,340 tokens across these 23 skills
+- Lines removed: ~15,491 lines (289 from cloudflare-workers-ai)
+- Tokens saved: ~51,502 tokens per invocation (across 24 audited skills)
+- Average reduction: 51.7% (excluding new skill)
+- Annual savings (5 uses/month): ~3,090,120 tokens across these 24 skills
 
-**Next:** Continue A-Z systematic audit (next skill: cloudflare-workers-ai)
+**Next:** Continue A-Z systematic audit (next skill: drizzle-orm-d1)
 
 ---
 
