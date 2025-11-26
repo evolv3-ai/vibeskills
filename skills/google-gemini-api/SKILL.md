@@ -19,8 +19,8 @@ license: MIT
 # Google Gemini API - Complete Guide
 
 **Version**: Phase 2 Complete + Gemini 3 ✅
-**Package**: @google/genai@1.27.0 (⚠️ NOT @google/generative-ai)
-**Last Updated**: 2025-11-19 (Gemini 3 preview release)
+**Package**: @google/genai@1.30.0 (⚠️ NOT @google/generative-ai)
+**Last Updated**: 2025-11-26 (Package update + FileSearch preview)
 
 ---
 
@@ -90,7 +90,7 @@ This skill uses the **correct current SDK** and provides a complete migration gu
 
 **CORRECT SDK:**
 ```bash
-npm install @google/genai@1.27.0
+npm install @google/genai@1.30.0
 ```
 
 **❌ WRONG (DEPRECATED):**
@@ -973,11 +973,31 @@ const response = await fetch(
 );
 ```
 
+### Configure Thinking Level (SDK) - New in v1.30.0
+
+```typescript
+const response = await ai.models.generateContent({
+  model: 'gemini-2.5-flash',
+  contents: 'Solve this complex problem: ...',
+  config: {
+    thinkingConfig: {
+      thinkingLevel: 'MEDIUM' // 'LOW' | 'MEDIUM' | 'HIGH'
+    }
+  }
+});
+```
+
+**Thinking Levels:**
+- `LOW`: Minimal internal reasoning (faster, lower quality)
+- `MEDIUM`: Balanced reasoning (default)
+- `HIGH`: Maximum reasoning depth (slower, higher quality)
+
 **Key Points:**
 - Thinking mode is **always enabled** on Gemini 2.5 models (cannot be disabled)
 - Higher thinking budgets allow more internal reasoning (may increase latency)
+- `thinkingLevel` provides simpler control than `thinkingBudget` (new in v1.30.0)
 - Default budget varies by model (usually sufficient for most tasks)
-- Only increase budget for very complex reasoning tasks
+- Only increase budget/level for very complex reasoning tasks
 
 ---
 
@@ -1532,7 +1552,7 @@ Grounding connects the model to real-time web information, reducing hallucinatio
 - **Verifiable**: Citations allow fact-checking
 - **Up-to-date**: Not limited to model's training cutoff
 
-### Two Grounding APIs
+### Grounding Options
 
 #### 1. Google Search (`googleSearch`) - Recommended for Gemini 2.5
 
@@ -1547,7 +1567,25 @@ const groundingTool = {
 - Automatic search when needed
 - Available on all Gemini 2.5 models
 
-#### 2. Google Search Retrieval (`googleSearchRetrieval`) - Legacy (Gemini 1.5)
+#### 2. FileSearch - New in v1.29.0 (Preview)
+
+```typescript
+const fileSearchTool = {
+  fileSearch: {
+    fileSearchStoreId: 'store-id-here' // Created via FileSearchStore APIs
+  }
+};
+```
+
+**Features:**
+- Search through your own document collections
+- Upload and index custom knowledge bases
+- Alternative to web search for proprietary data
+- Preview feature (requires FileSearchStore setup)
+
+**Note**: See [FileSearch documentation](https://github.com/googleapis/js-genai) for store creation and management.
+
+#### 3. Google Search Retrieval (`googleSearchRetrieval`) - Legacy (Gemini 1.5)
 
 ```typescript
 const retrievalTool = {
@@ -2079,7 +2117,7 @@ const response = await chat.sendMessage(message);
 
 ### Installation
 ```bash
-npm install @google/genai@1.27.0
+npm install @google/genai@1.30.0
 ```
 
 ### Environment
@@ -2130,6 +2168,6 @@ config: {
 
 ---
 
-**Last Updated**: 2025-10-25
-**Production Validated**: All features tested with @google/genai@1.27.0
+**Last Updated**: 2025-11-26
+**Production Validated**: All features tested with @google/genai@1.30.0
 **Phase**: 2 Complete ✅ (All Core + Advanced Features)
