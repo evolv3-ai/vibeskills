@@ -3247,14 +3247,14 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 32 of 59 (54.2%)
+- Skills audited: 33 of 59 (55.9%)
 - Skills deleted: 3
-- Lines removed: ~20,957 lines (net after google-gemini-api +37 enhancement)
-- Tokens saved: ~70,024 tokens per invocation (across 31 reduction audits)
-- Average reduction: 50.9% (31 reduction audits, 1 enhancement update)
-- Annual savings (5 uses/month): ~4,201,440 tokens across reduction audits
+- Lines removed: ~21,331 lines (net after google-gemini-api +37 enhancement)
+- Tokens saved: ~71,272 tokens per invocation (across 32 reduction audits)
+- Average reduction: 50.2% (32 reduction audits, 1 enhancement update)
+- Annual savings (5 uses/month): ~4,276,320 tokens across reduction audits
 
-**Next:** Continue A-Z systematic audit (next skill: neon-vercel-postgres)
+**Next:** Continue A-Z systematic audit (next skill after neon-vercel-postgres alphabetically)
 
 ---
 
@@ -3331,15 +3331,17 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 68. ✅ REDUCTION: hono-routing (1,259→1,050 lines, -209 lines, -16.6%, removed basic HTTP routing + generic middleware + generic error handling, retained Hono-specific APIs + RPC pattern + 8 errors)
 69. ✅ Audited motion (package already latest + reduction opportunity)
 70. ✅ REDUCTION: motion (1,047→732 lines, -315 lines, -30.1%, removed basic motion component + variants + FLIP + spring physics + generic Vite setup + accessibility basics + common UI patterns, retained Cloudflare Workers fix Dec 2024 + Next.js patterns + 10 errors)
+71. ✅ Audited neon-vercel-postgres (2 package updates: drizzle-kit 0.31.0→0.31.7, neonctl 2.16.1→2.18.1, reduction opportunity)
+72. ✅ REDUCTION: neon-vercel-postgres (1,296→922 lines, -374 lines, -28.9%, removed basic SQL patterns + generic transaction concepts + generic ORM CRUD + generic pooling theory + generic optimization + generic security best practices, retained all 15 errors + Neon branching + pooled connection string specifics + edge compatibility + Vercel env vars + Prisma edge incompatibility + template tag syntax + transaction API + auto-suspend behavior)
 
 **Next Session:**
-1. Continue A-Z systematic audit (next skill alphabetically: neon-vercel-postgres)
+1. Continue A-Z systematic audit (next skill alphabetically after neon-vercel-postgres)
 2. Follow KNOWLEDGE_GAP_AUDIT_CHECKLIST.md process
 3. Research → Audit → Trim → Commit (one skill per session)
-4. Pattern validated: ~50.9% average reduction across 31 skills (1 enhancement update)
+4. Pattern validated: ~50.2% average reduction across 32 skills (1 enhancement update)
 
 **Long Term:**
-- Audit remaining 24 skills alphabetically (32 audited + 3 deleted = 35 of 59 complete, 59.3%)
+- Audit remaining 23 skills alphabetically (33 audited + 3 deleted = 36 of 59 complete, 61.0%)
 - Update skill creation guidelines with "knowledge gap test"
 - Establish quarterly review process for skills
 - Target: Continue 50-70% token savings across all skills
@@ -3349,7 +3351,7 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 ## Last Checkpoint
 
 **Date**: 2025-11-26
-**Commit**: 19e113c
-**Message**: "skill/motion: Reduction audit - remove generic animation concepts"
+**Commit**: f5bdf1d
+**Message**: "skill/neon-vercel-postgres: Reduction audit + package updates"
 
-**Status**: Phase 2 in progress - 32 skills audited (54.2%), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), ~20,957 lines removed from reduction audits (net after google-gemini-api +37 enhancement), 31 reduction audits complete, 1 enhancement update, ~70,024 tokens saved per invocation, 50.9% average reduction, 35 of 59 complete (59.3%), ready for neon-vercel-postgres
+**Status**: Phase 2 in progress - 33 skills audited (55.9%), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), ~21,331 lines removed from reduction audits (net after google-gemini-api +37 enhancement), 32 reduction audits complete, 1 enhancement update, ~71,272 tokens saved per invocation, 50.2% average reduction, 36 of 59 complete (61.0%), ready for next skill alphabetically after neon-vercel-postgres
