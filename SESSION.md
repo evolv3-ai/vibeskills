@@ -3233,8 +3233,8 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 26. ✅ elevenlabs-agents (2,492→673 lines, 73.0% reduction, 5 package updates, 39 major 2025 knowledge gaps added, 17 errors preserved, Agent Testing Framework + 2025 LLM models + platform features)
 27. ✅ fastmcp (2,615→574 lines, 78.0% reduction, 1 package update fastmcp 2.13.0→2.13.1, 11 major 2025 knowledge gaps added, 25 errors preserved, v2.13.1 meta parameters + OCI auth + CVE-2025-61920 + Image.to_data_uri + module-level server + storage backends + lifespan breaking changes)
 28. ✅ google-gemini-api (2,136→2,173 lines, +37 lines enhancement for v1.30.0 features, package update @google/genai 1.27.0→1.30.0, 2 new features added: thinking_level parameter + FileSearch grounding, last verified 2025-11-26)
-29. ✅ google-gemini-embeddings (1,003→1,003 lines, 0 change version-only update, package update @google/genai 1.27.0→1.30.0, no embedding-specific features in SDK updates, content retained as production reference, last verified 2025-11-26)
-30. ✅ google-gemini-file-search (1,160→1,163 lines, +3 lines error correction, CRITICAL FIX: package version ^0.21.0→^1.30.0 (0.21.0 doesn't exist!), added minimum version requirement (1.29.0+), File Search API only 3 weeks old (Nov 5), all content is 2025 knowledge gap, last verified 2025-11-26)
+29. ✅ google-gemini-embeddings (1,003→775 lines, 22.7% reduction, package update @google/genai 1.27.0→1.30.0, removed cosine similarity + k-means clustering + generic chunking (standard ML algorithms), retained 8 task types + Gemini-specific patterns + 8 errors, last verified 2025-11-26)
+30. ✅ google-gemini-file-search (1,163→1,018 lines, 12.5% reduction, CRITICAL FIX: package ^0.21.0→^1.30.0, removed generic RAG overview + comparison tables + standard troubleshooting, retained 8 File Search-specific errors + API patterns (only 3 weeks old Nov 5), last verified 2025-11-26)
 
 **Skills Deleted:**
 1. ✅ claude-code-bash-patterns (1,186 lines removed - redundant with official Claude Code docs)
@@ -3247,10 +3247,10 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 **Cumulative Impact:**
 - Skills audited: 30 of 59 (51%)
 - Skills deleted: 3
-- Lines removed: ~20,060 lines (net after google-gemini-api +37, google-gemini-file-search +3)
-- Tokens saved: ~67,029 tokens per invocation (across 27 reduction audits)
-- Average reduction: 55.2% (27 reduction audits, 1 enhancement update, 1 version-only update, 1 error correction)
-- Annual savings (5 uses/month): ~4,021,740 tokens across reduction audits
+- Lines removed: ~20,433 lines (net after google-gemini-api +37 enhancement)
+- Tokens saved: ~68,274 tokens per invocation (across 29 reduction audits)
+- Average reduction: 52.8% (29 reduction audits, 1 enhancement update)
+- Annual savings (5 uses/month): ~4,096,440 tokens across reduction audits
 
 **Next:** Continue A-Z systematic audit (next skill: hono-routing)
 
@@ -3321,16 +3321,16 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 60. ✅ DELETED github-project-automation (963 lines removed - rarely used, niche repo setup use case)
 61. ✅ Audited google-gemini-api (package update + new features)
 62. ✅ Enhanced google-gemini-api (+37 lines for v1.30.0 features: thinking_level + FileSearch, package 1.27.0→1.30.0)
-63. ✅ Audited google-gemini-embeddings (package update, no content changes needed)
-64. ✅ Updated google-gemini-embeddings (version-only update: package 1.27.0→1.30.0, 0 line change)
-65. ✅ Audited google-gemini-file-search (critical error discovered + package update)
-66. ✅ Fixed google-gemini-file-search (CRITICAL: package ^0.21.0→^1.30.0, 0.21.0 doesn't exist!, added minimum version 1.29.0+, +3 lines)
+63. ✅ Audited google-gemini-embeddings (package update + reduction opportunity)
+64. ✅ REDUCTION: google-gemini-embeddings (1,003→775 lines, -228 lines, -22.7%, removed cosine similarity + k-means + generic chunking)
+65. ✅ Audited google-gemini-file-search (critical error + reduction opportunity)
+66. ✅ REDUCTION: google-gemini-file-search (1,163→1,018 lines, -145 lines, -12.5%, removed generic RAG + comparison tables + standard troubleshooting)
 
 **Next Session:**
 1. Continue A-Z systematic audit (next skill alphabetically: hono-routing)
 2. Follow KNOWLEDGE_GAP_AUDIT_CHECKLIST.md process
 3. Research → Audit → Trim → Commit (one skill per session)
-4. Pattern validated: ~55.2% average reduction across 27 skills (excluding enhancement/version-only/error correction updates)
+4. Pattern validated: ~52.8% average reduction across 29 skills (1 enhancement update)
 
 **Long Term:**
 - Audit remaining 26 skills alphabetically (30 audited + 3 deleted = 33 of 59 complete, 55.9%)
@@ -3343,7 +3343,7 @@ grep -n "^| \*\*" skills/cloudflare-r2/SKILL.md
 ## Last Checkpoint
 
 **Date**: 2025-11-26
-**Commit**: c9c1cec
-**Message**: "skill/google-gemini-file-search: Fix critical package version error + update to v1.30.0"
+**Commit**: 1ab43bd
+**Message**: "skill/google-gemini-file-search: Reduction audit - remove generic RAG concepts"
 
-**Status**: Phase 2 in progress - 30 skills audited (51%), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), ~20,060 lines removed from reduction audits (net after +37 enhancement, +3 error correction), 1 enhancement update (+37 lines), 1 version-only update (0 change), 1 error correction (+3 lines), ~67,029 tokens saved per invocation across 27 reduction audits, 55.2% average reduction, 33 of 59 complete (55.9%), ready for hono-routing
+**Status**: Phase 2 in progress - 30 skills audited (51%), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), ~20,433 lines removed from reduction audits (net after google-gemini-api +37 enhancement), 29 reduction audits complete, 1 enhancement update, ~68,274 tokens saved per invocation, 52.8% average reduction, 33 of 59 complete (55.9%), ready for hono-routing
