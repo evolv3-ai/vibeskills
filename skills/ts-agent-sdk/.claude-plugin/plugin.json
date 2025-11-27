@@ -1,0 +1,5 @@
+{
+  "name": "ts-agent-sdk",
+  "version": "1.0.0",
+  "description": "Generate typed TypeScript SDKs for AI agents to interact with MCP servers"
+}
