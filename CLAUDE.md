@@ -3,8 +3,8 @@
 **Repository**: https://github.com/jezweb/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: Jeremy Dawes (Jez) | Jezweb
-**Status**: Active Development | 59 Skills Complete (13 archived)
-**Last Updated**: 2025-11-17
+**Status**: Active Development | 58 Skills Complete (13 archived)
+**Last Updated**: 2025-11-28
 
 ---
 
@@ -102,11 +102,11 @@ claude-skills/
 
 ---
 
-## Current Status (2025-11-17)
+## Current Status (2025-11-28)
 
-### ✅ Active Skills (59)
+### ✅ Active Skills (58)
 
-All 59 skills are production-ready and organized by domain:
+All 58 skills are production-ready and organized by domain:
 
 **Cloudflare Platform** (20 skills):
 - cloudflare-worker-base, cloudflare-d1, cloudflare-r2, cloudflare-kv
@@ -137,8 +137,8 @@ All 59 skills are production-ready and organized by domain:
 **Database & ORM** (4 skills):
 - drizzle-orm-d1, neon-vercel-postgres, vercel-kv, vercel-blob
 
-**Tooling & Planning** (4 skills):
-- typescript-mcp, fastmcp, project-planning, project-session-management
+**Tooling & Planning** (5 skills):
+- typescript-mcp, fastmcp, ts-agent-sdk, project-planning, project-session-management
 
 **Quality Standards**:
 - ✅ All production-tested

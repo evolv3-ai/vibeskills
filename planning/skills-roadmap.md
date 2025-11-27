@@ -3,7 +3,7 @@
 **Project**: Claude Code Skills Collection
 **Maintainer**: Jeremy Dawes (Jezweb)
 **Repository**: https://github.com/jezweb/claude-skills
-**Last Updated**: 2025-10-29
+**Last Updated**: 2025-11-28
 
 ---
 
@@ -17,12 +17,13 @@
 5. **Build atomic, composable skills** following Claude Code philosophy
 
 ### Success Metrics:
-- ✅ 12+ production-ready atomic skills
-- ✅ 50%+ token savings vs manual setup
+- ✅ 58 production-ready atomic skills
+- ✅ 52.5% average token savings (Phase 2 optimization)
 - ✅ Zero errors for covered use cases
 - ✅ Public GitHub repo with community contributions
 - ✅ Auto-discovery working reliably
 - ✅ Skills are composable and domain-focused
+- ✅ ~84,000 tokens saved per skill invocation (Phase 2)
 
 ---
 
