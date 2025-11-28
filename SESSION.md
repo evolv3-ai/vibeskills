@@ -58,6 +58,7 @@
 42. ✅ skill-review (413→122 lines, 70.5% reduction, meta-skill, 9-phase audit process, severity classification, better-auth example, 10 issue types prevented)
 43. ✅ sveltia-cms (1,901→680 lines, 64.2% reduction, 1 package update @sveltia/cms 0.113.5→0.120.1, 8 knowledge gaps v0.105.0-v0.120.0: author template tags + TOML config + SiteConfig→CmsConfig breaking + field-specific media folders + logo.src deprecation + sanitize_preview XSS fix, 8 errors preserved, migration from Decap CMS + Cloudflare Workers OAuth)
 44. ✅ tailwind-v4-shadcn (629→379 lines, 39.7% reduction, Tailwind v4-specific knowledge (late 2024): 4-step @theme inline architecture + tw-animate-css requirement + @plugin directive + CSS variable mapping + container queries built-in, 5 errors preserved, removed meta-commentary + generic patterns)
+45. ✅ tanstack-router (333→160 lines, 51.9% reduction, 1 package update @tanstack/react-router 1.134.13→1.139.10, removed verbose examples + meta-content, retained all 5 error patterns (devtools dependency, plugin order CRITICAL, type registration, loader not running, TanStack Form memory leak #5734), Cloudflare Workers integration + TanStack Query pattern, last verified 2025-11-28)
 
 **Skills Deleted:**
 1. ✅ claude-code-bash-patterns (1,186 lines removed - redundant with official Claude Code docs)
@@ -68,14 +69,14 @@
 1. ✅ KNOWLEDGE_GAP_AUDIT_CHECKLIST.md (comprehensive 12-step process)
 
 **Cumulative Impact:**
-- Skills audited: 44 of 58 (75.9%)
+- Skills audited: 45 of 58 (77.6%)
 - Skills deleted: 3
-- Lines removed: ~25,743 lines (net after google-gemini-api +37 enhancement)
-- Tokens saved: ~85,880 tokens per invocation (across 38 reduction audits)
-- Average reduction: 53.9% (38 reduction audits, 1 enhancement update)
-- Annual savings (5 uses/month): ~5,152,800 tokens across reduction audits
+- Lines removed: ~25,916 lines (net after google-gemini-api +37 enhancement)
+- Tokens saved: ~86,453 tokens per invocation (across 39 reduction audits)
+- Average reduction: 53.9% (39 reduction audits, 1 enhancement update)
+- Annual savings (5 uses/month): ~5,187,180 tokens across reduction audits
 
-**Next:** Continue A-Z systematic audit (next skill after tailwind-v4-shadcn alphabetically)
+**Next:** Continue A-Z systematic audit (next skill after tanstack-router alphabetically)
 
 ---
 
