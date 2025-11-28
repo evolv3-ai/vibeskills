@@ -184,25 +184,26 @@
 87. ✅ REDUCTION: project-workflow (698→206 lines, -492 lines, -70.5%, workflow skill documenting 7 slash commands for project lifecycle automation (post-knowledge cutoff Nov 2025), removed verbose overview + lengthy installation + redundant command documentation (5-7 items → 2-3 lines) + verbose examples × 7 commands + Complete Workflow Examples verbose format (40→3 lines) + Configuration section + Best Practices generic advice + Advanced Usage verbose examples + FAQ generic Q&A + Related Skills duplicate + verbose Support, retained all 7 command specs: /explore-idea (pre-planning validation 10-15min) + /plan-project (generate docs 5-7min) + /plan-feature (add features 7-10min) + /wrap-session (checkpoint 2-3min) + /continue-session (context load 1-2min) + /workflow (interactive guide) + /release (8-phase safety checks 10-15min) + command relationships diagram + time savings breakdown (35-55min per lifecycle) + integration with project-planning/project-session-management + workflow patterns (full/quick/helpers) + prerequisites per command + troubleshooting, version 1.0.0 Nov 2025)
 88. ✅ REDUCTION: tanstack-query (1,586→503 lines, -1,083 lines, -68.3%, 1 package update @tanstack/react-query 5.90.5→5.90.11 Nov 25 2025 patch fixes, tech skill for TanStack Query v5 React Query, removed duplicate setup sections (Quick Start + 7-Step Setup → condensed Quick Setup 178→96 lines) + verbose configuration theory (staleTime vs gcTime explanations) + Configuration Files Reference (package.json/tsconfig/eslint generic React) + redundant Common Patterns (5 verbose examples 211→47 lines 78% reduction) + Using Bundled Resources meta-content + verbose Advanced Topics (select/waterfalls/server vs client → condensed) + Package Versions duplicate + Production Example meta-content + redundant Troubleshooting (duplicates Known Issues) + Complete Setup Checklist + Error Boundaries (standard React pattern 78 lines) + DevTools advanced options (20 lines standard config), retained all 8 v5 migration errors with GitHub sources + v4→v5 breaking changes (object syntax required + query callbacks removed + status loading→pending + cacheTime→gcTime + useSuspenseQuery+enabled incompatible + initialPageParam required + keepPreviousData→placeholderData + TypeScript Error type default) + v5-specific patterns (queryOptions factory, query key structure) + Critical Rules (Always Do/Never Do) + Key patterns (dependent queries, parallel queries, prefetching, infinite scroll, query cancellation, data transformation), latest @tanstack/react-query@5.90.11)
 89. ✅ REDUCTION: wordpress-plugin-core (1,520→763 lines, -757 lines, -49.8%, 1 version update WordPress 6.7+→6.8.3 current, core WordPress plugin development skill covering Security Foundation + 3 architecture patterns + 20 error prevention patterns, removed verbose Quick Start explanations (3-step setup 101→57 lines) + redundant Security Foundation details (Step 1-5 verbose 269→65 lines) + extensive Plugin Architecture Patterns examples (Simple/OOP/PSR-4 full templates 216→37 lines) + verbose Common Patterns (8 patterns with full code 326→62 lines) + Using Bundled Resources verbose descriptions (35→5 lines) + extensive Advanced Topics (i18n/WP-CLI/Cron/Dependencies full examples 117→30 lines) + Distribution & Auto-Updates verbose guide (99→35 lines) + verbose Troubleshooting (6 problems with multi-step solutions 38→11 lines), retained all 20 error prevention patterns with sources (SQL Injection, XSS, CSRF, Missing Capability Checks, Direct File Access, Prefix Collision, Rewrite Rules Not Flushed, Transients Not Cleaned, Scripts Loaded Everywhere, Missing Sanitization, Incorrect LIKE Queries, Using extract(), Missing REST Permission Callback, Uninstall Hook Registered Repeatedly, Data Deleted on Deactivation, Deprecated Functions, Text Domain Mismatch, Missing Dependencies, Autosave Triggering Meta Save, admin-ajax.php Performance) + Security Trinity (sanitize input/escape output) + nonces (form + AJAX patterns) + prepared statements + 3 architecture patterns (Simple/OOP/PSR-4) + Critical Rules (Always/Never lists) + bundled resources (templates/scripts/references) + GitHub auto-updates pattern + Complete Setup Checklist, last verified 2025-11-28, WordPress 6.8+/PHP 8.0+)
+90. ✅ REDUCTION: zustand-state-management (800→411 lines, -389 lines, -48.6%, no package updates zustand@5.0.8 already current, React state management skill with 5 error prevention patterns + middleware system, removed verbose Quick Start (3-step 79→24 lines) + verbose 3-Pattern Setup Process (Pattern 1/2/3 detailed explanations 167→32 lines) + verbose Middleware Configuration (persist/devtools/combining examples 75→23 lines) + extensive Common Patterns (computed/async/resetting/selector with full examples 113→19 lines) + verbose Using Bundled Resources (templates/references/scripts descriptions 53→5 lines) + verbose Advanced Topics (vanilla store/custom middleware/immer full examples 81→27 lines) + redundant Package Versions section (compatibility matrix) + redundant Troubleshooting section (duplicates Known Issues) + verbose Complete Setup Checklist (12-item checklist + Questions section), retained all 5 error prevention patterns with sources (Next.js Hydration Mismatch with _hasHydrated flag pattern + GitHub Discussion #2839, TypeScript Double Parentheses Missing create<T>()() syntax, Persist Middleware Import Error createJSONStorage from zustand/middleware, Infinite Render Loop shallow comparison pattern + GitHub Discussion #2642, Slices Pattern TypeScript Complexity StateCreator types + official guide) + Critical Rules (Always/Never 8 items) + double parentheses CRITICAL pattern + middleware (persist/devtools/combining) + common patterns (computed/async/reset/selector) + bundled resources (8 templates + 4 references + scripts), last verified 2025-11-28)
 
 **Cumulative Impact:**
-- Skills audited: 42 of 58 (72.4%)
+- Skills audited: 43 of 58 (74.1%)
 - Skills created: 2 (react-native-expo #1, ts-agent-sdk #58)
 - Skills deleted: 3
 - Total skills: 58 (58 from Phase 1 - 3 deletions + 2 new = 58 active)
-- Lines removed: ~28,754 lines (net after 2 enhancement updates: google-gemini-api +37, openai-apps-mcp +6)
-- Tokens saved: ~94,544 tokens per invocation (across 41 reduction audits)
-- Average reduction: 53.1% (41 reduction audits, 2 enhancement updates, 2 new skills)
-- Annual savings (5 uses/month): ~5,672,640 tokens across reduction audits
+- Lines removed: ~29,143 lines (net after 2 enhancement updates: google-gemini-api +37, openai-apps-mcp +6)
+- Tokens saved: ~95,828 tokens per invocation (across 42 reduction audits)
+- Average reduction: 53.0% (42 reduction audits, 2 enhancement updates, 2 new skills)
+- Annual savings (5 uses/month): ~5,749,680 tokens across reduction audits
 
 **Next Session:**
-1. Continue A-Z systematic audit (next skill alphabetically after wordpress-plugin-core)
+1. Continue A-Z systematic audit (15 skills remaining)
 2. Follow KNOWLEDGE_GAP_AUDIT_CHECKLIST.md process
-3. Research → Audit → Trim → Commit (one skill per session)
-4. Pattern validated: ~53.1% average reduction across 41 skills (2 enhancement updates)
+3. Research → Audit → Trim → Commit
+4. Pattern validated: ~53.0% average reduction across 42 skills
 
 **Long Term:**
-- Audit remaining 16 skills alphabetically (42 audited of 58 total, 72.4% complete)
+- Complete remaining 15 skill audits (43 of 58 complete, 74.1%)
 - Update skill creation guidelines with "knowledge gap test"
 - Establish quarterly review process for skills
 - Target: Continue 50-70% token savings across all skills
@@ -212,7 +213,7 @@
 ## Last Checkpoint
 
 **Date**: 2025-11-28
-**Commit**: d2558ac
-**Message**: "skill/wordpress-plugin-core: Phase 2 knowledge-gap audit (49.8% reduction)"
+**Commit**: dcfe410
+**Message**: "skill/zustand-state-management: Phase 2 knowledge-gap audit (48.6% reduction)"
 
-**Status**: Phase 2 in progress - 42 skills audited (72.4%), 2 skills created (react-native-expo, ts-agent-sdk), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), 58 total active skills, ~28,754 lines removed (net after 2 enhancement updates), 41 reduction audits complete (77.9% highest: openai-assistants, 72.6%: openai-responses, 70.5%: project-workflow, 68.3%: tanstack-query, 62.3%: open-source-contributions, 49.8% latest: wordpress-plugin-core), 2 enhancement updates, ~94,544 tokens saved per invocation, 53.1% average reduction, ready for next skill alphabetically
+**Status**: Phase 2 in progress - 43 skills audited (74.1%), 2 skills created (react-native-expo, ts-agent-sdk), 3 skills deleted (claude-code-bash-patterns, gemini-cli, github-project-automation), 58 total active skills, ~29,143 lines removed (net after 2 enhancement updates), 42 reduction audits complete (77.9% highest: openai-assistants, 72.6%: openai-responses, 70.5%: project-workflow, 68.3%: tanstack-query, 62.3%: open-source-contributions, 49.8%: wordpress-plugin-core, 48.6% latest: zustand-state-management), 2 enhancement updates, ~95,828 tokens saved per invocation, 53.0% average reduction, 15 skills remaining
