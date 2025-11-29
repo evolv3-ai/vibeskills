@@ -354,21 +354,27 @@ const editor = useEditor({
 **When to use**: Real-time multi-user editing (Notion-like)
 **See**: `templates/collaborative-setup.tsx` for full example
 
-### Pattern 2: Markdown Input/Output
+### Pattern 2: Markdown Support
 
 ```typescript
-import { generateHTML } from '@tiptap/html'
-import { generateJSON } from '@tiptap/core'
+import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { Markdown } from '@tiptap/markdown'
 
-// Markdown → JSON
-const json = generateJSON(markdownContent, [StarterKit])
+// Load editor with markdown content
+const editor = useEditor({
+  extensions: [StarterKit, Markdown],
+  content: '# Hello World\n\nThis is **Markdown**!',
+  contentType: 'markdown',  // ⚠️ Important: specify content type
+  immediatelyRender: false,
+})
 
-// JSON → HTML for display
-const html = generateHTML(json, [StarterKit])
+// Get markdown from editor
+const markdownOutput = editor?.storage.markdown.getMarkdown()
 ```
 
-**When to use**: Storing as markdown, displaying as rich text
+**When to use**: Storing content as markdown, displaying/editing rich text
+**Install**: `npm install @tiptap/markdown`
 
 ### Pattern 3: Form Integration with react-hook-form
 

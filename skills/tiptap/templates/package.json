@@ -24,6 +24,7 @@
     "vite": "^6.0.7"
   },
   "optionalDependencies": {
+    "@tiptap/markdown": "^3.11.1",
     "@tiptap/extension-collaboration": "^3.11.1",
     "@tiptap/extension-collaboration-cursor": "^3.11.1",
     "@tiptap/extension-task-list": "^3.11.1",

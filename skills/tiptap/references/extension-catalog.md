@@ -238,14 +238,18 @@ Popular third-party extensions:
 
 ### Markdown
 
-**tiptap-markdown**
-- Markdown input/output
-- npm: `tiptap-markdown`
-- GitHub: https://github.com/aguingand/tiptap-markdown
+**@tiptap/markdown** (Official, Recommended)
+- Markdown parser and serializer
+- npm: `@tiptap/markdown@3.11.1`
+- Import: `import { Markdown } from '@tiptap/markdown'`
+- Status: Stable (v3+)
+- Docs: https://tiptap.dev/docs/editor/markdown
 
-**@tiptap/extension-markdown**
-- Official markdown extension
-- Beta/experimental
+**tiptap-markdown** (Community, Legacy)
+- Community markdown package
+- npm: `tiptap-markdown@0.9.0`
+- GitHub: https://github.com/aguingand/tiptap-markdown
+- Note: Maintainer not planning v1 release, consider official package
 
 ---
 
