@@ -4,7 +4,6 @@ description: |
   Generate structured planning documentation for web projects with context-safe phases, verification criteria, and exit conditions. Creates IMPLEMENTATION_PHASES.md plus conditional docs (DATABASE_SCHEMA, API_ENDPOINTS, UI_COMPONENTS, CRITICAL_WORKFLOWS).
 
   Use when: starting new Cloudflare Workers/React projects, adding major features to existing apps, breaking large work into manageable phases, or need verified planning before coding begins.
-license: MIT
 ---
 
 # Project Planning Skill

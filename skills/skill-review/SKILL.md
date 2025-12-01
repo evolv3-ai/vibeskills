@@ -5,21 +5,6 @@ description: |
 
   Use when: investigating skill issues, major package updates detected (e.g., v1.x → v2.x), skill not verified >90 days, before marketplace submission, or troubleshooting outdated API patterns, contradictory examples, broken links, version drift.
 
-license: MIT
-metadata:
-  version: 1.0.0
-  last_verified: 2025-11-28
-  production_tested: better-auth v2.0.0 audit (2025-11-08)
-  token_savings: ~80%
-  errors_prevented: 10
-  triggers:
-    - "review this skill"
-    - "review the X skill"
-    - "audit the skill"
-    - "check if X needs updates"
-    - "is X skill current"
-    - "verify X documentation"
-    - "X skill seems outdated"
 allowed-tools:
   - Read
   - Bash

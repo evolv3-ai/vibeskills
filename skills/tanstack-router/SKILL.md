@@ -4,20 +4,6 @@ description: |
   Build type-safe, file-based React routing with TanStack Router. Supports client-side navigation, route loaders, and TanStack Query integration.
 
   Use when implementing file-based routing patterns, building SPAs with TypeScript routing, or troubleshooting devtools dependency errors, type safety issues, or Vite bundling problems.
-license: MIT
-metadata:
-  version: 1.1.0
-  author: Jeremy Dawes | Jezweb
-  last-verified: 2025-11-28
-  production-tested: true
-  keywords:
-    - tanstack router
-    - type-safe routing
-    - file-based routing
-    - route loaders
-    - tanstack query integration
-    - vite plugin
-    - cloudflare workers
 ---
 
 # TanStack Router

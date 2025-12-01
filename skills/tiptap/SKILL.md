@@ -4,33 +4,6 @@ description: |
   Build rich text editors with Tiptap - headless editor framework with React, shadcn/ui, and Tailwind v4 integration. Includes SSR-safe setup, image uploads to R2, prose styling, collaborative editing, and markdown support.
 
   Use when creating blog editors, comment systems, documentation platforms, or Notion-like apps, or troubleshooting SSR hydration errors, Tailwind typography issues, or image upload performance.
-license: MIT
-metadata:
-  keywords:
-    - tiptap
-    - rich text editor
-    - WYSIWYG
-    - text editor
-    - content editor
-    - markdown editor
-    - tiptap react
-    - tiptap shadcn
-    - tiptap tailwind
-    - tiptap next.js
-    - collaborative editing
-    - prose editor
-    - tiptap SSR
-    - immediatelyRender
-    - tiptap image upload
-    - tiptap tailwind v4
-    - blog editor
-    - comment editor
-    - documentation editor
-    - notion-like editor
-    - tiptap typography
-    - tiptap performance
-    - tiptap hydration error
-  last_verified: 2025-11-29
 ---
 
 # Tiptap Rich Text Editor

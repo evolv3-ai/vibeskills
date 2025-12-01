@@ -1,5 +1,3 @@
-# Motion Animation Library
-
 ---
 name: motion
 description: |
@@ -8,9 +6,9 @@ description: |
   Use when: adding drag-and-drop interactions, creating scroll-triggered animations, implementing modal dialogs with transitions, building carousels with momentum, animating page/route transitions, creating parallax hero sections, implementing accordions with smooth expand/collapse, or optimizing animation bundle sizes. For simple list animations, use auto-animate skill instead (3.28 KB vs 34 KB).
 
   Troubleshoot: AnimatePresence exit not working, large list performance issues, Tailwind transition conflicts, Next.js "use client" errors, scrollable container layout issues, or Cloudflare Workers build errors (resolved Dec 2024).
-
-license: MIT
 ---
+
+# Motion Animation Library
 
 ## Overview
 

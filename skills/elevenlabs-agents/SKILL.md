@@ -9,28 +9,6 @@ description: |
   packages, Android audio cutoff, CSP violations, dynamic variables, or WebRTC config.
 
   Keywords: ElevenLabs Agents, ElevenLabs voice agents, AI voice agents, conversational AI, @elevenlabs/react, @elevenlabs/client, @elevenlabs/react-native, @elevenlabs/elevenlabs-js, @elevenlabs/agents-cli, elevenlabs SDK, voice AI, TTS, text-to-speech, ASR, speech recognition, turn-taking model, WebRTC voice, WebSocket voice, ElevenLabs conversation, agent system prompt, agent tools, agent knowledge base, RAG voice agents, multi-voice agents, pronunciation dictionary, voice speed control, elevenlabs scribe, @11labs deprecated, Android audio cutoff, CSP violation elevenlabs, dynamic variables elevenlabs, case-sensitive tool names, webhook authentication
-license: MIT
-metadata:
-  version: 1.2.0
-  last_updated: 2025-11-25
-  production_tested: true
-  packages:
-    - name: "@elevenlabs/elevenlabs-js"
-      version: 2.25.0
-    - name: "@elevenlabs/agents-cli"
-      version: 0.6.1
-    - name: "@elevenlabs/react"
-      version: 0.11.3
-    - name: "@elevenlabs/client"
-      version: 0.11.3
-    - name: "@elevenlabs/react-native"
-      version: 0.5.4
-  documentation:
-    - https://elevenlabs.io/docs/agents-platform/overview
-    - https://elevenlabs.io/docs/api-reference
-    - https://github.com/elevenlabs/elevenlabs-examples
-  errors_prevented: 17+
-  token_savings: ~73%
 ---
 
 # ElevenLabs Agents Platform

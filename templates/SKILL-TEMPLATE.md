@@ -5,10 +5,7 @@ description: |
 
   Use when: [TODO: 3-5 specific scenarios], or troubleshooting [TODO: 2-3 distinctive errors].
 
-  [GUIDELINES: Active voice (NOT "This skill provides..."). Two-paragraph format. Cap features at 5 max. Preserve USPs. No meta-commentary. See planning/claude-code-skill-standards.md "Description Optimization Guidelines"]
-license: MIT
-metadata:
-  keywords: [TODO: technology-name, use-case, error-keyword]
+  [GUIDELINES: Active voice (NOT "This skill provides..."). Two-paragraph format. Cap features at 5 max. Preserve USPs. No meta-commentary. Max 1024 chars. See planning/claude-code-skill-standards.md]
 ---
 
 # [TODO: Skill Display Name]

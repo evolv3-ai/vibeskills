@@ -2,7 +2,6 @@
 name: cloudflare-kv
 description: |
   Store key-value data globally with Cloudflare KV's edge network. Use when: caching API responses, storing configuration, managing user preferences, handling TTL expiration, or troubleshooting KV_ERROR, 429 rate limits, eventual consistency, or cacheTtl errors.
-license: MIT
 ---
 
 # Cloudflare Workers KV

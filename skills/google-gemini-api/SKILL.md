@@ -13,7 +13,6 @@ description: |
   streaming gemini, gemini vision, gemini video, gemini audio, gemini pdf, system instructions,
   multi-turn chat, DEPRECATED @google/generative-ai, gemini context window, gemini models 2025,
   gemini 1m tokens, gemini tool use, parallel function calling, compositional function calling, gemini 3
-license: MIT
 ---
 
 # Google Gemini API - Complete Guide

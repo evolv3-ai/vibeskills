@@ -7,32 +7,6 @@ description: |
 
   Use when: animating lists/accordions/toasts/forms, troubleshooting SSR animation errors, need
   accessible animations (auto prefers-reduced-motion), or want drop-in transitions without Motion overhead.
-license: MIT
-metadata:
-  version: 1.1.0
-  last_verified: 2025-11-22
-  package_version: 0.9.0
-  framework_support: React, Vue, Solid, Svelte, Preact
-  keywords:
-    - auto-animate
-    - "@formkit/auto-animate"
-    - formkit
-    - zero-config-animation
-    - solid support
-    - preact support
-    - ssr animation errors
-    - conditional parent error
-    - missing keys animation
-    - flexbox width animation
-    - table row animation
-    - jest auto-animate
-    - esbuild auto-animate
-    - vue nuxt auto-animate
-    - angular esm auto-animate
-    - prefers-reduced-motion
-    - accessible-animations
-    - cloudflare-workers-animation
-    - nextjs-animation-ssr
 ---
 
 # AutoAnimate - Error Prevention Guide

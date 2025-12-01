@@ -8,16 +8,6 @@ description: |
   storage backends for tokens/cache, adding middleware for logging/rate limiting, deploying to FastMCP Cloud,
   or troubleshooting module-level server, storage, lifespan, middleware order, circular imports, or OAuth errors.
 
-  Keywords: FastMCP, MCP server Python, Model Context Protocol Python, fastmcp framework, mcp tools, mcp resources, mcp prompts, fastmcp storage, fastmcp memory storage, fastmcp disk storage, fastmcp redis, fastmcp dynamodb, fastmcp lifespan, fastmcp middleware, fastmcp oauth proxy, server composition mcp, fastmcp import, fastmcp mount, fastmcp cloud, fastmcp deployment, mcp authentication, fastmcp icons, openapi mcp, claude mcp server, fastmcp testing, storage misconfiguration, lifespan issues, middleware order, circular imports, module-level server, async await mcp
-license: MIT
-metadata:
-  version: "2.0.0"
-  package_version: "fastmcp>=2.13.1"
-  python_version: ">=3.10"
-  token_savings: "90-95%"
-  errors_prevented: 25
-  production_tested: true
-  last_updated: "2025-11-25"
 ---
 
 # FastMCP - Build MCP Servers in Python

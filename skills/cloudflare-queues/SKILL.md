@@ -2,7 +2,6 @@
 name: cloudflare-queues
 description: |
   Build async message queues with Cloudflare Queues for background processing. Use when: handling async tasks, batch processing, implementing retries, configuring dead letter queues, managing consumer concurrency, or troubleshooting queue timeout, batch retry, message loss, or throughput exceeded.
-license: MIT
 ---
 
 # Cloudflare Queues

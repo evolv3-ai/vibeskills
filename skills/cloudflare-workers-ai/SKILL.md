@@ -16,7 +16,6 @@ description: |
   bge pooling backwards compatibility, model deprecations october 2025, token limit exceeded, neurons exceeded,
   workers ai hono, ai gateway workers, vercel ai sdk workers, openai compatible workers, workers ai vectorize,
   workers-ai-provider v2, ai sdk v5, lora adapters rank 32
-license: MIT
 ---
 
 # Cloudflare Workers AI

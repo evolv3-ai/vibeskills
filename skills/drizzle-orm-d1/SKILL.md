@@ -19,7 +19,6 @@ description: |
   drizzle query builder, schema definition, prepared statements, drizzle batch, migration management,
   relational queries, drizzle joins, D1_ERROR, BEGIN TRANSACTION d1, foreign key constraint,
   migration failed, schema not found, d1 binding error
-license: MIT
 ---
 
 # Drizzle ORM for Cloudflare D1

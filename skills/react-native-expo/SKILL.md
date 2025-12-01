@@ -4,9 +4,6 @@ description: |
   Build React Native 0.76+ apps with Expo SDK 52. Covers mandatory New Architecture (0.82+), React 19 changes (propTypes/forwardRef removal), new CSS (display: contents, mixBlendMode, outline), Swift iOS template, and DevTools migration.
 
   Use when: building Expo apps, migrating to New Architecture, or troubleshooting "Fabric component not found", "propTypes not a function", "TurboModule not registered", or Swift AppDelegate errors.
-license: MIT
-metadata:
-  keywords: react-native, expo, new-architecture, react-19, fabric, turbomodules, swift-template, expo-sdk-52, hermes, devtools, mixBlendMode, display-contents, outline, propTypes, forwardRef, android-xml-drawables
 ---
 
 # React Native Expo (0.76-0.82+ / SDK 52+)

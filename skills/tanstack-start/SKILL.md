@@ -6,42 +6,7 @@ description: |
   Use when: building full-stack React apps, need SSR with Cloudflare Workers, want type-safe server functions, or migrating from Next.js.
 
   RC status - v1.0 stable pending. Monitor tanstack/router#5734 (memory leak) before production use.
-license: MIT
 allowed-tools: [Bash, Read, Write, Edit]
-metadata:
-  version: 0.9.1
-  author: Jeremy Dawes | Jezweb
-  last-verified: 2025-11-28
-  production-tested: false
-  status: draft
-  package: "@tanstack/react-start"
-  current_version: "1.139.10"
-  keywords:
-    - tanstack start
-    - tanstack react start
-    - tanstack router
-    - full-stack react
-    - ssr
-    - server-side rendering
-    - cloudflare workers
-    - cloudflare vite plugin
-    - server functions
-    - api routes
-    - type-safe server
-    - react framework
-    - next.js alternative
-    - vite
-    - vinxi
-    - nitro
-    - server components
-    - streaming ssr
-    - hydration
-    - file-based routing
-    - react server functions
-    - cloudflare d1
-    - cloudflare kv
-    - cloudflare r2
-    - workers assets
 ---
 
 # TanStack Start Skill [DRAFT - NOT READY]

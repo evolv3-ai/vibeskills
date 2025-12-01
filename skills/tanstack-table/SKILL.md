@@ -4,19 +4,6 @@ description: |
   Build headless data tables with TanStack Table v8. Provides server-side pagination, filtering, sorting, and virtualization patterns for Cloudflare Workers + D1 databases.
 
   Use when building tables with large datasets, coordinating with TanStack Query, or troubleshooting state management issues, pagination coordination errors, or performance bottlenecks.
-license: MIT
-metadata:
-  version: 1.1.0
-  author: Jeremy Dawes | Jezweb
-  last-verified: 2025-11-28
-  production-tested: true
-  keywords:
-    - tanstack table
-    - server-side pagination
-    - tanstack query integration
-    - cloudflare d1
-    - virtualization
-    - large datasets
 ---
 
 # TanStack Table

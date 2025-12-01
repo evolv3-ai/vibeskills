@@ -4,7 +4,6 @@ description: |
   Build secure WordPress plugins with core patterns for hooks, database interactions, Settings API, custom post types, REST API, and AJAX. Covers three architecture patterns (Simple, OOP, PSR-4) and the Security Trinity.
 
   Use when creating plugins, implementing nonces/sanitization/escaping, working with $wpdb prepared statements, or troubleshooting SQL injection, XSS, CSRF vulnerabilities, or plugin activation errors.
-license: MIT
 ---
 
 # WordPress Plugin Development (Core)

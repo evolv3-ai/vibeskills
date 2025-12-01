@@ -4,18 +4,6 @@ description: |
   Build Next.js 16 apps with App Router, Server Components/Actions, Cache Components ("use cache"), and async route params. Includes proxy.ts (replaces middleware.ts) and React 19.2.
 
   Use when: building Next.js 16 projects, or troubleshooting async params (Promise types), "use cache" directives, parallel route 404s (missing default.js), or proxy.ts CORS.
-license: MIT
-metadata:
-  version: 1.0.0
-  last_verified: 2025-10-24
-  nextjs_version: 16.0.0
-  react_version: 19.2.0
-  node_version: 20.9+
-  author: Jezweb
-  repository: https://github.com/jezweb/claude-skills
-  production_tested: true
-  token_savings: 65-70%
-  errors_prevented: 18+
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 

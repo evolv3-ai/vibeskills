@@ -4,15 +4,6 @@ description: |
   Create maintainer-friendly pull requests for open source projects with clean code submissions and professional communication. Prevents 16 common mistakes that cause PR rejection.
 
   Use when: contributing to public repositories, submitting PRs to community projects, migrating from contributor to maintainer workflows, or troubleshooting PR rejection, working on main branch errors, failing CI checks, or personal artifacts in commits.
-license: MIT
-metadata:
-  version: "1.2.0"
-  author: "Jeremy Dawes - Jezweb"
-  repository: "https://github.com/jezweb/claude-skills"
-  last_verified: "2025-11-28"
-  production_tested: true
-  token_savings: "~70%"
-  errors_prevented: 16
 ---
 
 # Open Source Contributions Skill

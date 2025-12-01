@@ -4,36 +4,6 @@ description: |
   Build Google Chat bots and webhooks with Cards v2, interactive forms, and Cloudflare Workers integration. Includes webhook handlers, card builders, form validation, bearer token verification, and dialog patterns.
 
   Use when creating Chat bots, notification systems, workflow automation, or interactive forms, or troubleshooting bearer token errors, card schema validation, widget limits, or webhook verification failures.
-license: MIT
-metadata:
-  keywords:
-    - google chat
-    - google chat api
-    - google spaces
-    - chat api
-    - google workspace
-    - chat bot
-    - google chat bot
-    - cards v2
-    - chat cards
-    - google chat webhooks
-    - chat webhooks
-    - interactive cards
-    - chat forms
-    - google chat forms
-    - bearer token
-    - chat authentication
-    - webhook handler
-    - cloudflare chat
-    - google chat cloudflare
-    - chat automation
-    - workspace automation
-    - notification bot
-    - chat integration
-    - google chat errors
-    - card validation
-    - widget limits
-  last_verified: 2025-11-29
 ---
 
 # Google Chat API

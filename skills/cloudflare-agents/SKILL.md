@@ -4,37 +4,6 @@ description: |
   Build AI agents with Cloudflare Agents SDK on Workers + Durable Objects. Includes critical guidance on choosing between Agents SDK (infrastructure/state) vs AI SDK (simpler flows).
 
   Use when: deciding SDK choice, building WebSocket agents with state, RAG with Vectorize, MCP servers, multi-agent orchestration, or troubleshooting "Agent class must extend", "new_sqlite_classes", binding errors.
-license: MIT
-metadata:
-  keywords:
-    - Cloudflare Agents
-    - agents sdk
-    - Agent class
-    - Durable Objects agents
-    - stateful agents
-    - WebSocket agents
-    - this.setState
-    - this.sql
-    - this.schedule
-    - cron agents
-    - agent workflows
-    - browser rendering
-    - rag agents
-    - vectorize agents
-    - mcp server
-    - McpAgent
-    - model context protocol
-    - routeAgentRequest
-    - AIChatAgent
-    - streaming chat
-    - human in the loop
-    - multi-agent
-    - autonomous agents
-    - AI SDK vs Agents SDK
-    - Workers AI
-    - new_sqlite_classes
-    - migrations required
-    - binding not found
 ---
 
 # Cloudflare Agents SDK

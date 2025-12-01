@@ -5,7 +5,6 @@ description: |
 
   Use when: building APIs with Hono, setting up request validation with schema libraries, creating type-safe RPC client/server communication, implementing custom middleware chains, handling errors with HTTPException, extending context with custom variables, or troubleshooting middleware type inference issues, validation hook confusion, RPC performance problems, or middleware response typing errors.
 
-license: MIT
 ---
 
 # Hono Routing & Middleware

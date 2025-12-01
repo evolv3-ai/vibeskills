@@ -2,39 +2,6 @@
 name: claude-agent-sdk
 description: |
   Build autonomous AI agents with Claude Agent SDK. Structured outputs (v0.1.45, Nov 2025) guarantee JSON schema validation, plugins system, hooks for event-driven workflows. Use when: building coding agents with validated JSON responses, SRE systems, security auditors, or troubleshooting CLI not found, structured output validation, session forking errors.
-license: MIT
-metadata:
-  version: 2.0.0
-  last_verified: 2025-11-22
-  package_version: 0.1.50
-  token_savings: ~70%
-  errors_prevented: 12
-  breaking_changes: v0.1.45 - Structured outputs (Nov 2025), v0.1.0 - No default system prompt, settingSources required
-  keywords:
-    - claude agent sdk
-    - "@anthropic-ai/claude-agent-sdk"
-    - structured outputs
-    - json schema validation
-    - outputFormat
-    - query()
-    - createSdkMcpServer
-    - AgentDefinition
-    - tool()
-    - claude subagents
-    - mcp servers
-    - autonomous agents
-    - plugins system
-    - hooks system
-    - session management
-    - session forking
-    - permissionMode
-    - canUseTool
-    - multi-agent orchestration
-    - settingSources
-    - CLI not found
-    - context length exceeded
-    - structured output validation
-    - zod schema
 ---
 
 # Claude Agent SDK - Structured Outputs & Error Prevention Guide

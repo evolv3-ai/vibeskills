@@ -6,24 +6,6 @@ description: |
 
   Use when: migrating V1→V2, handling async mutations with mutationId, creating metadata indexes before insert,
   or troubleshooting "returnMetadata must be 'all'", V2 timing issues, metadata index errors, dimension mismatches.
-license: MIT
-metadata:
-  keywords:
-    - vectorize v2
-    - vectorize ga september 2024
-    - vectorize breaking changes
-    - async mutations
-    - mutationId
-    - returnMetadata enum
-    - v1 deprecated december 2024
-    - metadata index before insert
-    - 5 million vectors
-    - 31ms latency
-    - topK 100
-    - range queries v2
-    - $gte $lte $in $nin
-    - wrangler 3.71.0
-    - vectorize migration
 ---
 
 # Cloudflare Vectorize

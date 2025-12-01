@@ -7,47 +7,6 @@ description: |
 
   Use when: implementing AI SDK v5/v6 chat UIs, migrating v4→v5, troubleshooting "useChat failed to parse
   stream", "useChat no response", or "stale body values" errors, or integrating OpenAI assistants.
-license: MIT
-metadata:
-  version: 1.1.0
-  last_verified: 2025-11-22
-  ai_sdk_version: 5.0.99 stable / 6.0.0-beta.108
-  breaking_changes: true (v4→v5 migration guide included)
-  production_tested: true
-  keywords:
-    - ai sdk ui
-    - ai sdk v6 beta
-    - ai sdk 6
-    - vercel ai sdk ui
-    - useChat hook
-    - useCompletion hook
-    - useObject hook
-    - useAssistant hook
-    - react ai chat
-    - ai chat interface
-    - streaming ai ui
-    - nextjs ai chat
-    - react streaming
-    - ai sdk react
-    - agent integration
-    - tool approval workflow
-    - human in the loop ui
-    - chat message state
-    - ai file attachments
-    - message persistence
-    - useChat error
-    - streaming failed ui
-    - parse stream error
-    - useChat no response
-    - stale body values
-    - react maximum update depth
-    - react ai hooks
-    - nextjs app router ai
-    - nextjs pages router ai
-    - ai chat component
-    - streaming response react
-    - react ai completion
-    - openai assistant ui
 ---
 
 # AI SDK UI - Frontend React Hooks

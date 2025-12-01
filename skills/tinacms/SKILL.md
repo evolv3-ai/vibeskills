@@ -4,17 +4,7 @@ description: |
   Build content-heavy sites with Git-backed TinaCMS. Provides visual editing and content management for blogs, documentation, and marketing sites with non-technical editors.
 
   Use when implementing Next.js, Vite+React, or Astro CMS setups, self-hosting on Cloudflare Workers, or troubleshooting ESbuild compilation errors, module resolution issues, or Docker binding problems.
-license: MIT
 allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
-metadata:
-  version: 1.1.0
-  token_savings: "65-70%"
-  errors_prevented: 9
-  package_version: "2.10.0"
-  cli_version: "1.12.5"
-  last_verified: "2025-11-28"
-  frameworks: ["Next.js", "Vite+React", "Astro", "Framework-agnostic"]
-  deployment: ["TinaCloud", "Cloudflare Workers", "Vercel", "Netlify"]
 ---
 
 # TinaCMS

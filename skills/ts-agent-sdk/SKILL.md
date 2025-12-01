@@ -4,38 +4,6 @@ description: |
   Generate typed TypeScript SDKs for AI agents to interact with MCP servers. Converts verbose JSON-RPC curl commands to clean function calls (docs.createDocument() vs curl). Auto-detects MCP tools from server modules, generates TypeScript types and client methods, creates runnable example scripts.
 
   Use when: building MCP-enabled applications, need typed programmatic access to MCP tools, want Claude Code to manage apps via scripts, eliminating manual JSON-RPC curl commands, validating MCP inputs/outputs, or creating reusable agent automation.
-license: MIT
-metadata:
-  category: tooling
-  stack:
-    - TypeScript
-    - MCP
-    - SDK Generation
-  keywords:
-    - mcp sdk
-    - typescript sdk
-    - agent sdk
-    - typed mcp client
-    - json-rpc
-    - mcp tools
-    - sdk generation
-    - ai agents
-    - claude code
-    - runnable examples
-    - zod schemas
-    - type safety
-    - mcp server
-    - tool definitions
-    - client generation
-  errors_prevented:
-    - Verbose JSON-RPC curl commands requiring manual construction
-    - Untyped MCP tool calls with runtime validation errors
-    - Manual SDK maintenance when MCP tools change
-    - Parameter validation errors from incorrect JSON structures
-    - Auth header management duplication across scripts
-    - Environment config scattered across multiple files
-  last_verified: 2025-11-27
-  template_location: /home/jez/Documents/ts-agent-sdk/template/scripts/sdk/
 ---
 
 # ts-agent-sdk

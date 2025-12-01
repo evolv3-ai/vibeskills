@@ -4,15 +4,7 @@ description: |
   Set up Sveltia CMS - the lightweight Git-backed CMS successor to Decap/Netlify CMS with 5x smaller bundle (300 KB), GraphQL performance, and 270+ fixed predecessor issues. Framework-agnostic for Hugo, Jekyll, 11ty, Gatsby, Astro.
 
   Use when: adding CMS to static sites, migrating from Decap/Netlify CMS, enabling non-technical editors, or troubleshooting OAuth authentication failures, YAML parse errors, CORS/COOP policy problems, content not listing issues.
-license: MIT
 allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
-metadata:
-  token_savings: "65-70%"
-  errors_prevented: 8
-  package_version: "0.120.1"
-  last_verified: "2025-11-28"
-  frameworks: ["Hugo", "Jekyll", "11ty", "Gatsby", "Astro", "Next.js", "SvelteKit", "Framework-agnostic"]
-  deployment: ["Cloudflare Workers", "Vercel", "Netlify", "GitHub Pages"]
 ---
 
 # Sveltia CMS Skill

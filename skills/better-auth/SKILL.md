@@ -6,36 +6,6 @@ description: |
   IMPORTANT: Requires Drizzle ORM or Kysely for D1 - no direct D1 adapter. v1.4.0 (Nov 2025) adds stateless sessions, ESM-only (breaking), JWT key rotation, SCIM provisioning. v1.3 adds SSO/SAML, multi-team support.
 
   Use when: self-hosting auth on Cloudflare D1, migrating from Clerk, implementing multi-tenant SaaS, or troubleshooting D1 adapter errors, session serialization, OAuth flows, TanStack Start cookie issues, nanostore session invalidation.
-license: MIT
-metadata:
-  version: 3.0.0
-  last_verified: 2025-11-22
-  production_tested: multiple (zpg6/better-auth-cloudflare, zwily/example-react-router-cloudflare-d1-drizzle-better-auth, foxlau/react-router-v7-better-auth, matthewlynch/better-auth-react-router-cloudflare-d1)
-  package_version: 1.4.0
-  token_savings: ~80%
-  errors_prevented: 13
-  official_docs: https://better-auth.com
-  github: https://github.com/better-auth/better-auth
-  breaking_changes: v1.4.0 - ESM-only (Nov 2025), v1.3 - Multi-team table changes (July 2025), v2.0.0 - D1 adapter patterns (Drizzle/Kysely required)
-  keywords:
-    - better-auth
-    - authentication
-    - cloudflare-d1
-    - drizzle-orm
-    - kysely
-    - self-hosted-auth
-    - typescript-auth
-    - clerk-alternative
-    - authjs-alternative
-    - social-auth
-    - oauth
-    - session-management
-    - jwt
-    - 2fa
-    - passkeys
-    - multi-tenant
-    - organizations
-    - rbac
 allowed-tools:
   - Read
   - Write

@@ -4,17 +4,6 @@ description: |
   Build AI applications with OpenAI Agents SDK - text agents, voice agents (realtime), multi-agent workflows with handoffs, tools with Zod schemas, input/output guardrails, structured outputs, and streaming. Deploy to Cloudflare Workers, Next.js, or React with human-in-the-loop patterns.
 
   Use when: building text-based agents with tools and Zod schemas, creating realtime voice agents with WebRTC/WebSocket, implementing multi-agent workflows with handoffs between specialists, setting up input/output guardrails for safety, requiring human approval for critical actions, streaming agent responses, deploying agents to Cloudflare Workers or Next.js, or troubleshooting Zod schema type errors, MCP tracing failures, infinite loops (MaxTurnsExceededError), tool call failures, schema mismatches, or voice agent handoff constraints.
-license: MIT
-metadata:
-  packages:
-    - "@openai/agents@0.3.3"
-    - "@openai/agents-realtime@0.3.3"
-    - "zod@^4.1.13"
-  frameworks: ["Cloudflare Workers", "Next.js", "React", "Node.js", "Hono"]
-  last_verified: "2025-11-28"
-  production_tested: true
-  token_savings: "~60%"
-  errors_prevented: 9
 ---
 
 # OpenAI Agents SDK

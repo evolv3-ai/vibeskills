@@ -4,17 +4,7 @@ description: |
   Build Model Context Protocol (MCP) servers on Cloudflare Workers - the only platform with official remote MCP support. TypeScript-based with OAuth, Durable Objects, and WebSocket hibernation.
 
   Use when: deploying remote MCP servers, implementing OAuth (GitHub/Google), using dual transports (SSE/HTTP), or troubleshooting URL path mismatches, McpAgent exports, OAuth redirects, CORS issues.
-license: MIT
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
-metadata:
-  version: "2.2.0"
-  last_verified: "2025-11-24"
-  sdk_versions:
-    mcp_sdk: "1.22.0"
-    oauth_provider: "0.1.0"
-    agents_sdk: "0.2.23"
-  official_examples: "https://github.com/cloudflare/ai/tree/main/demos"
-  cloudflare_docs: "https://developers.cloudflare.com/agents/model-context-protocol/"
 ---
 
 # Cloudflare MCP Server Skill

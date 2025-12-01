@@ -7,53 +7,6 @@ description: |
 
   Use when: implementing AI SDK v5/v6, migrating v4→v5, troubleshooting errors, fixing Workers startup
   issues, or updating to latest models.
-license: MIT
-metadata:
-  version: 1.2.0
-  last_verified: 2025-11-22
-  ai_sdk_version: 5.0.98 stable / 6.0.0-beta.107
-  breaking_changes: true (v4→v5 migration guide included)
-  production_tested: true
-  keywords:
-    - ai sdk core
-    - vercel ai sdk
-    - ai sdk v5
-    - ai sdk v6 beta
-    - ai sdk 6
-    - agent abstraction
-    - tool approval
-    - reranking support
-    - human in the loop
-    - generateText
-    - streamText
-    - generateObject
-    - streamObject
-    - ai sdk node
-    - ai sdk server
-    - zod ai schema
-    - ai schema validation
-    - ai tool calling
-    - ai agent class
-    - openai sdk
-    - anthropic sdk
-    - google gemini sdk
-    - cloudflare workers ai
-    - workers-ai-provider
-    - gpt-5
-    - gpt-5.1
-    - claude 4
-    - claude sonnet 4.5
-    - claude opus 4.1
-    - gemini 2.5
-    - ai streaming backend
-    - multi-provider ai
-    - ai provider abstraction
-    - AI_APICallError
-    - AI_NoObjectGeneratedError
-    - ai sdk errors
-    - structured ai output
-    - backend llm integration
-    - server-side ai generation
 ---
 
 # AI SDK Core

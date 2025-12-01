@@ -5,7 +5,6 @@ description: |
 
   Use when: building forms with validation, integrating shadcn/ui Form components, implementing multi-step wizards, handling dynamic field arrays with useFieldArray, or fixing uncontrolled to controlled warnings, resolver errors, async validation issues.
 
-license: MIT
 ---
 
 # React Hook Form + Zod Validation

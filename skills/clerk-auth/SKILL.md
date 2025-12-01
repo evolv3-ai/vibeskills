@@ -2,46 +2,6 @@
 name: clerk-auth
 description: |
   Clerk auth with API version 2025-11-10 breaking changes (billing endpoints, payment_source→payment_method), Next.js v6 async auth(), PKCE for custom OAuth, credential stuffing defense. Use when: troubleshooting "Missing Clerk Secret Key", JWKS errors, authorizedParties CSRF, JWT size limits (1.2KB), 431 header errors (Vite dev mode), or testing with 424242 OTP.
-license: MIT
-metadata:
-  version: 2.0.0
-  last_verified: 2025-11-22
-  sdk_versions:
-    nextjs: 6.35.4
-    backend: 2.23.2
-    clerk_react: 5.56.2
-    testing: 1.13.18
-  token_savings: ~52%
-  errors_prevented: 11
-  breaking_changes: Nov 2025 - API version 2025-11-10 (billing endpoints), Oct 2024 - Next.js v6 async auth()
-  keywords:
-    - clerk
-    - clerk auth
-    - api version 2025-11-10
-    - billing api breaking changes
-    - commerce to billing migration
-    - payment_source to payment_method
-    - "@clerk/nextjs"
-    - "@clerk/backend"
-    - "@clerk/clerk-react"
-    - next.js v6 async auth
-    - next.js 16 support
-    - pkce custom oauth
-    - credential stuffing defense
-    - client trust
-    - verifyToken
-    - authorizedParties csrf
-    - JWT template
-    - JWT size limit 1.2kb
-    - 431 request header too large
-    - vite dev mode clerk
-    - "@clerk/testing"
-    - 424242 OTP
-    - test credentials
-    - session token script
-    - "Missing Clerk Secret Key"
-    - JWKS cache race condition
-    - core 2 migration
 ---
 
 # Clerk Auth - Breaking Changes & Error Prevention Guide

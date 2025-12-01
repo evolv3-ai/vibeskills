@@ -12,7 +12,6 @@ description: |
   WorkflowEntrypoint, step.do, step.sleep, workflow retries, NonRetryableError,
   workflow state, wrangler workflows, workflow events, long-running tasks, step.sleepUntil,
   step.waitForEvent, workflow bindings, vitest testing, cloudflare:test, introspectWorkflowInstance
-license: MIT
 ---
 
 # Cloudflare Workflows

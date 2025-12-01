@@ -4,9 +4,6 @@ description: |
   Design effective Claude Code skills with optimal descriptions, progressive disclosure, and error prevention patterns. Covers freedom levels, token efficiency, and quality standards.
 
   Use when: creating new skills, improving skill descriptions, optimizing token usage, structuring skill content, or debugging why skills aren't being discovered.
-license: MIT
-metadata:
-  keywords: skill, create skill, new skill, skill description, skill design, token efficiency, progressive disclosure, freedom levels, skill discovery
 ---
 
 # Skill Creator
@@ -182,11 +179,7 @@ description: |
 ---
 name: my-skill
 description: |
-  [description]
-license: MIT
-metadata:
-  keywords: [tech, use-case, error-keyword]
-  last_verified: 2025-12-01
+  [description - max 1024 chars]
 allowed-tools:
   - Bash
   - Read
@@ -194,13 +187,13 @@ allowed-tools:
 ---
 ```
 
+**Note**: `allowed-tools` is the ONLY valid optional field. Fields like `license:` and `metadata:` are NOT recognized by Claude Code and may prevent skill discovery.
+
 ### Field Guidelines
 
-- **name**: Lowercase, hyphens only, max 40 chars
-- **description**: Multi-line with | for proper formatting
-- **license**: Usually MIT for open skills
-- **metadata.keywords**: Improve discovery beyond description
-- **allowed-tools**: Restrict which tools skill can request (rare)
+- **name**: Lowercase letters, numbers, hyphens only. Max 64 chars. Gerund form recommended (e.g., `processing-pdfs`)
+- **description**: Max 1024 chars. Must include what it does AND when to use it. Third-person perspective.
+- **allowed-tools**: Restricts which tools Claude can use when skill is active (rare, optional)
 
 ---
 

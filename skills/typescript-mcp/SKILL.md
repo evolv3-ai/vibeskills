@@ -4,15 +4,6 @@ description: |
   Build stateless MCP servers with TypeScript on Cloudflare Workers using @modelcontextprotocol/sdk. Provides patterns for tools, resources, prompts, and authentication (API keys, OAuth, Zero Trust).
 
   Use when exposing APIs to LLMs, integrating Cloudflare services (D1, KV, R2, Vectorize), or troubleshooting export syntax errors, unclosed transport leaks, or CORS misconfigurations.
-license: MIT
-metadata:
-  version: 1.1.0
-  last_updated: 2025-11-28
-  sdk_version: "@modelcontextprotocol/sdk@1.23.0"
-  platform: cloudflare-workers
-  production_tested: true
-  token_efficiency: 70%
-  errors_prevented: 10+
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
 ---
 

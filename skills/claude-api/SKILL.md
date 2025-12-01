@@ -2,44 +2,6 @@
 name: claude-api
 description: |
   Build with Claude Messages API using structured outputs (v0.69.0+, Nov 2025) for guaranteed JSON schema validation. Covers prompt caching (90% savings), streaming SSE, tool use, model deprecations (3.5/3.7 retired Oct 2025). Use when: building chatbots/agents with validated JSON responses, or troubleshooting rate_limit_error, structured output validation, prompt caching not activating, streaming SSE parsing.
-license: MIT
-metadata:
-  version: 2.0.0
-  last_verified: 2025-11-22
-  sdk_version: 0.70.1
-  token_savings: ~48%
-  errors_prevented: 12
-  breaking_changes: Oct 2025 - Claude 3.5/3.7 models retired, Nov 2025 - Structured outputs beta
-  keywords:
-    - claude api
-    - anthropic api
-    - messages api
-    - "@anthropic-ai/sdk"
-    - structured outputs
-    - output_format
-    - strict tool use
-    - json schema validation
-    - claude streaming
-    - prompt caching
-    - cache_control
-    - tool use
-    - vision
-    - extended thinking
-    - claude sonnet 4.5
-    - claude haiku 4.5
-    - claude opus 4
-    - function calling
-    - SSE
-    - rate limits
-    - 429 errors
-    - agent skills api
-    - context management
-    - clear thinking
-    - streaming sse parsing
-    - prompt caching not working
-    - structured output validation
-    - model deprecated
-    - model retired
 ---
 
 # Claude API - Structured Outputs & Error Prevention Guide

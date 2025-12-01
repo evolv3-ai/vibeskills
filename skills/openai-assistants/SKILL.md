@@ -4,7 +4,6 @@ description: |
   Build stateful chatbots with OpenAI Assistants API v2 - Code Interpreter, File Search (10k files), Function Calling. ⚠️ Sunset H1 2026; use openai-responses for new projects.
 
   Use when: building stateful chatbots, implementing RAG, or troubleshooting "thread has active run", vector store delays, polling timeouts, or file upload errors.
-license: MIT
 ---
 
 # OpenAI Assistants API v2
