@@ -1,6 +1,6 @@
 # Claude Code Slash Commands
 
-Seven slash commands for automating project exploration, planning, session workflow, and release safety with Claude Code.
+Eight slash commands for automating project exploration, planning, session workflow, skill creation, and release safety with Claude Code.
 
 ## ⚠️ New Installation Method
 
@@ -174,6 +174,39 @@ Commands are immediately available in Claude Code after copying.
 **Output**: Interactive guidance, optional command execution, reference to docs/JEZWEB_WORKFLOW.md
 
 **Time savings**: Instant navigation to correct command (vs reading docs)
+
+---
+
+#### `/create-skill`
+
+**Purpose**: Scaffold a new Claude Code skill from template
+
+**Usage**: Type `/create-skill my-skill-name` when you want to create a new skill
+
+**What it does**:
+1. Validates skill name (lowercase-hyphen-case, max 40 chars)
+2. Asks about skill type (Cloudflare/AI/Frontend/Auth/Database/Tooling/Generic)
+3. Copies `templates/skill-skeleton/` to `skills/<name>/`
+4. Auto-populates name and dates in SKILL.md
+5. Applies type-specific customizations
+6. Creates README.md with auto-trigger keywords
+7. Runs metadata check
+8. Installs skill (symlinks to ~/.claude/skills/)
+
+**Time savings**: 5-10 minutes per skill (manual setup + remembering structure → 1 command)
+
+**When to use**:
+- Creating a new skill from scratch
+- Want proper directory structure
+- Need type-specific template guidance
+
+**When to skip**:
+- Copying/adapting an existing skill
+- Just need quick edit to existing skill
+
+**Related**: Use `skill-creator` skill for deeper guidance on designing effective skills (descriptions, token efficiency, freedom levels)
+
+**Output**: Complete skill directory structure, installed and ready to fill with content
 
 ---
 
