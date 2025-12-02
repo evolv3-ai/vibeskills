@@ -1,3 +1,11 @@
+---
+name: project-workflow
+description: |
+  Seven integrated slash commands for complete project lifecycle: /explore-idea (validation), /plan-project (planning docs), /plan-feature (add features), /wrap-session (checkpoint), /continue-session (resume), /workflow (guidance), /release (safety checks).
+
+  Use when: starting new projects, managing sessions across context windows, adding features to existing projects, or preparing releases with safety checks. Saves 35-55 minutes per project lifecycle.
+---
+
 # Project Workflow Skill
 
 7 integrated slash commands for complete project lifecycle automation: idea validation → planning → execution → session management → release.
