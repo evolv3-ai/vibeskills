@@ -1,113 +1,133 @@
 # Create Skill
 
-You are creating a new Claude Code skill from the standard template.
+Interactive wizard for creating new Claude Code skills from templates.
+
+---
 
 ## Command Usage
 
-`/create-skill <skill-name>`
+`/create-skill [skill-name]`
 
-Example: `/create-skill cloudflare-analytics`
+- With name: `/create-skill cloudflare-analytics`
+- Without name: `/create-skill` (interactive mode)
 
-## Validation
+---
 
-**Skill name requirements:**
+## Your Task
+
+Guide the user through creating a new skill with proper structure, then install it for testing.
+
+### Step 1: Gather Information
+
+If skill name not provided as argument, show the interactive prompt:
+
+```
+═══════════════════════════════════════════════
+   CREATE NEW SKILL
+═══════════════════════════════════════════════
+
+I'll help you create a new skill from the template.
+
+What's the skill name?
+(lowercase-hyphen-case, e.g., "tanstack-router" or "cloudflare-queues")
+
+Your answer:
+```
+
+**Name validation:**
 - Lowercase letters, digits, and hyphens only
 - Must start with a letter
 - Max 40 characters
 - No underscores or spaces
 
-If name is invalid, explain why and suggest a corrected version.
+If invalid:
+```
+⚠️  Skill name should be lowercase-hyphen-case.
 
-## Process
+Examples:
+✅ tanstack-query
+✅ cloudflare-r2
+✅ react-hook-form
 
-### 1. Check if skill exists
+❌ TanstackQuery (no capitals)
+❌ tanstack_query (no underscores)
+❌ tanstack query (no spaces)
 
-```bash
-ls skills/<skill-name>/
+Try again:
 ```
 
-If exists, ask user: "Skill `<skill-name>` already exists. Overwrite? [y/N]"
+### Step 2: Check if Exists
 
-### 2. Ask about skill type (interactive)
+```bash
+ls skills/<skill-name>/ 2>/dev/null
+```
 
-Present options to customize the template:
+If exists:
+```
+❌ Skill "<skill-name>" already exists at skills/<skill-name>/
+
+Options:
+1. Choose a different name
+2. Delete existing and start fresh
+3. Edit the existing skill instead
+
+Your choice (1-3):
+```
+
+### Step 3: Ask Skill Type
 
 ```
 What type of skill is this?
 
-1. **Cloudflare** - Workers, D1, R2, KV, AI, etc.
-2. **AI/ML** - OpenAI, Anthropic, Gemini, AI SDK
-3. **Frontend** - React, UI libraries, styling
-4. **Auth** - Authentication providers
-5. **Database** - ORMs, data stores
-6. **Tooling** - CLI tools, build systems, MCPs
-7. **Generic** - Standard template (no customization)
+1. Cloudflare  - Workers, D1, R2, KV, AI, etc.
+2. AI/ML       - OpenAI, Anthropic, Gemini, AI SDK
+3. Frontend    - React, UI libraries, styling
+4. Auth        - Authentication providers
+5. Database    - ORMs, data stores
+6. Tooling     - CLI tools, build systems, MCPs
+7. Generic     - Standard template (no customization)
 
 Your choice [1-7]:
 ```
 
-### 3. Create skill directory structure
+### Step 4: Create Skill Directory
 
 ```bash
-# Copy skeleton
-cp -r templates/skill-skeleton/ skills/<skill-name>/
+# Copy template
+cp -r /home/jez/Documents/claude-skills/templates/skill-skeleton/ /home/jez/Documents/claude-skills/skills/<skill-name>/
+
+# Verify creation
+ls -la /home/jez/Documents/claude-skills/skills/<skill-name>/
 ```
 
-### 4. Auto-populate fields in SKILL.md
+### Step 5: Auto-populate Fields
 
-Replace these automatically:
+**In SKILL.md**, replace:
 - `name:` → the skill name provided
 - `Last Updated` → today's date (YYYY-MM-DD)
 - `Verified` date → today's date
+- `Status` → Beta
 
-### 5. Apply type-specific customizations
+**In README.md**, replace:
+- Title → skill name as Title Case
+- `Last Updated` → today's date
+- `Status` → Beta
 
-Based on skill type choice, provide guidance:
+### Step 6: Apply Type-Specific Guidance
 
-**Cloudflare skills:**
-- Remind to check cloudflare-docs MCP for accuracy
-- Suggest prerequisite: `cloudflare-worker-base`
-- Add wrangler.jsonc to Configuration section
-- Reference: `skills/cloudflare-d1/` as example
+Based on skill type choice, mention the reference example:
 
-**AI/ML skills:**
-- Remind to verify model names/versions are current
-- Add model configuration patterns
-- Include rate limiting considerations
-- Reference: `skills/ai-sdk-core/` as example
+| Type | Reference Skill | Key Reminder |
+|------|-----------------|--------------|
+| Cloudflare | `skills/cloudflare-d1/` | Check cloudflare-docs MCP, prerequisite: cloudflare-worker-base |
+| AI/ML | `skills/ai-sdk-core/` | Verify model names are current, add rate limiting |
+| Frontend | `skills/tailwind-v4-shadcn/` | Component patterns, TypeScript types |
+| Auth | `skills/clerk-auth/` | Security considerations, token handling |
+| Database | `skills/drizzle-orm-d1/` | Schema patterns, migration workflow |
+| Tooling | `skills/fastmcp/` | CLI usage patterns, integration examples |
+| Generic | `templates/skill-skeleton/` | Standard template |
 
-**Frontend skills:**
-- Add component patterns section
-- Include TypeScript types
-- Reference: `skills/tailwind-v4-shadcn/` as example
-
-**Auth skills:**
-- Security considerations section
-- Token handling patterns
-- Reference: `skills/clerk-auth/` as example
-
-**Database skills:**
-- Schema patterns section
-- Migration workflow
-- Reference: `skills/drizzle-orm-d1/` as example
-
-**Tooling skills:**
-- CLI usage patterns
-- Integration examples
-- Reference: `skills/fastmcp/` as example
-
-### 6. Create README.md with auto-trigger keywords
-
-The README.md should include:
-```markdown
-# <Skill Name>
-
-Auto-trigger keywords: <technology>, <use-case>, <common-errors>
-
-See SKILL.md for full documentation.
-```
-
-### 7. Run metadata check
+### Step 7: Run Metadata Check
 
 ```bash
 ./scripts/check-metadata.sh <skill-name>
@@ -115,53 +135,172 @@ See SKILL.md for full documentation.
 
 Report any issues found.
 
-### 8. Install the skill
+### Step 8: Install the Skill
 
 ```bash
 ./scripts/install-skill.sh <skill-name>
 ```
 
-## Output
+---
 
-After creating:
+## Output: Show Summary
 
-```markdown
-## Skill Created: `<skill-name>`
+After successful creation, display:
 
-**Location**: `skills/<skill-name>/`
-**Type**: [Selected type]
-**Installed**: ~/.claude/skills/<skill-name> → skills/<skill-name>
-
-### Files Created:
-- `SKILL.md` - Main documentation (fill [TODO] markers)
-- `README.md` - Auto-trigger keywords
-- `scripts/` - Helper scripts
-- `references/` - Documentation files
-- `assets/` - Templates, images
-
-### Next Steps:
-
-1. **Fill TODOs** - Search for `[TODO:` in SKILL.md and replace all
-2. **Add content** - Write the actual skill knowledge
-3. **Test discovery** - Ask Claude Code to use your skill
-4. **Verify** - Run `./scripts/check-metadata.sh <skill-name>`
-5. **Commit** - `git add skills/<skill-name> && git commit -m "Add <skill-name> skill"`
-
-### Reference Examples:
-- Similar skill: `skills/[reference-skill]/`
-- Template guide: `templates/SKILL-TEMPLATE.md`
-- Checklist: `ONE_PAGE_CHECKLIST.md`
-
-### Quick Test:
-Ask Claude Code: "Use the <skill-name> skill to..."
 ```
+═══════════════════════════════════════════════
+   ✅ SKILL CREATED: <skill-name>
+═══════════════════════════════════════════════
+
+Type: [Selected type]
+Reference: skills/[reference-skill]/
+
+Created files:
+  skills/<skill-name>/
+  ├── SKILL.md              ← Main documentation (fill TODOs)
+  ├── README.md             ← Auto-trigger keywords
+  ├── scripts/              ← Helper scripts (optional)
+  ├── references/           ← Reference docs (optional)
+  └── assets/               ← Templates/images (optional)
+
+Installed to: ~/.claude/skills/<skill-name>/
+
+═══════════════════════════════════════════════
+   NEXT STEPS
+═══════════════════════════════════════════════
+
+1. Fill in SKILL.md TODOs:
+   • Description with "Use when" scenarios (250-350 chars)
+   • Quick Start guide
+   • Critical rules (Always Do / Never Do)
+   • Known issues with sources (GitHub links)
+   • Package versions with verification date
+
+2. Fill in README.md TODOs:
+   • Auto-trigger keywords (primary, secondary, error-based)
+   • Token efficiency metrics
+   • When to use / don't use
+
+3. Add resources (optional):
+   • scripts/ - Automation scripts
+   • references/ - Docs Claude can load
+   • assets/ - Templates, images
+
+4. Test discovery:
+   Ask Claude Code: "Help me with <skill topic>"
+   Claude should discover and offer to use the skill.
+
+5. Verify with checklist:
+   See ONE_PAGE_CHECKLIST.md
+
+6. Commit when ready:
+   git add skills/<skill-name>
+   git commit -m "Add <skill-name> skill"
+
+═══════════════════════════════════════════════
+
+Would you like me to open SKILL.md to start filling in the TODOs?
+```
+
+---
+
+## Error Handling
+
+**If template directory missing:**
+```
+❌ Template not found at templates/skill-skeleton/
+
+This repo may not be set up correctly.
+Run: ls templates/
+```
+
+**If install script fails:**
+```
+⚠️  Skill created but install failed.
+
+Manual install:
+ln -s $(pwd)/skills/<skill-name> ~/.claude/skills/<skill-name>
+
+Or fix the issue and run:
+./scripts/install-skill.sh <skill-name>
+```
+
+**If metadata check fails:**
+```
+⚠️  Metadata issues found - fix before committing.
+
+Common issues:
+• Missing name: field
+• Description too short/long
+• Invalid YAML frontmatter
+```
+
+---
+
+## Example Session
+
+```
+User: /create-skill
+
+Claude:
+═══════════════════════════════════════════════
+   CREATE NEW SKILL
+═══════════════════════════════════════════════
+
+What's the skill name?
+(lowercase-hyphen-case, e.g., "tanstack-router")
+
+User: tanstack-router
+
+Claude:
+What type of skill is this?
+
+1. Cloudflare  2. AI/ML  3. Frontend  4. Auth  5. Database  6. Tooling  7. Generic
+
+User: 3
+
+Claude: Creating skill "tanstack-router"...
+
+[Creates directory, pre-fills files, installs]
+
+═══════════════════════════════════════════════
+   ✅ SKILL CREATED: tanstack-router
+═══════════════════════════════════════════════
+
+Type: Frontend
+Reference: skills/tailwind-v4-shadcn/
+
+[Shows file structure and next steps]
+
+Would you like me to open SKILL.md to start filling in the TODOs?
+```
+
+---
 
 ## Important Notes
 
 - Skills are symlinked to `~/.claude/skills/` for Claude Code to discover
-- The [TODO] markers in SKILL.md are intentional - fill them all before committing
-- Description should be 250-350 characters (max 1024) with "Use when:" scenarios
-- Include keywords IN the description text (NOT in metadata - metadata field is not recognized)
+- Fill ALL [TODO] markers in SKILL.md before committing
+- Description: 250-350 characters with "Use when:" scenarios
+- Include keywords IN the description text
 - ONLY valid frontmatter fields: `name`, `description`, `allowed-tools`
-- Do NOT use `license:` or `metadata:` - they break skill discovery
+- Do NOT use `license:` or `metadata:` in frontmatter
 - Test with `check-metadata.sh` before committing
+
+---
+
+## Quick Reference
+
+| Item | Location |
+|------|----------|
+| Template | `templates/skill-skeleton/` |
+| Skills | `skills/` |
+| Install script | `scripts/install-skill.sh` |
+| Metadata check | `scripts/check-metadata.sh` |
+| Checklist | `ONE_PAGE_CHECKLIST.md` |
+| Standards | `planning/claude-code-skill-standards.md` |
+
+---
+
+**Version**: 1.1.0
+**Last Updated**: 2025-12-04
