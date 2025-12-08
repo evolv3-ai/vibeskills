@@ -151,10 +151,10 @@ claude-skills/
 **Installing Commands:**
 ```bash
 # Commands must be manually symlinked:
-ln -s /home/jez/Documents/claude-skills/commands/<command>.md ~/.claude/commands/<command>.md
+ln -s /home/wsladmin/dev/claude-skills/commands/<command>.md ~/.claude/commands/<command>.md
 
 # Example:
-ln -s /home/jez/Documents/claude-skills/commands/brief.md ~/.claude/commands/brief.md
+ln -s /home/wsladmin/dev/claude-skills/commands/brief.md ~/.claude/commands/brief.md
 ```
 
 **Adding New Commands:**

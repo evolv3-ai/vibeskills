@@ -1,8 +1,8 @@
 # Session State
 
 **Current Phase**: Phase 4
-**Current Stage**: Ready to Start
-**Last Checkpoint**: Phase 3 complete (2025-12-08)
+**Current Stage**: Implementation
+**Last Checkpoint**: e90e3b6 (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -104,7 +104,7 @@
 - [ ] Ensure all admin-infra-* skills comply with env-spec.txt
 - [ ] Ensure all admin-app-* skills comply with env-spec.txt
 
-**Next Action**: Audit admin-servers for hardcoded paths and logging
+**Next Action**: Audit `skills/admin-servers/SKILL.md` for hardcoded paths (wsladmin, WOPR3, ~/dev/wsl-admin) and add centralized logging calls
 
 ---
 
