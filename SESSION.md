@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Phase 3
+**Current Phase**: Phase 4
 **Current Stage**: Ready to Start
-**Last Checkpoint**: Phase 2 complete (2025-12-08)
+**Last Checkpoint**: Phase 3 complete (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -63,24 +63,48 @@
 
 ---
 
-## Phase 3: Absorb admin-sync 🔄
-**Type**: Migration
+## Phase 3: Absorb admin-sync ✅
+**Type**: Migration | **Completed**: 2025-12-08
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-3`
 
 **Progress**:
-- [ ] Review `admin-sync/SKILL.md` for content to extract
-- [ ] Create `admin/references/cross-platform.md`
-- [ ] Merge handoff protocol into routing
-- [ ] Merge `.env.template` variables
-- [ ] Mark `admin-sync/` for archival
+- [x] Review `admin-sync/SKILL.md` for content to extract
+- [x] Create `admin/references/cross-platform.md`
+- [x] Copy WSL management scripts (Get-WslStatus, Set-WslResources)
+- [x] Copy WSL templates (.wslconfig, wsl.conf)
+- [x] Mark `admin-sync/` for archival (Phase 6)
 
-**Next Action**: Review admin-sync/SKILL.md for cross-platform content
+**Files Added**:
+- `skills/admin/references/cross-platform.md` (5,847 bytes)
+- `skills/admin/scripts/Get-WslStatus.ps1` (4,258 bytes)
+- `skills/admin/scripts/Set-WslResources.ps1` (3,633 bytes)
+- `skills/admin/templates/.wslconfig` (2,995 bytes)
+- `skills/admin/templates/wsl.conf` (2,102 bytes)
+
+**Content Absorbed**:
+- Windows ↔ WSL decision matrix
+- Path conversion functions
+- Handoff protocols and tags
+- .wslconfig management
+- Line ending handling
+- WSL commands reference
 
 ---
 
-## Phase 4: Update Sub-Skills ⏸️
+## Phase 4: Update Sub-Skills 🔄
 **Type**: Refactoring
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-4`
+
+**Progress**:
+- [ ] Audit all 11 remaining admin-* skills for hardcoded values
+- [ ] Update admin-servers to use centralized logging
+- [ ] Update admin-windows with centralized logging
+- [ ] Update admin-wsl with centralized logging
+- [ ] Update admin-mcp with centralized logging
+- [ ] Ensure all admin-infra-* skills comply with env-spec.txt
+- [ ] Ensure all admin-app-* skills comply with env-spec.txt
+
+**Next Action**: Audit admin-servers for hardcoded paths and logging
 
 ---
 
