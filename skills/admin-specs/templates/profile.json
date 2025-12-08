@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.0",
+  "deviceInfo": {
+    "name": "DEVICE_NAME",
+    "os": "Windows 11 Professional",
+    "osVersion": "10.0.22631",
+    "lastUpdated": "2025-01-01T00:00:00Z",
+    "adminRoot": "N:/Dropbox/Admin",
+    "timezone": "America/New_York"
+  },
+  "packageManagers": {
+    "winget": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "location": null
+    },
+    "scoop": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "location": null
+    },
+    "npm": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "location": null
+    },
+    "chocolatey": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "location": null
+    }
+  },
+  "installedTools": {
+    "git": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "installedVia": null,
+      "path": null,
+      "shimPath": null,
+      "notes": null
+    },
+    "node": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "installedVia": null,
+      "path": null,
+      "shimPath": null,
+      "notes": null
+    },
+    "python": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "installedVia": null,
+      "path": null,
+      "shimPath": null,
+      "notes": null
+    },
+    "claude": {
+      "present": false,
+      "version": null,
+      "lastChecked": "2025-01-01T00:00:00Z",
+      "installedVia": null,
+      "path": null,
+      "shimPath": null,
+      "notes": "Claude Code CLI"
+    }
+  },
+  "installationHistory": [],
+  "systemInfo": {
+    "powershellVersion": "7.5.0",
+    "powershellEdition": "Core",
+    "architecture": "AMD64",
+    "cpu": "Unknown",
+    "ram": "Unknown",
+    "lastSystemCheck": "2025-01-01T00:00:00Z"
+  },
+  "paths": {
+    "npmGlobal": "C:/Users/USERNAME/AppData/Roaming/npm",
+    "scoopShims": "C:/Users/USERNAME/scoop/shims",
+    "mcpRoot": "D:/mcp",
+    "projectsRoot": "D:/projects"
+  }
+}

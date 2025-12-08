@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "server_ip",
+    "ssh_user",
+    "admin_password"
+  ],
+  "properties": {
+    "server_ip": {
+      "type": "string",
+      "description": "Server IP address for KASM deployment"
+    },
+    "ssh_user": {
+      "type": "string",
+      "description": "SSH username",
+      "default": "ubuntu"
+    },
+    "ssh_key_path": {
+      "type": "string",
+      "description": "Path to SSH private key",
+      "default": "~/.ssh/id_rsa",
+      "sensitive": true
+    },
+    "admin_password": {
+      "type": "string",
+      "description": "KASM admin password (minimum 12 characters)",
+      "sensitive": true,
+      "minLength": 12
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "KASM admin email address",
+      "default": "admin@kasm.local",
+      "format": "email"
+    },
+    "swap_size_gb": {
+      "type": "integer",
+      "description": "Swap file size in GB",
+      "default": 4,
+      "minimum": 0,
+      "maximum": 32
+    },
+    "cloudflare_api_token": {
+      "type": "string",
+      "description": "Cloudflare API token (optional, for tunnel setup)",
+      "sensitive": true
+    },
+    "cloudflare_account_id": {
+      "type": "string",
+      "description": "Cloudflare account ID (optional)"
+    },
+    "tunnel_hostname": {
+      "type": "string",
+      "description": "Hostname for Cloudflare tunnel (optional, e.g., kasm.yourdomain.com)"
+    }
+  }
+}

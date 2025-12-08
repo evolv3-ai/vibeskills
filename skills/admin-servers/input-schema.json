@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "deployment_type",
+    "oci_tenancy_ocid",
+    "oci_user_ocid",
+    "oci_region",
+    "cloudflare_api_token",
+    "cloudflare_account_id"
+  ],
+  "properties": {
+    "deployment_type": {
+      "type": "string",
+      "description": "Type of deployment",
+      "enum": ["kasm", "coolify", "both"],
+      "default": "both"
+    },
+    "oci_tenancy_ocid": {
+      "type": "string",
+      "description": "OCI tenancy OCID",
+      "sensitive": true
+    },
+    "oci_user_ocid": {
+      "type": "string",
+      "description": "OCI user OCID",
+      "sensitive": true
+    },
+    "oci_region": {
+      "type": "string",
+      "description": "OCI region",
+      "default": "us-ashburn-1"
+    },
+    "oci_fingerprint": {
+      "type": "string",
+      "description": "OCI API key fingerprint",
+      "sensitive": true
+    },
+    "oci_private_key_path": {
+      "type": "string",
+      "description": "Path to OCI API private key",
+      "default": "~/.oci/oci_api_key.pem",
+      "sensitive": true
+    },
+    "cloudflare_api_token": {
+      "type": "string",
+      "description": "Cloudflare API token",
+      "sensitive": true
+    },
+    "cloudflare_account_id": {
+      "type": "string",
+      "description": "Cloudflare account ID"
+    },
+    "cloudflare_zone_id": {
+      "type": "string",
+      "description": "Cloudflare zone ID (optional, auto-detected)"
+    },
+    "kasm_domain": {
+      "type": "string",
+      "description": "Domain for KASM (e.g., kasm.yourdomain.com)"
+    },
+    "kasm_admin_password": {
+      "type": "string",
+      "description": "KASM admin password",
+      "sensitive": true,
+      "minLength": 12
+    },
+    "coolify_domain": {
+      "type": "string",
+      "description": "Domain for Coolify (e.g., coolify.yourdomain.com)"
+    },
+    "coolify_admin_email": {
+      "type": "string",
+      "description": "Coolify admin email",
+      "format": "email"
+    },
+    "coolify_admin_password": {
+      "type": "string",
+      "description": "Coolify admin password",
+      "sensitive": true,
+      "minLength": 12
+    },
+    "ssh_public_key_path": {
+      "type": "string",
+      "description": "Path to SSH public key",
+      "default": "~/.ssh/id_rsa.pub"
+    },
+    "ssh_private_key_path": {
+      "type": "string",
+      "description": "Path to SSH private key",
+      "default": "~/.ssh/id_rsa",
+      "sensitive": true
+    }
+  }
+}

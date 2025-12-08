@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "cloudflare_api_token",
+    "cloudflare_account_id",
+    "tunnel_hostname",
+    "root_user_password"
+  ],
+  "properties": {
+    "cloudflare_api_token": {
+      "type": "string",
+      "description": "Cloudflare API token with Tunnel and DNS permissions",
+      "sensitive": true
+    },
+    "cloudflare_account_id": {
+      "type": "string",
+      "description": "Cloudflare account ID"
+    },
+    "cloudflare_zone_id": {
+      "type": "string",
+      "description": "Cloudflare zone ID (optional, can be auto-detected)"
+    },
+    "tunnel_hostname": {
+      "type": "string",
+      "description": "Hostname for Coolify tunnel (e.g., coolify.yourdomain.com)"
+    },
+    "tunnel_name": {
+      "type": "string",
+      "description": "Name for Cloudflare tunnel",
+      "default": "coolify-tunnel"
+    },
+    "root_user_email": {
+      "type": "string",
+      "description": "Coolify admin email address"
+    },
+    "root_user_password": {
+      "type": "string",
+      "description": "Coolify admin password",
+      "sensitive": true
+    },
+    "server_ip": {
+      "type": "string",
+      "description": "Server IP address for deployment"
+    },
+    "ssh_user": {
+      "type": "string",
+      "description": "SSH username",
+      "default": "ubuntu"
+    },
+    "ssh_key_path": {
+      "type": "string",
+      "description": "Path to SSH private key",
+      "default": "~/.ssh/id_rsa"
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "lastUpdated": "2025-12-06T12:00:00Z",
+  "schemaVersion": "1.0",
+  "mcpServers": {
+    "desktop-commander": {
+      "installed": true,
+      "installDate": "2025-01-01",
+      "installMethod": "npx",
+      "package": "@anthropic-ai/desktop-commander",
+      "version": "latest",
+      "purpose": "File operations, code editing, persistent terminal sessions",
+      "configPath": null,
+      "localPath": null,
+      "tools": [
+        "read_file",
+        "write_file",
+        "edit_block",
+        "list_directory",
+        "search_files",
+        "start_process",
+        "interact_with_process"
+      ],
+      "notes": "Primary tool for local file operations"
+    },
+    "filesystem": {
+      "installed": true,
+      "installDate": "2025-01-15",
+      "installMethod": "npx",
+      "package": "@modelcontextprotocol/server-filesystem",
+      "version": "0.6.2",
+      "purpose": "Read-only filesystem access for specific directories",
+      "configPath": null,
+      "localPath": null,
+      "allowedPaths": [
+        "C:/Users/USERNAME/Documents"
+      ],
+      "tools": [
+        "read_file",
+        "read_multiple_files",
+        "write_file",
+        "create_directory",
+        "list_directory",
+        "move_file",
+        "search_files",
+        "get_file_info"
+      ],
+      "notes": "Limited to configured directories"
+    },
+    "win-cli": {
+      "installed": true,
+      "installDate": "2025-01-01",
+      "installMethod": "local-clone",
+      "package": "@simon-ami/win-cli-mcp-server",
+      "version": "1.0.0",
+      "purpose": "SSH operations and multi-shell support",
+      "configPath": "D:/mcp/win-cli-mcp-server/config.json",
+      "localPath": "D:/mcp/win-cli-mcp-server",
+      "tools": [
+        "execute_command",
+        "ssh_execute",
+        "ssh_connect",
+        "list_ssh_connections"
+      ],
+      "notes": "Deprecated upstream, using local fork for SSH capabilities"
+    },
+    "claude-code-mcp": {
+      "installed": true,
+      "installDate": "2025-02-01",
+      "installMethod": "local-clone",
+      "package": "@anthropic-ai/claude-code-mcp",
+      "version": "0.1.0",
+      "purpose": "Complex multi-file operations via Claude Code CLI",
+      "configPath": null,
+      "localPath": "D:/mcp/claude-code-mcp",
+      "requiresEnv": {
+        "CLAUDE_CLI_PATH": "Path to claude.cmd"
+      },
+      "tools": [
+        "claude_code"
+      ],
+      "notes": "Requires Claude Code CLI authenticated"
+    },
+    "github": {
+      "installed": false,
+      "installDate": null,
+      "installMethod": "npx",
+      "package": "@modelcontextprotocol/server-github",
+      "version": null,
+      "purpose": "GitHub API integration",
+      "configPath": null,
+      "localPath": null,
+      "requiresEnv": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "GitHub PAT"
+      },
+      "tools": [],
+      "notes": "Not installed - add when needed"
+    }
+  },
+  "installMethods": {
+    "npx": {
+      "description": "Run via npx (downloads on demand)",
+      "pros": ["Always latest version", "No global install"],
+      "cons": ["Slower startup", "Requires internet first run"]
+    },
+    "npm-global": {
+      "description": "Install globally via npm install -g",
+      "pros": ["Fast startup", "Works offline"],
+      "cons": ["Manual updates needed", "Global pollution"]
+    },
+    "local-clone": {
+      "description": "Clone repo to local directory",
+      "pros": ["Full control", "Can customize"],
+      "cons": ["Manual updates", "More disk space"]
+    }
+  }
+}
