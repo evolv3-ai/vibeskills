@@ -38,26 +38,26 @@ license: MIT
 ## Mandatory Initialization (EVERY SESSION)
 
 ```bash
-# 1. Verify identity
-hostname          # Should return: WOPR3
-whoami            # Should return: wsladmin
-echo $SHELL       # Should return: /usr/bin/zsh
+# 1. Verify identity (values from environment)
+hostname          # Should return: $DEVICE_NAME
+whoami            # Should return: $ADMIN_USER
+echo $SHELL       # Should return: /usr/bin/zsh (or /bin/bash)
 
 # 2. Load environment
-cat ~/dev/wsl-admin/.env
+source "${WSL_ADMIN_PATH:=$HOME/.admin}/.env"
 
 # 3. Check WSL profile
-cat ~/dev/wsl-admin/wsl-profile.json
+cat "$WSL_ADMIN_PATH/wsl-profile.json"
 
 # 4. Check recent logs
-tail -20 ~/dev/wsl-admin/logs/wsl-operations.log
+tail -20 "$ADMIN_LOG_PATH/wsl-operations.log"
 
-# 5. Cross-reference Windows changes
-tail -10 /mnt/n/Dropbox/08_Admin/devices/WOPR3/logs.txt
+# 5. Cross-reference Windows changes (if mounted)
+[[ -d "$ADMIN_ROOT" ]] && tail -10 "$ADMIN_ROOT/devices/$DEVICE_NAME/logs.txt"
 
 # 6. Verify tools
-node --version    # v18.19.1
-uv --version      # 0.9.5
+node --version    # Expected: 18.x or 20.x
+uv --version      # Expected: 0.9.x+
 docker --version  # Docker CLI
 ```
 
@@ -113,51 +113,58 @@ docker ps         # List running containers
 ## Directory Structure
 
 ```
-~/dev/wsl-admin/                # WSL Admin workspace
-├── .env                        # WSL-specific environment
-├── wsl-profile.json           # Source of truth for WSL state
+$WSL_ADMIN_PATH/                 # WSL Admin workspace (default: ~/.admin)
+├── .env                         # WSL-specific environment
+├── wsl-profile.json            # Source of truth for WSL state
 ├── logs/
-│   └── wsl-operations.log     # Local operations log
+│   └── wsl-operations.log      # Local operations log
 ├── scripts/
-│   └── log-operation.sh       # Logging utility
-└── docs/                      # Local documentation
+│   └── log-operation.sh        # Logging utility
+└── docs/                       # Local documentation
 
-/mnt/n/Dropbox/08_Admin/       # Shared (via Windows mount)
-├── devices/WOPR3/
-│   ├── profile.json           # Windows device profile
-│   └── logs.txt               # Windows device log
-└── logs/central/              # Cross-platform logs
+$ADMIN_ROOT/                     # Shared (via Windows mount)
+├── devices/$DEVICE_NAME/
+│   ├── profile.json            # Windows device profile
+│   └── logs.txt                # Windows device log
+└── logs/central/               # Cross-platform logs
     ├── operations.log
     ├── installations.log
     └── system-changes.log
 ```
 
+**Environment Variables Required:**
+- `$WSL_ADMIN_PATH` - Local WSL admin directory (default: `~/.admin`)
+- `$ADMIN_ROOT` - Shared admin root (mounted from Windows)
+- `$ADMIN_LOG_PATH` - Log directory (default: `$WSL_ADMIN_PATH/logs`)
+- `$DEVICE_NAME` - Current device name
+- `$ADMIN_USER` - Current admin username
+
 ---
 
 ## WSL Profile Schema
 
-**Location**: `~/dev/wsl-admin/wsl-profile.json`
+**Location**: `$WSL_ADMIN_PATH/wsl-profile.json`
 
 ```json
 {
   "wslInfo": {
     "distro": "Ubuntu-24.04",
     "version": "24.04.2 LTS",
-    "user": "wsladmin",
+    "user": "$ADMIN_USER",
     "shell": "zsh",
     "systemd": true,
-    "lastUpdated": "2025-12-08T00:00:00Z"
+    "lastUpdated": "YYYY-MM-DDTHH:MM:SSZ"
   },
   "installedTools": {
     "node": {
       "present": true,
-      "version": "v18.19.1",
+      "version": "v18.x.x",
       "path": "/usr/bin/node",
       "installedVia": "apt"
     },
     "uv": {
       "present": true,
-      "version": "0.9.5",
+      "version": "0.9.x",
       "path": "~/.local/bin/uv",
       "installedVia": "standalone"
     }
@@ -173,49 +180,38 @@ docker ps         # List running containers
 
 ---
 
-## Logging System
+## Logging Integration
+
+Use the centralized logging system from the `admin` skill. See `admin/references/logging.md` for full documentation.
 
 ### Log Locations
 
 | Log | Location | Purpose |
 |-----|----------|---------|
-| Local WSL | `~/dev/wsl-admin/logs/wsl-operations.log` | WSL-specific ops |
-| Central Ops | `/mnt/n/Dropbox/08_Admin/logs/central/operations.log` | Cross-platform |
-| Central Install | `/mnt/n/Dropbox/08_Admin/logs/central/installations.log` | Package installs |
-| Central Changes | `/mnt/n/Dropbox/08_Admin/logs/central/system-changes.log` | Config changes |
+| Local WSL | `$ADMIN_LOG_PATH/wsl-operations.log` | WSL-specific ops |
+| Central Ops | `$ADMIN_ROOT/logs/central/operations.log` | Cross-platform |
+| Central Install | `$ADMIN_ROOT/logs/central/installations.log` | Package installs |
+| Central Changes | `$ADMIN_ROOT/logs/central/system-changes.log` | Config changes |
 
-### Logging Function
+### Quick Reference
 
 ```bash
-log_operation() {
-    local status="$1"    # SUCCESS, ERROR, INFO, PENDING
-    local operation="$2" # Brief description
-    local details="$3"   # Details
-    local log_type="${4:-operation}"  # operation|installation|system-change
-
-    local timestamp=$(date "+%Y-%m-%d %H:%M:%S")
-    local log_entry="$timestamp - [WOPR3-WSL] $status: $operation - $details"
-
-    # Local log
-    echo "$log_entry" >> ~/dev/wsl-admin/logs/wsl-operations.log
-
-    # Central log
-    case "$log_type" in
-        installation)
-            echo "$log_entry" >> /mnt/n/Dropbox/08_Admin/logs/central/installations.log
-            ;;
-        system-change)
-            echo "$log_entry" >> /mnt/n/Dropbox/08_Admin/logs/central/system-changes.log
-            ;;
-        *)
-            echo "$log_entry" >> /mnt/n/Dropbox/08_Admin/logs/central/operations.log
-            ;;
-    esac
-}
-
-# Usage
-log_operation "SUCCESS" "Package Install" "Installed postgresql via apt" "installation"
+# Use log_admin from centralized logging
+log_admin "SUCCESS" "installation" "Installed postgresql" "version=16 method=apt"
+log_admin "ERROR" "operation" "Docker failed to start" "error=socket not found"
+log_admin "SUCCESS" "system-change" "Updated .zshrc" "added=PATH entry"
+log_admin "HANDOFF" "handoff" "Windows task required" "task=update .wslconfig"
 ```
+
+### Log Levels
+
+| Level | Use Case |
+|-------|----------|
+| SUCCESS | Completed operations |
+| ERROR | Failed operations |
+| WARNING | Non-critical issues |
+| INFO | General information |
+| HANDOFF | Cross-platform coordination |
 
 ---
 
@@ -298,9 +294,11 @@ docker-compose ps              # List services
 
 | Windows Path | WSL Path |
 |--------------|----------|
-| `C:\Users\Owner` | `/mnt/c/Users/Owner` |
-| `D:\_admin` | `/mnt/d/_admin` |
-| `N:\Dropbox\08_Admin` | `/mnt/n/Dropbox/08_Admin` |
+| `C:\Users\<username>` | `/mnt/c/Users/<username>` |
+| `D:\<path>` | `/mnt/d/<path>` |
+| `$WIN_ADMIN_ROOT` | `$ADMIN_ROOT` (mounted) |
+
+**Note:** The exact mount paths depend on your Windows drive letters and configuration.
 
 ### Line Ending Handling
 
@@ -397,12 +395,8 @@ journalctl --user -u service-name -f
 ### Handoff Format
 
 ```bash
-# Log the handoff
-log_operation "INFO" "REQUIRES-WINADMIN" "Need .wslconfig memory increase to 32GB"
-
-# Document in central log with tag
-echo "$(date '+%Y-%m-%d %H:%M:%S') - [WOPR3-WSL] [REQUIRES-WINADMIN] Need memory increase" \
-    >> /mnt/n/Dropbox/08_Admin/logs/central/operations.log
+# Log the handoff using centralized logging
+log_admin "HANDOFF" "handoff" "Windows task required" "task=.wslconfig memory increase to 32GB"
 ```
 
 ---
@@ -417,8 +411,8 @@ free -h
 df -h
 top
 
-# If resource constrained, request via admin-sync:
-log_operation "INFO" "REQUIRES-WINADMIN" "WSL slow - consider .wslconfig memory increase"
+# If resource constrained, request via handoff:
+log_admin "HANDOFF" "handoff" "WSL slow - consider .wslconfig memory increase"
 ```
 
 ### Docker Not Working
@@ -460,16 +454,15 @@ source ~/.zshrc
 
 ## Git Configuration
 
-**Current Setup:**
-- User: evolv3ai
-- Email: hello@evolv3.ai
-- Credential Helper: Windows Git Credential Manager
+Git should be configured with your credentials. Verify with:
 
 ```bash
 git config --list              # View config
 git config user.name           # Check username
 git config user.email          # Check email
 ```
+
+**Note:** If using WSL with Windows Git Credential Manager, the credential helper should be configured automatically.
 
 ---
 
@@ -488,13 +481,13 @@ git config user.email          # Check email
 ## Complete Setup Checklist
 
 - [ ] WSL2 with Ubuntu 24.04 installed
-- [ ] Zsh configured as default shell
+- [ ] Shell configured (zsh or bash)
 - [ ] uv installed at `~/.local/bin/uv`
 - [ ] Docker Desktop integration working
 - [ ] Git configured with credentials
-- [ ] `~/dev/wsl-admin` directory structure created
-- [ ] Logging scripts in place
-- [ ] Central logs accessible via `/mnt/n/`
+- [ ] `$WSL_ADMIN_PATH` directory structure created
+- [ ] Environment variables configured in `.env`
+- [ ] Central logs accessible via `$ADMIN_ROOT` mount
 
 ---
 

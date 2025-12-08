@@ -600,6 +600,25 @@ admin-servers/
 
 ---
 
+## Logging Integration
+
+When performing operations (provisioning, retiring, status changes), log to the centralized system:
+
+```bash
+# After provisioning a server
+log_admin "SUCCESS" "operation" "Provisioned server" "id=WEB02 provider=OCI"
+
+# After status change
+log_admin "SUCCESS" "operation" "Updated server status" "id=WEB01 status=stopped"
+
+# After inventory update
+log_admin "INFO" "operation" "Updated inventory" "action=added servers=WEB02,WEB03"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## References
 
 - [Oracle Cloud Free Tier](https://www.oracle.com/cloud/free/)

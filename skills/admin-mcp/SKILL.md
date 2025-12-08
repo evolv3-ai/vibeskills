@@ -127,7 +127,7 @@ $configPath = "$env:APPDATA\Claude\claude_desktop_config.json"
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:/Users/Owner/Documents"
+        "C:/Users/<YourUsername>/Documents"
       ]
     }
   }
@@ -150,8 +150,8 @@ npm install -g @modelcontextprotocol/server-filesystem
     "filesystem": {
       "command": "node",
       "args": [
-        "C:/Users/Owner/AppData/Roaming/npm/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
-        "C:/Users/Owner/Documents"
+        "C:/Users/<YourUsername>/AppData/Roaming/npm/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
+        "C:/Users/<YourUsername>/Documents"
       ]
     }
   }
@@ -164,8 +164,8 @@ npm install -g @modelcontextprotocol/server-filesystem
 ### Pattern 3: Local Clone (For Development/Customization)
 
 ```powershell
-# Clone to MCP directory
-cd D:/mcp
+# Clone to MCP directory (use your MCP_ROOT path)
+cd $env:MCP_ROOT  # e.g., D:/mcp or C:/mcp
 git clone https://github.com/org/mcp-server-name.git
 cd mcp-server-name
 npm install
@@ -177,7 +177,7 @@ npm run build
   "mcpServers": {
     "server-name": {
       "command": "node",
-      "args": ["D:/mcp/mcp-server-name/dist/index.js"]
+      "args": ["<MCP_ROOT>/mcp-server-name/dist/index.js"]
     }
   }
 }
@@ -195,7 +195,7 @@ npm run build
       "command": "python",
       "args": ["-m", "mcp_server_package"],
       "env": {
-        "PYTHONPATH": "D:/path/to/server"
+        "PYTHONPATH": "<path/to/server>"
       }
     }
   }
@@ -252,9 +252,9 @@ Windows systems commonly use three MCP servers for CLI operations:
     "win-cli": {
       "command": "node",
       "args": [
-        "D:/mcp/win-cli-mcp-server/dist/index.js",
+        "<MCP_ROOT>/win-cli-mcp-server/dist/index.js",
         "--config",
-        "D:/mcp/win-cli-mcp-server/config.json"
+        "<MCP_ROOT>/win-cli-mcp-server/config.json"
       ]
     }
   }
@@ -291,14 +291,14 @@ Windows systems commonly use three MCP servers for CLI operations:
     "connections": [
       {
         "id": "server-1",
-        "host": "192.168.1.100",
-        "username": "admin",
-        "privateKeyPath": "C:/Users/Owner/.ssh/id_rsa"
+        "host": "<server-ip>",
+        "username": "<username>",
+        "privateKeyPath": "C:/Users/<YourUsername>/.ssh/id_rsa"
       }
     ]
   },
   "security": {
-    "allowedPaths": ["D:/", "C:/Users/Owner"],
+    "allowedPaths": ["<allowed-paths>"],
     "blockedCommands": ["format", "shutdown", "rm -rf /"],
     "commandTimeout": 60
   }
@@ -315,9 +315,9 @@ Windows systems commonly use three MCP servers for CLI operations:
   "mcpServers": {
     "claude-code-mcp": {
       "command": "node",
-      "args": ["D:/mcp/claude-code-mcp/dist/index.js"],
+      "args": ["<MCP_ROOT>/claude-code-mcp/dist/index.js"],
       "env": {
-        "CLAUDE_CLI_PATH": "C:/Users/Owner/AppData/Roaming/npm/claude.cmd"
+        "CLAUDE_CLI_PATH": "C:/Users/<YourUsername>/AppData/Roaming/npm/claude.cmd"
       }
     }
   }
@@ -337,13 +337,13 @@ Windows systems commonly use three MCP servers for CLI operations:
 // Complex refactoring
 claude_code({
   prompt: "Refactor all API calls to use async/await",
-  workFolder: "D:/project"
+  workFolder: "<project-path>"
 })
 
 // Git workflows
 claude_code({
   prompt: "Stage changes, commit with message, push to develop",
-  workFolder: "D:/project"
+  workFolder: "<project-path>"
 })
 ```
 
@@ -380,7 +380,7 @@ Copy-Item $configPath "$configPath.backup.$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 # Option B: Global npm
 npm install -g @org/mcp-server-name
 # Option C: Local clone
-cd D:/mcp && git clone https://github.com/org/mcp-server.git
+cd $env:MCP_ROOT && git clone https://github.com/org/mcp-server.git
 
 # 4. Read current config
 $config = Get-Content $configPath | ConvertFrom-Json
@@ -388,7 +388,7 @@ $config = Get-Content $configPath | ConvertFrom-Json
 # 5. Add server to config
 $config.mcpServers | Add-Member -NotePropertyName "server-name" -NotePropertyValue @{
     command = "node"
-    args = @("D:/mcp/mcp-server/dist/index.js")
+    args = @("$env:MCP_ROOT/mcp-server/dist/index.js")
 }
 
 # 6. Save config
@@ -397,7 +397,7 @@ $config | ConvertTo-Json -Depth 10 | Set-Content $configPath
 # 7. Update registry (if using)
 # Add entry to mcp-registry.json
 
-# 8. Log installation
+# 8. Log installation (use centralized logging from admin skill)
 Log-Operation -Status "SUCCESS" -Operation "MCP Install" -Details "Installed server-name" -LogType "installation"
 
 # 9. Restart Claude Desktop
@@ -435,7 +435,7 @@ Maintain a central registry of installed MCP servers:
       "installMethod": "local-clone",
       "version": "1.0.0",
       "purpose": "SSH and multi-shell support",
-      "configPath": "D:/mcp/win-cli-mcp-server/config.json",
+      "configPath": "<MCP_ROOT>/win-cli-mcp-server/config.json",
       "notes": "Deprecated upstream, using local fork"
     },
     "filesystem": {
@@ -597,7 +597,7 @@ $env:PATH -split ';' | Where-Object { $_ -like "*npm*" -or $_ -like "*node*" }
 npx.cmd -y @modelcontextprotocol/server-filesystem --help
 
 # For local servers
-node "D:/mcp/server-name/dist/index.js" --help
+node "<MCP_ROOT>/server-name/dist/index.js" --help
 ```
 
 #### 5. Check Claude Logs
@@ -676,13 +676,13 @@ $config = Get-Content "$env:APPDATA\Claude\claude_desktop_config.json" | Convert
 $config.mcpServers.'server-name'
 
 # 2. Test command manually
-node "D:/mcp/server/dist/index.js"
+node "<MCP_ROOT>/server/dist/index.js"
 
 # 3. Check Node.js version
 node --version  # Should be 18+
 
 # 4. Check for missing dependencies
-cd D:/mcp/server && npm install
+cd "$env:MCP_ROOT/server" && npm install
 ```
 
 **Common Fixes**:
@@ -730,7 +730,7 @@ Write-Host "Use this path: $nodePath"
 ```json
 {
   "command": "C:/Program Files/nodejs/node.exe",
-  "args": ["C:/Users/Owner/AppData/Roaming/npm/node_modules/@org/server/dist/index.js"]
+  "args": ["C:/Users/<YourUsername>/AppData/Roaming/npm/node_modules/@org/server/dist/index.js"]
 }
 ```
 

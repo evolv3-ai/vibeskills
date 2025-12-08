@@ -493,6 +493,25 @@ This script handles the ordering automatically but requires confirmation.
 
 ---
 
+## Logging Integration
+
+When performing infrastructure operations, log to the centralized system:
+
+```bash
+# After provisioning
+log_admin "SUCCESS" "operation" "Provisioned OCI instance" "id=$INSTANCE_ID provider=OCI"
+
+# After destroying
+log_admin "SUCCESS" "operation" "Terminated OCI instance" "id=$INSTANCE_ID"
+
+# On error
+log_admin "ERROR" "operation" "OCI deployment failed" "error=OUT_OF_HOST_CAPACITY"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Additional Documentation
 
 - [Installation Guide](docs/INSTALL.md) - Install OCI CLI on any OS

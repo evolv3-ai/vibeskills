@@ -447,44 +447,37 @@ $config | ConvertTo-Json -Depth 10 | Set-Content "config.json"
 
 ---
 
-## Logging Function
+## Logging Integration
 
-Use this pattern for consistent logging:
+Use the centralized logging system from the `admin` skill. See `admin/references/logging.md` for full documentation.
+
+### Quick Reference
 
 ```powershell
-function Log-Operation {
-    param(
-        [ValidateSet("SUCCESS", "ERROR", "INFO", "PENDING", "WARNING")]
-        [string]$Status,
-        [string]$Operation,
-        [string]$Details,
-        [string]$LogFile = "${env:DEVICE_LOGS}"
-    )
-
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    $deviceName = $env:COMPUTERNAME
-    $logEntry = "$timestamp - [$deviceName] $Status: $Operation - $Details"
-
-    # Write to log file
-    if ($LogFile -and (Test-Path (Split-Path $LogFile))) {
-        Add-Content $LogFile -Value $logEntry
-    }
-
-    # Also output to console with color
-    $color = switch ($Status) {
-        "SUCCESS" { "Green" }
-        "ERROR" { "Red" }
-        "WARNING" { "Yellow" }
-        "PENDING" { "Cyan" }
-        default { "White" }
-    }
-    Write-Host $logEntry -ForegroundColor $color
-}
-
-# Usage
-Log-Operation -Status "SUCCESS" -Operation "Install" -Details "Installed git via winget"
+# Use Log-Operation from centralized logging
+Log-Operation -Status "SUCCESS" -Operation "Install" -Details "Installed git 2.47.0 via winget" -LogType "installation"
 Log-Operation -Status "ERROR" -Operation "PATH" -Details "npm not found in PATH"
+Log-Operation -Status "SUCCESS" -Operation "Config" -Details "Updated PATH in registry" -LogType "system-change"
 ```
+
+### Log Types
+
+| LogType | Use Case |
+|---------|----------|
+| `operation` | General operations (default) |
+| `installation` | Software installations |
+| `system-change` | Config/registry changes |
+| `handoff` | Cross-platform coordination |
+
+### Log Levels
+
+| Status | Use Case |
+|--------|----------|
+| `SUCCESS` | Completed operations |
+| `ERROR` | Failed operations |
+| `WARNING` | Non-critical issues |
+| `INFO` | General information |
+| `HANDOFF` | Cross-platform coordination |
 
 ---
 

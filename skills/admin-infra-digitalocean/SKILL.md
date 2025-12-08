@@ -468,6 +468,25 @@ DigitalOcean offers excellent US availability and native Kasm integration at com
 
 ---
 
+## Logging Integration
+
+When performing infrastructure operations, log to the centralized system:
+
+```bash
+# After provisioning
+log_admin "SUCCESS" "operation" "Provisioned DigitalOcean droplet" "id=$DROPLET_ID provider=DigitalOcean"
+
+# After destroying
+log_admin "SUCCESS" "operation" "Deleted DigitalOcean droplet" "id=$DROPLET_ID"
+
+# On error
+log_admin "ERROR" "operation" "DigitalOcean deployment failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```

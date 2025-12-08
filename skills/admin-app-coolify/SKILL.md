@@ -605,6 +605,28 @@ Internet → Cloudflare/Direct → Traefik (80/443)
 
 ---
 
+## Logging Integration
+
+When performing Coolify operations, log to the centralized system:
+
+```bash
+# After installation
+log_admin "SUCCESS" "installation" "Installed Coolify" "version=4.x server=$SERVER_ID"
+
+# After configuration
+log_admin "SUCCESS" "system-change" "Configured Coolify" "domain=$DOMAIN"
+
+# After deployment
+log_admin "SUCCESS" "operation" "Deployed app via Coolify" "app=$APP_NAME"
+
+# On error
+log_admin "ERROR" "operation" "Coolify deployment failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```

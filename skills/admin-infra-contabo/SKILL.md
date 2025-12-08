@@ -508,6 +508,25 @@ Despite limitations, Contabo's pricing makes it ideal for:
 
 ---
 
+## Logging Integration
+
+When performing infrastructure operations, log to the centralized system:
+
+```bash
+# After provisioning
+log_admin "SUCCESS" "operation" "Provisioned Contabo VPS" "id=$INSTANCE_ID provider=Contabo"
+
+# After destroying
+log_admin "SUCCESS" "operation" "Cancelled Contabo VPS" "id=$INSTANCE_ID"
+
+# On error
+log_admin "ERROR" "operation" "Contabo deployment failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```

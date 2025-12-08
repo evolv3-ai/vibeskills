@@ -488,6 +488,25 @@ Linode offers strong Kubernetes support with Akamai edge network integration.
 
 ---
 
+## Logging Integration
+
+When performing infrastructure operations, log to the centralized system:
+
+```bash
+# After provisioning
+log_admin "SUCCESS" "operation" "Provisioned Linode" "id=$LINODE_ID provider=Linode"
+
+# After destroying
+log_admin "SUCCESS" "operation" "Deleted Linode" "id=$LINODE_ID"
+
+# On error
+log_admin "ERROR" "operation" "Linode deployment failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```

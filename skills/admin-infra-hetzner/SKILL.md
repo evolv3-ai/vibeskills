@@ -460,6 +460,25 @@ Hetzner offers the best paid option when OCI capacity is unavailable.
 
 ---
 
+## Logging Integration
+
+When performing infrastructure operations, log to the centralized system:
+
+```bash
+# After provisioning
+log_admin "SUCCESS" "operation" "Provisioned Hetzner server" "id=$SERVER_ID provider=Hetzner"
+
+# After destroying
+log_admin "SUCCESS" "operation" "Deleted Hetzner server" "id=$SERVER_ID"
+
+# On error
+log_admin "ERROR" "operation" "Hetzner deployment failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```

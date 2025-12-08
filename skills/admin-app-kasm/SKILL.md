@@ -489,6 +489,28 @@ Internet → Cloudflare/Direct → KASM Web UI (8443)
 
 ---
 
+## Logging Integration
+
+When performing KASM operations, log to the centralized system:
+
+```bash
+# After installation
+log_admin "SUCCESS" "installation" "Installed KASM Workspaces" "version=1.x server=$SERVER_ID"
+
+# After configuration
+log_admin "SUCCESS" "system-change" "Configured KASM" "domain=$DOMAIN"
+
+# After adding workspace
+log_admin "SUCCESS" "operation" "Added KASM workspace" "workspace=$WORKSPACE_NAME"
+
+# On error
+log_admin "ERROR" "operation" "KASM operation failed" "error=$ERROR_MSG"
+```
+
+See `admin` skill's `references/logging.md` for full logging documentation.
+
+---
+
 ## Files
 
 ```
