@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Phase 4
-**Current Stage**: Implementation
-**Last Checkpoint**: e90e3b6 (2025-12-08)
+**Current Phase**: Phase 5
+**Current Stage**: Testing
+**Last Checkpoint**: 58a4800 (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -91,32 +91,45 @@
 
 ---
 
-## Phase 4: Update Sub-Skills 🔄
-**Type**: Refactoring
+## Phase 4: Update Sub-Skills ✅
+**Type**: Refactoring | **Completed**: 2025-12-08
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-4`
 
 **Progress**:
-- [ ] Audit all 11 remaining admin-* skills for hardcoded values
-- [ ] Update admin-servers to use centralized logging
-- [ ] Update admin-windows with centralized logging
-- [ ] Update admin-wsl with centralized logging
-- [ ] Update admin-mcp with centralized logging
-- [ ] Ensure all admin-infra-* skills comply with env-spec.txt
-- [ ] Ensure all admin-app-* skills comply with env-spec.txt
+- [x] Audit all 11 remaining admin-* skills for hardcoded values
+- [x] Update admin-servers to use centralized logging
+- [x] Update admin-windows with centralized logging (fixed .env.template placeholders)
+- [x] Update admin-wsl with centralized logging (major refactoring - 15+ hardcoded paths)
+- [x] Update admin-mcp with centralized logging (12 hardcoded paths fixed)
+- [x] Ensure all admin-infra-* skills comply with env-spec.txt (6 skills)
+- [x] Ensure all admin-app-* skills comply with env-spec.txt (2 skills)
 
-**Next Action**: Audit `skills/admin-servers/SKILL.md` for hardcoded paths (wsladmin, WOPR3, ~/dev/wsl-admin) and add centralized logging calls
+**Summary**: All 11 sub-skills audited and refactored. Replaced hardcoded paths (wsladmin, WOPR3, /mnt/n/Dropbox, etc.) with environment variables. Added centralized logging references to all skills.
 
 ---
 
-## Phase 5: Testing ⏸️
+## Phase 5: Testing 🔄
 **Type**: Verification
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-5`
+
+**Progress**:
+- [ ] Unit tests: Verify admin skill activates on keyword triggers (8 tests)
+- [ ] Integration: Test routing from admin → sub-skills
+- [ ] Integration: Test centralized logging output
+- [ ] Integration: Test cross-platform handoff flow
+- [ ] UAT: Fresh environment setup using admin skill
+
+**Next Action**: Test admin skill activation - verify it triggers on keywords like "server admin", "WSL setup", "Windows configuration"
 
 ---
 
 ## Phase 6: Archive Old Skills ⏸️
 **Type**: Cleanup
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-6`
+
+**Skills to Archive**:
+- `admin-specs/` (content absorbed into `admin/references/logging.md`)
+- `admin-sync/` (content absorbed into `admin/references/cross-platform.md`)
 
 ---
 
