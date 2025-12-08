@@ -1,16 +1,67 @@
 {
+  "schemaVersion": "2.0",
   "deviceInfo": {
     "name": "",
     "platform": "",
     "hostname": "",
     "user": "",
+    "os": "",
+    "osVersion": "",
+    "adminRoot": "",
+    "timezone": "",
     "lastUpdated": ""
   },
+  "packageManagers": {
+    "apt": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "brew": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "winget": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "scoop": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "npm": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    }
+  },
   "installedTools": {},
+  "installationHistory": [],
+  "systemInfo": {
+    "shell": "",
+    "shellVersion": "",
+    "architecture": "",
+    "cpu": "",
+    "ram": "",
+    "lastSystemCheck": null
+  },
+  "paths": {
+    "npmGlobal": "",
+    "projectsRoot": ""
+  },
   "managedServers": [],
   "cloudProviders": {},
   "syncSettings": {
-    "enabled": false
+    "enabled": false,
+    "syncPath": null,
+    "lastSync": null,
+    "linkedDevices": []
   },
   "customMetadata": {}
 }
