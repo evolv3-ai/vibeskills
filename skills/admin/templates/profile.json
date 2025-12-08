@@ -1,0 +1,16 @@
+{
+  "deviceInfo": {
+    "name": "",
+    "platform": "",
+    "hostname": "",
+    "user": "",
+    "lastUpdated": ""
+  },
+  "installedTools": {},
+  "managedServers": [],
+  "cloudProviders": {},
+  "syncSettings": {
+    "enabled": false
+  },
+  "customMetadata": {}
+}
