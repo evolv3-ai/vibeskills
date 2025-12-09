@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Phase 7 - PowerShell Compatibility (Ready to start)
+**Current Phase**: Phase 8 - PowerShell Init Commands (Ready to start)
 **Current Stage**: Implementation
-**Last Checkpoint**: f01f67a (2025-12-08)
+**Last Checkpoint**: 0c518d3 (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -217,9 +217,23 @@ Add native Windows PowerShell support so admin skills work when Claude Code runs
 
 ---
 
-## Phase 7: Add Shell Detection to Admin Orchestrator ⏸️
-**Type**: Enhancement | **Added**: 2025-12-08
+## Phase 7: Add Shell Detection to Admin Orchestrator ✅
+**Type**: Enhancement | **Completed**: 2025-12-08
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-7`
+
+**Progress**:
+- [x] Added shell detection section to admin/SKILL.md (before Quick Start)
+- [x] Added PowerShell versions of First-Run Detection
+- [x] Added PowerShell version of Loading Configuration
+- [x] Added PowerShell version of Platform Detection
+- [x] Added PowerShell version of Context Validation
+- [x] Created admin/references/shell-detection.md reference doc
+- [x] Tested bash commands work in WSL
+- [x] Tested PowerShell commands work via powershell.exe
+
+**Files Modified**:
+- `skills/admin/SKILL.md` - Added dual-mode (Bash/PowerShell) for all commands
+- `skills/admin/references/shell-detection.md` - New reference doc (3,847 bytes)
 
 ---
 
@@ -247,9 +261,9 @@ Add native Windows PowerShell support so admin skills work when Claude Code runs
 
 ---
 
-**Next Action**: Start Phase 7 - Add shell detection logic to admin/SKILL.md
-- File: `skills/admin/SKILL.md`
-- Task: Add shell detection (PowerShell vs Bash) at initialization
+**Next Action**: Start Phase 8 - Add PowerShell initialization commands
+- File: `skills/admin/SKILL.md`, `skills/admin/references/first-run-setup.md`
+- Task: Ensure all init commands have working PowerShell equivalents
 
 ---
 

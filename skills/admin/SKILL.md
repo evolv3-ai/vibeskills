@@ -11,13 +11,42 @@ license: MIT
 
 # Admin - System Administration Orchestrator
 
-Central entry point for all administration tasks. Detects your platform, routes to the right specialist skill, and maintains unified logging across all operations.
+Central entry point for all administration tasks. Detects your platform and shell, routes to the right specialist skill, and maintains unified logging across all operations.
+
+## Shell Detection (CRITICAL - Do This First)
+
+Before running ANY commands, determine the shell environment. This affects ALL command syntax.
+
+### Detecting Shell Context
+
+**Check which shell Claude Code is using:**
+
+1. **If the Bash tool works** (commands like `echo $BASH_VERSION` succeed) → **Use Bash syntax**
+2. **If Bash fails with syntax errors or "not found"** → **Use PowerShell syntax**
+
+**Quick test to determine shell:**
+- Try: `echo $BASH_VERSION`
+- If it returns a version → Bash mode
+- If it fails or returns empty on Windows → PowerShell mode
+
+### Shell Mode Reference
+
+| Shell Mode | Environment | Command Syntax |
+|------------|-------------|----------------|
+| **Bash** | WSL, Linux, macOS, Git Bash | `mkdir -p`, `$HOME`, `$(command)` |
+| **PowerShell** | Windows native | `New-Item`, `$env:USERPROFILE`, `$(command)` |
+
+**IMPORTANT**: When in PowerShell mode, ALL commands in this skill should use PowerShell syntax. Do NOT mix bash and PowerShell.
+
+---
 
 ## Quick Start
 
 ### First-Run Detection
 
 On first activation, if no configuration exists:
+
+#### Bash Mode (WSL/Linux/macOS)
 
 1. **Auto-detect environment**:
    ```bash
@@ -43,7 +72,32 @@ On first activation, if no configuration exists:
 
 3. **Guide user through setup** (see `references/first-run-setup.md`)
 
+#### PowerShell Mode (Windows Native)
+
+1. **Auto-detect environment**:
+   ```powershell
+   # Platform is always Windows in PowerShell mode
+   $ADMIN_PLATFORM = "windows"
+   ```
+
+2. **Create default configuration**:
+   ```powershell
+   $DEVICE_NAME = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
+   $ADMIN_USER = if ($env:ADMIN_USER) { $env:ADMIN_USER } else { $env:USERNAME }
+   $ADMIN_ROOT = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
+
+   # Create directories
+   @('logs', 'profiles', 'config') | ForEach-Object {
+       New-Item -ItemType Directory -Force -Path (Join-Path $ADMIN_ROOT $_) | Out-Null
+   }
+   New-Item -ItemType Directory -Force -Path (Join-Path $ADMIN_ROOT "logs\devices\$DEVICE_NAME") | Out-Null
+   ```
+
+3. **Guide user through setup** (see `references/first-run-setup.md`)
+
 ### Loading Configuration
+
+#### Bash Mode
 
 ```bash
 # Load config with fallback chain
@@ -61,7 +115,36 @@ ADMIN_LOG_PATH="${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}"
 ADMIN_PROFILE_PATH="${ADMIN_PROFILE_PATH:-$ADMIN_ROOT/profiles}"
 ```
 
+#### PowerShell Mode
+
+```powershell
+# Load config with fallback chain
+$envFile = $null
+if (Test-Path '.env.local') {
+    $envFile = '.env.local'
+} elseif (Test-Path (Join-Path $env:USERPROFILE '.admin\.env')) {
+    $envFile = Join-Path $env:USERPROFILE '.admin\.env'
+}
+
+if ($envFile) {
+    Get-Content $envFile | ForEach-Object {
+        if ($_ -match '^([^#][^=]*)=(.*)$') {
+            [Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim(), 'Process')
+        }
+    }
+}
+
+# Apply defaults
+$DEVICE_NAME = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
+$ADMIN_USER = if ($env:ADMIN_USER) { $env:ADMIN_USER } else { $env:USERNAME }
+$ADMIN_ROOT = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
+$ADMIN_LOG_PATH = if ($env:ADMIN_LOG_PATH) { $env:ADMIN_LOG_PATH } else { Join-Path $ADMIN_ROOT 'logs' }
+$ADMIN_PROFILE_PATH = if ($env:ADMIN_PROFILE_PATH) { $env:ADMIN_PROFILE_PATH } else { Join-Path $ADMIN_ROOT 'profiles' }
+```
+
 ## Platform Detection
+
+### Bash Mode
 
 ```bash
 detect_platform() {
@@ -82,6 +165,22 @@ detect_platform() {
         echo "linux"
     fi
 }
+```
+
+### PowerShell Mode
+
+```powershell
+function Get-AdminPlatform {
+    # Check explicit override first
+    if ($env:ADMIN_PLATFORM) {
+        return $env:ADMIN_PLATFORM
+    }
+
+    # In PowerShell, we're always on Windows
+    return "windows"
+}
+
+# Usage: $platform = Get-AdminPlatform
 ```
 
 ## Routing Logic
@@ -130,6 +229,8 @@ START
 
 Before routing, validate context compatibility:
 
+#### Bash Mode
+
 ```bash
 validate_context() {
     local task_type="$1"
@@ -152,6 +253,32 @@ validate_context() {
             ;;
     esac
     return 0
+}
+```
+
+#### PowerShell Mode
+
+```powershell
+function Test-AdminContext {
+    param([string]$TaskType)
+
+    $platform = Get-AdminPlatform
+
+    switch ($TaskType) {
+        'wsl' {
+            if ($platform -eq 'windows') {
+                Log-Admin -Level "HANDOFF" -Category "handoff" `
+                    -Message "WSL/Linux task requested from Windows" `
+                    -Details "Run: wsl -d $($env:WSL_DISTRO ?? 'Ubuntu-24.04')"
+                return $false
+            }
+        }
+        'windows' {
+            # Already in Windows - no handoff needed
+            return $true
+        }
+    }
+    return $true
 }
 ```
 
