@@ -366,8 +366,37 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 
 ---
 
+## Issue 004: Windows Testing Discovery (2025-12-09)
+
+**Source**: `/mnt/d/admin/issues/issue_004.md`
+
+**Critical Finding**: Claude Code on Windows uses **Git Bash (MINGW64)** as its subprocess, even when the host terminal is PowerShell 7.
+
+| Context | Shell |
+|---------|-------|
+| Host terminal (VS Code) | PowerShell 7 |
+| Claude Code Bash tool | Git Bash (MINGW64) |
+| Detected `ADMIN_SHELL` | bash |
+
+**Implications**:
+1. Bash commands work through Claude Code on Windows
+2. PowerShell syntax fails (interpreted by Git Bash)
+3. Use `$HOME` instead of `$env:USERPROFILE`
+4. Windows executables (winget, etc.) still work
+
+**Resolution**: Updated `shell-detection.md` with:
+- New section explaining Claude Code Windows behavior
+- Path conversion table (Windows ↔ Git Bash)
+- Example first-run setup for Windows via Claude Code
+- Pattern for invoking native PowerShell when needed
+
+**Status**: Documented and resolved
+
+---
+
 **Next Action**: None - PowerShell compatibility feature complete
 - All phases (7-11) completed
+- Issue 004 documented and resolved
 - Ready for production use
 
 ---

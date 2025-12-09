@@ -25,6 +25,34 @@ Claude Code can run in different shell environments:
 
 The commands for these shells are completely different. Using bash syntax in PowerShell (or vice versa) causes errors.
 
+## IMPORTANT: Claude Code on Windows Uses Git Bash
+
+**Critical Finding (Issue 004)**: On Windows, Claude Code's Bash tool executes commands through a **Git Bash subprocess** (MINGW64), even when the host terminal is PowerShell.
+
+| Context | Shell |
+|---------|-------|
+| Host terminal (what user sees) | PowerShell 7 |
+| Claude Code Bash tool | Git Bash (MINGW64) |
+| Detected `ADMIN_SHELL` | bash |
+
+**Implications**:
+1. Bash commands work through Claude Code on Windows
+2. PowerShell syntax will fail (it's interpreted by Git Bash)
+3. `$env:USERPROFILE` won't work - use `$HOME` or `/c/Users/X/` paths
+4. Windows commands like `winget` still work (they're executables, not shell builtins)
+
+**To run native PowerShell commands from Claude Code on Windows**:
+```bash
+# Invoke PowerShell from Git Bash
+pwsh.exe -Command "Get-Content 'C:\Users\Owner\.admin\logs\operations.log'"
+
+# Multi-line PowerShell script
+pwsh.exe -Command @'
+$profile = Get-Content "$env:USERPROFILE\.admin\profiles\$env:COMPUTERNAME.json"
+$profile | ConvertFrom-Json
+'@
+```
+
 ## Detection Method
 
 ### Automatic Detection
@@ -183,12 +211,53 @@ $logFile = Join-Path $env:USERPROFILE '.admin\logs\operations.log'
 | ADMIN_PLATFORM | ADMIN_SHELL | Environment | Config Location | Path Style |
 |----------------|-------------|-------------|-----------------|------------|
 | windows | powershell | Native Windows | `C:\Users\X\.admin` | Backslash |
-| windows | bash | Git Bash | `/c/Users/X/.admin` | Forward slash |
+| windows | bash | Git Bash / Claude Code | `/c/Users/X/.admin` | Forward slash |
 | wsl | bash | WSL Ubuntu | `/home/X/.admin` | Forward slash |
 | linux | bash | Native Linux | `/home/X/.admin` | Forward slash |
 | macos | zsh | macOS Terminal | `/Users/X/.admin` | Forward slash |
 
 **Note**: Always store absolute paths in config files, never `~` (tilde).
+
+## Claude Code on Windows: Path Conversion
+
+When running on Windows through Claude Code (Git Bash):
+
+| Windows Path | Git Bash Path |
+|--------------|---------------|
+| `C:\Users\Owner` | `/c/Users/Owner` |
+| `D:\admin` | `/d/admin` |
+| `%USERPROFILE%` | `$HOME` |
+| `%COMPUTERNAME%` | `$(hostname)` (works) |
+
+**Example - First-run setup on Windows via Claude Code**:
+```bash
+# Works on Windows Claude Code (Git Bash)
+DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
+ADMIN_ROOT="$HOME/.admin"
+
+# Create directories (Git Bash style)
+mkdir -p "$ADMIN_ROOT"/{logs,profiles,config}
+mkdir -p "$ADMIN_ROOT/logs/devices/$DEVICE_NAME"
+
+# Create profile
+cat > "$ADMIN_ROOT/profiles/$DEVICE_NAME.json" << EOF
+{
+  "deviceInfo": {
+    "name": "$DEVICE_NAME",
+    "platform": "windows",
+    "shell": "bash",
+    "hostname": "$(hostname)",
+    "user": "$USER",
+    "adminRoot": "$ADMIN_ROOT",
+    "lastUpdated": "$(date -Iseconds)"
+  },
+  "installedTools": {},
+  "managedServers": []
+}
+EOF
+
+echo "Profile created at: $ADMIN_ROOT/profiles/$DEVICE_NAME.json"
+```
 
 ## Related Files
 
