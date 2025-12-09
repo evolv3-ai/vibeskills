@@ -71,9 +71,9 @@ log_admin() {
     [[ "$level" == "ERROR" ]] && echo "ERROR: $message" >&2
 }
 
-# Platform detection helper
+# Platform detection helper (case-insensitive grep for WSL)
 detect_platform() {
-    if grep -q Microsoft /proc/version 2>/dev/null; then
+    if grep -qi microsoft /proc/version 2>/dev/null; then
         echo "wsl"
     elif [[ "$OS" == "Windows_NT" ]]; then
         echo "windows"

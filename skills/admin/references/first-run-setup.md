@@ -28,8 +28,8 @@ config_exists() {
 Automatically detect without user input:
 
 ```bash
-# Platform
-if grep -q Microsoft /proc/version 2>/dev/null; then
+# Platform (case-insensitive grep for WSL)
+if grep -qi microsoft /proc/version 2>/dev/null; then
     detected_platform="wsl"
 elif [[ "$OS" == "Windows_NT" ]]; then
     detected_platform="windows"

@@ -21,8 +21,8 @@ On first activation, if no configuration exists:
 
 1. **Auto-detect environment**:
    ```bash
-   # Platform detection
-   if grep -q Microsoft /proc/version 2>/dev/null; then
+   # Platform detection (case-insensitive grep for WSL)
+   if grep -qi microsoft /proc/version 2>/dev/null; then
        ADMIN_PLATFORM="wsl"
    elif [[ "$OS" == "Windows_NT" ]]; then
        ADMIN_PLATFORM="windows"
@@ -71,8 +71,8 @@ detect_platform() {
         return
     fi
 
-    # Auto-detect
-    if grep -q Microsoft /proc/version 2>/dev/null; then
+    # Auto-detect (case-insensitive grep for WSL)
+    if grep -qi microsoft /proc/version 2>/dev/null; then
         echo "wsl"
     elif [[ "$OS" == "Windows_NT" ]]; then
         echo "windows"
