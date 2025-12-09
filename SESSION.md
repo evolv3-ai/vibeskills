@@ -2,7 +2,7 @@
 
 **Current Phase**: Phase 8 - PowerShell Init Commands (Ready to start)
 **Current Stage**: Implementation
-**Last Checkpoint**: 0c518d3 (2025-12-08)
+**Last Checkpoint**: a131b52 (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -235,6 +235,12 @@ Add native Windows PowerShell support so admin skills work when Claude Code runs
 - `skills/admin/SKILL.md` - Added dual-mode (Bash/PowerShell) for all commands
 - `skills/admin/references/shell-detection.md` - New reference doc (3,847 bytes)
 
+**Windows Testing Bug Fixes** (2025-12-08):
+User tested from Windows and reported 3 issues, all fixed:
+- Issue 001: Profile schema mismatch → Updated profile-schema.json with all fields
+- Issue 002: Git Bash edge case → Added ADMIN_SHELL separate from ADMIN_PLATFORM
+- Issue 003: Tilde path expansion → Changed all examples to use absolute paths
+
 ---
 
 ## Phase 8: Add PowerShell Initialization Commands ⏸️
@@ -261,9 +267,11 @@ Add native Windows PowerShell support so admin skills work when Claude Code runs
 
 ---
 
-**Next Action**: Start Phase 8 - Add PowerShell initialization commands
-- File: `skills/admin/SKILL.md`, `skills/admin/references/first-run-setup.md`
-- Task: Ensure all init commands have working PowerShell equivalents
+**Next Action**: Continue Phase 8 - Verify PowerShell init commands work
+- File: `skills/admin/SKILL.md` line 75+ (PowerShell sections)
+- File: `skills/admin/references/first-run-setup.md` (already has PowerShell versions)
+- Task: Test from Windows that New-AdminConfig and New-AdminProfile work correctly
+- Note: Most work already done - first-run-setup.md has PowerShell versions of all functions
 
 ---
 
