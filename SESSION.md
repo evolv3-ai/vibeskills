@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Admin Skills Redesign COMPLETE
-**Current Stage**: Done
-**Last Checkpoint**: 4d2c8fa (2025-12-08)
+**Current Phase**: Phase 7 - PowerShell Compatibility (Ready to start)
+**Current Stage**: Implementation
+**Last Checkpoint**: f01f67a (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -207,6 +207,49 @@ admin (orchestrator)
 - Archived redundant skills
 
 **Final Count**: 12 admin skills (down from 14)
+
+---
+---
+
+# Feature: PowerShell Compatibility (Added 2025-12-08)
+
+Add native Windows PowerShell support so admin skills work when Claude Code runs on Windows (not WSL).
+
+---
+
+## Phase 7: Add Shell Detection to Admin Orchestrator ⏸️
+**Type**: Enhancement | **Added**: 2025-12-08
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-7`
+
+---
+
+## Phase 8: Add PowerShell Initialization Commands ⏸️
+**Type**: Enhancement | **Added**: 2025-12-08
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-8`
+
+---
+
+## Phase 9: Update Sub-Skills with PowerShell Support ⏸️
+**Type**: Enhancement | **Added**: 2025-12-08
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-9`
+
+---
+
+## Phase 10: Testing PowerShell Compatibility ⏸️
+**Type**: Verification | **Added**: 2025-12-08
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-10`
+
+---
+
+## Phase 11: Documentation Update ⏸️
+**Type**: Documentation | **Added**: 2025-12-08
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-11`
+
+---
+
+**Next Action**: Start Phase 7 - Add shell detection logic to admin/SKILL.md
+- File: `skills/admin/SKILL.md`
+- Task: Add shell detection (PowerShell vs Bash) at initialization
 
 ---
 

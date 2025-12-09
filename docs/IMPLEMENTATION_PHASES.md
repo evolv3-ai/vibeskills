@@ -279,3 +279,271 @@ After all phases complete:
 2. Generate marketplace manifests for new `admin` skill
 3. Consider deprecation notice period for absorbed skills
 4. Monitor for issues in production use
+
+---
+---
+
+# Feature: PowerShell Compatibility (Added 2025-12-08)
+
+Add native Windows PowerShell support to admin skills so they work correctly when Claude Code runs on Windows (not WSL). The admin orchestrator should detect the shell environment and provide platform-appropriate commands.
+
+**Problem**: When running Claude Code natively on Windows, the admin skill provides bash commands that fail. Environment variables like `$env:USERPROFILE` get mangled when passed through bash wrappers.
+
+**Solution**: Add dual-mode support - detect shell environment at initialization and provide PowerShell commands when on Windows, bash commands when on WSL/Linux/macOS.
+
+---
+
+## Phase 7: Add Shell Detection to Admin Orchestrator
+
+**Type**: Enhancement | **Effort**: ~1.5 hours
+
+### Tasks
+
+- [ ] Add shell detection logic to `admin/SKILL.md`:
+  - Detect if running in PowerShell vs Bash
+  - Check `$PSVersionTable` for PowerShell
+  - Check `$BASH_VERSION` for Bash
+- [ ] Create `admin/references/shell-detection.md` with detection patterns
+- [ ] Update platform detection to be shell-aware:
+  - Windows + PowerShell = native Windows
+  - Windows + Bash = Git Bash or WSL
+  - WSL + Bash = WSL Linux
+- [ ] Add "Shell Context" section to skill output
+- [ ] Test detection in both environments
+
+### Shell Detection Logic
+
+```markdown
+## Detecting Shell Environment
+
+When activated, determine shell context:
+
+1. **Check for PowerShell**:
+   - If `$PSVersionTable` exists → PowerShell
+   - If `$env:PSModulePath` exists → PowerShell
+
+2. **Check for Bash**:
+   - If `$BASH_VERSION` exists → Bash
+   - If `/proc/version` contains "microsoft" → WSL Bash
+   - Otherwise → Native Linux/macOS Bash
+
+3. **Set execution mode**:
+   - PowerShell mode: Use PowerShell syntax for all commands
+   - Bash mode: Use Bash syntax for all commands
+```
+
+### Success Criteria
+
+- Shell detection works in PowerShell terminal
+- Shell detection works in WSL bash
+- Shell detection works in Git Bash
+- Clear output shows detected shell
+
+---
+
+## Phase 8: Add PowerShell Initialization Commands
+
+**Type**: Enhancement | **Effort**: ~2 hours
+
+### Tasks
+
+- [ ] Add PowerShell version of first-run setup to `admin/SKILL.md`
+- [ ] Add PowerShell version of directory creation
+- [ ] Add PowerShell version of environment loading
+- [ ] Add PowerShell logging function (already exists, verify works)
+- [ ] Add PowerShell profile creation
+- [ ] Update `admin/references/first-run-setup.md` with PowerShell section
+
+### PowerShell Commands to Add
+
+```powershell
+# First-run setup (PowerShell)
+$adminRoot = Join-Path $env:USERPROFILE '.admin'
+New-Item -ItemType Directory -Force -Path (Join-Path $adminRoot 'logs\devices\' + $env:COMPUTERNAME)
+New-Item -ItemType Directory -Force -Path (Join-Path $adminRoot 'profiles')
+New-Item -ItemType Directory -Force -Path (Join-Path $adminRoot 'config')
+
+# Environment loading
+if (Test-Path '.env.local') {
+    Get-Content '.env.local' | ForEach-Object {
+        if ($_ -match '^([^=]+)=(.*)$') {
+            [Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
+        }
+    }
+}
+
+# Profile creation
+$profile = @{
+    deviceInfo = @{
+        name = $env:COMPUTERNAME
+        platform = 'windows'
+        hostname = $env:COMPUTERNAME
+        user = $env:USERNAME
+        lastUpdated = (Get-Date -Format 'o')
+    }
+    installedTools = @{}
+    managedServers = @()
+}
+$profile | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $adminRoot "profiles\$env:COMPUTERNAME.json")
+```
+
+### Success Criteria
+
+- First-run setup works in PowerShell
+- Directories created correctly
+- Profile JSON created with correct structure
+- No bash syntax errors
+
+---
+
+## Phase 9: Update Sub-Skills with PowerShell Support
+
+**Type**: Enhancement | **Effort**: ~2-3 hours
+
+### Tasks
+
+Update each Windows-relevant skill with PowerShell commands:
+
+- [ ] `admin-windows`: Already PowerShell-focused, verify commands work
+- [ ] `admin-mcp`: Add PowerShell commands for MCP server management
+- [ ] `admin-servers`: Add PowerShell SSH/connection commands
+- [ ] `admin-infra-*` (6 skills): Add PowerShell CLI alternatives where applicable
+
+### Priority Order
+
+1. **admin-windows** - Core Windows skill, must work perfectly
+2. **admin-mcp** - Claude Desktop configuration is Windows-only
+3. **admin-servers** - SSH works from PowerShell, verify syntax
+4. **admin-infra-*** - Lower priority, most use CLI tools that work in both
+
+### Command Pattern
+
+Each skill should have dual-mode sections:
+
+```markdown
+### Create Directory
+
+**Bash/WSL**:
+```bash
+mkdir -p ~/.admin/logs
+```
+
+**PowerShell**:
+```powershell
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.admin\logs"
+```
+```
+
+### Success Criteria
+
+- admin-windows works natively on Windows
+- admin-mcp works natively on Windows
+- Other skills degrade gracefully with clear instructions
+
+---
+
+## Phase 10: Testing PowerShell Compatibility
+
+**Type**: Verification | **Effort**: ~1 hour
+
+### Test Matrix
+
+| Test | WSL Claude Code | Windows Claude Code |
+|------|-----------------|---------------------|
+| Shell detection | ✅ Detects Bash | ✅ Detects PowerShell |
+| Platform detection | ✅ Returns "wsl" | ✅ Returns "windows" |
+| First-run setup | ✅ Creates ~/.admin | ✅ Creates %USERPROFILE%\.admin |
+| Logging | ✅ Writes logs | ✅ Writes logs |
+| Profile creation | ✅ Creates JSON | ✅ Creates JSON |
+| admin-windows | ⚠️ Handoff | ✅ Works natively |
+| admin-mcp | ⚠️ Handoff | ✅ Works natively |
+| admin-wsl | ✅ Works natively | ⚠️ Handoff |
+
+### Test Procedure
+
+1. Run Claude Code from WSL terminal
+   - Invoke admin skill
+   - Verify bash commands work
+   - Verify Windows tasks show handoff message
+
+2. Run Claude Code from Windows (D:\admin or similar)
+   - Invoke admin skill
+   - Verify PowerShell commands work
+   - Verify WSL tasks show handoff message
+
+3. Cross-environment test
+   - Create profile in Windows
+   - Verify readable from WSL (via shared ~/.admin)
+   - Create log in WSL
+   - Verify readable from Windows
+
+### Success Criteria
+
+- All tests in matrix pass
+- No shell syntax errors in either environment
+- Handoff messages clear and actionable
+
+---
+
+## Phase 11: Documentation Update
+
+**Type**: Documentation | **Effort**: ~0.5 hours
+
+### Tasks
+
+- [ ] Update `admin/SKILL.md` Quick Start with dual-mode examples
+- [ ] Update `admin/README.md` keywords to include "powershell"
+- [ ] Create `admin/references/powershell-commands.md` reference
+- [ ] Update `admin/references/first-run-setup.md` with PowerShell flow
+- [ ] Add troubleshooting section for Windows-specific issues
+
+### Documentation Sections to Add
+
+```markdown
+## Shell Compatibility
+
+This skill works in both PowerShell and Bash environments:
+
+| Environment | Shell | Commands Used |
+|-------------|-------|---------------|
+| Windows native | PowerShell | PowerShell cmdlets |
+| WSL | Bash | Bash commands |
+| macOS | Bash/Zsh | Bash commands |
+| Linux | Bash | Bash commands |
+
+The skill automatically detects your shell and provides appropriate commands.
+```
+
+### Success Criteria
+
+- Clear documentation for both environments
+- Troubleshooting covers common Windows issues
+- Keywords updated for discoverability
+
+---
+
+## Dependency Graph (PowerShell Feature)
+
+```
+Phase 7 (shell detection)
+    │
+    └── Phase 8 (PowerShell init commands)
+            │
+            └── Phase 9 (update sub-skills)
+                    │
+                    └── Phase 10 (testing)
+                            │
+                            └── Phase 11 (documentation)
+```
+
+---
+
+## Risk Mitigation (PowerShell Feature)
+
+| Risk | Mitigation |
+|------|------------|
+| PowerShell version differences | Test on PowerShell 5.1 and 7.x |
+| Path format issues | Use Join-Path instead of string concatenation |
+| Environment variable expansion | Use proper PowerShell syntax ($env:VAR) |
+| Breaking bash functionality | Keep both modes, don't remove bash |
+| Claude Code shell detection | Test actual behavior in both terminals |
