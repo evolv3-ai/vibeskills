@@ -13,30 +13,79 @@ license: MIT
 
 Central entry point for all administration tasks. Detects your platform and shell, routes to the right specialist skill, and maintains unified logging across all operations.
 
-## Shell Detection (CRITICAL - Do This First)
+## Environment Detection (CRITICAL - Do This First)
 
-Before running ANY commands, determine the shell environment. This affects ALL command syntax.
+Before running ANY commands, determine BOTH the platform AND the shell. These are separate concepts:
 
-### Detecting Shell Context
+- **ADMIN_PLATFORM**: The operating system (windows, wsl, linux, macos)
+- **ADMIN_SHELL**: The command interpreter (bash, powershell, zsh, cmd)
 
-**Check which shell Claude Code is using:**
+### Why Both Matter
 
-1. **If the Bash tool works** (commands like `echo $BASH_VERSION` succeed) → **Use Bash syntax**
-2. **If Bash fails with syntax errors or "not found"** → **Use PowerShell syntax**
+| Scenario | ADMIN_PLATFORM | ADMIN_SHELL | Command Syntax | Available Tools |
+|----------|----------------|-------------|----------------|-----------------|
+| WSL Ubuntu | wsl | bash | Bash | apt, docker |
+| Windows PowerShell | windows | powershell | PowerShell | winget, scoop |
+| Windows Git Bash | windows | bash | Bash | winget (via cmd) |
+| macOS Terminal | macos | zsh | Bash-like | brew |
+| Linux | linux | bash | Bash | apt, dnf, etc. |
+
+### Detecting Shell (ADMIN_SHELL)
 
 **Quick test to determine shell:**
 - Try: `echo $BASH_VERSION`
-- If it returns a version → Bash mode
-- If it fails or returns empty on Windows → PowerShell mode
+- If it returns a version → `ADMIN_SHELL=bash`
+- If it fails or returns empty on Windows → `ADMIN_SHELL=powershell`
+
+#### Bash Detection
+```bash
+# If this works, you're in bash/zsh
+if [[ -n "$BASH_VERSION" ]]; then
+    ADMIN_SHELL="bash"
+elif [[ -n "$ZSH_VERSION" ]]; then
+    ADMIN_SHELL="zsh"
+fi
+```
+
+#### PowerShell Detection
+```powershell
+# If this works, you're in PowerShell
+if ($PSVersionTable) {
+    $ADMIN_SHELL = "powershell"
+}
+```
+
+### Detecting Platform (ADMIN_PLATFORM)
+
+#### From Bash
+```bash
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    ADMIN_PLATFORM="wsl"
+elif [[ "$OS" == "Windows_NT" ]]; then
+    ADMIN_PLATFORM="windows"  # Git Bash on Windows
+elif [[ "$(uname -s)" == "Darwin" ]]; then
+    ADMIN_PLATFORM="macos"
+else
+    ADMIN_PLATFORM="linux"
+fi
+```
+
+#### From PowerShell
+```powershell
+$ADMIN_PLATFORM = "windows"  # PowerShell only runs on Windows (or cross-platform pwsh)
+```
 
 ### Shell Mode Reference
 
-| Shell Mode | Environment | Command Syntax |
-|------------|-------------|----------------|
-| **Bash** | WSL, Linux, macOS, Git Bash | `mkdir -p`, `$HOME`, `$(command)` |
-| **PowerShell** | Windows native | `New-Item`, `$env:USERPROFILE`, `$(command)` |
+| ADMIN_SHELL | Command Syntax | Path Variables | Path Separator |
+|-------------|----------------|----------------|----------------|
+| **bash** | `mkdir -p`, `$HOME` | `$HOME`, `$USER` | `/` |
+| **zsh** | Same as bash | `$HOME`, `$USER` | `/` |
+| **powershell** | `New-Item`, `$env:VAR` | `$env:USERPROFILE` | `\` |
 
-**IMPORTANT**: When in PowerShell mode, ALL commands in this skill should use PowerShell syntax. Do NOT mix bash and PowerShell.
+**IMPORTANT**: Use the syntax for your detected ADMIN_SHELL, regardless of ADMIN_PLATFORM.
+
+Example: Git Bash on Windows uses Bash syntax, even though platform is "windows".
 
 ---
 

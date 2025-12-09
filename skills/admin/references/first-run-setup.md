@@ -4,7 +4,7 @@ When the admin skill activates and no configuration exists, guide the user throu
 
 ## Detection
 
-Check for existing configuration:
+### Bash Mode
 
 ```bash
 config_exists() {
@@ -18,6 +18,21 @@ config_exists() {
     [[ -f "${ADMIN_ROOT:-$HOME/.admin}/config/.env" ]] && return 0
 
     return 1
+}
+```
+
+### PowerShell Mode
+
+```powershell
+function Test-AdminConfig {
+    # Check project-local config
+    if (Test-Path '.env.local') { return $true }
+
+    # Check global config
+    $globalEnv = Join-Path $env:USERPROFILE '.admin\.env'
+    if (Test-Path $globalEnv) { return $true }
+
+    return $false
 }
 ```
 
@@ -73,10 +88,15 @@ Configuration Options:
 
 ### Step 3: Create Configuration
 
-Generate the configuration file:
+Generate the configuration file.
+
+**IMPORTANT**: Always use absolute paths, never tilde (~). Tilde only expands when sourced, not when parsed.
+
+#### Bash Mode
 
 ```bash
 create_config() {
+    # Always expand to absolute path
     local config_dir="${ADMIN_ROOT:-$HOME/.admin}"
     local config_file="$config_dir/.env"
 
@@ -90,15 +110,16 @@ create_config() {
 DEVICE_NAME=${device_name:-$(hostname)}
 ADMIN_USER=${admin_user:-$(whoami)}
 ADMIN_PLATFORM=${detected_platform}
+ADMIN_SHELL=${detected_shell:-bash}
 
-# Paths
+# Paths (ALWAYS use absolute paths, never ~)
 ADMIN_ROOT=$config_dir
 ADMIN_LOG_PATH=$config_dir/logs
 ADMIN_PROFILE_PATH=$config_dir/profiles
 
 # Platform-specific (WSL)
 WSL_DISTRO=${WSL_DISTRO:-Ubuntu-24.04}
-WSL_ADMIN_PATH=${WSL_ADMIN_PATH:-~/dev/wsl-admin}
+WSL_ADMIN_PATH=${WSL_ADMIN_PATH:-$HOME/dev/wsl-admin}
 
 # Sync (optional)
 ADMIN_SYNC_ENABLED=${sync_enabled:-false}
@@ -109,9 +130,50 @@ EOF
 }
 ```
 
+#### PowerShell Mode
+
+```powershell
+function New-AdminConfig {
+    # Always use absolute paths
+    $configDir = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
+    $configFile = Join-Path $configDir '.env'
+
+    # Create directories
+    @('logs', 'profiles', 'config') | ForEach-Object {
+        New-Item -ItemType Directory -Force -Path (Join-Path $configDir $_) | Out-Null
+    }
+    New-Item -ItemType Directory -Force -Path (Join-Path $configDir "logs\devices\$env:COMPUTERNAME") | Out-Null
+
+    # Generate config content
+    $config = @"
+# Admin Skills Configuration
+# Generated: $(Get-Date -Format 'o')
+
+# Core Identity
+DEVICE_NAME=$env:COMPUTERNAME
+ADMIN_USER=$env:USERNAME
+ADMIN_PLATFORM=windows
+ADMIN_SHELL=powershell
+
+# Paths (absolute paths only)
+ADMIN_ROOT=$configDir
+ADMIN_LOG_PATH=$configDir\logs
+ADMIN_PROFILE_PATH=$configDir\profiles
+
+# Sync (optional)
+ADMIN_SYNC_ENABLED=false
+"@
+
+    Set-Content -Path $configFile -Value $config
+    Write-Output "Configuration saved to: $configFile"
+}
+```
+
 ### Step 4: Create Initial Profile
 
-Generate empty device profile:
+Generate device profile.
+
+#### Bash Mode
 
 ```bash
 create_profile() {
@@ -123,23 +185,71 @@ create_profile() {
 
     cat > "$profile_file" << EOF
 {
+  "schemaVersion": "2.0",
   "deviceInfo": {
     "name": "$device",
     "platform": "${ADMIN_PLATFORM:-$(detect_platform)}",
+    "shell": "${ADMIN_SHELL:-bash}",
     "hostname": "$(hostname)",
     "user": "${ADMIN_USER:-$(whoami)}",
+    "adminRoot": "${ADMIN_ROOT:-$HOME/.admin}",
     "lastUpdated": "$(date -Iseconds)"
   },
+  "packageManagers": {},
   "installedTools": {},
+  "installationHistory": [],
+  "systemInfo": {},
+  "paths": {},
   "managedServers": [],
   "cloudProviders": {},
   "syncSettings": {
     "enabled": ${ADMIN_SYNC_ENABLED:-false}
-  }
+  },
+  "customMetadata": {}
 }
 EOF
 
     echo "Profile created: $profile_file"
+}
+```
+
+#### PowerShell Mode
+
+```powershell
+function New-AdminProfile {
+    $profileDir = if ($env:ADMIN_PROFILE_PATH) { $env:ADMIN_PROFILE_PATH } else { Join-Path $env:USERPROFILE '.admin\profiles' }
+    $device = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
+    $profileFile = Join-Path $profileDir "$device.json"
+    $adminRoot = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
+
+    New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
+
+    $profile = @{
+        schemaVersion = "2.0"
+        deviceInfo = @{
+            name = $device
+            platform = "windows"
+            shell = "powershell"
+            hostname = $env:COMPUTERNAME
+            user = $env:USERNAME
+            adminRoot = $adminRoot
+            lastUpdated = (Get-Date -Format 'o')
+        }
+        packageManagers = @{}
+        installedTools = @{}
+        installationHistory = @()
+        systemInfo = @{}
+        paths = @{}
+        managedServers = @()
+        cloudProviders = @{}
+        syncSettings = @{
+            enabled = $false
+        }
+        customMetadata = @{}
+    }
+
+    $profile | ConvertTo-Json -Depth 10 | Set-Content $profileFile
+    Write-Output "Profile created: $profileFile"
 }
 ```
 

@@ -4,8 +4,13 @@
   "title": "Admin Device Profile",
   "description": "Schema for device profiles managed by the admin skill",
   "type": "object",
-  "required": ["deviceInfo"],
+  "required": ["schemaVersion", "deviceInfo"],
   "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Profile schema version for migration compatibility",
+      "examples": ["2.0"]
+    },
     "deviceInfo": {
       "type": "object",
       "description": "Core device identification",
@@ -14,12 +19,17 @@
         "name": {
           "type": "string",
           "description": "Unique device identifier (DEVICE_NAME)",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$"
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_]*$"
         },
         "platform": {
           "type": "string",
           "enum": ["windows", "wsl", "linux", "macos"],
           "description": "Operating platform"
+        },
+        "shell": {
+          "type": "string",
+          "enum": ["powershell", "bash", "zsh", "cmd"],
+          "description": "Primary shell environment (ADMIN_SHELL)"
         },
         "hostname": {
           "type": "string",
@@ -29,10 +39,54 @@
           "type": "string",
           "description": "Primary admin user (ADMIN_USER)"
         },
+        "os": {
+          "type": "string",
+          "description": "Operating system name",
+          "examples": ["Windows 11", "Ubuntu 24.04", "macOS Sonoma"]
+        },
+        "osVersion": {
+          "type": "string",
+          "description": "Operating system version"
+        },
+        "adminRoot": {
+          "type": "string",
+          "description": "Path to admin root directory (ADMIN_ROOT)"
+        },
+        "timezone": {
+          "type": "string",
+          "description": "System timezone",
+          "examples": ["America/Chicago", "UTC", "Europe/London"]
+        },
         "lastUpdated": {
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 timestamp of last profile update"
+        }
+      }
+    },
+    "packageManagers": {
+      "type": "object",
+      "description": "Available package managers on this device",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "present": {
+            "type": "boolean",
+            "description": "Whether this package manager is installed"
+          },
+          "version": {
+            "type": ["string", "null"],
+            "description": "Installed version"
+          },
+          "location": {
+            "type": ["string", "null"],
+            "description": "Path to executable"
+          },
+          "lastChecked": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "When this was last verified"
+          }
         }
       }
     },
@@ -67,6 +121,82 @@
             "additionalProperties": true
           }
         }
+      }
+    },
+    "installationHistory": {
+      "type": "array",
+      "description": "Log of installations performed via admin skills",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Tool name"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version installed"
+          },
+          "method": {
+            "type": "string",
+            "description": "Installation method"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "systemInfo": {
+      "type": "object",
+      "description": "System hardware and environment details",
+      "properties": {
+        "shell": {
+          "type": "string",
+          "description": "Current shell path"
+        },
+        "shellVersion": {
+          "type": "string",
+          "description": "Shell version"
+        },
+        "architecture": {
+          "type": "string",
+          "description": "CPU architecture",
+          "examples": ["x64", "arm64", "x86"]
+        },
+        "cpu": {
+          "type": "string",
+          "description": "CPU model"
+        },
+        "ram": {
+          "type": "string",
+          "description": "Total RAM"
+        },
+        "lastSystemCheck": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "description": "Common paths on this system",
+      "properties": {
+        "npmGlobal": {
+          "type": "string",
+          "description": "NPM global packages path"
+        },
+        "projectsRoot": {
+          "type": "string",
+          "description": "Default projects directory"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
       }
     },
     "managedServers": {
@@ -108,11 +238,11 @@
           "default": false
         },
         "syncPath": {
-          "type": "string",
+          "type": ["string", "null"],
           "description": "Path to synced folder"
         },
         "lastSync": {
-          "type": "string",
+          "type": ["string", "null"],
           "format": "date-time"
         },
         "linkedDevices": {

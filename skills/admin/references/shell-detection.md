@@ -2,11 +2,26 @@
 
 This document explains how the admin skill detects and adapts to different shell environments.
 
+## Two Separate Concepts
+
+The admin skill tracks TWO environment variables:
+
+| Variable | Purpose | Values |
+|----------|---------|--------|
+| `ADMIN_PLATFORM` | Operating system | windows, wsl, linux, macos |
+| `ADMIN_SHELL` | Command interpreter | bash, powershell, zsh, cmd |
+
+**Why both?** Because platform doesn't always determine shell:
+- Windows can run PowerShell, Bash (Git Bash), or CMD
+- WSL runs Bash on top of Windows
+- macOS can run Bash or Zsh
+
 ## Why Shell Detection Matters
 
 Claude Code can run in different shell environments:
 - **PowerShell** (Windows native)
 - **Bash** (WSL, Linux, macOS, Git Bash)
+- **Zsh** (macOS default, some Linux)
 
 The commands for these shells are completely different. Using bash syntax in PowerShell (or vice versa) causes errors.
 
@@ -165,13 +180,15 @@ $logFile = Join-Path $env:USERPROFILE '.admin\logs\operations.log'
 
 ## Platform + Shell Matrix
 
-| Platform | Shell | Detection | Config Location |
-|----------|-------|-----------|-----------------|
-| Windows | PowerShell | Native Windows Claude Code | `%USERPROFILE%\.admin` |
-| Windows | Bash | Git Bash Claude Code | `~/.admin` |
-| WSL | Bash | WSL Claude Code | `~/.admin` |
-| Linux | Bash | Linux Claude Code | `~/.admin` |
-| macOS | Bash/Zsh | macOS Claude Code | `~/.admin` |
+| ADMIN_PLATFORM | ADMIN_SHELL | Environment | Config Location | Path Style |
+|----------------|-------------|-------------|-----------------|------------|
+| windows | powershell | Native Windows | `C:\Users\X\.admin` | Backslash |
+| windows | bash | Git Bash | `/c/Users/X/.admin` | Forward slash |
+| wsl | bash | WSL Ubuntu | `/home/X/.admin` | Forward slash |
+| linux | bash | Native Linux | `/home/X/.admin` | Forward slash |
+| macos | zsh | macOS Terminal | `/Users/X/.admin` | Forward slash |
+
+**Note**: Always store absolute paths in config files, never `~` (tilde).
 
 ## Related Files
 
