@@ -22,11 +22,13 @@ Central entry point for all system administration tasks. Detects platform contex
 
 ### Windows Keywords (routes to admin-windows)
 
-- windows, powershell, pwsh
+- windows, powershell, pwsh, PowerShell 7
 - winget, scoop, chocolatey
 - windows admin, windows setup
 - registry, environment variable windows, PATH windows
 - .wslconfig, windows terminal, wt
+- Get-Content, Set-Content, New-Item (PowerShell cmdlets)
+- $env:USERPROFILE, $env:COMPUTERNAME
 
 ### WSL/Linux Keywords (routes to admin-wsl)
 
@@ -56,11 +58,12 @@ Central entry point for all system administration tasks. Detects platform contex
 
 ## Features
 
+- **Shell Detection**: Auto-detects PowerShell, Bash, Zsh and uses correct syntax
 - **Platform Detection**: Auto-detects Windows, WSL, Linux, macOS
 - **Smart Routing**: Delegates to specialist skills based on task type
 - **Centralized Logging**: Unified log format across all admin operations
 - **Device Profiles**: Track installed tools per device
-- **Cross-Platform Coordination**: Handles Windows ↔ WSL handoffs
+- **Cross-Platform Coordination**: Handles Windows ↔ WSL handoffs with clear instructions
 
 ## Sub-Skills
 
@@ -75,15 +78,28 @@ Central entry point for all system administration tasks. Detects platform contex
 
 ## Quick Start
 
+**Bash/WSL/Linux:**
 ```bash
 # First run creates ~/.admin/ structure
-# Configuration: ~/.admin/.env or project .env.local
+mkdir -p ~/.admin/{logs,profiles,config}
 
 # View logs
 cat ~/.admin/logs/operations.log
 
 # View device profile
 cat ~/.admin/profiles/$(hostname).json
+```
+
+**PowerShell (Windows):**
+```powershell
+# First run creates %USERPROFILE%\.admin\ structure
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.admin\logs","$env:USERPROFILE\.admin\profiles","$env:USERPROFILE\.admin\config"
+
+# View logs
+Get-Content "$env:USERPROFILE\.admin\logs\operations.log"
+
+# View device profile
+Get-Content "$env:USERPROFILE\.admin\profiles\$env:COMPUTERNAME.json"
 ```
 
 ## Related Skills

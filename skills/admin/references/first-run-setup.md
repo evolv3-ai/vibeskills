@@ -359,6 +359,7 @@ load_config() {
 
 ### Config Not Loading
 
+**Bash:**
 ```bash
 # Check config locations
 ls -la ~/.admin/.env
@@ -368,8 +369,19 @@ ls -la .env.local
 bash -n ~/.admin/.env
 ```
 
+**PowerShell:**
+```powershell
+# Check config locations
+Test-Path "$env:USERPROFILE\.admin\.env"
+Test-Path ".env.local"
+
+# View config content
+Get-Content "$env:USERPROFILE\.admin\.env"
+```
+
 ### Permission Issues
 
+**Bash:**
 ```bash
 # Fix ownership
 chown -R $(whoami) ~/.admin
@@ -380,12 +392,80 @@ chmod 600 ~/.admin/.env
 chmod 755 ~/.admin/logs ~/.admin/profiles
 ```
 
+**PowerShell:**
+```powershell
+# Check access
+$adminPath = "$env:USERPROFILE\.admin"
+Get-Acl $adminPath | Format-List
+
+# Grant full control to current user (if needed)
+$acl = Get-Acl $adminPath
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    $env:USERNAME, "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"
+)
+$acl.SetAccessRule($rule)
+Set-Acl $adminPath $acl
+```
+
 ### Reset Configuration
 
+**Bash:**
 ```bash
 # Backup and reset
 mv ~/.admin ~/.admin.backup.$(date +%Y%m%d)
 
 # Re-run setup
 # (admin skill will detect missing config and run setup)
+```
+
+**PowerShell:**
+```powershell
+# Backup and reset
+$backupName = ".admin.backup.$(Get-Date -Format 'yyyyMMdd')"
+Move-Item "$env:USERPROFILE\.admin" "$env:USERPROFILE\$backupName"
+
+# Re-run setup
+# (admin skill will detect missing config and run setup)
+```
+
+### Windows-Specific Issues
+
+**PowerShell Version Too Old:**
+```powershell
+# Check version (need 7.x, not 5.1)
+$PSVersionTable.PSVersion
+
+# If 5.1, install PowerShell 7
+winget install Microsoft.PowerShell
+
+# Then run from pwsh.exe, not powershell.exe
+```
+
+**Environment Variables Not Found:**
+```powershell
+# Verify essential variables exist
+$env:USERPROFILE   # Should be C:\Users\YourName
+$env:COMPUTERNAME  # Should be your PC name
+$env:USERNAME      # Should be your username
+
+# If empty, you may be in a restricted environment
+```
+
+**Path Issues:**
+```powershell
+# Always use Join-Path, never string concatenation
+# Wrong:
+$path = "$env:USERPROFILE\.admin\logs"  # May fail with special chars
+
+# Correct:
+$path = Join-Path $env:USERPROFILE '.admin' 'logs'
+```
+
+**Execution Policy:**
+```powershell
+# Check policy
+Get-ExecutionPolicy
+
+# If Restricted, allow local scripts
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
