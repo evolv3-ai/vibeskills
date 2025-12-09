@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Phase 5 (95% complete - UAT remaining)
-**Current Stage**: Verification
-**Last Checkpoint**: 5729982 (2025-12-08)
+**Current Phase**: Phase 6 (Ready to archive admin-specs and admin-sync)
+**Current Stage**: Implementation
+**Last Checkpoint**: 06a67e5 (2025-12-08)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -108,8 +108,8 @@
 
 ---
 
-## Phase 5: Testing 🔄
-**Type**: Verification
+## Phase 5: Testing ✅
+**Type**: Verification | **Completed**: 2025-12-08
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-5`
 
 **Progress**:
@@ -119,7 +119,7 @@
 - [x] Centralized logging tested - all log files created correctly ✅
 - [x] Cross-platform handoff validation tested ✅
 - [x] Device profile creation tested ✅
-- [ ] UAT: Fresh environment setup using admin skill
+- [x] UAT: Fresh environment setup using admin skill ✅
 
 **Bug Found & Fixed** (2025-12-08):
 - Issue: Platform detection used case-sensitive `grep -q Microsoft` but WSL2 has lowercase "microsoft" in /proc/version
@@ -128,28 +128,47 @@
   - `admin/references/logging.md` (1 occurrence)
   - `admin/references/first-run-setup.md` (1 occurrence)
 
-**Test Results**:
+**UAT Test Results** (2025-12-08 19:37 CST):
 | Test | Status | Notes |
 |------|--------|-------|
-| Platform detection | ✅ PASS | Returns "wsl" correctly after bug fix |
+| Skill discovery | ✅ PASS | All 13 admin skills symlinked in ~/.claude/skills/ |
+| Platform detection | ✅ PASS | Returns "wsl" correctly (case-insensitive grep) |
 | Log file creation | ✅ PASS | operations.log, installations.log, handoffs.log created |
-| Log format | ✅ PASS | ISO8601 [DEVICE][PLATFORM] LEVEL: message | details |
-| Device history | ✅ PASS | Aggregates all logs per device |
-| Cross-platform handoff | ✅ PASS | Windows task from WSL triggers handoff |
-| Device profile | ✅ PASS | Profile JSON created with correct structure |
-| Profile updates | ⚠️ SKIP | Requires jq (dependency documented) |
+| Log format | ✅ PASS | ISO8601 [DEVICE][PLATFORM] LEVEL: message \| details |
+| Device history | ✅ PASS | Aggregates per-device at ~/.admin/logs/devices/$DEVICE/ |
+| Cross-platform handoff | ✅ PASS | Windows task from WSL triggers HANDOFF log |
+| Device profile | ✅ PASS | WOPR3.json created with deviceInfo, installedTools, managedServers |
+| Hardcoded paths check | ✅ PASS | No user-specific paths in admin skill (only in examples) |
+| Sub-skill compliance | ✅ PASS | admin-wsl, admin-servers, admin-infra-oci all use env vars |
+| Profile updates | ⚠️ SKIP | Requires jq (documented as optional dependency) |
 
-**Next Action**: Run UAT test (fresh environment setup), then proceed to Phase 6 (Archive admin-specs and admin-sync)
+**Environment State After UAT**:
+```
+~/.admin/
+├── logs/
+│   ├── operations.log (160 bytes)
+│   ├── installations.log (478 bytes)
+│   ├── handoffs.log (96 bytes)
+│   └── devices/WOPR3/history.log (734 bytes)
+└── profiles/
+    └── WOPR3.json (214 bytes)
+```
+
+**UAT Conclusion**: Admin skill suite is production-ready. All core functionality tested and working.
 
 ---
 
-## Phase 6: Archive Old Skills ⏸️
-**Type**: Cleanup
+## Phase 6: Archive Old Skills 🔄
+**Type**: Cleanup | **Status**: Ready to start
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-6`
 
 **Skills to Archive**:
 - `admin-specs/` (content absorbed into `admin/references/logging.md`)
 - `admin-sync/` (content absorbed into `admin/references/cross-platform.md`)
+
+**Next Action**: Archive admin-specs and admin-sync to `archive/low-priority-skills` branch
+- File: `skills/admin-specs/`, `skills/admin-sync/`
+- Task: Move to archive branch, remove from main, update symlinks
 
 ---
 
