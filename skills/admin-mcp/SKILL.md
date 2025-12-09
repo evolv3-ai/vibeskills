@@ -1,7 +1,7 @@
 ---
 name: admin-mcp
 description: |
-  Install and configure MCP (Model Context Protocol) servers for Claude Desktop on Windows. Covers installation workflows, claude_desktop_config.json management, MCP registry patterns, and the three CLI tools: Desktop Commander, Win-CLI, and Claude Code MCP.
+  Install and configure MCP (Model Context Protocol) servers for Claude Desktop. Supports both PowerShell (Windows native) and Bash/WSL workflows. Covers installation workflows, claude_desktop_config.json management, MCP registry patterns, and the three CLI tools: Desktop Commander, Win-CLI, and Claude Code MCP.
 
   Use when: installing MCP servers, configuring Claude Desktop, choosing between MCP CLI tools, managing MCP registries, or troubleshooting "MCP server not starting", "tool not found", "spawn ENOENT" errors.
 license: MIT
@@ -20,6 +20,7 @@ license: MIT
 
 ### 1. Verify Prerequisites
 
+**PowerShell:**
 ```powershell
 # Check Node.js (required for most MCP servers)
 node --version   # Should be 18+
@@ -31,8 +32,25 @@ npm --version
 Test-Path "$env:APPDATA\Claude\claude_desktop_config.json"
 ```
 
+**Bash/WSL:**
+```bash
+# Check Node.js
+node --version   # Should be 18+
+
+# Check npm
+npm --version
+
+# Get Windows username for path construction
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+
+# Verify Claude Desktop installed (access Windows path from WSL)
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
+[[ -f "$CONFIG_PATH" ]] && echo "Config found: $CONFIG_PATH" || echo "Config not found"
+```
+
 ### 2. Locate Config File
 
+**PowerShell:**
 ```powershell
 # Claude Desktop config location
 $configPath = "$env:APPDATA\Claude\claude_desktop_config.json"
@@ -41,14 +59,45 @@ $configPath = "$env:APPDATA\Claude\claude_desktop_config.json"
 Get-Content $configPath | ConvertFrom-Json | ConvertTo-Json -Depth 10
 ```
 
+**Bash/WSL:**
+```bash
+# Claude Desktop config location (Windows path from WSL)
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
+
+# Read current config
+cat "$CONFIG_PATH" | jq .
+```
+
 ### 3. Install Your First MCP Server
 
+**PowerShell:**
 ```powershell
 # Example: Install filesystem MCP server
 npm install -g @modelcontextprotocol/server-filesystem
 
 # Add to Claude Desktop config (see Configuration section)
 ```
+
+**Bash/WSL:**
+```bash
+# Example: Install filesystem MCP server
+npm install -g @modelcontextprotocol/server-filesystem
+
+# Add to Claude Desktop config (see Configuration section)
+# Note: You'll need to use Windows paths in the config even when editing from WSL
+```
+
+---
+
+## Shell Mode
+
+This skill supports both **PowerShell** (Windows native) and **Bash/WSL** workflows.
+
+**From Windows PowerShell**: Use PowerShell commands directly.
+**From WSL/Bash**: Access Windows config via `/mnt/c/Users/<USER>/AppData/Roaming/Claude/`.
+
+**Key difference**: When editing from WSL, config paths must still use Windows format (`C:/...`), not WSL format (`/mnt/c/...`).
 
 ---
 
@@ -61,6 +110,7 @@ npm install -g @modelcontextprotocol/server-filesystem
 - Restart Claude Desktop after config changes
 - Test MCP servers in isolation before adding to config
 - Log all MCP installations to your registry
+- Use Windows paths in config, even when editing from WSL
 
 ### Never Do
 
@@ -69,6 +119,7 @@ npm install -g @modelcontextprotocol/server-filesystem
 - Install MCP servers without verifying Node.js compatibility
 - Mix npx and global npm installations for same server
 - Forget to escape backslashes in JSON (`\\` not `\`)
+- Use WSL paths (`/mnt/c/...`) in `claude_desktop_config.json`
 
 ---
 
@@ -80,11 +131,19 @@ npm install -g @modelcontextprotocol/server-filesystem
 Windows: %APPDATA%\Claude\claude_desktop_config.json
 macOS:   ~/Library/Application Support/Claude/claude_desktop_config.json
 Linux:   ~/.config/Claude/claude_desktop_config.json
+WSL:     /mnt/c/Users/<USERNAME>/AppData/Roaming/Claude/claude_desktop_config.json
 ```
 
-PowerShell:
+**PowerShell:**
 ```powershell
 $configPath = "$env:APPDATA\Claude\claude_desktop_config.json"
+```
+
+**Bash/WSL:**
+```bash
+# Get Windows username and construct path
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
 ```
 
 ### Config File Structure
@@ -366,6 +425,7 @@ claude_code({
 
 ### Step-by-Step Process
 
+**PowerShell:**
 ```powershell
 # 1. Check if server exists in registry (if using registry)
 $registry = Get-Content $env:MCP_REGISTRY | ConvertFrom-Json
@@ -407,6 +467,60 @@ Start-Process "$env:LOCALAPPDATA\Programs\Claude\Claude.exe"
 # 10. Test server
 # Open Claude Desktop and verify server tools are available
 ```
+
+**Bash/WSL:**
+```bash
+# Setup: Get Windows paths
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
+
+# 1. Backup current config
+cp "$CONFIG_PATH" "${CONFIG_PATH}.backup.$(date +%Y%m%d-%H%M%S)"
+
+# 2. Install server (choose method)
+# Option A: NPX (no install needed)
+# Option B: Global npm
+npm install -g @org/mcp-server-name
+# Option C: Local clone (use Windows-accessible path)
+MCP_ROOT="/mnt/c/mcp"  # or /mnt/d/mcp - must be on Windows filesystem
+cd "$MCP_ROOT" && git clone https://github.com/org/mcp-server.git
+
+# 3. Read and modify config with jq
+# First, check current config
+cat "$CONFIG_PATH" | jq .
+
+# 4. Add server to config (using jq)
+# Note: Use Windows paths (C:/...) in the config, not WSL paths (/mnt/c/...)
+jq '.mcpServers["server-name"] = {
+  "command": "node",
+  "args": ["C:/mcp/mcp-server/dist/index.js"]
+}' "$CONFIG_PATH" > "${CONFIG_PATH}.tmp" && mv "${CONFIG_PATH}.tmp" "$CONFIG_PATH"
+
+# 5. Log installation
+log_admin "SUCCESS" "installation" "Installed MCP server" "server=server-name"
+
+# 6. Restart Claude Desktop (from WSL)
+# Option A: Use PowerShell via WSL
+powershell.exe -Command "Stop-Process -Name 'Claude' -ErrorAction SilentlyContinue; Start-Process 'C:\Users\$WIN_USER\AppData\Local\Programs\Claude\Claude.exe'"
+
+# Option B: Manual restart
+echo "Please restart Claude Desktop manually"
+
+# 7. Test server
+# Open Claude Desktop and verify server tools are available
+```
+
+### WSL Path Conversion Reference
+
+When editing config from WSL, remember to convert paths:
+
+| WSL Path | Windows Path (for config) |
+|----------|---------------------------|
+| `/mnt/c/Users/user/...` | `C:/Users/user/...` |
+| `/mnt/d/mcp/...` | `D:/mcp/...` |
+| `$HOME/.ssh/id_rsa` | N/A (use Windows path) |
+
+**Important**: Claude Desktop runs on Windows, so all paths in `claude_desktop_config.json` must be Windows paths, even when editing from WSL.
 
 ---
 
@@ -561,6 +675,8 @@ When MCP servers fail, collect comprehensive diagnostic information using the bu
 If the script isn't available, collect this information manually:
 
 #### 1. System Environment
+
+**PowerShell:**
 ```powershell
 # PowerShell version
 $PSVersionTable | Format-List
@@ -574,7 +690,24 @@ npm --version
 npm root -g
 ```
 
+**Bash/WSL:**
+```bash
+# Shell info
+echo "Shell: $SHELL"
+echo "Bash version: $BASH_VERSION"
+
+# Node.js
+node --version
+which node
+
+# npm
+npm --version
+npm root -g
+```
+
 #### 2. Claude Desktop Config
+
+**PowerShell:**
 ```powershell
 # Config location and content
 $configPath = "$env:APPDATA\Claude\claude_desktop_config.json"
@@ -582,7 +715,19 @@ Test-Path $configPath
 Get-Content $configPath | ConvertFrom-Json | ConvertTo-Json -Depth 10
 ```
 
+**Bash/WSL:**
+```bash
+# Config location and content
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
+
+[[ -f "$CONFIG_PATH" ]] && echo "Config exists" || echo "Config not found"
+cat "$CONFIG_PATH" | jq .
+```
+
 #### 3. PATH Analysis
+
+**PowerShell:**
 ```powershell
 # Check for npm in PATH
 $env:PATH -split ';' | Where-Object { $_ -like "*npm*" -or $_ -like "*node*" }
@@ -591,7 +736,18 @@ $env:PATH -split ';' | Where-Object { $_ -like "*npm*" -or $_ -like "*node*" }
 [Environment]::GetEnvironmentVariable('PATH', 'User') -split ';'
 ```
 
+**Bash/WSL:**
+```bash
+# Check for npm/node in PATH
+echo "$PATH" | tr ':' '\n' | grep -E 'npm|node'
+
+# Check Windows PATH (from WSL)
+cmd.exe /c "echo %PATH%" 2>/dev/null | tr ';' '\n' | grep -iE 'npm|node'
+```
+
 #### 4. Test Server Manually
+
+**PowerShell:**
 ```powershell
 # For npx servers
 npx.cmd -y @modelcontextprotocol/server-filesystem --help
@@ -600,7 +756,18 @@ npx.cmd -y @modelcontextprotocol/server-filesystem --help
 node "<MCP_ROOT>/server-name/dist/index.js" --help
 ```
 
+**Bash/WSL:**
+```bash
+# For npx servers (use Windows npx from WSL)
+npx -y @modelcontextprotocol/server-filesystem --help
+
+# For local servers (convert path for testing)
+node "/mnt/c/mcp/server-name/dist/index.js" --help
+```
+
 #### 5. Check Claude Logs
+
+**PowerShell:**
 ```powershell
 # Find logs
 Get-ChildItem "$env:APPDATA\Claude\logs" -Recurse
@@ -612,7 +779,25 @@ Get-Content "$env:APPDATA\Claude\logs\main.log" -Tail 50
 Select-String -Path "$env:APPDATA\Claude\logs\*.log" -Pattern "mcp|MCP|error|ENOENT"
 ```
 
+**Bash/WSL:**
+```bash
+# Setup
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+LOG_DIR="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/logs"
+
+# Find logs
+ls -la "$LOG_DIR"
+
+# View recent log
+tail -50 "$LOG_DIR/main.log"
+
+# Search for MCP errors
+grep -iE 'mcp|error|ENOENT' "$LOG_DIR"/*.log
+```
+
 #### 6. Process Information
+
+**PowerShell:**
 ```powershell
 # Claude Desktop process
 Get-Process -Name "Claude" | Format-List *
@@ -628,7 +813,18 @@ Get-Process -Name "node" | ForEach-Object {
 } | Format-Table -AutoSize
 ```
 
+**Bash/WSL:**
+```bash
+# Check Claude Desktop process (via Windows)
+powershell.exe -Command "Get-Process -Name 'Claude' -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, WorkingSet64"
+
+# Check Node processes (via Windows - MCP servers run on Windows)
+powershell.exe -Command "Get-Process -Name 'node' -ErrorAction SilentlyContinue | Select-Object Id, ProcessName"
+```
+
 #### 7. Verify File Paths
+
+**PowerShell:**
 ```powershell
 # Check all paths referenced in config
 $config = Get-Content "$env:APPDATA\Claude\claude_desktop_config.json" | ConvertFrom-Json
@@ -649,6 +845,29 @@ foreach ($server in $config.mcpServers.PSObject.Properties) {
         }
     }
 }
+```
+
+**Bash/WSL:**
+```bash
+# Check all paths referenced in config
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+CONFIG_PATH="/mnt/c/Users/$WIN_USER/AppData/Roaming/Claude/claude_desktop_config.json"
+
+# List all servers and their commands
+jq -r '.mcpServers | to_entries[] | "\(.key): \(.value.command) \(.value.args | join(" "))"' "$CONFIG_PATH"
+
+# Check if paths exist (convert Windows paths to WSL)
+jq -r '.mcpServers | to_entries[] | .value.args[]' "$CONFIG_PATH" | while read -r arg; do
+    if [[ "$arg" =~ ^[A-Za-z]: ]]; then
+        # Convert Windows path to WSL path
+        wsl_path=$(echo "$arg" | sed 's|^\([A-Za-z]\):|/mnt/\L\1|; s|\\|/|g')
+        if [[ -f "$wsl_path" ]]; then
+            echo "✓ $arg (exists)"
+        else
+            echo "✗ $arg (NOT FOUND)"
+        fi
+    fi
+done
 ```
 
 ### Information to Include in Bug Reports

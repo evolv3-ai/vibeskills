@@ -1,7 +1,7 @@
 ---
 name: admin-servers
 description: |
-  Manage infrastructure inventory with Agent DevOps Inventory format. Track cloud providers (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo), local networks, and servers in a simple .env-style file.
+  Manage infrastructure inventory with Agent DevOps Inventory format. Supports both Bash and PowerShell workflows. Track cloud providers (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo), local networks, and servers in a simple .env-style file.
 
   Use when: managing server inventory, provisioning infrastructure, checking existing servers, deploying to cloud providers, administering multi-provider environments.
 
@@ -170,6 +170,7 @@ SERVER_WEB02_STATUS=active
 
 ### 1. Check for Existing Inventory
 
+**Bash:**
 ```bash
 # Look for inventory file
 for f in .agent-devops.env agent-devops.env.local ~/.agent-devops.env; do
@@ -177,28 +178,62 @@ for f in .agent-devops.env agent-devops.env.local ~/.agent-devops.env; do
 done
 ```
 
+**PowerShell:**
+```powershell
+# Look for inventory file
+@('.agent-devops.env', 'agent-devops.env.local', "$env:USERPROFILE\.agent-devops.env") | ForEach-Object {
+    if (Test-Path $_) {
+        Write-Host "Found: $_"
+        Get-Content $_
+    }
+}
+```
+
 ### 2. Create Inventory from Template
 
+**Bash:**
 ```bash
 cp ~/.claude/skills/admin-servers/assets/agent-devops.env.template .agent-devops.env
 ```
 
+**PowerShell:**
+```powershell
+Copy-Item "$env:USERPROFILE\.claude\skills\admin-servers\assets\agent-devops.env.template" ".agent-devops.env"
+```
+
 ### 3. Discover Available Providers
 
+**Bash:**
 ```bash
 # List installed infrastructure skills
 ls -d ~/.claude/skills/admin-infra-* 2>/dev/null | xargs -I{} basename {} | sed 's/^admin-infra-//'
 ```
 
+**PowerShell:**
+```powershell
+# List installed infrastructure skills
+Get-ChildItem "$env:USERPROFILE\.claude\skills\admin-infra-*" -Directory |
+    ForEach-Object { $_.Name -replace '^admin-infra-', '' }
+```
+
 ### 4. List Servers
 
+**Bash:**
 ```bash
 # Extract server IDs from inventory
 grep -oP 'SERVER_\K[A-Z0-9_]+(?=_NAME)' .agent-devops.env | sort -u
 ```
 
+**PowerShell:**
+```powershell
+# Extract server IDs from inventory
+(Get-Content .agent-devops.env | Select-String 'SERVER_([A-Z0-9_]+)_NAME=' -AllMatches).Matches |
+    ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
+```
+
 ### 5. Connect to Server
 
+**Bash:**
 ```bash
 # Get connection details for a server
 SERVER_ID="WEB01"
@@ -209,17 +244,40 @@ KEY=$(grep "SERVER_${SERVER_ID}_SSH_KEY_PATH=" .agent-devops.env | cut -d= -f2)
 ssh -i "$KEY" "$USER@$HOST"
 ```
 
+**PowerShell:**
+```powershell
+# Get connection details for a server
+$SERVER_ID = "WEB01"
+$inventory = Get-Content .agent-devops.env
+
+$HOST = ($inventory | Select-String "SERVER_${SERVER_ID}_HOST=(.*)").Matches.Groups[1].Value
+$USER = ($inventory | Select-String "SERVER_${SERVER_ID}_USER=(.*)").Matches.Groups[1].Value
+$KEY = ($inventory | Select-String "SERVER_${SERVER_ID}_SSH_KEY_PATH=(.*)").Matches.Groups[1].Value
+
+# SSH (OpenSSH is built into Windows 10+)
+ssh -i $KEY "$USER@$HOST"
+```
+
 ---
 
 ## Provider Discovery
 
 Claude should discover available infrastructure skills:
 
+**Bash:**
 ```bash
 # Discover available infrastructure skills
 AVAILABLE_PROVIDERS=$(ls -d ~/.claude/skills/admin-infra-* 2>/dev/null | \
   xargs -I{} basename {} | sed 's/^admin-infra-//' | sort)
 echo "Available providers: $AVAILABLE_PROVIDERS"
+```
+
+**PowerShell:**
+```powershell
+# Discover available infrastructure skills
+$AVAILABLE_PROVIDERS = Get-ChildItem "$env:USERPROFILE\.claude\skills\admin-infra-*" -Directory |
+    ForEach-Object { $_.Name -replace '^admin-infra-', '' } | Sort-Object
+Write-Host "Available providers: $($AVAILABLE_PROVIDERS -join ', ')"
 ```
 
 **Known Provider Skills**:
@@ -245,6 +303,7 @@ echo "Available providers: $AVAILABLE_PROVIDERS"
 4. Add server to inventory
 5. Verify SSH connectivity
 
+**Bash:**
 ```bash
 # Example: Check for existing dev servers before provisioning
 grep -E "SERVER_.*_ENV=dev" .agent-devops.env
@@ -252,8 +311,17 @@ grep -E "SERVER_.*_ROLE=web" .agent-devops.env
 grep -E "SERVER_.*_STATUS=active" .agent-devops.env
 ```
 
+**PowerShell:**
+```powershell
+# Example: Check for existing dev servers before provisioning
+Select-String -Path .agent-devops.env -Pattern 'SERVER_.*_ENV=dev'
+Select-String -Path .agent-devops.env -Pattern 'SERVER_.*_ROLE=web'
+Select-String -Path .agent-devops.env -Pattern 'SERVER_.*_STATUS=active'
+```
+
 ### Update Server Status
 
+**Bash:**
 ```bash
 # Mark server as stopped
 sed -i "s/SERVER_WEB01_STATUS=active/SERVER_WEB01_STATUS=stopped/" .agent-devops.env
@@ -262,8 +330,20 @@ sed -i "s/SERVER_WEB01_STATUS=active/SERVER_WEB01_STATUS=stopped/" .agent-devops
 sed -i "s/SERVER_WEB01_STATUS=.*/SERVER_WEB01_STATUS=retired/" .agent-devops.env
 ```
 
+**PowerShell:**
+```powershell
+# Mark server as stopped
+(Get-Content .agent-devops.env) -replace 'SERVER_WEB01_STATUS=active', 'SERVER_WEB01_STATUS=stopped' |
+    Set-Content .agent-devops.env
+
+# Mark server as retired (destroyed)
+(Get-Content .agent-devops.env) -replace 'SERVER_WEB01_STATUS=\w+', 'SERVER_WEB01_STATUS=retired' |
+    Set-Content .agent-devops.env
+```
+
 ### Add New Provider
 
+**Bash:**
 ```bash
 # Add Hetzner provider to inventory
 cat >> .agent-devops.env << 'EOF'
@@ -275,6 +355,20 @@ PROVIDER_HETZNER_AUTH_FILE=~/.config/hcloud/token
 PROVIDER_HETZNER_DEFAULT_REGION=nbg1
 PROVIDER_HETZNER_LABEL=Hetzner Cloud
 EOF
+```
+
+**PowerShell:**
+```powershell
+# Add Hetzner provider to inventory
+@"
+
+# Hetzner Cloud
+PROVIDER_HETZNER_TYPE=hetzner
+PROVIDER_HETZNER_AUTH_METHOD=file
+PROVIDER_HETZNER_AUTH_FILE=~/.config/hcloud/token
+PROVIDER_HETZNER_DEFAULT_REGION=nbg1
+PROVIDER_HETZNER_LABEL=Hetzner Cloud
+"@ | Add-Content .agent-devops.env
 ```
 
 ---
@@ -508,6 +602,7 @@ Deploy complete infrastructure with multiple services:
 <details>
 <summary><strong>SSH Connection Failed</strong></summary>
 
+**Bash:**
 ```bash
 # Debug SSH connection
 SERVER_ID="WEB01"
@@ -523,6 +618,23 @@ ls -la "$KEY"
 chmod 600 "$KEY"
 ```
 
+**PowerShell:**
+```powershell
+# Debug SSH connection
+$SERVER_ID = "WEB01"
+$inventory = Get-Content .agent-devops.env
+
+$HOST = ($inventory | Select-String "SERVER_${SERVER_ID}_HOST=(.*)").Matches.Groups[1].Value
+$USER = ($inventory | Select-String "SERVER_${SERVER_ID}_USER=(.*)").Matches.Groups[1].Value
+$KEY = ($inventory | Select-String "SERVER_${SERVER_ID}_SSH_KEY_PATH=(.*)").Matches.Groups[1].Value
+
+# Verbose SSH (OpenSSH built into Windows 10+)
+ssh -v -i $KEY "$USER@$HOST" echo "connected"
+
+# Check key permissions (Windows)
+icacls $KEY
+```
+
 </details>
 
 <details>
@@ -533,6 +645,7 @@ Common issues:
 - Spaces around `=` (not allowed)
 - Invalid characters in key names
 
+**Bash:**
 ```bash
 # Validate inventory syntax
 while IFS= read -r line; do
@@ -544,18 +657,40 @@ while IFS= read -r line; do
 done < .agent-devops.env
 ```
 
+**PowerShell:**
+```powershell
+# Validate inventory syntax
+Get-Content .agent-devops.env | ForEach-Object {
+    if ($_ -match '^\s*$') { return }  # Skip blank lines
+    if ($_ -match '^\s*#') { return }  # Skip comments
+    if ($_ -notmatch '^[A-Z_][A-Z0-9_]*=') {
+        Write-Warning "Invalid line: $_"
+    }
+}
+```
+
 </details>
 
 <details>
 <summary><strong>Provider Not Found</strong></summary>
 
+**Bash:**
 ```bash
 # Check if provider skill is installed
-ls ~/.claude/skills/*-infrastructure
+ls ~/.claude/skills/admin-infra-*
 
 # Install missing skill
-cd ~/.claude/skills
-git clone <skill-repo> <provider>-infrastructure
+cd ~/dev/claude-skills
+./scripts/install-skill.sh admin-infra-<provider>
+```
+
+**PowerShell:**
+```powershell
+# Check if provider skill is installed
+Get-ChildItem "$env:USERPROFILE\.claude\skills\admin-infra-*"
+
+# Install missing skill (from repo root)
+.\scripts\install-skill.sh admin-infra-<provider>
 ```
 
 </details>
@@ -604,6 +739,7 @@ admin-servers/
 
 When performing operations (provisioning, retiring, status changes), log to the centralized system:
 
+**Bash:**
 ```bash
 # After provisioning a server
 log_admin "SUCCESS" "operation" "Provisioned server" "id=WEB02 provider=OCI"
@@ -613,6 +749,18 @@ log_admin "SUCCESS" "operation" "Updated server status" "id=WEB01 status=stopped
 
 # After inventory update
 log_admin "INFO" "operation" "Updated inventory" "action=added servers=WEB02,WEB03"
+```
+
+**PowerShell:**
+```powershell
+# After provisioning a server
+Log-Admin -Level "SUCCESS" -Category "operation" -Message "Provisioned server" -Details "id=WEB02 provider=OCI"
+
+# After status change
+Log-Admin -Level "SUCCESS" -Category "operation" -Message "Updated server status" -Details "id=WEB01 status=stopped"
+
+# After inventory update
+Log-Admin -Level "INFO" -Category "operation" -Message "Updated inventory" -Details "action=added servers=WEB02,WEB03"
 ```
 
 See `admin` skill's `references/logging.md` for full logging documentation.
