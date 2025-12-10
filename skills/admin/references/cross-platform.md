@@ -2,6 +2,25 @@
 
 Windows ↔ WSL coordination, path conversion, and handoff protocols.
 
+## Shared Admin Root
+
+**CRITICAL**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem.
+
+| Environment | ADMIN_ROOT Value | Physical Location |
+|-------------|------------------|-------------------|
+| Windows | `C:\Users\Owner\.admin` | `C:\Users\Owner\.admin` |
+| WSL | `/mnt/c/Users/Owner/.admin` | `C:\Users\Owner\.admin` |
+
+**Benefits:**
+- **One device profile** (WOPR3.json) - not duplicated
+- **Unified logs** - operations from both environments in one place
+- **Single source of truth** - installed tools tracked once
+
+**How it works:**
+- WSL detects it's running on Windows (via `/proc/version`)
+- WSL defaults `ADMIN_ROOT` to `/mnt/c/Users/$WIN_USER/.admin`
+- Both environments read/write the same files
+
 ## Decision Matrix
 
 | Operation | Windows (admin-windows) | WSL (admin-wsl) | Notes |

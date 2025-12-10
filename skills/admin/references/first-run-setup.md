@@ -2,20 +2,46 @@
 
 When the admin skill activates and no configuration exists, guide the user through setup.
 
+## Shared Admin Root (Windows + WSL)
+
+**IMPORTANT**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem. Both environments read/write to the same location.
+
+| Environment | ADMIN_ROOT Path | Physical Location |
+|-------------|-----------------|-------------------|
+| Windows | `C:\Users\Owner\.admin` | `C:\Users\Owner\.admin` |
+| WSL | `/mnt/c/Users/Owner/.admin` | `C:\Users\Owner\.admin` |
+| Linux (standalone) | `~/.admin` | `/home/user/.admin` |
+| macOS | `~/.admin` | `/Users/user/.admin` |
+
+This ensures:
+- **One device profile** (not duplicated)
+- **Unified logs** (visible from both environments)
+- **Single source of truth** for installed tools
+
 ## Detection
 
 ### Bash Mode
 
 ```bash
 config_exists() {
+    # Determine default admin root based on platform
+    local default_root
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        # WSL: Use Windows path
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        default_root="/mnt/c/Users/$win_user/.admin"
+    else
+        default_root="$HOME/.admin"
+    fi
+
     # Check project-local config
     [[ -f ".env.local" ]] && return 0
 
     # Check global config
-    [[ -f "$HOME/.admin/.env" ]] && return 0
+    [[ -f "$default_root/.env" ]] && return 0
 
     # Check if admin directory exists with config
-    [[ -f "${ADMIN_ROOT:-$HOME/.admin}/config/.env" ]] && return 0
+    [[ -f "${ADMIN_ROOT:-$default_root}/config/.env" ]] && return 0
 
     return 1
 }
@@ -79,7 +105,9 @@ Configuration Options:
 1. Device name (default: WOPR3)
    > [press Enter for default or type custom name]
 
-2. Admin directory (default: ~/.admin)
+2. Admin directory:
+   - Windows/WSL: C:\Users\Owner\.admin (shared)
+   - Linux/macOS: ~/.admin
    > [press Enter for default or type custom path]
 
 3. Enable cross-device sync? (y/N)
@@ -90,17 +118,29 @@ Configuration Options:
 
 Generate the configuration file.
 
-**IMPORTANT**: Always use absolute paths, never tilde (~). Tilde only expands when sourced, not when parsed.
+**IMPORTANT**:
+- Always use absolute paths, never tilde (~). Tilde only expands when sourced, not when parsed.
+- On Windows+WSL machines, both environments share the same `.admin` folder on the Windows filesystem.
 
 #### Bash Mode
 
 ```bash
 create_config() {
-    # Always expand to absolute path
-    local config_dir="${ADMIN_ROOT:-$HOME/.admin}"
+    # Determine default admin root based on platform
+    local config_dir
+    if [[ -n "$ADMIN_ROOT" ]]; then
+        config_dir="$ADMIN_ROOT"
+    elif grep -qi microsoft /proc/version 2>/dev/null; then
+        # WSL: Use Windows path for shared state
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        config_dir="/mnt/c/Users/$win_user/.admin"
+    else
+        config_dir="$HOME/.admin"
+    fi
     local config_file="$config_dir/.env"
 
     mkdir -p "$config_dir"/{logs,profiles,config}
+    mkdir -p "$config_dir/logs/devices/$(hostname)"
 
     cat > "$config_file" << EOF
 # Admin Skills Configuration
@@ -113,6 +153,7 @@ ADMIN_PLATFORM=${detected_platform}
 ADMIN_SHELL=${detected_shell:-bash}
 
 # Paths (ALWAYS use absolute paths, never ~)
+# On WSL, this points to Windows filesystem for shared state
 ADMIN_ROOT=$config_dir
 ADMIN_LOG_PATH=$config_dir/logs
 ADMIN_PROFILE_PATH=$config_dir/profiles

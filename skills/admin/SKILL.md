@@ -115,8 +115,18 @@ On first activation, if no configuration exists:
    ```bash
    DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
    ADMIN_USER="${ADMIN_USER:-$(whoami)}"
-   ADMIN_ROOT="${ADMIN_ROOT:-$HOME/.admin}"
+
+   # IMPORTANT: On WSL, default to Windows path for shared state
+   if [[ "$ADMIN_PLATFORM" == "wsl" ]]; then
+       # Get Windows username and use Windows .admin folder
+       WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+       ADMIN_ROOT="${ADMIN_ROOT:-/mnt/c/Users/$WIN_USER/.admin}"
+   else
+       ADMIN_ROOT="${ADMIN_ROOT:-$HOME/.admin}"
+   fi
+
    mkdir -p "$ADMIN_ROOT"/{logs,profiles,config}
+   mkdir -p "$ADMIN_ROOT/logs/devices/$DEVICE_NAME"
    ```
 
 3. **Guide user through setup** (see `references/first-run-setup.md`)
@@ -149,17 +159,26 @@ On first activation, if no configuration exists:
 #### Bash Mode
 
 ```bash
+# Determine default ADMIN_ROOT based on platform
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    # WSL: Use Windows path for shared state
+    WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+    DEFAULT_ADMIN_ROOT="/mnt/c/Users/$WIN_USER/.admin"
+else
+    DEFAULT_ADMIN_ROOT="$HOME/.admin"
+fi
+
 # Load config with fallback chain
 if [[ -f ".env.local" ]]; then
     source .env.local
-elif [[ -f "$HOME/.admin/.env" ]]; then
-    source "$HOME/.admin/.env"
+elif [[ -f "$DEFAULT_ADMIN_ROOT/.env" ]]; then
+    source "$DEFAULT_ADMIN_ROOT/.env"
 fi
 
 # Apply defaults
 DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
 ADMIN_USER="${ADMIN_USER:-$(whoami)}"
-ADMIN_ROOT="${ADMIN_ROOT:-$HOME/.admin}"
+ADMIN_ROOT="${ADMIN_ROOT:-$DEFAULT_ADMIN_ROOT}"
 ADMIN_LOG_PATH="${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}"
 ADMIN_PROFILE_PATH="${ADMIN_PROFILE_PATH:-$ADMIN_ROOT/profiles}"
 ```
@@ -370,7 +389,17 @@ log_admin() {
     local timestamp=$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)
     local device="${DEVICE_NAME:-$(hostname)}"
     local platform="${ADMIN_PLATFORM:-$(detect_platform)}"
-    local log_dir="${ADMIN_LOG_PATH:-$HOME/.admin/logs}"
+
+    # Determine log directory (WSL uses Windows path for shared logs)
+    local log_dir
+    if [[ -n "$ADMIN_LOG_PATH" ]]; then
+        log_dir="$ADMIN_LOG_PATH"
+    elif grep -qi microsoft /proc/version 2>/dev/null; then
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        log_dir="/mnt/c/Users/$win_user/.admin/logs"
+    else
+        log_dir="$HOME/.admin/logs"
+    fi
 
     local log_line="$timestamp [$device][$platform] $level: $message"
     [[ -n "$details" ]] && log_line="$log_line | $details"
@@ -436,7 +465,18 @@ Key sections:
 **Create/Update Profile**:
 ```bash
 update_profile() {
-    local profile_path="${ADMIN_PROFILE_PATH:-$HOME/.admin/profiles}/${DEVICE_NAME:-$(hostname)}.json"
+    # Determine profile directory (WSL uses Windows path for shared profiles)
+    local profile_dir
+    if [[ -n "$ADMIN_PROFILE_PATH" ]]; then
+        profile_dir="$ADMIN_PROFILE_PATH"
+    elif grep -qi microsoft /proc/version 2>/dev/null; then
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        profile_dir="/mnt/c/Users/$win_user/.admin/profiles"
+    else
+        profile_dir="$HOME/.admin/profiles"
+    fi
+
+    local profile_path="$profile_dir/${DEVICE_NAME:-$(hostname)}.json"
     mkdir -p "$(dirname "$profile_path")"
 
     # Create if doesn't exist
@@ -498,7 +538,9 @@ When a task requires switching contexts:
 |---------|--------------|----------|
 | Windows user home | `C:\Users\$USERNAME` | `/mnt/c/Users/$USERNAME` |
 | WSL home from Windows | `\\wsl$\$DISTRO\home\$USER` | `~` or `/home/$USER` |
-| Shared admin root | `$WIN_USER_HOME\.admin` | `$HOME/.admin` |
+| **Shared admin root** | `C:\Users\$USERNAME\.admin` | `/mnt/c/Users/$USERNAME/.admin` |
+
+**IMPORTANT**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem. Both environments read/write to the same location (`C:\Users\$USERNAME\.admin`), ensuring unified logs and profiles.
 
 ### Common Cross-Platform Tasks
 
@@ -537,7 +579,7 @@ See `.env.template` for all available variables.
 |----------|---------|---------|
 | `DEVICE_NAME` | Unique device identifier | `$(hostname)` |
 | `ADMIN_USER` | Primary admin username | `$(whoami)` |
-| `ADMIN_ROOT` | Central admin directory | `~/.admin` |
+| `ADMIN_ROOT` | Central admin directory | Windows: `$USERPROFILE\.admin`<br>WSL: `/mnt/c/Users/$WIN_USER/.admin`<br>Linux/macOS: `~/.admin` |
 
 ### Optional Variables
 
