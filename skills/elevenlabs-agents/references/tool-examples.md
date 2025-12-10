@@ -108,6 +108,95 @@ navigate: {
 
 ## MCP Tools
 
+### Critical: ElevenLabs MCP Server Compatibility
+
+ElevenLabs labels their MCP integration as "Streamable HTTP" but **does NOT support** the actual MCP 2025-03-26 Streamable HTTP spec (SSE responses). Instead, ElevenLabs expects:
+
+- **Plain JSON responses** (`application/json`), NOT SSE (`text/event-stream`)
+- **Protocol version `2024-11-05`**, NOT the newer `2025-03-26`
+- **Simple JSON-RPC over HTTP** with direct JSON responses
+
+**What DOES NOT work:**
+- Official MCP SDK's `createMcpHandler` (returns SSE format)
+- Cloudflare Agents SDK `McpServer.serve()` (returns SSE format)
+- Any server returning `Content-Type: text/event-stream`
+
+**What WORKS:**
+- Raw Hono + JSON-RPC pattern with `c.json()` responses
+- Protocol version `2024-11-05` in initialize response
+- Plain `application/json` Content-Type
+
+### Working MCP Server Pattern for ElevenLabs
+
+```typescript
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+
+const tools = [{
+  name: "my_tool",
+  description: "Tool description",
+  inputSchema: {
+    type: "object",
+    properties: {
+      param1: { type: "string", description: "Description" }
+    },
+    required: ["param1"]
+  }
+}];
+
+async function handleMCPRequest(request, env) {
+  const { id, method, params } = request;
+
+  switch (method) {
+    case 'initialize':
+      return {
+        jsonrpc: '2.0', id,
+        result: {
+          protocolVersion: '2024-11-05',  // MUST be 2024-11-05, NOT 2025-03-26
+          serverInfo: { name: 'my-mcp-server', version: '1.0.0' },
+          capabilities: { tools: {} }
+        }
+      };
+
+    case 'tools/list':
+      return { jsonrpc: '2.0', id, result: { tools } };
+
+    case 'tools/call':
+      const result = await handleTool(params.name, params.arguments, env);
+      return { jsonrpc: '2.0', id, result };
+
+    default:
+      return { jsonrpc: '2.0', id, error: { code: -32601, message: `Method not found: ${method}` } };
+  }
+}
+
+const app = new Hono();
+
+app.use('/*', cors({ origin: '*', allowMethods: ['GET', 'POST', 'OPTIONS'], allowHeaders: ['Content-Type', 'Authorization'] }));
+
+app.post('/mcp', async (c) => {
+  const body = await c.req.json();
+  const response = await handleMCPRequest(body, c.env);
+  return c.json(response);  // Plain JSON, NOT SSE
+});
+
+export default app;
+```
+
+### Connect MCP Server in ElevenLabs
+
+In ElevenLabs agent settings → Tools → Custom MCP Server:
+
+```json
+{
+  "name": "My MCP Server",
+  "server_url": "https://my-mcp.workers.dev/mcp",
+  "transport": "streamable_http"
+}
+```
+
+Note: Despite selecting "Streamable HTTP", ElevenLabs actually sends plain JSON-RPC requests and expects plain JSON responses.
+
 ### Connect PostgreSQL MCP Server
 ```json
 {

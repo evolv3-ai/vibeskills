@@ -82,7 +82,7 @@ This skill should be used when working with:
 
 ## Errors Prevented
 
-This skill prevents 20+ common errors:
+This skill prevents 21+ common errors:
 
 1. **Package deprecation** (@11labs/* → @elevenlabs/*)
 2. **Android audio cutoff** (connectionDelay configuration)
@@ -104,6 +104,7 @@ This skill prevents 20+ common errors:
 18. **Webhook null message on tool calls** (message: z.string().nullable())
 19. **Webhook call_successful is string** ("success" not true)
 20. **Webhook undocumented fields** (agent_metadata, llm_usage, etc.)
+21. **MCP server SSE responses don't work** - ElevenLabs says "Streamable HTTP" but expects plain JSON (protocol 2024-11-05), NOT SSE (protocol 2025-03-26). Use raw Hono+JSON-RPC, NOT official MCP SDK.
 
 ## Quick Start Examples
 
