@@ -394,10 +394,35 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 
 ---
 
-**Next Action**: None - PowerShell compatibility feature complete
-- All phases (7-11) completed
+## Unified .admin Folder (2025-12-09)
+
+**Change**: WSL now defaults ADMIN_ROOT to Windows filesystem (`/mnt/c/Users/$WIN_USER/.admin`) instead of WSL home (`~/.admin`).
+
+**Why**: On machines with both Windows and WSL, the `.admin` folder was two independent entities that didn't know about each other. Now they share a single location.
+
+**Benefits**:
+- One device profile (not duplicated)
+- Unified logs (visible from both environments)
+- Single source of truth for installed tools
+
+**Files Modified**:
+- `skills/admin/SKILL.md` - Updated first-run, config loading, logging, profiles
+- `skills/admin/references/first-run-setup.md` - Added shared root documentation
+- `skills/admin/references/cross-platform.md` - Added shared admin root section
+
+**Files Created**:
+- `docs/admin-skills-architecture.md` - Mermaid diagrams showing skill flow
+- `docs/admin-skills-windows-map.md` - Windows+WSL environment mapping
+
+**Commit**: 327790b
+
+---
+
+**Next Action**: None - Admin skills suite complete
+- All phases (1-11) completed
 - Issue 004 documented and resolved
-- Ready for production use
+- Unified .admin folder implemented
+- Ready to merge to main
 
 ---
 
