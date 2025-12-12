@@ -23,6 +23,44 @@ license: MIT
 
 ---
 
+## Step 0: Gather Required Information (MANDATORY)
+
+**STOP. Before ANY deployment commands, collect ALL parameters from the user.**
+
+Copy this checklist and confirm each item:
+
+```
+Required Parameters:
+- [ ] SERVER_NAME       - Unique name for this server
+- [ ] OCI_REGION        - Region (us-ashburn-1, us-phoenix-1, ca-toronto-1, etc.)
+- [ ] OCI_SHAPE         - Instance shape (see profiles below)
+- [ ] OCI_OCPUS         - Number of OCPUs (1-4 for Always Free)
+- [ ] OCI_MEMORY_GB     - Memory in GB (1-24 for Always Free)
+- [ ] SSH_KEY_PATH      - Path to SSH public key (default: ~/.ssh/id_rsa.pub)
+
+Deployment Purpose (determines recommended profile):
+- [ ] Purpose: coolify / kasm / both / custom
+      coolify → 2 OCPU, 12GB RAM (Always Free eligible)
+      kasm    → 4 OCPU, 24GB RAM (Always Free eligible)
+      both    → 4 OCPU, 24GB RAM (Always Free eligible)
+
+Always Free Tier Limits:
+- Shape: VM.Standard.A1.Flex (ARM64)
+- Max: 4 OCPUs, 24GB RAM total (can split across instances)
+```
+
+**Recommended profiles by purpose:**
+
+| Purpose | OCPUs | RAM | Shape | Cost |
+|---------|-------|-----|-------|------|
+| coolify | 2 | 12GB | VM.Standard.A1.Flex | FREE |
+| kasm | 4 | 24GB | VM.Standard.A1.Flex | FREE |
+| both | 4 | 24GB | VM.Standard.A1.Flex | FREE |
+
+**DO NOT proceed to Prerequisites until ALL parameters are confirmed.**
+
+---
+
 ## Prerequisites
 
 Before using this skill, verify the following:

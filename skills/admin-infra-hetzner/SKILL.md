@@ -22,6 +22,44 @@ license: MIT
 
 ---
 
+## Step 0: Gather Required Information (MANDATORY)
+
+**STOP. Before ANY deployment commands, collect ALL parameters from the user.**
+
+Copy this checklist and confirm each item:
+
+```
+Required Parameters:
+- [ ] SERVER_NAME          - Unique name for this server
+- [ ] HETZNER_LOCATION     - Location (nbg1, fsn1, hel1, ash, hil)
+- [ ] HETZNER_SERVER_TYPE  - Server type (see profiles below)
+- [ ] SSH_KEY_NAME         - Name of SSH key in Hetzner
+- [ ] SSH_KEY_PATH         - Path to local SSH private key (default: ~/.ssh/id_rsa)
+
+Architecture Choice:
+- [ ] ARM64 (CAX*) or x86 (CX*)?
+      ARM64 → Only available in EU (nbg1, fsn1, hel1)
+      x86   → Available in EU and US (ash, hil)
+
+Deployment Purpose (determines recommended profile):
+- [ ] Purpose: coolify / kasm / both / custom
+      coolify → CAX11 ARM (~$4/mo) or CX22 x86 (~$5/mo)
+      kasm    → CAX21 ARM (~$8/mo) or CX32 x86 (~$10/mo)
+      both    → CAX31 ARM (~$16/mo) or CX42 x86 (~$20/mo)
+```
+
+**Recommended profiles by purpose:**
+
+| Purpose | ARM (EU only) | x86 (EU+US) | vCPU | RAM | Monthly |
+|---------|---------------|-------------|------|-----|---------|
+| coolify | CAX11 | CX22 | 2 | 4GB | ~$4-5 |
+| kasm | CAX21 | CX32 | 4 | 8GB | ~$8-10 |
+| both | CAX31 | CX42 | 8 | 16GB | ~$16-20 |
+
+**DO NOT proceed to Prerequisites until ALL parameters are confirmed.**
+
+---
+
 ## Prerequisites
 
 Before using this skill, verify the following:

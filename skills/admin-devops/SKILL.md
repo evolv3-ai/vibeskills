@@ -13,16 +13,75 @@ license: MIT
 
 **Purpose**: Maintain a single inventory of servers/providers and coordinate provisioning across `admin-infra-*` and `admin-app-*` skills.
 
+## Step 0: Determine Operation & Gather Info
+
+**STOP. Before ANY commands, determine what operation the user wants and gather required info.**
+
+### Operation A: Provision New Server
+
+Gather these parameters:
+
+```
+Provisioning Parameters:
+- [ ] PROVIDER         - Which provider? (oci, hetzner, digitalocean, vultr, linode, contabo)
+- [ ] SERVER_ID        - Unique ID for inventory (e.g., WEB01, COOLIFY01)
+- [ ] SERVER_NAME      - Human-friendly name
+- [ ] SERVER_ROLE      - Role: web, db, dev, desktop, coolify, kasm
+- [ ] SERVER_ENV       - Environment: prod, staging, dev, test, personal, lab
+- [ ] SSH_KEY_PATH     - Path to SSH private key for access
+- [ ] SSH_PUBLIC_KEY   - Public key to authorize on new server
+
+Provider-specific (ask based on PROVIDER):
+- [ ] Region/Zone
+- [ ] Instance shape/size
+- [ ] OS image
+```
+
+**Then**: Load the relevant `admin-infra-*` skill for provisioning.
+
+### Operation B: Add Existing Server to Inventory
+
+Gather these parameters:
+
+```
+Server Parameters:
+- [ ] SERVER_ID        - Unique ID (e.g., WEB01)
+- [ ] SERVER_NAME      - Human-friendly name
+- [ ] SERVER_HOST      - IP address or hostname
+- [ ] SERVER_USER      - SSH username
+- [ ] SSH_KEY_PATH     - Path to SSH private key
+- [ ] SERVER_PROVIDER  - Provider name (must exist in inventory)
+- [ ] SERVER_ROLE      - Role: web, db, dev, desktop, coolify, kasm
+- [ ] SERVER_ENV       - Environment: prod, staging, dev, test, personal, lab
+- [ ] SERVER_KIND      - Type: vm, physical, local_pc, container_host
+```
+
+### Operation C: Query/List Inventory
+
+No parameters needed. Proceed to Quick Start section.
+
+### Operation D: Update Server Status
+
+```
+Update Parameters:
+- [ ] SERVER_ID        - Which server to update
+- [ ] NEW_STATUS       - New status: active, stopped, retired, unreachable
+```
+
+**DO NOT proceed until operation type is confirmed and required parameters gathered.**
+
+---
+
 ## Navigation
 
-Longer material is split into references (one level deep):
+Detailed references (one level deep):
 - Inventory spec and agent behavior: `references/INVENTORY_FORMAT.md`
-- Provider discovery and adding providers: `references/PROVIDER_DISCOVERY.md`
-- Full example inventory file: `references/EXAMPLE_INVENTORY.md`
-- Coolify/KASM/multi‑server workflows and cost snapshot: `references/DEPLOYMENT_WORKFLOWS.md`
-- Troubleshooting SSH/parse/provider issues: `references/TROUBLESHOOTING.md`
+- Provider discovery: `references/PROVIDER_DISCOVERY.md`
+- Example inventory file: `references/EXAMPLE_INVENTORY.md`
+- Deployment workflows: `references/DEPLOYMENT_WORKFLOWS.md`
+- Troubleshooting: `references/TROUBLESHOOTING.md`
 
-## Quick Start
+## Quick Start (Query Operations)
 
 ### 1. Find inventory file
 

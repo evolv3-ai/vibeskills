@@ -22,6 +22,39 @@ license: MIT
 
 ---
 
+## Step 0: Gather Required Information (MANDATORY)
+
+**STOP. Before ANY deployment commands, collect ALL parameters from the user.**
+
+Copy this checklist and confirm each item:
+
+```
+Required Parameters:
+- [ ] SERVER_NAME        - Unique name for this server
+- [ ] CONTABO_REGION     - Region (EU, US-central, US-east, US-west, SIN, JPN, AUS)
+- [ ] CONTABO_PRODUCT_ID - Product/plan ID (see profiles below)
+- [ ] SSH_KEY_PATH       - Path to SSH private key (default: ~/.ssh/id_rsa)
+
+Deployment Purpose (determines recommended profile):
+- [ ] Purpose: coolify / kasm / both / custom
+      coolify → V39 (Cloud VPS 10 SP, €5/mo)
+      kasm    → V45 (Cloud VPS 20 SP, €8/mo)
+      both    → V46 (Cloud VPS 30, €14/mo)
+      custom  → Ask for specific product ID
+```
+
+**Recommended profiles by purpose:**
+
+| Purpose | Product ID | Plan | vCPU | RAM | Monthly |
+|---------|-----------|------|------|-----|---------|
+| coolify | V39 | Cloud VPS 10 SP | 4 | 8GB | €5 |
+| kasm | V45 | Cloud VPS 20 SP | 6 | 18GB | €8 |
+| both | V46 | Cloud VPS 30 | 8 | 24GB | €14 |
+
+**DO NOT proceed to Prerequisites until ALL parameters are confirmed.**
+
+---
+
 ## Prerequisites
 
 Before using this skill, verify the following:

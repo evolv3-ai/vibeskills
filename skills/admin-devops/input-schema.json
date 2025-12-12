@@ -1,95 +1,125 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevOps Inventory Management Parameters",
+  "description": "Parameters for infrastructure inventory operations. Required fields depend on the operation type (provision, add server, update status, query).",
   "type": "object",
-  "required": [
-    "deployment_type",
-    "oci_tenancy_ocid",
-    "oci_user_ocid",
-    "oci_region",
-    "cloudflare_api_token",
-    "cloudflare_account_id"
-  ],
+  "required": [],
   "properties": {
-    "deployment_type": {
+    "operation": {
       "type": "string",
-      "description": "Type of deployment",
-      "enum": ["kasm", "coolify", "both"],
-      "default": "both"
+      "description": "Type of operation to perform",
+      "enum": ["provision", "add_server", "update_status", "query", "connect"]
     },
-    "oci_tenancy_ocid": {
+    "provider": {
       "type": "string",
-      "description": "OCI tenancy OCID",
-      "sensitive": true
+      "description": "Cloud provider for provisioning (required for 'provision' operation)",
+      "enum": ["oci", "hetzner", "digitalocean", "vultr", "linode", "contabo", "local_network"]
     },
-    "oci_user_ocid": {
+    "server_id": {
       "type": "string",
-      "description": "OCI user OCID",
-      "sensitive": true
+      "description": "Unique server ID for inventory (e.g., WEB01, COOLIFY01)",
+      "pattern": "^[A-Z0-9_]+$"
     },
-    "oci_region": {
+    "server_name": {
       "type": "string",
-      "description": "OCI region",
-      "default": "us-ashburn-1"
+      "description": "Human-friendly server name"
     },
-    "oci_fingerprint": {
+    "server_host": {
       "type": "string",
-      "description": "OCI API key fingerprint",
-      "sensitive": true
+      "description": "Server IP address or hostname"
     },
-    "oci_private_key_path": {
+    "server_user": {
       "type": "string",
-      "description": "Path to OCI API private key",
-      "default": "~/.oci/oci_api_key.pem",
-      "sensitive": true
+      "description": "SSH username for server access",
+      "default": "ubuntu"
     },
-    "cloudflare_api_token": {
+    "ssh_key_path": {
       "type": "string",
-      "description": "Cloudflare API token",
-      "sensitive": true
-    },
-    "cloudflare_account_id": {
-      "type": "string",
-      "description": "Cloudflare account ID"
-    },
-    "cloudflare_zone_id": {
-      "type": "string",
-      "description": "Cloudflare zone ID (optional, auto-detected)"
-    },
-    "kasm_domain": {
-      "type": "string",
-      "description": "Domain for KASM (e.g., kasm.yourdomain.com)"
-    },
-    "kasm_admin_password": {
-      "type": "string",
-      "description": "KASM admin password",
-      "sensitive": true,
-      "minLength": 12
-    },
-    "coolify_domain": {
-      "type": "string",
-      "description": "Domain for Coolify (e.g., coolify.yourdomain.com)"
-    },
-    "coolify_admin_email": {
-      "type": "string",
-      "description": "Coolify admin email",
-      "format": "email"
-    },
-    "coolify_admin_password": {
-      "type": "string",
-      "description": "Coolify admin password",
-      "sensitive": true,
-      "minLength": 12
+      "description": "Path to SSH private key",
+      "default": "~/.ssh/id_rsa"
     },
     "ssh_public_key_path": {
       "type": "string",
-      "description": "Path to SSH public key",
+      "description": "Path to SSH public key (for provisioning)",
       "default": "~/.ssh/id_rsa.pub"
     },
-    "ssh_private_key_path": {
+    "server_role": {
       "type": "string",
-      "description": "Path to SSH private key",
-      "default": "~/.ssh/id_rsa",
-      "sensitive": true
+      "description": "Server role/purpose",
+      "enum": ["web", "db", "dev", "desktop", "coolify", "kasm", "other"]
+    },
+    "server_env": {
+      "type": "string",
+      "description": "Environment classification",
+      "enum": ["prod", "staging", "dev", "test", "personal", "lab"]
+    },
+    "server_kind": {
+      "type": "string",
+      "description": "Server type",
+      "enum": ["vm", "physical", "local_pc", "container_host", "other"]
+    },
+    "server_status": {
+      "type": "string",
+      "description": "Server status (for update operations)",
+      "enum": ["active", "stopped", "retired", "unreachable"]
+    },
+    "region": {
+      "type": "string",
+      "description": "Provider region/zone (provider-specific)"
+    },
+    "instance_shape": {
+      "type": "string",
+      "description": "Instance size/shape (provider-specific)"
+    },
+    "os_image": {
+      "type": "string",
+      "description": "OS image to use (provider-specific)"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": { "const": "provision" }
+        },
+        "required": ["operation"]
+      },
+      "then": {
+        "required": ["provider", "server_id", "server_name", "server_role", "server_env"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": { "const": "add_server" }
+        },
+        "required": ["operation"]
+      },
+      "then": {
+        "required": ["server_id", "server_name", "server_host", "server_user", "server_role"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": { "const": "update_status" }
+        },
+        "required": ["operation"]
+      },
+      "then": {
+        "required": ["server_id", "server_status"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": { "const": "connect" }
+        },
+        "required": ["operation"]
+      },
+      "then": {
+        "required": ["server_id"]
+      }
+    }
+  ]
 }

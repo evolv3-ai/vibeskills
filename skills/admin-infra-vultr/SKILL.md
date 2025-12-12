@@ -22,6 +22,40 @@ license: MIT
 
 ---
 
+## Step 0: Gather Required Information (MANDATORY)
+
+**STOP. Before ANY deployment commands, collect ALL parameters from the user.**
+
+Copy this checklist and confirm each item:
+
+```
+Required Parameters:
+- [ ] SERVER_NAME      - Unique name for this server
+- [ ] VULTR_REGION     - Region (ewr, ord, dfw, lax, lhr, fra, sgp, etc.)
+- [ ] VULTR_PLAN       - Plan ID (see profiles below)
+- [ ] SSH_KEY_NAME     - Name of SSH key in Vultr
+- [ ] SSH_KEY_PATH     - Path to local SSH private key (default: ~/.ssh/id_rsa)
+
+Deployment Purpose (determines recommended profile):
+- [ ] Purpose: coolify / kasm / both / custom
+      coolify → vc2-2c-4gb ($24/mo)
+      kasm    → vc2-4c-8gb ($48/mo)
+      both    → vc2-8c-32gb ($192/mo)
+      custom  → Ask for specific plan
+```
+
+**Recommended profiles by purpose:**
+
+| Purpose | Plan | vCPU | RAM | Monthly |
+|---------|------|------|-----|---------|
+| coolify | vc2-2c-4gb | 2 | 4GB | $24 |
+| kasm | vc2-4c-8gb | 4 | 8GB | $48 |
+| both | vc2-8c-32gb | 8 | 32GB | $192 |
+
+**DO NOT proceed to Prerequisites until ALL parameters are confirmed.**
+
+---
+
 ## Prerequisites
 
 Before using this skill, verify the following:

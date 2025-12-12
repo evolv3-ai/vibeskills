@@ -22,6 +22,40 @@ license: MIT
 
 ---
 
+## Step 0: Gather Required Information (MANDATORY)
+
+**STOP. Before ANY deployment commands, collect ALL parameters from the user.**
+
+Copy this checklist and confirm each item:
+
+```
+Required Parameters:
+- [ ] SERVER_NAME      - Unique name for this server
+- [ ] LINODE_REGION    - Region (us-east, us-central, us-west, eu-west, ap-south, etc.)
+- [ ] LINODE_TYPE      - Linode type (see profiles below)
+- [ ] SSH_KEY_LABEL    - Label of SSH key in Linode
+- [ ] SSH_KEY_PATH     - Path to local SSH private key (default: ~/.ssh/id_rsa)
+
+Deployment Purpose (determines recommended profile):
+- [ ] Purpose: coolify / kasm / both / custom
+      coolify → g6-standard-2 ($36/mo)
+      kasm    → g6-standard-4 ($72/mo)
+      both    → g6-standard-8 ($144/mo)
+      custom  → Ask for specific type
+```
+
+**Recommended profiles by purpose:**
+
+| Purpose | Type | vCPU | RAM | Monthly |
+|---------|------|------|-----|---------|
+| coolify | g6-standard-2 | 2 | 4GB | $36 |
+| kasm | g6-standard-4 | 4 | 8GB | $72 |
+| both | g6-standard-8 | 8 | 16GB | $144 |
+
+**DO NOT proceed to Prerequisites until ALL parameters are confirmed.**
+
+---
+
 ## Prerequisites
 
 Before using this skill, verify the following:
