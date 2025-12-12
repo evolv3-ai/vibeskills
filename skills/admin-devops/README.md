@@ -1,4 +1,4 @@
-# Server Admin - Infrastructure Management
+# DevOps Admin - Infrastructure Management
 
 **Status**: Production Ready
 **Type**: Infrastructure Management Skill
@@ -32,7 +32,7 @@
 
 ## What This Skill Does
 
-Server Admin manages infrastructure inventory using the Agent DevOps Inventory v1 format:
+DevOps Admin manages infrastructure inventory using the Agent DevOps Inventory v1 format:
 
 ```
 .agent-devops.env
@@ -53,7 +53,7 @@ Server Admin manages infrastructure inventory using the Agent DevOps Inventory v
 
 ```bash
 # 1. Create inventory from template
-cp ~/.claude/skills/admin-servers/assets/agent-devops.env.template .agent-devops.env
+cp ~/.claude/skills/admin-devops/assets/agent-devops.env.template .agent-devops.env
 
 # 2. Discover available providers
 ls -d ~/.claude/skills/admin-infra-* 2>/dev/null | xargs -I{} basename {} | sed 's/^admin-infra-//'
@@ -109,7 +109,7 @@ SERVER_WEB01_STATUS=active
 ## File Structure
 
 ```
-admin-servers/
+admin-devops/
 ├── SKILL.md                              # Full documentation
 ├── README.md                             # This file
 ├── assets/
@@ -124,7 +124,7 @@ admin-servers/
 
 ## Deployment Workflows
 
-Server Admin coordinates with service skills for deployments:
+DevOps Admin coordinates with service skills for deployments:
 
 | Workflow | Skills Used |
 |----------|-------------|

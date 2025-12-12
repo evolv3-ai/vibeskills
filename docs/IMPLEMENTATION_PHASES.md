@@ -37,7 +37,7 @@ Restructure 14 `admin-*` skills into a cohesive, user-agnostic system with a cen
   - First-run setup flow
 - [ ] Write `admin/README.md` with comprehensive keywords
 - [ ] Create `admin/.env.template` (master configuration)
-- [ ] Move `admin-servers/assets/env-spec.txt` → `admin/assets/env-spec.txt`
+- [ ] Move `admin-devops/assets/env-spec.txt` → `admin/assets/env-spec.txt`
 - [ ] Create `admin/assets/profile-schema.json`
 - [ ] Create `admin/references/routing-guide.md`
 - [ ] Create `admin/references/first-run-setup.md`
@@ -51,7 +51,7 @@ skills/admin/
 ├── README.md
 ├── .env.template
 ├── assets/
-│   ├── env-spec.txt          (moved from admin-servers)
+│   ├── env-spec.txt          (moved from admin-devops)
 │   └── profile-schema.json
 ├── references/
 │   ├── routing-guide.md
@@ -132,7 +132,7 @@ skills/admin/
 
 For each remaining skill (11 skills):
 
-- [ ] `admin-servers`: Remove local logging, use centralized, delete env-spec.txt
+- [ ] `admin-devops`: Remove local logging, use centralized, delete env-spec.txt
 - [ ] `admin-windows`: Add logging calls, parameterize hardcoded paths
 - [ ] `admin-wsl`: Add logging calls, parameterize hardcoded paths
 - [ ] `admin-mcp`: Add logging calls
@@ -173,7 +173,7 @@ For each remaining skill (11 skills):
 - [ ] `admin` activates on "admin" keyword
 - [ ] `admin` activates on "manage my servers"
 - [ ] Platform detection works (Windows, WSL, Linux)
-- [ ] Routing works: server tasks → admin-servers
+- [ ] Routing works: server tasks → admin-devops
 - [ ] Routing works: Windows tasks → admin-windows
 - [ ] Routing works: WSL tasks → admin-wsl
 - [ ] Logging function writes to correct files
@@ -183,8 +183,8 @@ For each remaining skill (11 skills):
 ### Integration Tests
 
 - [ ] Fresh install flow (no .env.local exists)
-- [ ] Server provisioning flow: admin → admin-servers → admin-infra-*
-- [ ] Application deployment flow: admin → admin-servers → admin-app-*
+- [ ] Server provisioning flow: admin → admin-devops → admin-infra-*
+- [ ] Application deployment flow: admin → admin-devops → admin-app-*
 - [ ] Windows administration flow: admin → admin-windows
 - [ ] Cross-platform task coordination
 
@@ -406,14 +406,14 @@ Update each Windows-relevant skill with PowerShell commands:
 
 - [ ] `admin-windows`: Already PowerShell-focused, verify commands work
 - [ ] `admin-mcp`: Add PowerShell commands for MCP server management
-- [ ] `admin-servers`: Add PowerShell SSH/connection commands
+- [ ] `admin-devops`: Add PowerShell SSH/connection commands
 - [ ] `admin-infra-*` (6 skills): Add PowerShell CLI alternatives where applicable
 
 ### Priority Order
 
 1. **admin-windows** - Core Windows skill, must work perfectly
 2. **admin-mcp** - Claude Desktop configuration is Windows-only
-3. **admin-servers** - SSH works from PowerShell, verify syntax
+3. **admin-devops** - SSH works from PowerShell, verify syntax
 4. **admin-infra-*** - Lower priority, most use CLI tools that work in both
 
 ### Command Pattern
@@ -652,18 +652,18 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 
 ---
 
-## Phase 17: `admin-servers` Progressive Disclosure
+## Phase 17: `admin-devops` Progressive Disclosure
 
 **Type**: Refactor | **Effort**: ~0.75 hours
 
 ### Tasks
 
-- [x] Move long inventory format/provider discovery detail out of `skills/admin-servers/SKILL.md` into `references/`.
+- [x] Move long inventory format/provider discovery detail out of `skills/admin-devops/SKILL.md` into `references/`.
 - [x] Add TOCs to new/long refs and keep SKILL as workflow + navigation.
 
 ### Verification Criteria
 
-- `skills/admin-servers/SKILL.md` < 500 lines.
+- `skills/admin-devops/SKILL.md` < 500 lines.
 - Inventory spec and provider discovery are referenced one level deep.
 
 ---
@@ -731,3 +731,86 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 
 - Windows/WSL SKILLs < 500 lines.
 - Path guidance is consistent and forward‑slash safe.
+
+---
+
+# Feature: Unix Admin Skill (`admin-unix`) (Added 2025-12-12)
+
+Add a dedicated macOS/Linux administration skill so the admin suite works cleanly on Unix platforms. This feature introduces `admin-unix` (macOS + Linux), updates routing so `admin-wsl` becomes WSL‑only, and aligns docs/tutorials to the new split.
+
+Constraints:
+- Linux: `apt` workflows only (Debian/Ubuntu focus)
+- macOS: Homebrew workflows only
+- `admin-wsl` becomes WSL‑only (no longer “Linux/macOS”)
+
+---
+
+## Phase 22: Create `admin-unix` Skill + Route Linux/macOS
+
+**Type**: Feature | **Effort**: ~1.0 hours
+
+### Tasks
+
+- [x] Create `skills/admin-unix/` with `SKILL.md`, `README.md`, and a one‑level‑deep `references/OPERATIONS.md`.
+- [x] Ensure `admin-unix` metadata follows `SKILLS_BEST_PRACTICES.md` (third‑person description, strong keywords, SKILL body < 500 lines).
+- [x] Wire `admin` routing to send **linux/macos** administration tasks to `admin-unix` and keep WSL tasks routed to `admin-wsl`.
+- [x] Update routing docs (`skills/admin/references/routing-guide.md`) and `admin` keywords list to include macOS/Linux triggers (brew, apt, macos, linux).
+
+### Verification Criteria
+
+- `skills/admin-unix/SKILL.md` is < 500 lines and links to all long refs directly.
+- `admin` routes linux/macos administration tasks to `admin-unix` (not `admin-wsl`).
+- All references remain one level deep from `SKILL.md`.
+
+---
+
+## Phase 23: Implement Linux (apt) Workflows in `admin-unix`
+
+**Type**: Implementation | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [x] Add apt‑focused operations to `skills/admin-unix/references/OPERATIONS.md` (update/upgrade, install/remove, verify versions, fix broken deps, common apt errors).
+- [x] Add minimal service/logging patterns for Linux where needed (systemd basics, journald tailing), without introducing WSL‑specific assumptions.
+- [x] Ensure all examples use placeholders and centralized logging patterns.
+
+### Verification Criteria
+
+- Linux guidance uses `apt` (not `dnf`/`yum`/`pacman`).
+- Any ref over 100 lines has a `## Contents` TOC.
+- Examples are user‑agnostic and path‑safe.
+
+---
+
+## Phase 24: Implement macOS (Homebrew) Workflows in `admin-unix`
+
+**Type**: Implementation | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [x] Add Homebrew workflows to `skills/admin-unix/references/OPERATIONS.md` (install/check brew, install/uninstall/upgrade, brew doctor, PATH notes for Apple Silicon).
+- [x] Add basic service patterns via Homebrew where applicable (`brew services`) and common troubleshooting.
+- [x] Keep SKILL as an overview; keep extended procedures in references.
+
+### Verification Criteria
+
+- macOS guidance uses Homebrew only (no MacPorts/manual installer focus).
+- SKILL remains < 500 lines; references are one level deep and have TOCs when long.
+
+---
+
+## Phase 25: Make `admin-wsl` WSL‑Only + Update Docs/Tutorials
+
+**Type**: Refactor | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [x] Update `skills/admin-wsl/SKILL.md` and `skills/admin-wsl/README.md` to be explicitly WSL‑only (remove “Linux/macOS” scope and triggers).
+- [x] Add clear handoff guidance from `admin-wsl` to `admin-unix` when a task belongs to native Linux/macOS instead of WSL.
+- [x] Update suite documentation and diagrams to include `admin-unix` and the new routing split.
+- [x] Update the admin tutorials to include `admin-unix` and the new WSL‑only boundary.
+
+### Verification Criteria
+
+- `admin-wsl` no longer claims Linux/macOS scope; `admin` routing reflects the split.
+- Tutorials and docs match the new skill names and routing behavior.

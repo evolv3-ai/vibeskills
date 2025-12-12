@@ -22,7 +22,7 @@ Central entry point for all system administration tasks. Detects platform contex
 - device profile, my setup, my tools, installed tools
 - admin log, admin history, what did I install
 
-### Server Keywords (routes to admin-servers)
+### Server Keywords (routes to admin-devops)
 
 - server, servers, provision, deploy
 - cloud, infrastructure, VPS, VM, instance
@@ -40,12 +40,20 @@ Central entry point for all system administration tasks. Detects platform contex
 - Get-Content, Set-Content, New-Item (PowerShell cmdlets)
 - $env:USERPROFILE, $env:COMPUTERNAME
 
-### WSL/Linux Keywords (routes to admin-wsl)
+### WSL Keywords (routes to admin-wsl)
 
-- wsl, ubuntu, linux, bash, zsh
-- apt, dpkg, snap
+- wsl, wsl2, ubuntu (in wsl)
 - docker, container, docker-compose
+- wsl profile, /mnt/c, wslpath
+
+### Unix Keywords (routes to admin-unix)
+
+- macos, osx, darwin
+- homebrew, brew
+- linux, ubuntu, debian
+- apt, dpkg
 - systemd, systemctl, journalctl
+- bash, zsh
 - python, pip, uv, venv
 - node, npm, nvm, pnpm
 
@@ -55,7 +63,7 @@ Central entry point for all system administration tasks. Detects platform contex
 - claude desktop, mcpServers
 - mcp server, mcp install
 
-### Application Keywords (routes via admin-servers)
+### Application Keywords (routes via admin-devops)
 
 - coolify, self-hosted, paas, self-hosted heroku
 - kasm, workspaces, vdi, virtual desktop
@@ -79,16 +87,17 @@ Central entry point for all system administration tasks. Detects platform contex
 
 | Skill | Domain |
 |-------|--------|
-| admin-servers | Server inventory & provisioning |
+| admin-devops | Server inventory & provisioning |
 | admin-infra-* | Cloud providers (OCI, Hetzner, DO, Vultr, Linode, Contabo) |
 | admin-app-* | Applications (Coolify, KASM) |
 | admin-windows | Windows administration |
-| admin-wsl | WSL/Linux administration |
+| admin-wsl | WSL administration (WSL-only) |
+| admin-unix | Linux/macOS administration (non-WSL) |
 | admin-mcp | MCP server management |
 
 ## Quick Start
 
-**Bash/WSL/Linux:**
+**Bash (Linux/macOS):**
 ```bash
 # First run creates ~/.admin/ structure
 mkdir -p ~/.admin/{logs,profiles,config}
@@ -114,6 +123,7 @@ Get-Content "$env:USERPROFILE\.admin\profiles\$env:COMPUTERNAME.json"
 
 ## Related Skills
 
-- admin-servers - Server inventory and provisioning
+- admin-devops - Server inventory and provisioning
 - admin-windows - Windows-specific administration
-- admin-wsl - WSL/Linux-specific administration
+- admin-wsl - WSL-specific administration
+- admin-unix - Linux/macOS administration (non-WSL)

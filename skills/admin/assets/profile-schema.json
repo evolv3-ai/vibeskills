@@ -201,7 +201,7 @@
     },
     "managedServers": {
       "type": "array",
-      "description": "Server IDs from admin-servers inventory",
+      "description": "Server IDs from admin-devops inventory",
       "items": {
         "type": "string",
         "description": "Server identifier (matches SERVER_<ID> in inventory)"

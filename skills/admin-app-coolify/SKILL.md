@@ -26,7 +26,7 @@ Longer material is split into references (one level deep):
 
 ## Quick Start
 
-1. **Provision a server** (recommended 4GB+ RAM, Ubuntu LTS). Use `admin-servers` and a provider skill.
+1. **Provision a server** (recommended 4GB+ RAM, Ubuntu LTS). Use `admin-devops` and a provider skill.
 2. **Install Coolify**:
    - Preferred: run enhanced automation in `references/ENHANCED_SETUP.md`.
    - Alternative: follow manual steps in `references/INSTALLATION.md`.
@@ -57,7 +57,7 @@ log_admin "SUCCESS" "operation" "Deployed app via Coolify" "app=$APP_NAME"
 
 ## Related Skills
 
-- `admin-servers` for inventory and provisioning.
+- `admin-devops` for inventory and provisioning.
 - `admin-infra-*` for provider‑specific VM setup.
 - `admin-wsl` for local Docker/CLI support when coordinating from WSL.
 

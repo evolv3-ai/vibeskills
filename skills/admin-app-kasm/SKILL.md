@@ -25,7 +25,7 @@ Longer material is split into references (one level deep):
 
 ## Quick Start
 
-1. **Provision a server** (Ubuntu ARM64 recommended, 8GB+ RAM). Use `admin-servers` and a provider skill.
+1. **Provision a server** (Ubuntu ARM64 recommended, 8GB+ RAM). Use `admin-devops` and a provider skill.
 2. **Install KASM** following `references/INSTALLATION.md`.
 3. **Extract credentials** from `install_log.txt` and log in at `https://<SERVER_IP>` (default port 443).
 4. **Run the post‑installation wizard** to enable backups, persistent profiles, storage, and other modules:
@@ -47,7 +47,7 @@ log_admin "SUCCESS" "operation" "Ran KASM post-install wizard" "modules=$MODULES
 
 ## Related Skills
 
-- `admin-servers` for inventory and provisioning.
+- `admin-devops` for inventory and provisioning.
 - `admin-infra-*` for OCI/Hetzner/etc server setup.
 
 ## References

@@ -1,9 +1,9 @@
 ---
 name: admin-wsl
 description: |
-  Administers WSL2 Ubuntu 24.04 environments from Linux. Covers apt package management, Docker containers, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
+  Administers WSL2 Ubuntu 24.04 environments (WSL-only) from the Linux side. Covers apt package management, Docker Desktop integration, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
 
-  Use when: managing WSL Linux packages, Docker containers, Python venv/uv, shell configs (.zshrc/.bashrc), systemd services, or troubleshooting "command not found", "permission denied", "Docker socket missing" errors in WSL.
+  Use when: working inside WSL (Ubuntu) to manage apt packages, Docker containers, Python venv/uv, shell configs (.zshrc/.bashrc), systemd services, or troubleshooting "command not found", "permission denied", "Docker socket missing" errors in WSL.
 license: MIT
 ---
 
@@ -33,7 +33,8 @@ license: MIT
 - Git operations within WSL
 
 **Scope Boundaries:**
-- Linux: apt, Docker, Python venv/uv, shell configs, systemd
+- WSL (Ubuntu): apt, Docker, Python venv/uv, shell configs, systemd
+- Handoff: native Linux/macOS tasks to admin-unix
 - Never: .wslconfig changes, Windows packages, MCP servers, registry
 - Hand off Windows tasks to admin-windows (handoff via shared logs)
 

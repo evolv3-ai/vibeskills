@@ -50,7 +50,7 @@ This document outlines the restructuring of 14 `admin-*` skills into a cohesive,
 | `admin-infra-oci` | Oracle Cloud Infrastructure | Keep |
 | `admin-infra-vultr` | Vultr cloud provider | Keep |
 | `admin-mcp` | MCP server management | Keep |
-| `admin-servers` | Server inventory | Keep (demote) |
+| `admin-devops` | Server inventory | Keep (demote) |
 | `admin-specs` | Device profiles & logging | **ABSORB into admin** |
 | `admin-sync` | Windows-WSL coordination | **ABSORB into admin** |
 | `admin-windows` | Windows administration | Keep |
@@ -69,7 +69,7 @@ skills/
 ├── admin-infra-oci/
 ├── admin-infra-vultr/
 ├── admin-mcp/
-├── admin-servers/
+├── admin-devops/
 │   └── assets/env-spec.txt      # Canonical .env spec
 ├── admin-specs/                  # TO BE ABSORBED
 │   └── templates/profile.json
@@ -82,7 +82,7 @@ skills/
 ### 1.3 Current Relationships
 
 ```
-admin-servers (de facto orchestrator)
+admin-devops (de facto orchestrator)
 ├── admin-infra-* (providers)
 │   └── admin-app-* (applications)
 
@@ -131,7 +131,7 @@ admin-windows
 
 - `admin-specs`: Really just "logging and profiles" - belongs in orchestrator
 - `admin-sync`: Really just "cross-platform coordination" - belongs in orchestrator
-- `admin-servers`: Tries to be orchestrator but is really "server inventory"
+- `admin-devops`: Tries to be orchestrator but is really "server inventory"
 
 ### 2.5 Not User-Agnostic
 
@@ -156,7 +156,7 @@ admin/                           # NEW: Central orchestrator
 │   └── Cross-platform coordination
 │
 ├── Routes to:
-│   ├── admin-servers            # Server inventory & provisioning
+│   ├── admin-devops            # Server inventory & provisioning
 │   │   └── admin-infra-*        # Cloud providers (6)
 │   │       └── admin-app-*      # Applications (2)
 │   │
@@ -171,7 +171,7 @@ admin/                           # NEW: Central orchestrator
 | Category | Skills | Count |
 |----------|--------|-------|
 | Orchestrator | `admin` | 1 |
-| Server Management | `admin-servers` | 1 |
+| Server Management | `admin-devops` | 1 |
 | Infrastructure | `admin-infra-*` | 6 |
 | Applications | `admin-app-*` | 2 |
 | Local Admin | `admin-windows`, `admin-wsl`, `admin-mcp` | 3 |
@@ -187,7 +187,7 @@ skills/
 │   ├── README.md
 │   ├── .env.template            # Master config
 │   ├── assets/
-│   │   ├── env-spec.txt         # Moved from admin-servers
+│   │   ├── env-spec.txt         # Moved from admin-devops
 │   │   └── profile-schema.json  # From admin-specs
 │   ├── references/
 │   │   ├── logging.md           # From admin-specs
@@ -197,7 +197,7 @@ skills/
 │   └── templates/
 │       └── profile.json         # From admin-specs
 │
-├── admin-servers/                # Demoted to specialist
+├── admin-devops/                # Demoted to specialist
 │   ├── SKILL.md                 # Updated, logging removed
 │   ├── assets/
 │   │   └── agent-devops.env.template
@@ -242,8 +242,8 @@ skills/
 START
 │
 ├─ Is this a SERVER task? (provision, deploy, cloud, infrastructure)
-│  └─ YES → Route to admin-servers
-│     └─ admin-servers may further route to:
+│  └─ YES → Route to admin-devops
+│     └─ admin-devops may further route to:
 │        ├─ admin-infra-* (for provisioning)
 │        └─ admin-app-* (for application deployment)
 │
@@ -327,7 +327,7 @@ log_admin "SUCCESS" "installation" "Installed Docker" "version=24.0.7"
     "managedServers": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Server IDs from admin-servers inventory"
+      "description": "Server IDs from admin-devops inventory"
     }
   }
 }
@@ -416,7 +416,7 @@ license: MIT
 - manage system, system management
 - device profile, my setup, my tools
 
-### Server Keywords (routes to admin-servers)
+### Server Keywords (routes to admin-devops)
 - server, servers, provision, deploy
 - cloud, infrastructure, VPS, VM
 - OCI, oracle cloud, hetzner, digitalocean, vultr, linode, contabo
@@ -435,7 +435,7 @@ license: MIT
 - mcp, model context protocol, claude desktop
 - mcp server, mcp install
 
-### Application Keywords (routes via admin-servers)
+### Application Keywords (routes via admin-devops)
 - coolify, self-hosted, paas
 - kasm, workspaces, vdi, virtual desktop
 ```
@@ -652,7 +652,7 @@ CLOUDFLARE_TUNNEL_ID=
 
 ### 6.2 Per-Skill Variable Requirements
 
-| Variable | admin | admin-servers | admin-windows | admin-wsl | admin-mcp | admin-infra-* | admin-app-* |
+| Variable | admin | admin-devops | admin-windows | admin-wsl | admin-mcp | admin-infra-* | admin-app-* |
 |----------|-------|---------------|---------------|-----------|-----------|---------------|-------------|
 | DEVICE_NAME | req | opt | opt | opt | opt | - | - |
 | ADMIN_USER | req | opt | opt | opt | opt | - | - |
@@ -860,7 +860,7 @@ routing_rules:
       - server, servers, provision, deploy, infrastructure
       - cloud, VPS, VM, instance, droplet, linode
       - inventory, "my servers", "server list"
-    route_to: admin-servers
+    route_to: admin-devops
     sub_routing:
       - keywords: [oracle, oci, "oracle cloud", ARM64, "always free"]
         route_to: admin-infra-oci
@@ -953,7 +953,7 @@ routing_rules:
 2. Write `admin/SKILL.md` with routing logic
 3. Write `admin/README.md` with comprehensive keywords
 4. Create `admin/.env.template` (master config)
-5. Move `admin-servers/assets/env-spec.txt` → `admin/assets/env-spec.txt`
+5. Move `admin-devops/assets/env-spec.txt` → `admin/assets/env-spec.txt`
 
 **No breaking changes yet.**
 
@@ -1030,8 +1030,8 @@ git commit -m "Remove admin-specs and admin-sync (absorbed into admin orchestrat
 
 | File | Changes |
 |------|---------|
-| `admin-servers/SKILL.md` | Remove logging, update to use centralized |
-| `admin-servers/assets/env-spec.txt` | DELETE (moved to admin) |
+| `admin-devops/SKILL.md` | Remove logging, update to use centralized |
+| `admin-devops/assets/env-spec.txt` | DELETE (moved to admin) |
 | `admin-windows/SKILL.md` | Add logging calls, parameterize paths |
 | `admin-wsl/SKILL.md` | Add logging calls, parameterize paths |
 | `admin-mcp/SKILL.md` | Add logging calls |
@@ -1078,7 +1078,7 @@ git commit -m "Remove admin-specs and admin-sync (absorbed into admin orchestrat
 - [ ] Activates on "manage my servers"
 - [ ] Detects Windows platform correctly
 - [ ] Detects WSL platform correctly
-- [ ] Routes server tasks to admin-servers
+- [ ] Routes server tasks to admin-devops
 - [ ] Routes Windows tasks to admin-windows
 - [ ] Routes WSL tasks to admin-wsl
 - [ ] Logging function works
@@ -1098,12 +1098,12 @@ git commit -m "Remove admin-specs and admin-sync (absorbed into admin orchestrat
    - [ ] Directories created
 
 2. Server provisioning
-   - [ ] "provision OCI server" → admin → admin-servers → admin-infra-oci
+   - [ ] "provision OCI server" → admin → admin-devops → admin-infra-oci
    - [ ] Logging captures all steps
    - [ ] Server added to inventory
 
 3. Application deployment
-   - [ ] "install coolify" → admin → admin-servers → admin-app-coolify
+   - [ ] "install coolify" → admin → admin-devops → admin-app-coolify
    - [ ] Logging captures installation
    - [ ] Credentials stored
 
@@ -1188,15 +1188,15 @@ Persona: Developer installing skills for first time
 | Skill | Type | Purpose | Dependencies |
 |-------|------|---------|--------------|
 | `admin` | Orchestrator | Central routing, logging, profiles | None |
-| `admin-servers` | Specialist | Server inventory & provisioning | admin (optional) |
-| `admin-infra-oci` | Provider | Oracle Cloud | admin-servers (optional) |
-| `admin-infra-hetzner` | Provider | Hetzner Cloud | admin-servers (optional) |
-| `admin-infra-digitalocean` | Provider | DigitalOcean | admin-servers (optional) |
-| `admin-infra-vultr` | Provider | Vultr | admin-servers (optional) |
-| `admin-infra-linode` | Provider | Linode/Akamai | admin-servers (optional) |
-| `admin-infra-contabo` | Provider | Contabo | admin-servers (optional) |
-| `admin-app-coolify` | Application | Coolify PaaS | admin-servers (optional) |
-| `admin-app-kasm` | Application | KASM VDI | admin-servers (optional) |
+| `admin-devops` | Specialist | Server inventory & provisioning | admin (optional) |
+| `admin-infra-oci` | Provider | Oracle Cloud | admin-devops (optional) |
+| `admin-infra-hetzner` | Provider | Hetzner Cloud | admin-devops (optional) |
+| `admin-infra-digitalocean` | Provider | DigitalOcean | admin-devops (optional) |
+| `admin-infra-vultr` | Provider | Vultr | admin-devops (optional) |
+| `admin-infra-linode` | Provider | Linode/Akamai | admin-devops (optional) |
+| `admin-infra-contabo` | Provider | Contabo | admin-devops (optional) |
+| `admin-app-coolify` | Application | Coolify PaaS | admin-devops (optional) |
+| `admin-app-kasm` | Application | KASM VDI | admin-devops (optional) |
 | `admin-windows` | Specialist | Windows administration | admin (optional) |
 | `admin-wsl` | Specialist | WSL/Linux administration | admin (optional) |
 | `admin-mcp` | Specialist | MCP servers | admin-windows (optional) |
@@ -1216,7 +1216,7 @@ Persona: Developer installing skills for first time
 - [ ] Create `admin/references/cross-platform.md`
 - [ ] Create `admin/references/routing-guide.md`
 - [ ] Create `admin/templates/profile.json`
-- [ ] Update `admin-servers` to remove logging
+- [ ] Update `admin-devops` to remove logging
 - [ ] Update `admin-windows` with centralized logging
 - [ ] Update `admin-wsl` with centralized logging
 - [ ] Update `admin-mcp` with centralized logging

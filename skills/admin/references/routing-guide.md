@@ -39,15 +39,22 @@ Detailed routing rules for the admin orchestrator skill.
     ┌────────────┬────────────┼────────────┬────────────┐
     ▼            ▼            ▼            ▼            ▼
 ┌────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐
-│ Server │ │ Windows  │ │WSL/Linux │ │   MCP    │ │ Profile │
+│ Server │ │ Windows  │ │WSL/Unix  │ │   MCP    │ │ Profile │
 │  Task  │ │  System  │ │  System  │ │   Task   │ │/Logging │
 └───┬────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬────┘
     │           │            │            │            │
     ▼           ▼            ▼            ▼            ▼
 ┌────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐
 │ admin- │ │  admin-  │ │  admin-  │ │  admin-  │ │  admin  │
-│servers │ │ windows  │ │   wsl    │ │   mcp    │ │ (self)  │
-└───┬────┘ └──────────┘ └──────────┘ └────┬─────┘ └─────────┘
+│devops  │ │ windows  │ │ wsl/unix │ │   mcp    │ │ (self)  │
+└───┬────┘ └──────────┘ └────┬─────┘ └────┬─────┘ └─────────┘
+    │                        │
+    │                        ├───────────────┐
+    │                        ▼               ▼
+    │                 ┌──────────┐    ┌──────────┐
+    │                 │  admin-  │    │  admin-  │
+    │                 │   wsl    │    │   unix   │
+    │                 └──────────┘    └──────────┘
     │                                      │
     ▼                                      │
 ┌────────────────┐                         │
@@ -82,7 +89,7 @@ keywords:
   - server, servers, provision, deploy, infrastructure
   - cloud, VPS, VM, instance, droplet, linode
   - inventory, "my servers", "server list"
-route_to: admin-servers
+route_to: admin-devops
 
 sub_routing:
   - keywords: [oracle, oci, "oracle cloud", ARM64, "always free"]
@@ -122,7 +129,7 @@ route_to: admin-windows
 requires_context: windows
 
 if_wrong_context: |
-  This is a Windows task but you're in WSL/Linux.
+  This is a Windows task but you're in WSL/Unix.
   Please open a Windows terminal to proceed.
 
 sub_routing:
@@ -130,21 +137,37 @@ sub_routing:
     route_to: admin-mcp
 ```
 
-### WSL/Linux Administration
+### WSL Administration
 
 ```yaml
 keywords:
-  - wsl, ubuntu, apt, dpkg, linux, bash, zsh
+  - wsl, wsl2, ubuntu
   - docker, container, "docker-compose"
-  - systemd, systemctl, journalctl
-  - python, pip, uv, venv
-  - node, npm, nvm
+  - wslpath, /mnt/c
 route_to: admin-wsl
-requires_context: [wsl, linux, macos]
+requires_context: wsl
 
 if_wrong_context: |
-  This is a Linux/WSL task but you're in Windows.
+  This is a WSL task but you're not in WSL.
   Please run: wsl -d Ubuntu-24.04
+```
+
+### Unix Administration (macOS/Linux)
+
+```yaml
+keywords:
+  - linux, ubuntu, debian, apt, dpkg
+  - macos, osx, darwin, homebrew, brew
+  - systemd, systemctl, journalctl
+  - bash, zsh
+  - python, pip, uv, venv
+  - node, npm, nvm
+route_to: admin-unix
+requires_context: [linux, macos]
+
+if_wrong_context: |
+  This is a macOS/Linux task but you're in Windows/WSL.
+  Use a native macOS/Linux terminal, or if you meant WSL use admin-wsl.
 ```
 
 ### Profile/Logging (handled by admin itself)
@@ -184,12 +207,22 @@ validate_context() {
             fi
             ;;
         admin-wsl)
-            if [[ "$current_platform" == "windows" ]]; then
+            if [[ "$current_platform" != "wsl" ]]; then
                 echo "HANDOFF: Run 'wsl -d ${WSL_DISTRO:-Ubuntu-24.04}' first"
                 return 1
             fi
             ;;
-        admin-servers|admin-infra-*|admin-app-*)
+        admin-unix)
+            if [[ "$current_platform" == "windows" ]]; then
+                echo "HANDOFF: Open a macOS/Linux terminal for this task (non-WSL)"
+                return 1
+            fi
+            if [[ "$current_platform" == "wsl" ]]; then
+                echo "HANDOFF: This is a native macOS/Linux task. If you meant WSL, use admin-wsl."
+                return 1
+            fi
+            ;;
+        admin-devops|admin-infra-*|admin-app-*)
             # These work from any context
             return 0
             ;;
@@ -227,12 +260,20 @@ function Test-AdminContext {
         'admin-wsl' {
             if ($platform -eq 'windows') {
                 Log-Operation -Status "HANDOFF" -Operation "Cross-Platform" `
-                    -Details "WSL/Linux task requested from Windows. Run: wsl -d $wslDistro" `
+                    -Details "WSL task requested from Windows. Run: wsl -d $wslDistro" `
                     -LogType "handoff"
                 return $false
             }
         }
-        'admin-servers' { return $true }
+        'admin-unix' {
+            if ($platform -eq 'windows' -or $platform -eq 'wsl') {
+                Log-Operation -Status "HANDOFF" -Operation "Cross-Platform" `
+                    -Details "macOS/Linux task requested from $platform. Use a native macOS/Linux shell (non-WSL)." `
+                    -LogType "handoff"
+                return $false
+            }
+        }
+        'admin-devops' { return $true }
         'admin-infra-*' { return $true }
         'admin-app-*' { return $true }
         default { return $true }
@@ -257,7 +298,7 @@ When a task requires a different context:
 
 3. **Tag for tracking**:
    - `[REQUIRES-WINADMIN]` - Must be done in Windows
-   - `[REQUIRES-WSL-ADMIN]` - Must be done in WSL/Linux
+   - `[REQUIRES-WSL-ADMIN]` - Must be done in WSL
 
 ## Skill Availability Check
 
@@ -300,9 +341,9 @@ check_skill_available() {
 
 1. Detect platform: WSL
 2. Keywords: "provision", "OCI", "server"
-3. Match: admin-servers → admin-infra-oci
+3. Match: admin-devops → admin-infra-oci
 4. Context check: Pass (servers work from any context)
-5. Route to: admin-servers (which routes to admin-infra-oci)
+5. Route to: admin-devops (which routes to admin-infra-oci)
 
 ### Example 4: "What tools do I have installed?"
 

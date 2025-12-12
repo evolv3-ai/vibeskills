@@ -29,12 +29,13 @@ Claude Code automatically discovers this skill when you mention:
 
 ### Primary Keywords
 - wsl admin
-- linux admin
 - ubuntu admin
 - wsl linux
 - apt install
 - apt packages
 - wsl packages
+- /mnt/c
+- wslpath
 
 ### Secondary Keywords
 - docker containers
@@ -45,7 +46,8 @@ Claude Code automatically discovers this skill when you mention:
 - zshrc
 - systemd service
 - wsl git
-- linux packages
+- docker desktop wsl
+- wsl distro
 
 ### Tool Keywords
 - apt update
@@ -69,7 +71,7 @@ Claude Code automatically discovers this skill when you mention:
 
 ## What This Skill Does
 
-Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management, Docker containers, Python environments, shell configuration, and systemd services. Coordinates with admin-windows for Windows-side tasks via the shared `.admin` root and handoff protocol.
+Administer WSL2 Ubuntu 24.04 environments (WSL-only) from Linux. Handle package management, Docker containers, Python environments, shell configuration, and systemd services. Coordinates with admin-windows for Windows-side tasks via the shared `.admin` root and handoff protocol.
 
 **Shared admin root**: In WSL, `ADMIN_ROOT` defaults to `/mnt/c/Users/$WIN_USER/.admin`, sharing logs and profiles with Windows `C:/Users/<username>/.admin`. Override by setting `ADMIN_ROOT` in `.env` or `.env.local`.
 
@@ -111,6 +113,7 @@ Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management,
 - Installing Windows applications - use admin-windows
 - Setting up MCP servers - use admin-mcp
 - Windows PowerShell scripting - use admin-windows
+- Working on native macOS/Linux (non-WSL) - use admin-unix
 
 ---
 

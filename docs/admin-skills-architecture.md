@@ -34,9 +34,10 @@ flowchart TB
     end
 
     subgraph SubSkills["Sub-Skills"]
-        SERVERS["admin-servers"]
+        SERVERS["admin-devops"]
         WINDOWS["admin-windows"]
         WSLSKILL["admin-wsl"]
+        UNIXSKILL["admin-unix"]
         MCP["admin-mcp"]
         INFRA["admin-infra-*"]
         APPS["admin-app-*"]
@@ -59,6 +60,7 @@ flowchart TB
     ROUTE --> SERVERS
     ROUTE --> WINDOWS
     ROUTE --> WSLSKILL
+    ROUTE --> UNIXSKILL
     ROUTE --> MCP
     ROUTE --> INFRA
     ROUTE --> APPS
@@ -66,6 +68,7 @@ flowchart TB
     LOG -.-> SERVERS
     LOG -.-> WINDOWS
     LOG -.-> WSLSKILL
+    LOG -.-> UNIXSKILL
     LOG -.-> MCP
     PROFILE -.-> SERVERS
 ```
@@ -160,7 +163,8 @@ flowchart TD
     subgraph Keywords["User Keywords"]
         K_SERVER["server, provision, deploy,<br>OCI, hetzner, vultr..."]
         K_WIN["powershell, winget, scoop,<br>registry, PATH..."]
-        K_WSL["wsl, ubuntu, apt,<br>docker, systemctl..."]
+        K_WSL["wsl, wslpath, /mnt/c,<br>docker (WSL), distro..."]
+        K_UNIX["linux, macos, apt (linux),<br>brew (macos), systemd..."]
         K_MCP["mcp, claude desktop,<br>mcpServers..."]
         K_PROFILE["profile, my tools,<br>installed, logs..."]
     end
@@ -171,9 +175,10 @@ flowchart TD
     end
 
     subgraph Skills["Target Skill"]
-        S_SERVERS["admin-servers"]
+        S_SERVERS["admin-devops"]
         S_WIN["admin-windows"]
         S_WSL["admin-wsl"]
+        S_UNIX["admin-unix"]
         S_MCP["admin-mcp"]
         S_SELF["admin (self)"]
     end
@@ -190,6 +195,7 @@ flowchart TD
     K_SERVER --> MATCH --> S_SERVERS
     K_WIN --> MATCH --> S_WIN
     K_WSL --> MATCH --> S_WSL
+    K_UNIX --> MATCH --> S_UNIX
     K_MCP --> MATCH --> S_MCP
     K_PROFILE --> MATCH --> S_SELF
 
@@ -283,12 +289,12 @@ flowchart TB
 ## Directory Structure
 
 **Note**: On Windows+WSL machines, the `.admin` folder is **shared** on the Windows filesystem.
-- Windows: `C:\Users\Owner\.admin\`
-- WSL: `/mnt/c/Users/Owner/.admin/` (same physical location)
+- Windows: `C:/Users/<WIN_USER>/.admin/`
+- WSL: `/mnt/c/Users/<WIN_USER>/.admin/` (same physical location)
 
 ```mermaid
 flowchart TB
-    subgraph AdminRoot["SHARED: C:\Users\Owner\.admin\<br>= /mnt/c/Users/Owner/.admin/"]
+    subgraph AdminRoot["SHARED: C:/Users/<WIN_USER>/.admin/<br>= /mnt/c/Users/<WIN_USER>/.admin/"]
         LOGS["logs/"]
         PROFILES["profiles/"]
         CONFIG["config/"]
@@ -302,17 +308,17 @@ flowchart TB
     end
 
     subgraph DevicesDir["devices/"]
-        DEV1["WOPR3/"]
-        DEV2["LAPTOP1/"]
+        DEV1["<DEVICE_NAME>/"]
+        DEV2["<DEVICE_NAME_2>/"]
     end
 
-    subgraph DeviceFiles["WOPR3/"]
+    subgraph DeviceFiles["<DEVICE_NAME>/"]
         HISTORY["history.log"]
     end
 
     subgraph ProfilesDir["profiles/"]
-        PROF1["WOPR3.json"]
-        PROF2["LAPTOP1.json"]
+        PROF1["<DEVICE_NAME>.json"]
+        PROF2["<DEVICE_NAME_2>.json"]
     end
 
     AdminRoot --> LOGS
@@ -344,9 +350,10 @@ flowchart TB
     end
 
     subgraph CoreSkills["Core Skills"]
-        SERVERS["admin-servers<br>(inventory)"]
+        SERVERS["admin-devops<br>(inventory)"]
         WINDOWS["admin-windows<br>(Windows admin)"]
-        WSL["admin-wsl<br>(WSL/Linux admin)"]
+        WSL["admin-wsl<br>(WSL admin)"]
+        UNIX["admin-unix<br>(macOS/Linux admin)"]
         MCP["admin-mcp<br>(MCP servers)"]
     end
 
@@ -367,6 +374,7 @@ flowchart TB
     ADMIN --> SERVERS
     ADMIN --> WINDOWS
     ADMIN --> WSL
+    ADMIN --> UNIX
     ADMIN --> MCP
 
     SERVERS --> OCI
@@ -383,6 +391,7 @@ flowchart TB
     style SERVERS fill:#bbf,stroke:#333
     style WINDOWS fill:#fbb,stroke:#333
     style WSL fill:#bfb,stroke:#333
+    style UNIX fill:#bfb,stroke:#333
     style MCP fill:#fbf,stroke:#333
 ```
 
@@ -391,11 +400,12 @@ flowchart TB
 | Component | Purpose | Files |
 |-----------|---------|-------|
 | **admin** | Orchestrator - routing, logging, profiles | `SKILL.md`, `references/*.md` |
-| **admin-servers** | Server inventory management | Routes to infra-* and app-* |
+| **admin-devops** | Server inventory management | Routes to infra-* and app-* |
 | **admin-windows** | Windows-specific administration | PowerShell commands |
-| **admin-wsl** | WSL/Linux administration | Bash commands |
+| **admin-wsl** | WSL administration | Bash commands (WSL-only) |
+| **admin-unix** | macOS/Linux administration | Bash/zsh commands (native) |
 | **admin-mcp** | MCP server configuration | Dual-mode (Bash + PowerShell) |
 | **admin-infra-*** | Cloud provider management | OCI, Hetzner, DO, Vultr, Linode, Contabo |
 | **admin-app-*** | Application deployment | Coolify, KASM |
 
-**Total Skills**: 13 (1 orchestrator + 4 core + 6 infrastructure + 2 application)
+**Total Skills**: 14 (1 orchestrator + 5 core + 6 infrastructure + 2 application)

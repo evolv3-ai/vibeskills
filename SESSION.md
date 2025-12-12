@@ -1,6 +1,6 @@
 # Session State
 
-**Current Phase**: Phase 21 - Windows/WSL Skills Concision ✅
+**Current Phase**: Phase 25 - Make `admin-wsl` WSL‑Only + Update Docs/Tutorials ✅
 **Current Stage**: Complete
 **Last Checkpoint**: 771ef4c (2025-12-11)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
@@ -97,7 +97,7 @@
 
 **Progress**:
 - [x] Audit all 11 remaining admin-* skills for hardcoded values
-- [x] Update admin-servers to use centralized logging
+- [x] Update admin-devops to use centralized logging
 - [x] Update admin-windows with centralized logging (fixed .env.template placeholders)
 - [x] Update admin-wsl with centralized logging (major refactoring - 15+ hardcoded paths)
 - [x] Update admin-mcp with centralized logging (12 hardcoded paths fixed)
@@ -139,7 +139,7 @@
 | Cross-platform handoff | ✅ PASS | Windows task from WSL triggers HANDOFF log |
 | Device profile | ✅ PASS | WOPR3.json created with deviceInfo, installedTools, managedServers |
 | Hardcoded paths check | ✅ PASS | No user-specific paths in admin skill (only in examples) |
-| Sub-skill compliance | ✅ PASS | admin-wsl, admin-servers, admin-infra-oci all use env vars |
+| Sub-skill compliance | ✅ PASS | admin-wsl, admin-devops, admin-infra-oci all use env vars |
 | Profile updates | ⚠️ SKIP | Requires jq (documented as optional dependency) |
 
 **Environment State After UAT**:
@@ -176,7 +176,7 @@
 **Final Admin Suite Structure** (12 skills):
 ```
 admin (orchestrator)
-├── admin-servers (inventory)
+├── admin-devops (inventory)
 ├── admin-windows (Windows admin)
 ├── admin-wsl (WSL/Linux admin)
 ├── admin-mcp (MCP servers)
@@ -274,7 +274,7 @@ This is expected - PowerShell mode is designed for native Windows PowerShell.
   - Added dual-mode diagnostics and troubleshooting
   - Updated config file location section
   - Added Shell Mode documentation section
-- [x] admin-servers: Added PowerShell versions of all commands
+- [x] admin-devops: Added PowerShell versions of all commands
   - Added PowerShell Quick Start commands
   - Added PowerShell Provider Discovery
   - Added PowerShell Common Operations
@@ -287,7 +287,7 @@ This is expected - PowerShell mode is designed for native Windows PowerShell.
 
 **Files Modified**:
 - `skills/admin-mcp/SKILL.md` - Major update with Bash/WSL support
-- `skills/admin-servers/SKILL.md` - Added PowerShell alternatives
+- `skills/admin-devops/SKILL.md` - Added PowerShell alternatives
 
 ---
 
@@ -345,7 +345,7 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 **Summary**:
 - Phase 7: Added shell detection to admin orchestrator (ADMIN_SHELL + ADMIN_PLATFORM)
 - Phase 8: Added PowerShell initialization commands
-- Phase 9: Updated sub-skills (admin-mcp, admin-servers) with dual-mode support
+- Phase 9: Updated sub-skills (admin-mcp, admin-devops) with dual-mode support
 - Phase 10: Verified all commands work in WSL environment
 - Phase 11: Updated documentation with PowerShell references
 
@@ -362,7 +362,7 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 - `skills/admin/README.md` (PowerShell keywords, dual-mode Quick Start)
 - `skills/admin/references/first-run-setup.md` (PowerShell troubleshooting)
 - `skills/admin-mcp/SKILL.md` (Bash/WSL support)
-- `skills/admin-servers/SKILL.md` (PowerShell alternatives)
+- `skills/admin-devops/SKILL.md` (PowerShell alternatives)
 
 ---
 
@@ -494,7 +494,7 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 - `skills/admin-infra-oci/SKILL.md`
 - `skills/admin-infra-vultr/SKILL.md`
 - `skills/admin-mcp/SKILL.md`
-- `skills/admin-servers/SKILL.md`
+- `skills/admin-devops/SKILL.md`
 - `skills/admin-windows/SKILL.md`
 - `skills/admin-wsl/SKILL.md`
 - `docs/IMPLEMENTATION_PHASES.md`
@@ -517,22 +517,22 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 - `skills/admin-mcp/references/TROUBLESHOOTING.md`
 - `docs/IMPLEMENTATION_PHASES.md`
 
-## Phase 17: `admin-servers` Progressive Disclosure ✅
+## Phase 17: `admin-devops` Progressive Disclosure ✅
 **Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-17`
 
 **Progress**:
 - [x] Split long inventory/spec/provider/workflow content into `references/`.
 - [x] Added TOCs to long reference files.
-- [x] Rewrote `skills/admin-servers/SKILL.md` as an overview under 500 lines.
+- [x] Rewrote `skills/admin-devops/SKILL.md` as an overview under 500 lines.
 
 **Files Modified/Added**:
-- `skills/admin-servers/SKILL.md`
-- `skills/admin-servers/references/INVENTORY_FORMAT.md`
-- `skills/admin-servers/references/PROVIDER_DISCOVERY.md`
-- `skills/admin-servers/references/EXAMPLE_INVENTORY.md`
-- `skills/admin-servers/references/DEPLOYMENT_WORKFLOWS.md`
-- `skills/admin-servers/references/TROUBLESHOOTING.md`
+- `skills/admin-devops/SKILL.md`
+- `skills/admin-devops/references/INVENTORY_FORMAT.md`
+- `skills/admin-devops/references/PROVIDER_DISCOVERY.md`
+- `skills/admin-devops/references/EXAMPLE_INVENTORY.md`
+- `skills/admin-devops/references/DEPLOYMENT_WORKFLOWS.md`
+- `skills/admin-devops/references/TROUBLESHOOTING.md`
 - `docs/IMPLEMENTATION_PHASES.md`
 
 ## Phase 18: `admin` Orchestrator Tightening ✅
@@ -633,6 +633,76 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 - `skills/admin-windows/references/OPERATIONS.md`
 - `skills/admin-wsl/SKILL.md`
 - `skills/admin-wsl/references/OPERATIONS.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+- `SESSION.md`
+
+---
+
+## Phase 22: Create `admin-unix` Skill + Route Linux/macOS ✅
+**Type**: Feature | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-22`
+
+**Progress**:
+- [x] Added new `admin-unix` skill scaffold with progressive disclosure via `references/OPERATIONS.md`.
+- [x] Updated `admin` routing/keywords to split WSL (`admin-wsl`) from native Linux/macOS (`admin-unix`).
+- [x] Updated routing guide context validation and examples to include `admin-unix`.
+
+**Files Modified/Added**:
+- `skills/admin-unix/SKILL.md`
+- `skills/admin-unix/README.md`
+- `skills/admin-unix/references/OPERATIONS.md`
+- `skills/admin/SKILL.md`
+- `skills/admin/README.md`
+- `skills/admin/references/routing-guide.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+- `SESSION.md`
+
+## Phase 23: Implement Linux (apt) Workflows in `admin-unix` ✅
+**Type**: Implementation | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-23`
+
+**Progress**:
+- [x] Expanded `admin-unix` operations with apt workflows (update/upgrade, install/remove, verify versions, holds, cleanup).
+- [x] Added common apt error handling patterns (locks, dpkg interrupted, broken deps, DNS, release info, hash sum mismatch).
+- [x] Added Linux service/log patterns with systemd and journald tailing.
+
+**Files Modified**:
+- `skills/admin-unix/references/OPERATIONS.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+- `SESSION.md`
+
+## Phase 24: Implement macOS (Homebrew) Workflows in `admin-unix` ✅
+**Type**: Implementation | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-24`
+
+**Progress**:
+- [x] Expanded `admin-unix` operations with Homebrew workflows (install/check brew, update/upgrade/cleanup, install/uninstall, pin/unpin).
+- [x] Added Apple Silicon PATH guidance and `brew services` patterns.
+- [x] Added common Homebrew troubleshooting patterns (`brew doctor`, CLT install).
+
+**Files Modified**:
+- `skills/admin-unix/references/OPERATIONS.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+- `SESSION.md`
+
+## Phase 25: Make `admin-wsl` WSL‑Only + Update Docs/Tutorials ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-25`
+
+**Progress**:
+- [x] Updated `admin-wsl` metadata and keywords to be explicitly WSL-only and added handoff guidance to `admin-unix`.
+- [x] Updated suite docs/diagrams to include `admin-unix` and correct WSL-only labeling.
+- [x] Updated admin tutorials to include `admin-unix` and the new WSL-only boundary.
+
+**Files Modified/Added**:
+- `skills/admin-wsl/SKILL.md`
+- `skills/admin-wsl/README.md`
+- `docs/admin-skills-architecture.md`
+- `docs/admin-skills-windows-map.md`
+- `tutorials/admin-skills/00-index.md`
+- `tutorials/admin-skills/01-what-is-suite.md`
+- `tutorials/admin-skills/03-routing.md`
+- `tutorials/admin-skills/11-admin-windows-vs-wsl.md`
 - `docs/IMPLEMENTATION_PHASES.md`
 - `SESSION.md`
 

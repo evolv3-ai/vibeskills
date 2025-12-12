@@ -41,14 +41,16 @@ Longer material is split into references (one level deep):
 
 ## Routing Summary
 
-- **Server / infrastructure / provisioning** → `admin-servers`  
+- **Server / infrastructure / provisioning** → `admin-devops`  
   May further route to `admin-infra-*` (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo) or `admin-app-*` (Coolify, KASM).
 - **Windows system administration** (PowerShell, winget/scoop, registry, `.wslconfig`, Windows Terminal) → `admin-windows`  
   Requires Windows context.
 - **MCP / Claude Desktop config on Windows** → `admin-mcp`  
   Requires Windows context.
-- **WSL / Linux / macOS administration** (apt/brew, docker, bash/zsh, systemd) → `admin-wsl`  
-  Requires WSL/Linux/macOS context.
+- **WSL administration** (Ubuntu in WSL, Docker Desktop integration, WSL profile) → `admin-wsl`  
+  Requires WSL context.
+- **Linux/macOS administration** (apt on Linux, brew on macOS, unix services) → `admin-unix`  
+  Requires Linux/macOS context (non-WSL).
 - **Profiles, logs, cross‑platform coordination** → handled here in `admin`.
 
 ## Key Environment Variables
@@ -84,7 +86,7 @@ Details and canonical functions: `references/device-profiles.md`.
 
 | Skill | Purpose |
 |-------|---------|
-| `admin-servers` | Server inventory & provisioning |
+| `admin-devops` | Server inventory & provisioning |
 | `admin-infra-oci` | Oracle Cloud Infrastructure |
 | `admin-infra-hetzner` | Hetzner Cloud |
 | `admin-infra-digitalocean` | DigitalOcean |
@@ -94,7 +96,8 @@ Details and canonical functions: `references/device-profiles.md`.
 | `admin-app-coolify` | Coolify PaaS deployments |
 | `admin-app-kasm` | KASM Workspaces deployments |
 | `admin-windows` | Windows administration |
-| `admin-wsl` | WSL/Linux/macOS administration |
+| `admin-wsl` | WSL administration (WSL-only) |
+| `admin-unix` | Linux/macOS administration (non-WSL) |
 | `admin-mcp` | MCP server management |
 
 ## Common Error Patterns

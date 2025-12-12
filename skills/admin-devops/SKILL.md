@@ -1,15 +1,15 @@
 ---
-name: admin-servers
+name: admin-devops
 description: |
   Manages infrastructure inventory with Agent DevOps Inventory format. Supports both Bash and PowerShell workflows. Tracks cloud providers (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo), local networks, and servers in a simple .env-style file.
 
   Use when: managing server inventory, provisioning infrastructure, checking existing servers, deploying to cloud providers, or administering multi-provider environments.
 
-  Keywords: server admin, inventory, devops, infrastructure, cloud providers, ssh, server management, provisioning, OCI, hetzner, digitalocean, vultr, linode, contabo
+  Keywords: devops, infrastructure inventory, server inventory, provisioning, cloud providers, ssh, OCI, hetzner, digitalocean, vultr, linode, contabo
 license: MIT
 ---
 
-# Server Admin - Infrastructure Management
+# DevOps Admin - Infrastructure Management
 
 **Purpose**: Maintain a single inventory of servers/providers and coordinate provisioning across `admin-infra-*` and `admin-app-*` skills.
 
@@ -43,12 +43,12 @@ PowerShell:
 
 Bash:
 ```bash
-cp ~/.claude/skills/admin-servers/assets/agent-devops.env.template .agent-devops.env
+cp ~/.claude/skills/admin-devops/assets/agent-devops.env.template .agent-devops.env
 ```
 
 PowerShell:
 ```powershell
-Copy-Item "$env:USERPROFILE/.claude/skills/admin-servers/assets/agent-devops.env.template" ".agent-devops.env"
+Copy-Item "$env:USERPROFILE/.claude/skills/admin-devops/assets/agent-devops.env.template" ".agent-devops.env"
 ```
 
 ### 3. Discover installed providers

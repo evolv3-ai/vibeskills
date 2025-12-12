@@ -6,7 +6,7 @@ How the admin skills map to a Windows PC running both native Windows and WSL.
 
 ```mermaid
 flowchart TB
-    subgraph Hardware["Physical Machine (e.g., WOPR3)"]
+    subgraph Hardware["Physical Machine (e.g., <DEVICE_NAME>)"]
         subgraph Windows["Windows 11"]
             subgraph WinApps["Windows Applications"]
                 CLAUDE_DESKTOP["Claude Desktop"]
@@ -22,8 +22,8 @@ flowchart TB
             end
 
             subgraph WinPaths["Windows Paths"]
-                WIN_ADMIN["C:\Users\Owner\.admin\"]
-                WIN_CLAUDE["C:\Users\Owner\AppData\Roaming\Claude\"]
+                WIN_ADMIN["C:/Users/<WIN_USER>/.admin/"]
+                WIN_CLAUDE["C:/Users/<WIN_USER>/AppData/Roaming/Claude/"]
             end
         end
 
@@ -41,8 +41,8 @@ flowchart TB
             end
 
             subgraph WSLPaths["WSL Paths"]
-                WSL_ADMIN["/home/wsladmin/.admin/"]
-                WSL_CLAUDE["/home/wsladmin/.claude/"]
+                WSL_ADMIN["/mnt/c/Users/<WIN_USER>/.admin/"]
+                WSL_CLAUDE["/home/<ADMIN_USER>/.claude/"]
             end
         end
     end
@@ -61,15 +61,20 @@ flowchart LR
         W_MCP["admin-mcp<br>Claude Desktop config,<br>MCP servers"]
     end
 
-    subgraph WSLDomain["WSL/Linux Domain"]
+    subgraph WSLDomain["WSL Domain"]
         direction TB
-        W_WSL["admin-wsl<br>apt, docker, systemd,<br>python, node"]
+        W_WSL["admin-wsl<br>WSL-only: apt, docker, systemd,<br>python, node"]
+    end
+
+    subgraph UnixNative["Native Unix Domain (macOS/Linux, non-WSL)"]
+        direction TB
+        W_UNIX["admin-unix<br>macOS: brew<br>Linux: apt, systemd"]
     end
 
     subgraph CrossPlatform["Cross-Platform (Works in Both)"]
         direction TB
         W_ADMIN["admin<br>Orchestrator, logging,<br>profiles, routing"]
-        W_SERVERS["admin-servers<br>Server inventory"]
+        W_SERVERS["admin-devops<br>Server inventory"]
         W_INFRA["admin-infra-*<br>Cloud CLI tools"]
         W_APPS["admin-app-*<br>Coolify, KASM"]
     end
@@ -90,10 +95,10 @@ flowchart TB
                 SK_MCP["admin-mcp"]
             end
 
-            subgraph WinConfig["Config Locations"]
-                WIN_ADMIN_DIR["C:\Users\Owner\.admin\<br>├── logs\<br>├── profiles\<br>└── config\"]
-                WIN_MCP_CONFIG["C:\Users\Owner\AppData\Roaming\Claude\<br>└── claude_desktop_config.json"]
-            end
+        subgraph WinConfig["Config Locations"]
+            WIN_ADMIN_DIR["C:/Users/<WIN_USER>/.admin/<br>├── logs/<br>├── profiles/<br>└── config/"]
+            WIN_MCP_CONFIG["C:/Users/<WIN_USER>/AppData/Roaming/Claude/<br>└── claude_desktop_config.json"]
+        end
 
             subgraph WinClaude["Claude Code (Windows)"]
                 CC_WIN["Claude Code<br>runs in Git Bash<br>ADMIN_SHELL=bash<br>ADMIN_PLATFORM=windows"]
@@ -105,10 +110,10 @@ flowchart TB
                 SK_WSL["admin-wsl"]
             end
 
-            subgraph WSLConfig["Config Locations"]
-                WSL_ADMIN_DIR["/home/wsladmin/.admin/<br>├── logs/<br>├── profiles/<br>└── config/"]
-                WSL_CLAUDE_DIR["/home/wsladmin/.claude/<br>└── skills/ (symlinks)"]
-            end
+        subgraph WSLConfig["Config Locations"]
+            WSL_ADMIN_DIR["/mnt/c/Users/<WIN_USER>/.admin/<br>├── logs/<br>├── profiles/<br>└── config/"]
+            WSL_CLAUDE_DIR["/home/<ADMIN_USER>/.claude/<br>└── skills/ (symlinks)"]
+        end
 
             subgraph WSLClaude["Claude Code (WSL)"]
                 CC_WSL["Claude Code<br>runs in Zsh/Bash<br>ADMIN_SHELL=zsh<br>ADMIN_PLATFORM=wsl"]
@@ -117,7 +122,7 @@ flowchart TB
 
         subgraph SharedSkills["SKILLS THAT WORK IN BOTH"]
             SK_ADMIN["admin (orchestrator)"]
-            SK_SERVERS["admin-servers"]
+            SK_SERVERS["admin-devops"]
             SK_INFRA["admin-infra-*<br>(oci, hetzner, do, vultr, linode, contabo)"]
             SK_APPS["admin-app-*<br>(coolify, kasm)"]
         end
@@ -164,7 +169,7 @@ flowchart TD
     subgraph Scenario3["Scenario: User in WSL asks to provision OCI server"]
         S3_START["User in WSL:<br>'Provision an OCI server'"]
         S3_DETECT["admin detects:<br>ADMIN_PLATFORM=wsl"]
-        S3_ROUTE["Routes to: admin-servers<br>→ admin-infra-oci"]
+        S3_ROUTE["Routes to: admin-devops<br>→ admin-infra-oci"]
         S3_CHECK{"Context valid?"}
         S3_PROCEED["PROCEED:<br>OCI CLI works in both<br>environments"]
     end
@@ -182,21 +187,21 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph Windows["Windows File System"]
-        W_ROOT["C:\"]
-        W_USERS["C:\Users\Owner\"]
-        W_ADMIN["C:\Users\Owner\.admin\"]
+        W_ROOT["C:/"]
+        W_USERS["C:/Users/<WIN_USER>/"]
+        W_ADMIN["C:/Users/<WIN_USER>/.admin/"]
     end
 
     subgraph WSL["WSL File System"]
         L_ROOT["/"]
-        L_HOME["/home/wsladmin/"]
-        L_ADMIN["/home/wsladmin/.admin/"]
+        L_HOME["/home/<ADMIN_USER>/"]
+        L_ADMIN["/mnt/c/Users/<WIN_USER>/.admin/ (shared)"]
         L_MNT["/mnt/c/"]
     end
 
     subgraph Access["Cross-Access"]
-        WIN_TO_WSL["Windows → WSL:<br>\\\\wsl$\\Ubuntu\\home\\wsladmin\\"]
-        WSL_TO_WIN["WSL → Windows:<br>/mnt/c/Users/Owner/"]
+        WIN_TO_WSL["Windows → WSL:<br>\\\\wsl$\\<WSL_DISTRO>\\home\\<ADMIN_USER>\\"]
+        WSL_TO_WIN["WSL → Windows:<br>/mnt/c/Users/<WIN_USER>/"]
     end
 
     W_USERS -.->|"via /mnt/c/"| L_MNT
@@ -216,8 +221,8 @@ flowchart TB
     end
 
     subgraph ClaudeCode["Claude Code Bash Tool"]
-        CC_WIN_BASH["Windows: Git Bash (MINGW64)<br>$BASH_VERSION = 5.2.x<br>$HOME = /c/Users/Owner"]
-        CC_WSL_BASH["WSL: Native Bash/Zsh<br>$ZSH_VERSION = 5.9<br>$HOME = /home/wsladmin"]
+        CC_WIN_BASH["Windows: Git Bash (MINGW64)<br>$BASH_VERSION = 5.2.x<br>$HOME = /c/Users/<WIN_USER>"]
+        CC_WSL_BASH["WSL: Native Bash/Zsh<br>$ZSH_VERSION = 5.9<br>$HOME = /home/<ADMIN_USER>"]
     end
 
     subgraph Detection["Environment Detection"]
@@ -242,30 +247,30 @@ flowchart TB
 ```mermaid
 flowchart TB
     subgraph SkillsRepo["claude-skills Repository"]
-        REPO["/home/wsladmin/dev/claude-skills/skills/"]
+        REPO["<REPO_ROOT>/skills/"]
         ADMIN_SRC["admin/"]
         WIN_SRC["admin-windows/"]
         WSL_SRC["admin-wsl/"]
         MCP_SRC["admin-mcp/"]
-        SERVERS_SRC["admin-servers/"]
+        SERVERS_SRC["admin-devops/"]
         INFRA_SRC["admin-infra-*/"]
         APPS_SRC["admin-app-*/"]
     end
 
     subgraph WSLInstall["WSL Installation"]
-        WSL_SKILLS["/home/wsladmin/.claude/skills/"]
+        WSL_SKILLS["/home/<ADMIN_USER>/.claude/skills/"]
         WSL_LINKS["Symlinks to repo"]
     end
 
     subgraph WinInstall["Windows Installation"]
-        WIN_SKILLS["C:\Users\Owner\.claude\skills\"]
+        WIN_SKILLS["C:/Users/<WIN_USER>/.claude/skills/"]
         WIN_COPY["Copy or symlink"]
     end
 
     subgraph SharedAdmin["SHARED .admin Folder"]
-        SHARED_ROOT["C:\Users\Owner\.admin\<br>= /mnt/c/Users/Owner/.admin/"]
+        SHARED_ROOT["C:/Users/<WIN_USER>/.admin/<br>= /mnt/c/Users/<WIN_USER>/.admin/"]
         SHARED_LOGS["logs/ (unified)"]
-        SHARED_PROFILES["profiles/ (single WOPR3.json)"]
+        SHARED_PROFILES["profiles/ (single <DEVICE_NAME>.json)"]
         SHARED_CONFIG["config/"]
     end
 
@@ -308,9 +313,10 @@ flowchart TB
 |-------|---------------|-----|-------|
 | **admin** | ✅ Works | ✅ Works | Orchestrator, adapts to environment |
 | **admin-windows** | ✅ Native | ⚠️ Handoff | PowerShell tasks need Windows |
-| **admin-wsl** | ⚠️ Handoff | ✅ Native | Linux tasks need WSL |
+| **admin-wsl** | ⚠️ Handoff | ✅ Native | WSL-only tasks run in WSL |
+| **admin-unix** | ⚠️ Handoff | ⚠️ Handoff | Use on native macOS/Linux (non-WSL) |
 | **admin-mcp** | ✅ Native | ✅ Works* | *Can edit config via /mnt/c/ from WSL |
-| **admin-servers** | ✅ Works | ✅ Works | Cross-platform |
+| **admin-devops** | ✅ Works | ✅ Works | Cross-platform |
 | **admin-infra-*** | ✅ Works | ✅ Works | CLI tools work in both |
 | **admin-app-*** | ✅ Works | ✅ Works | Cross-platform |
 
@@ -318,11 +324,11 @@ flowchart TB
 
 | Config | Windows Path | WSL Path | Shared? |
 |--------|-------------|----------|---------|
-| **Admin root** | `C:\Users\Owner\.admin\` | `/mnt/c/Users/Owner/.admin/` | **YES** |
-| **Admin logs** | `C:\Users\Owner\.admin\logs\` | `/mnt/c/Users/Owner/.admin/logs/` | **YES** |
-| **Device profile** | `C:\Users\Owner\.admin\profiles\WOPR3.json` | `/mnt/c/Users/Owner/.admin/profiles/WOPR3.json` | **YES** |
-| Claude Desktop config | `C:\Users\Owner\AppData\Roaming\Claude\claude_desktop_config.json` | `/mnt/c/Users/Owner/AppData/Roaming/Claude/claude_desktop_config.json` | Yes (via /mnt/c) |
-| Skills directory | `C:\Users\Owner\.claude\skills\` | `/home/wsladmin/.claude/skills/` | No (separate) |
+| **Admin root** | `C:/Users/<WIN_USER>/.admin/` | `/mnt/c/Users/<WIN_USER>/.admin/` | **YES** |
+| **Admin logs** | `C:/Users/<WIN_USER>/.admin/logs/` | `/mnt/c/Users/<WIN_USER>/.admin/logs/` | **YES** |
+| **Device profile** | `C:/Users/<WIN_USER>/.admin/profiles/<DEVICE_NAME>.json` | `/mnt/c/Users/<WIN_USER>/.admin/profiles/<DEVICE_NAME>.json` | **YES** |
+| Claude Desktop config | `C:/Users/<WIN_USER>/AppData/Roaming/Claude/claude_desktop_config.json` | `/mnt/c/Users/<WIN_USER>/AppData/Roaming/Claude/claude_desktop_config.json` | Yes (via /mnt/c) |
+| Skills directory | `C:/Users/<WIN_USER>/.claude/skills/` | `/home/<ADMIN_USER>/.claude/skills/` | No (separate) |
 
 **IMPORTANT**: The `.admin` folder is now **shared** between Windows and WSL. Both environments read/write to the same physical location on the Windows filesystem.
 
@@ -330,7 +336,7 @@ flowchart TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     WINDOWS PC (e.g., WOPR3)                    │
+│                     WINDOWS PC (e.g., <DEVICE_NAME>)            │
 ├─────────────────────────────┬───────────────────────────────────┤
 │      WINDOWS NATIVE         │              WSL                  │
 ├─────────────────────────────┼───────────────────────────────────┤
@@ -342,13 +348,13 @@ flowchart TB
 │  ADMIN_SHELL=bash           │  ADMIN_SHELL=zsh                  │
 ├─────────────────────────────┴───────────────────────────────────┤
 │                    CROSS-PLATFORM SKILLS                        │
-│  admin (orchestrator) │ admin-servers │ admin-infra-*           │
+│  admin (orchestrator) │ admin-devops │ admin-infra-*           │
 │  admin-app-coolify    │ admin-app-kasm                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                 SHARED .admin FOLDER (Windows FS)               │
-│         C:\Users\Owner\.admin\ = /mnt/c/Users/Owner/.admin/     │
+│   C:/Users/<WIN_USER>/.admin/ = /mnt/c/Users/<WIN_USER>/.admin/ │
 │  ├── logs/           (unified logs from both environments)      │
-│  ├── profiles/       (single WOPR3.json device profile)         │
+│  ├── profiles/       (single <DEVICE_NAME>.json device profile) │
 │  └── config/         (shared configuration)                     │
 └─────────────────────────────────────────────────────────────────┘
 ```

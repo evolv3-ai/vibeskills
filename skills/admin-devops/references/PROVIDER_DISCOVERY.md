@@ -9,7 +9,7 @@
 
 ## Discover Installed Provider Skills
 
-`admin-servers` discovers which `admin-infra-*` skills are installed and uses them for provisioning.
+`admin-devops` discovers which `admin-infra-*` skills are installed and uses them for provisioning.
 
 Bash:
 
@@ -76,4 +76,3 @@ PROVIDER_HETZNER_DEFAULT_REGION=nbg1
 PROVIDER_HETZNER_LABEL=Hetzner Cloud
 "@ | Add-Content .agent-devops.env
 ```
-
