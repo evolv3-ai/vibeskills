@@ -7,6 +7,21 @@
 
 ---
 
+## Contents
+- Quick Check
+- Configuration Methods
+- Finding Your OCIDs
+- Multiple Profiles
+- Verify Configuration
+- Troubleshooting
+- Environment Variables (Alternative)
+- Instance Principal Authentication
+- Security Best Practices
+- Next Steps
+- Official Resources
+
+---
+
 ## Quick Check
 
 First, verify if OCI CLI is already configured:

@@ -1,7 +1,7 @@
 # Session State
 
-**Current Phase**: Phase 20 - Infra Skills Concision + OCI Doc Fix (Pending)
-**Current Stage**: Implementation
+**Current Phase**: Phase 21 - Windows/WSL Skills Concision ✅
+**Current Stage**: Complete
 **Last Checkpoint**: 771ef4c (2025-12-11)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
@@ -587,16 +587,54 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 - `skills/admin-app-kasm/references/post-installation-interview-spec.md`
 - `docs/IMPLEMENTATION_PHASES.md`
 
-## Phase 20: Infra Skills Concision + OCI Doc Fix ⏸️
-**Type**: Refactor | **Added**: 2025-12-12
+## Phase 20: Infra Skills Concision + OCI Doc Fix ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-20`
 
-## Phase 21: Windows/WSL Skills Concision ⏸️
-**Type**: Refactor | **Added**: 2025-12-12
+**Progress**:
+- [x] Moved troubleshooting/config/cost detail out of all non‑OCI infra SKILLs into one‑level‑deep `references/OPERATIONS.md`.
+- [x] Added navigation + operations links in each infra SKILL and removed boilerplate `Files` sections.
+- [x] Split OCI SKILL operations into `skills/admin-infra-oci/references/OPERATIONS.md` and reduced SKILL under 500 lines.
+- [x] Added TOCs to all long OCI docs in `skills/admin-infra-oci/docs/`.
+- [x] Replaced broken references to non‑existent scripts in OCI docs and README.
+
+**Files Modified/Added**:
+- `skills/admin-infra-contabo/SKILL.md`
+- `skills/admin-infra-contabo/references/OPERATIONS.md`
+- `skills/admin-infra-digitalocean/SKILL.md`
+- `skills/admin-infra-digitalocean/references/OPERATIONS.md`
+- `skills/admin-infra-hetzner/SKILL.md`
+- `skills/admin-infra-hetzner/references/OPERATIONS.md`
+- `skills/admin-infra-linode/SKILL.md`
+- `skills/admin-infra-linode/references/OPERATIONS.md`
+- `skills/admin-infra-vultr/SKILL.md`
+- `skills/admin-infra-vultr/references/OPERATIONS.md`
+- `skills/admin-infra-oci/SKILL.md`
+- `skills/admin-infra-oci/references/OPERATIONS.md`
+- `skills/admin-infra-oci/docs/INSTALL.md`
+- `skills/admin-infra-oci/docs/CONFIG.md`
+- `skills/admin-infra-oci/docs/CAPACITY.md`
+- `skills/admin-infra-oci/docs/NETWORKING.md`
+- `skills/admin-infra-oci/docs/TROUBLESHOOTING.md`
+- `skills/admin-infra-oci/README.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+
+## Phase 21: Windows/WSL Skills Concision ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-21`
 
-**Next Action**:
-- Start Phase 20 (infra skills concision + OCI doc fix).
+**Progress**:
+- [x] Split long operational sections out of Windows/WSL SKILLs into one‑level‑deep `references/OPERATIONS.md`.
+- [x] Added `## Navigation` and `## Operations` pointers in both SKILLs.
+- [x] Confirmed path examples remain placeholder‑based and forward‑slash safe.
+
+**Files Modified/Added**:
+- `skills/admin-windows/SKILL.md`
+- `skills/admin-windows/references/OPERATIONS.md`
+- `skills/admin-wsl/SKILL.md`
+- `skills/admin-wsl/references/OPERATIONS.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+- `SESSION.md`
 
 ---
 

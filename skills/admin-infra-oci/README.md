@@ -89,13 +89,14 @@ Do not use this skill when:
 ## Quick Start
 
 ```bash
-# 1. Check prerequisites
-./scripts/preflight-check.sh --check-only
+# 1. Verify OCI CLI + auth
+oci --version
+oci iam availability-domain list
 
 # 2. Check capacity
 ./scripts/check-oci-capacity.sh
 
-# 3. Deploy
+# 3. Deploy (validates required env vars on start)
 ./scripts/oci-infrastructure-setup.sh
 ```
 
@@ -131,9 +132,7 @@ Do not use this skill when:
 
 | Script | Description |
 |--------|-------------|
-| `preflight-check.sh` | Verify/install OCI CLI |
 | `check-oci-capacity.sh` | Check ARM availability |
-| `validate-env.sh` | Validate environment config |
 | `oci-infrastructure-setup.sh` | Full deployment |
 | `monitor-and-deploy.sh` | Auto-deploy when capacity available |
 | `cleanup-compartment.sh` | Delete all resources |
@@ -156,14 +155,7 @@ admin-infra-oci/
 ├── assets/
 │   └── env-template           # Environment template
 └── scripts/
-    ├── lib/                   # Shared modules
-    │   ├── colors.sh         # Color output
-    │   ├── detect-os.sh      # OS detection
-    │   ├── oci-check.sh      # OCI verification
-    │   └── oci-install.sh    # OCI installation
-    ├── preflight-check.sh     # Prerequisites check
     ├── check-oci-capacity.sh  # Capacity checker
-    ├── validate-env.sh        # Env validation
     ├── oci-infrastructure-setup.sh  # Full deploy
     ├── monitor-and-deploy.sh  # Auto-deploy monitor
     └── cleanup-compartment.sh # Resource cleanup

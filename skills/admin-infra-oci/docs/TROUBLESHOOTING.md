@@ -4,13 +4,28 @@
 
 ---
 
+## Contents
+- Quick Diagnostic
+- Issue Categories
+- CLI & Authentication
+- Capacity & Limits
+- Networking
+- Compute
+- General Errors
+- Debug Mode
+- Getting Help
+- Quick Fixes Summary
+
+---
+
 ## Quick Diagnostic
 
 Run this first to identify issues:
 
 ```bash
-./scripts/preflight-check.sh --check-only
-./scripts/validate-env.sh
+oci --version
+oci iam availability-domain list
+./scripts/check-oci-capacity.sh
 ```
 
 ---
@@ -34,9 +49,9 @@ Run this first to identify issues:
 
 **Solutions**:
 
-1. Install OCI CLI:
+1. Install OCI CLI (see `docs/INSTALL.md`) and verify:
    ```bash
-   ./scripts/preflight-check.sh --auto
+   oci --version
    ```
 
 2. Or restart terminal to reload PATH:
@@ -507,7 +522,7 @@ oci --debug compute instance list 2>&1 | tee oci-debug.log
 
 | Error | Quick Fix |
 |-------|-----------|
-| Command not found | `./scripts/preflight-check.sh --auto` |
+| Command not found | Install OCI CLI (`docs/INSTALL.md`) |
 | NotAuthenticated | Check `~/.oci/config`, upload API key |
 | OUT_OF_HOST_CAPACITY | Try different AD/region |
 | LimitExceeded | Check existing A1 instances |

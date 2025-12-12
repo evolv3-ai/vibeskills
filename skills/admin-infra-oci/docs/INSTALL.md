@@ -6,6 +6,16 @@
 
 ---
 
+## Contents
+- Quick Check
+- Installation by Operating System
+- Verify Installation
+- Troubleshooting
+- Next Steps
+- Official Resources
+
+---
+
 ## Quick Check
 
 First, verify if OCI CLI is already installed:

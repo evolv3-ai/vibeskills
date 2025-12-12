@@ -707,9 +707,9 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 
 ### Tasks
 
-- [ ] Reduce each `admin-infra-*` SKILL under 500 lines via targeted splits (tables, troubleshooting, long guides → refs).
-- [ ] Add TOCs to long OCI docs in `skills/admin-infra-oci/docs/`.
-- [ ] Fix broken script references in `skills/admin-infra-oci/docs/TROUBLESHOOTING.md` (`preflight-check.sh`, `validate-env.sh`).
+- [x] Reduce each `admin-infra-*` SKILL under 500 lines via targeted splits (tables, troubleshooting, long guides → refs).
+- [x] Add TOCs to long OCI docs in `skills/admin-infra-oci/docs/`.
+- [x] Fix broken script references in `skills/admin-infra-oci/docs/TROUBLESHOOTING.md` (`preflight-check.sh`, `validate-env.sh`).
 
 ### Verification Criteria
 
@@ -724,8 +724,8 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 
 ### Tasks
 
-- [ ] Reduce `skills/admin-windows/SKILL.md` and `skills/admin-wsl/SKILL.md` under 500 lines using refs.
-- [ ] Normalize path examples and add TOCs to any long refs.
+- [x] Reduce `skills/admin-windows/SKILL.md` and `skills/admin-wsl/SKILL.md` under 500 lines using refs.
+- [x] Normalize path examples and add TOCs to any long refs.
 
 ### Verification Criteria
 

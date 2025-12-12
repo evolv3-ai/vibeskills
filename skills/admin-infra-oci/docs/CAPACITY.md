@@ -5,6 +5,19 @@
 
 ---
 
+## Contents
+- Understanding Capacity
+- Checking Capacity
+- Automated Monitoring
+- Strategies for Getting Capacity
+- Understanding Availability Domains
+- Error Messages
+- Creating Resource Manager Stacks
+- Quick Reference
+- Next Steps
+
+---
+
 ## Understanding Capacity
 
 ARM A1.Flex instances on OCI Always Free tier are highly demanded. "OUT_OF_HOST_CAPACITY" errors are common and expected.
