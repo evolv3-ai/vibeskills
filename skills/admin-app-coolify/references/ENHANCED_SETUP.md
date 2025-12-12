@@ -4,6 +4,24 @@
 **Version**: 1.0.0
 **Last Updated**: 2025-11-15
 
+## Contents
+- Overview
+- Quick Start
+- Features
+- Installation Modes
+- Environment Variables
+- Post-Installation
+- File Locations
+- Troubleshooting
+- Comparison: Standard vs Enhanced Setup
+- Security Considerations
+- Integration with Existing Scripts
+- Advanced Usage
+- Future Enhancements
+- Support
+
+---
+
 ## Overview
 
 The Enhanced Coolify Setup provides a fully automated installation experience with:
@@ -73,14 +91,14 @@ openssl rand -base64 32 | tr -d "=+/" | cut -c1-25
 
 **Example:**
 ```bash
-export COOLIFY_DOMAIN="coolify.sleekapps.com"
-export WILDCARD_DOMAIN="*.sleekapps.com"
+export COOLIFY_DOMAIN="coolify.yourdomain.com"
+export WILDCARD_DOMAIN="*.yourdomain.com"
 ```
 
 Apps automatically get domains like:
-- `myapp.sleekapps.com`
-- `blog.sleekapps.com`
-- `api.sleekapps.com`
+- `myapp.yourdomain.com`
+- `blog.yourdomain.com`
+- `api.yourdomain.com`
 
 ### 3. Credential Management
 

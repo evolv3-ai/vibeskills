@@ -66,10 +66,10 @@ export ADMIN_EMAIL="admin@yourdomain.com"
 
 ```bash
 # Full configuration
-export COOLIFY_DOMAIN="coolify.sleekapps.com"
-export WILDCARD_DOMAIN="*.sleekapps.com"
+export COOLIFY_DOMAIN="coolify.yourdomain.com"
+export WILDCARD_DOMAIN="*.yourdomain.com"
 export ADMIN_USERNAME="admin"
-export ADMIN_EMAIL="admin@sleekapps.com"
+export ADMIN_EMAIL="admin@yourdomain.com"
 
 # Optional: Provide your own password (leave blank for auto-generation)
 export ROOT_USER_PASSWORD=""
@@ -134,7 +134,7 @@ http://YOUR_SERVER_IP:8000
 🌐 Access Information:
    Local URL: http://localhost:8000
    Public URL: http://123.456.789.0:8000
-   Domain: https://coolify.sleekapps.com (after DNS setup)
+   Domain: https://coolify.yourdomain.com (after DNS setup)
 
 🔑 Credentials Location:
    /opt/coolify-credentials.txt

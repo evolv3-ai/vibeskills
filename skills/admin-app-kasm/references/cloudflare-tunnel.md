@@ -2,6 +2,12 @@
 
 Secure HTTPS access to KASM Workspaces via Cloudflare Tunnel.
 
+## Contents
+- Prerequisites
+- Quick Setup
+- Troubleshooting
+- References
+
 ---
 
 ## Prerequisites

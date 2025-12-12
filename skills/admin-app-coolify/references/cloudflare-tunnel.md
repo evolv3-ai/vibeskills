@@ -2,6 +2,19 @@
 
 **Status**: Production Ready | **Dependencies**: None (cloudflared auto-downloaded)
 
+## Contents
+- Prerequisites
+- How It Works
+- Critical Rules
+- DNS Verification Commands
+- Wildcard Mode (Recommended for Coolify)
+- Service Configuration
+- Troubleshooting
+- Setup Steps
+- API Token Permissions
+- Verification Checklist
+- References
+
 ---
 
 ## Prerequisites

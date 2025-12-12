@@ -1,22 +1,33 @@
 # Cloudflare Error 1033 - Troubleshooting Guide
 
-**Issue Date**: 2025-11-15
-**Server IP**: 129.153.33.172
-**Domain**: coolify.sleekapps.com
+**Issue Date**: 2025-11-15 (example)
+**Server IP**: <SERVER_IP>
+**Domain**: <COOLIFY_DOMAIN>
 **Error**: Cloudflare Error 1033 (Argo Tunnel Error)
+
+## Contents
+- Problem Summary
+- Root Cause Analysis
+- Solutions
+- Recommended Action Plan
+- Diagnostic Commands
+- Current Status
+- Quick Reference
+- Next Steps
+- Related Documentation
 
 ---
 
 ## Problem Summary
 
-When accessing Coolify via domain name `coolify.sleekapps.com`, users encounter **Cloudflare Error 1033**. However, direct IP access (http://129.153.33.172:8000) works correctly.
+When accessing Coolify via domain name `<COOLIFY_DOMAIN>`, users encounter **Cloudflare Error 1033**. However, direct IP access (http://<SERVER_IP>:8000) works correctly.
 
 ## Root Cause Analysis
 
 ### What We Found
 
 1. **Domain Configuration**
-   - Domain `coolify.sleekapps.com` is configured in Coolify
+   - Domain `<COOLIFY_DOMAIN>` is configured in Coolify
    - Traefik logs show ACME certificate requests for this domain
    - Coolify redirects to this domain when accessed
 
@@ -41,7 +52,7 @@ When accessing Coolify via domain name `coolify.sleekapps.com`, users encounter 
 
 In this case:
 ```
-User → Cloudflare Edge → [TUNNEL MISSING] ← Origin Server (129.153.33.172)
+User → Cloudflare Edge → [TUNNEL MISSING] ← Origin Server (<SERVER_IP>)
 ```
 
 Cloudflare cannot reach the origin because there's no tunnel configured.
@@ -54,7 +65,7 @@ Cloudflare cannot reach the origin because there's no tunnel configured.
 
 **Recommended for initial setup and testing**
 
-**URL**: http://129.153.33.172:8000
+**URL**: http://<SERVER_IP>:8000
 
 **Pros**:
 - Works immediately
@@ -83,7 +94,7 @@ Cloudflare cannot reach the origin because there's no tunnel configured.
 **Step 1: Install cloudflared on the server**
 
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP>
 
 # Install cloudflared
 curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb
@@ -115,7 +126,7 @@ tunnel: <TUNNEL-ID>
 credentials-file: /home/ubuntu/.cloudflared/<TUNNEL-ID>.json
 
 ingress:
-  - hostname: coolify.sleekapps.com
+  - hostname: <COOLIFY_DOMAIN>
     service: http://localhost:8000
   - service: http_status:404
 EOF
@@ -125,7 +136,7 @@ EOF
 
 ```bash
 # Route DNS to tunnel
-cloudflared tunnel route dns coolify-tunnel coolify.sleekapps.com
+cloudflared tunnel route dns coolify-tunnel <COOLIFY_DOMAIN>
 ```
 
 **Step 5: Start tunnel as service**
@@ -143,7 +154,7 @@ sudo systemctl status cloudflared
 ```
 
 **Verification**:
-- Access https://coolify.sleekapps.com
+- Access https://<COOLIFY_DOMAIN>
 - Should now work without Error 1033
 
 ---
@@ -155,15 +166,15 @@ sudo systemctl status cloudflared
 #### Steps
 
 1. **In Cloudflare DNS Settings**:
-   - Change DNS record for `coolify.sleekapps.com`
+   - Change DNS record for `<COOLIFY_DOMAIN>`
    - Type: A
    - Name: coolify
-   - Content: 129.153.33.172
+   - Content: <SERVER_IP>
    - **Proxy status: DNS only (grey cloud)** ← This is the key change
 
 2. **Wait for DNS propagation** (5-10 minutes)
 
-3. **Access**: http://coolify.sleekapps.com:8000
+3. **Access**: http://<COOLIFY_DOMAIN>:8000
 
 **Pros**:
 - Simple configuration
@@ -182,10 +193,10 @@ sudo systemctl status cloudflared
 **Reconfigure Coolify to use IP instead of domain**
 
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP>
 
 # Update Coolify configuration
-sudo sed -i 's|APP_URL=.*|APP_URL=http://129.153.33.172:8000|' /data/coolify/source/.env
+sudo sed -i 's|APP_URL=.*|APP_URL=http://<SERVER_IP>:8000|' /data/coolify/source/.env
 
 # Restart Coolify
 cd /data/coolify/source
@@ -220,23 +231,23 @@ sudo docker compose restart
 
 **Check if Coolify is accessible via IP**:
 ```bash
-curl -I http://129.153.33.172:8000
+curl -I http://<SERVER_IP>:8000
 # Should return: HTTP/1.1 302 Found
 ```
 
 **Check Coolify container status**:
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172 'sudo docker ps --filter "name=coolify"'
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP> 'sudo docker ps --filter "name=coolify"'
 ```
 
 **Check for cloudflared**:
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172 'systemctl status cloudflared'
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP> 'systemctl status cloudflared'
 ```
 
 **Check Traefik logs**:
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172 'sudo docker logs coolify-proxy --tail 50'
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP> 'sudo docker logs coolify-proxy --tail 50'
 ```
 
 ---
@@ -246,8 +257,8 @@ ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172 'sudo docker logs coolify-proxy --tai
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Coolify Containers | ✅ Running | All 6 containers healthy |
-| Direct IP Access | ✅ Working | http://129.153.33.172:8000 |
-| Domain Access | ❌ Error 1033 | coolify.sleekapps.com |
+| Direct IP Access | ✅ Working | http://<SERVER_IP>:8000 |
+| Domain Access | ❌ Error 1033 | <COOLIFY_DOMAIN> |
 | Cloudflare Tunnel | ❌ Not Configured | No cloudflared installed |
 | OCI Firewall | ✅ Configured | Ports 22, 80, 443, 8000, 6001, 6002 |
 | UFW Firewall | ⚠️ Inactive | Consider enabling for additional security |
@@ -256,11 +267,11 @@ ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172 'sudo docker logs coolify-proxy --tai
 
 ## Quick Reference
 
-**Working Access URL**: http://129.153.33.172:8000
+**Working Access URL**: http://<SERVER_IP>:8000
 
 **SSH Access**:
 ```bash
-ssh -i ~/.ssh/id_rsa ubuntu@129.153.33.172
+ssh -i ~/.ssh/id_rsa ubuntu@<SERVER_IP>
 ```
 
 **Cloudflare API Token** (from user selection):
@@ -272,7 +283,7 @@ y^48ZTz3ZJ8J
 
 ## Next Steps
 
-1. ✅ **Immediate**: Access Coolify via http://129.153.33.172:8000
+1. ✅ **Immediate**: Access Coolify via http://<SERVER_IP>:8000
 2. ⏳ **Short-term**: Complete initial setup using IP access
 3. 🔄 **Long-term**: Implement Solution 2 (Cloudflare Tunnel) for production
 

@@ -1,6 +1,6 @@
 # Session State
 
-**Current Phase**: Phase 19 - App Skills Concision (`admin-app-coolify`, `admin-app-kasm`) (Pending)
+**Current Phase**: Phase 20 - Infra Skills Concision + OCI Doc Fix (Pending)
 **Current Stage**: Implementation
 **Last Checkpoint**: 771ef4c (2025-12-11)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
@@ -558,9 +558,34 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 - `skills/admin/references/device-profiles.md`
 - `docs/IMPLEMENTATION_PHASES.md`
 
-## Phase 19: App Skills Concision (`admin-app-coolify`, `admin-app-kasm`) ⏸️
-**Type**: Refactor | **Added**: 2025-12-12
+## Phase 19: App Skills Concision (`admin-app-coolify`, `admin-app-kasm`) ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-19`
+
+**Progress**:
+- [x] Rewrote both app SKILLs as concise overviews under 500 lines.
+- [x] Moved manual installation procedures into one‑level‑deep refs.
+- [x] Added TOCs to all long app refs (including Cloudflare tunnel/origin‑cert docs).
+- [x] Removed obsolete, author‑specific Cloudflare tunnel snapshot doc.
+- [x] Sanitized remaining author‑specific domain/IP examples to placeholders.
+
+**Files Modified/Added/Removed**:
+- `skills/admin-app-coolify/SKILL.md`
+- `skills/admin-app-coolify/references/INSTALLATION.md`
+- `skills/admin-app-coolify/references/ENHANCED_SETUP.md`
+- `skills/admin-app-coolify/references/cloudflare-tunnel.md`
+- `skills/admin-app-coolify/references/cloudflare-origin-certificates.md`
+- `skills/admin-app-coolify/references/TROUBLESHOOTING_CF1033.md`
+- `skills/admin-app-coolify/references/CLOUDFLARE_TUNNEL_SETUP_COMPLETE.md` (removed)
+- `skills/admin-app-coolify/templates/enhanced-quick-start.md`
+- `skills/admin-app-coolify/templates/env-enhanced.example`
+- `skills/admin-app-kasm/SKILL.md`
+- `skills/admin-app-kasm/references/INSTALLATION.md`
+- `skills/admin-app-kasm/references/cloudflare-tunnel.md`
+- `skills/admin-app-kasm/references/QUICKSTART.md`
+- `skills/admin-app-kasm/references/README-WIZARD.md`
+- `skills/admin-app-kasm/references/post-installation-interview-spec.md`
+- `docs/IMPLEMENTATION_PHASES.md`
 
 ## Phase 20: Infra Skills Concision + OCI Doc Fix ⏸️
 **Type**: Refactor | **Added**: 2025-12-12
@@ -571,7 +596,7 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-21`
 
 **Next Action**:
-- Start Phase 19 (app skills concision).
+- Start Phase 20 (infra skills concision + OCI doc fix).
 
 ---
 

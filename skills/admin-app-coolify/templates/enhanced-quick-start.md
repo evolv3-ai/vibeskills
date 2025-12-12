@@ -40,9 +40,9 @@ sudo cat /opt/coolify-credentials.txt
 
 **Example configuration:**
 ```bash
-COOLIFY_DOMAIN="coolify.sleekapps.com"
-WILDCARD_DOMAIN="*.sleekapps.com"
-ADMIN_EMAIL="admin@sleekapps.com"
+COOLIFY_DOMAIN="coolify.yourdomain.com"
+WILDCARD_DOMAIN="*.yourdomain.com"
+ADMIN_EMAIL="admin@yourdomain.com"
 ```
 
 ## Option 3: Manual Credential Setup

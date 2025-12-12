@@ -12,9 +12,9 @@ COOLIFY_DOMAIN="coolify.yourdomain.com"
 WILDCARD_DOMAIN="*.yourdomain.com"
 
 # Example:
-# COOLIFY_DOMAIN="coolify.sleekapps.com"
-# WILDCARD_DOMAIN="*.sleekapps.com"
-# Deployed apps will be at: myapp.sleekapps.com
+# COOLIFY_DOMAIN="coolify.yourdomain.com"
+# WILDCARD_DOMAIN="*.yourdomain.com"
+# Deployed apps will be at: myapp.yourdomain.com
 
 # =============================================================================
 # Admin Credentials
@@ -78,8 +78,8 @@ SERVICE_PROTOCOL="http"
 # =============================================================================
 
 # Example 1: Basic local installation
-# export COOLIFY_DOMAIN="coolify.sleekapps.com"
-# export ADMIN_EMAIL="admin@sleekapps.com"
+# export COOLIFY_DOMAIN="coolify.yourdomain.com"
+# export ADMIN_EMAIL="admin@yourdomain.com"
 # ./scripts/coolify-enhanced-setup.sh
 
 # Example 2: Custom domain with auto-generated password
@@ -92,8 +92,8 @@ SERVICE_PROTOCOL="http"
 # export COOLIFY_SERVER_IP="123.456.789.0"
 # export SSH_USER="ubuntu"
 # export SSH_KEY_PATH="~/.ssh/oci_key"
-# export COOLIFY_DOMAIN="coolify.sleekapps.com"
-# export ADMIN_EMAIL="admin@sleekapps.com"
+# export COOLIFY_DOMAIN="coolify.yourdomain.com"
+# export ADMIN_EMAIL="admin@yourdomain.com"
 # ./scripts/oci-coolify-infrastructure-setup.sh
 
 # =============================================================================
@@ -124,7 +124,7 @@ SERVICE_PROTOCOL="http"
 #    Value: YOUR_SERVER_IP
 #    TTL: 300
 #
-# Example for sleekapps.com:
+# Example for yourdomain.com:
 #    A    coolify    123.456.789.0
 #    A    *          123.456.789.0
 

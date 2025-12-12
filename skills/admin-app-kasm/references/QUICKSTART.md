@@ -1,5 +1,17 @@
 # KASM Post-Installation Wizard - Quick Start
 
+## Contents
+- Run the Wizard
+- What's Implemented
+- Coming Soon
+- Full Documentation
+- Quick Examples
+- Monitor Backups
+- Help
+- Status
+
+---
+
 ## 🚀 Run the Wizard
 
 ```bash

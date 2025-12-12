@@ -690,9 +690,9 @@ Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: impr
 
 ### Tasks
 
-- [ ] Reduce both app SKILLs under 500 lines by moving extended procedures into refs.
-- [ ] Add TOCs to large Cloudflare tunnel/origin‑cert refs.
-- [ ] Surface any bundled refs from SKILL or remove if obsolete.
+- [x] Reduce both app SKILLs under 500 lines by moving extended procedures into refs.
+- [x] Add TOCs to large Cloudflare tunnel/origin‑cert refs.
+- [x] Surface any bundled refs from SKILL or remove if obsolete.
 
 ### Verification Criteria
 

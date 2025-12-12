@@ -2,6 +2,20 @@
 
 **Status**: Production Ready | **Validity**: 15 years | **Cost**: Free
 
+## Contents
+- Problem Solved
+- Prerequisites
+- When You Need This
+- Setup Methods
+- Method A: Automated Setup (API with Global Key)
+- Method B: Manual Setup (Dashboard)
+- Service Configuration
+- Cloudflare SSL Modes
+- Troubleshooting
+- Certificate Details
+- Security
+- References
+
 ---
 
 ## Problem Solved
