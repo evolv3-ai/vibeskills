@@ -2,7 +2,7 @@
 
 **Purpose**: Onboarding guide for AI agents (Gemini, GPT, Claude, etc.) to effectively use the Claude Code skills repository.
 
-**Repository Path**: `/home/jez/Documents/claude-skills/`
+**Repository Path**: `/home/wsladmin/dev/claude-skills/`
 
 **Last Updated**: 2025-11-20
 
@@ -12,7 +12,7 @@
 
 **What**: Production-tested implementation patterns for modern web development (59 skills covering Cloudflare, AI APIs, React, databases, auth, etc.)
 
-**Where**: `/home/jez/Documents/claude-skills/skills/[skill-name]/SKILL.md`
+**Where**: `/home/wsladmin/dev/claude-skills/skills/[skill-name]/SKILL.md`
 
 **How**: Read `SKILL.md` for instructions → Copy `templates/` for starter code → Reference known errors sections
 
@@ -111,7 +111,7 @@ When a user asks: *"Set up a Cloudflare Worker with D1 database"*
 
 ```
 1. IDENTIFY SKILLS
-   - Access: /home/jez/Documents/claude-skills/skills/
+   - Access: /home/wsladmin/dev/claude-skills/skills/
    - Skills needed: cloudflare-worker-base + cloudflare-d1
 
 2. READ YAML FRONTMATTER
@@ -408,51 +408,51 @@ From global CLAUDE.md:
 
 ```bash
 # List all available skills
-ls /home/jez/Documents/claude-skills/skills/
+ls /home/wsladmin/dev/claude-skills/skills/
 
 # Read a specific skill
-cat /home/jez/Documents/claude-skills/skills/cloudflare-worker-base/SKILL.md
+cat /home/wsladmin/dev/claude-skills/skills/cloudflare-worker-base/SKILL.md
 
 # Read skill README
-cat /home/jez/Documents/claude-skills/skills/cloudflare-worker-base/README.md
+cat /home/wsladmin/dev/claude-skills/skills/cloudflare-worker-base/README.md
 
 # List skill templates
-ls /home/jez/Documents/claude-skills/skills/cloudflare-worker-base/templates/
+ls /home/wsladmin/dev/claude-skills/skills/cloudflare-worker-base/templates/
 
 # Copy template to working directory
-cp -r /home/jez/Documents/claude-skills/skills/cloudflare-worker-base/templates/* ./
+cp -r /home/wsladmin/dev/claude-skills/skills/cloudflare-worker-base/templates/* ./
 ```
 
 ### Repository Navigation
 
 ```bash
 # Get repository overview
-cat /home/jez/Documents/claude-skills/START_HERE.md
+cat /home/wsladmin/dev/claude-skills/START_HERE.md
 
 # Read project context
-cat /home/jez/Documents/claude-skills/CLAUDE.md
+cat /home/wsladmin/dev/claude-skills/CLAUDE.md
 
 # Check quality standards
-cat /home/jez/Documents/claude-skills/ONE_PAGE_CHECKLIST.md
+cat /home/wsladmin/dev/claude-skills/ONE_PAGE_CHECKLIST.md
 
 # View changelog
-cat /home/jez/Documents/claude-skills/CHANGELOG.md
+cat /home/wsladmin/dev/claude-skills/CHANGELOG.md
 ```
 
 ### Version Checking (If You Can Run Bash)
 
 ```bash
 # Check all versions across skills
-/home/jez/Documents/claude-skills/scripts/check-all-versions.sh
+/home/wsladmin/dev/claude-skills/scripts/check-all-versions.sh
 
 # Check specific skill
-/home/jez/Documents/claude-skills/scripts/check-all-versions.sh cloudflare-worker-base
+/home/wsladmin/dev/claude-skills/scripts/check-all-versions.sh cloudflare-worker-base
 
 # Individual checkers
-/home/jez/Documents/claude-skills/scripts/check-npm-versions.sh
-/home/jez/Documents/claude-skills/scripts/check-github-releases.sh
-/home/jez/Documents/claude-skills/scripts/check-metadata.sh
-/home/jez/Documents/claude-skills/scripts/check-ai-models.sh
+/home/wsladmin/dev/claude-skills/scripts/check-npm-versions.sh
+/home/wsladmin/dev/claude-skills/scripts/check-github-releases.sh
+/home/wsladmin/dev/claude-skills/scripts/check-metadata.sh
+/home/wsladmin/dev/claude-skills/scripts/check-ai-models.sh
 ```
 
 ---
@@ -858,7 +858,7 @@ Skills contain reusable patterns beyond templates:
 
 ```bash
 # Check if skills are current
-/home/jez/Documents/claude-skills/scripts/check-all-versions.sh
+/home/wsladmin/dev/claude-skills/scripts/check-all-versions.sh
 
 # Output: VERSIONS_REPORT.md with outdated packages
 ```
@@ -877,13 +877,13 @@ Skills contain reusable patterns beyond templates:
 **Can't find the right skill?**
 ```bash
 # List all skills
-ls /home/jez/Documents/claude-skills/skills/
+ls /home/wsladmin/dev/claude-skills/skills/
 
 # Search skill names
-ls /home/jez/Documents/claude-skills/skills/ | grep -i "keyword"
+ls /home/wsladmin/dev/claude-skills/skills/ | grep -i "keyword"
 
 # Read START_HERE.md for overview
-cat /home/jez/Documents/claude-skills/START_HERE.md
+cat /home/wsladmin/dev/claude-skills/START_HERE.md
 ```
 
 **Skill seems outdated?**
@@ -927,7 +927,7 @@ cat /home/jez/Documents/claude-skills/START_HERE.md
 
 After reading this guide, you should be able to:
 
-- [ ] Locate skills directory (`/home/jez/Documents/claude-skills/skills/`)
+- [ ] Locate skills directory (`/home/wsladmin/dev/claude-skills/skills/`)
 - [ ] List available skills (`ls skills/`)
 - [ ] Read a skill's SKILL.md file
 - [ ] Extract templates from skills/[name]/templates/
@@ -985,41 +985,41 @@ Multiple categories matched?
 
 ```
 # Core Documentation
-/home/jez/Documents/claude-skills/START_HERE.md
-/home/jez/Documents/claude-skills/CLAUDE.md
-/home/jez/Documents/claude-skills/GEMINI_GUIDE.md (this file)
-/home/jez/Documents/claude-skills/ONE_PAGE_CHECKLIST.md
+/home/wsladmin/dev/claude-skills/START_HERE.md
+/home/wsladmin/dev/claude-skills/CLAUDE.md
+/home/wsladmin/dev/claude-skills/GEMINI_GUIDE.md (this file)
+/home/wsladmin/dev/claude-skills/ONE_PAGE_CHECKLIST.md
 
 # Skills
-/home/jez/Documents/claude-skills/skills/[skill-name]/SKILL.md
-/home/jez/Documents/claude-skills/skills/[skill-name]/README.md
-/home/jez/Documents/claude-skills/skills/[skill-name]/templates/
+/home/wsladmin/dev/claude-skills/skills/[skill-name]/SKILL.md
+/home/wsladmin/dev/claude-skills/skills/[skill-name]/README.md
+/home/wsladmin/dev/claude-skills/skills/[skill-name]/templates/
 
 # Standards
-/home/jez/Documents/claude-skills/planning/claude-code-skill-standards.md
-/home/jez/Documents/claude-skills/planning/STANDARDS_COMPARISON.md
-/home/jez/Documents/claude-skills/planning/research-protocol.md
+/home/wsladmin/dev/claude-skills/planning/claude-code-skill-standards.md
+/home/wsladmin/dev/claude-skills/planning/STANDARDS_COMPARISON.md
+/home/wsladmin/dev/claude-skills/planning/research-protocol.md
 
 # Scripts
-/home/jez/Documents/claude-skills/scripts/check-all-versions.sh
-/home/jez/Documents/claude-skills/scripts/install-skill.sh
+/home/wsladmin/dev/claude-skills/scripts/check-all-versions.sh
+/home/wsladmin/dev/claude-skills/scripts/install-skill.sh
 ```
 
 ### Common Commands
 
 ```bash
 # Navigation
-ls /home/jez/Documents/claude-skills/skills/
-cat /home/jez/Documents/claude-skills/skills/[name]/SKILL.md
+ls /home/wsladmin/dev/claude-skills/skills/
+cat /home/wsladmin/dev/claude-skills/skills/[name]/SKILL.md
 
 # Search
-ls /home/jez/Documents/claude-skills/skills/ | grep -i "keyword"
+ls /home/wsladmin/dev/claude-skills/skills/ | grep -i "keyword"
 
 # Copy templates
-cp -r /home/jez/Documents/claude-skills/skills/[name]/templates/* ./
+cp -r /home/wsladmin/dev/claude-skills/skills/[name]/templates/* ./
 
 # Version checking
-/home/jez/Documents/claude-skills/scripts/check-all-versions.sh [skill-name]
+/home/wsladmin/dev/claude-skills/scripts/check-all-versions.sh [skill-name]
 ```
 
 ---

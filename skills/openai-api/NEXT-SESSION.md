@@ -268,7 +268,7 @@ Location: `SKILL.md` line ~660 (marked as "Phase 2")
 ### First Steps
 ```bash
 # 1. Navigate to skill directory
-cd /home/jez/Documents/claude-skills/skills/openai-api
+cd /home/wsladmin/dev/claude-skills/skills/openai-api
 
 # 2. Verify current state
 ls -la templates/

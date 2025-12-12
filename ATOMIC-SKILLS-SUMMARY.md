@@ -196,9 +196,9 @@ A skill is "complete" when:
 
 ## Resources
 
-- **Roadmap**: `/home/jez/Documents/claude-skills/planning/skills-roadmap.md`
-- **Research Protocol**: `/home/jez/Documents/claude-skills/planning/research-protocol.md`
-- **Official Standards**: `/home/jez/Documents/claude-skills/planning/claude-code-skill-standards.md`
+- **Roadmap**: `/home/wsladmin/dev/claude-skills/planning/skills-roadmap.md`
+- **Research Protocol**: `/home/wsladmin/dev/claude-skills/planning/research-protocol.md`
+- **Official Standards**: `/home/wsladmin/dev/claude-skills/planning/claude-code-skill-standards.md`
 - **GitHub Repo**: https://github.com/jezweb/claude-skills
 
 ---

@@ -46,7 +46,7 @@ drwxrwxr-x 2 jez jez  4096 Oct 20 09:33 templates
 
 **Resolution**:
 ```bash
-cp -r ~/.claude/skills/tailwind-v4-shadcn /home/jez/Documents/claude-skills/skills/
+cp -r ~/.claude/skills/tailwind-v4-shadcn /home/wsladmin/dev/claude-skills/skills/
 git add skills/tailwind-v4-shadcn
 git commit -m "Add tailwind-v4-shadcn skill (production-tested)
 
@@ -241,7 +241,7 @@ Update `planning/skills-roadmap.md`:
 **Commands to Run:**
 ```bash
 # 1. Move tailwind skill to repo
-cp -r ~/.claude/skills/tailwind-v4-shadcn /home/jez/Documents/claude-skills/skills/
+cp -r ~/.claude/skills/tailwind-v4-shadcn /home/wsladmin/dev/claude-skills/skills/
 
 # 2. Update roadmap (manual edit)
 # - Line for cloudflare-full-stack-scaffold: Status = 100%

@@ -94,10 +94,10 @@ Your choice [1-7]:
 
 ```bash
 # Copy template
-cp -r /home/jez/Documents/claude-skills/templates/skill-skeleton/ /home/jez/Documents/claude-skills/skills/<skill-name>/
+cp -r /home/wsladmin/dev/claude-skills/templates/skill-skeleton/ /home/wsladmin/dev/claude-skills/skills/<skill-name>/
 
 # Verify creation
-ls -la /home/jez/Documents/claude-skills/skills/<skill-name>/
+ls -la /home/wsladmin/dev/claude-skills/skills/<skill-name>/
 ```
 
 ### Step 5: Auto-populate Fields

@@ -72,7 +72,7 @@
 
 If you want to teach another AI agent how to use these skills:
 1. Share **[GEMINI_GUIDE.md](GEMINI_GUIDE.md)** - Comprehensive onboarding guide
-2. Grant access to `/home/jez/Documents/claude-skills/` directory
+2. Grant access to `/home/wsladmin/dev/claude-skills/` directory
 3. Point them to specific skills in `skills/[skill-name]/SKILL.md`
 
 **What GEMINI_GUIDE.md Contains**:

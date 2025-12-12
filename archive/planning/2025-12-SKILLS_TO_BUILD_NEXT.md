@@ -11,7 +11,7 @@
 
 1. ✅ **tailwind-v4-shadcn** - EXISTS in `~/.claude/skills/` but NOT in repo
    ```bash
-   cp -r ~/.claude/skills/tailwind-v4-shadcn /home/jez/Documents/claude-skills/skills/
+   cp -r ~/.claude/skills/tailwind-v4-shadcn /home/wsladmin/dev/claude-skills/skills/
    git add skills/tailwind-v4-shadcn
    git commit -m "Add tailwind-v4-shadcn skill (production-tested)"
    ```

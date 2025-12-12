@@ -32,7 +32,7 @@
 ### Session 1: Build ai-sdk-core (6-8 hours)
 
 **What to Do:**
-1. Read `/home/jez/Documents/claude-skills/planning/ai-sdk-core-spec.md`
+1. Read `/home/wsladmin/dev/claude-skills/planning/ai-sdk-core-spec.md`
 2. Follow the specification exactly
 3. Create skill structure
 4. Write SKILL.md (800-1000 lines)
@@ -42,9 +42,9 @@
 8. Verify auto-discovery
 
 **File Locations:**
-- Skill directory: `/home/jez/Documents/claude-skills/skills/ai-sdk-core/`
-- Specification: `/home/jez/Documents/claude-skills/planning/ai-sdk-core-spec.md`
-- Research log: `/home/jez/Documents/claude-skills/planning/research-logs/ai-sdk.md`
+- Skill directory: `/home/wsladmin/dev/claude-skills/skills/ai-sdk-core/`
+- Specification: `/home/wsladmin/dev/claude-skills/planning/ai-sdk-core-spec.md`
+- Research log: `/home/wsladmin/dev/claude-skills/planning/research-logs/ai-sdk.md`
 
 **Key Points:**
 - Focus on v5 (stable), NOT v6 beta
@@ -57,7 +57,7 @@
 ### Session 2: Build ai-sdk-ui (5-7 hours)
 
 **What to Do:**
-1. Read `/home/jez/Documents/claude-skills/planning/ai-sdk-ui-spec.md`
+1. Read `/home/wsladmin/dev/claude-skills/planning/ai-sdk-ui-spec.md`
 2. Follow the specification exactly
 3. Create skill structure
 4. Write SKILL.md (700-900 lines)
@@ -67,9 +67,9 @@
 8. Verify auto-discovery
 
 **File Locations:**
-- Skill directory: `/home/jez/Documents/claude-skills/skills/ai-sdk-ui/`
-- Specification: `/home/jez/Documents/claude-skills/planning/ai-sdk-ui-spec.md`
-- Research log: `/home/jez/Documents/claude-skills/planning/research-logs/ai-sdk.md`
+- Skill directory: `/home/wsladmin/dev/claude-skills/skills/ai-sdk-ui/`
+- Specification: `/home/wsladmin/dev/claude-skills/planning/ai-sdk-ui-spec.md`
+- Research log: `/home/wsladmin/dev/claude-skills/planning/research-logs/ai-sdk.md`
 
 **Key Points:**
 - Focus on v5 breaking changes (especially useChat input management)
@@ -200,7 +200,7 @@ skills/ai-sdk-ui/
 - https://ai-sdk.dev/docs/reference/ai-sdk-errors
 
 **Research Log:**
-- `/home/jez/Documents/claude-skills/planning/research-logs/ai-sdk.md`
+- `/home/wsladmin/dev/claude-skills/planning/research-logs/ai-sdk.md`
 
 ---
 

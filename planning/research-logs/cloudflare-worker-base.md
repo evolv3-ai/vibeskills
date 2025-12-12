@@ -135,7 +135,7 @@
 ## Working Example
 
 - **Built**: 2025-10-20 ✅
-- **Location**: `/home/jez/Documents/claude-skills/examples/cloudflare-worker-base-test`
+- **Location**: `/home/wsladmin/dev/claude-skills/examples/cloudflare-worker-base-test`
 - **Deployed**: https://cloudflare-worker-base-test.webfonts.workers.dev ✅
 - **Status**: ✅ Production-ready
 - **Errors Encountered**: None

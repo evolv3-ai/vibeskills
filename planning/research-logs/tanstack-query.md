@@ -131,7 +131,7 @@ All templates tested for syntax and include comprehensive comments.
 **Symlink Verified**: ✅
 ```bash
 ls -la ~/.claude/skills/tanstack-query
-# → Points to /home/jez/Documents/claude-skills/skills/tanstack-query
+# → Points to /home/wsladmin/dev/claude-skills/skills/tanstack-query
 ```
 
 **File Count**:

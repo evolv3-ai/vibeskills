@@ -134,7 +134,7 @@ Without subagent: 40+ minutes of manual checking
 **Template prompt**:
 
 ```
-Use Explore to verify all skills in /home/jez/Documents/claude-skills/skills/ against standards in ONE_PAGE_CHECKLIST.md.
+Use Explore to verify all skills in /home/wsladmin/dev/claude-skills/skills/ against standards in ONE_PAGE_CHECKLIST.md.
 
 For each skill, check:
 1. YAML frontmatter (name, description, license)
@@ -517,10 +517,10 @@ Use Explore to compare planning/claude-code-skill-standards.md with official Ant
 
 ## Further Reading
 
-- **Claude Agent SDK**: `/home/jez/Documents/claude-skills/skills/claude-agent-sdk/SKILL.md`
+- **Claude Agent SDK**: `/home/wsladmin/dev/claude-skills/skills/claude-agent-sdk/SKILL.md`
 - **Official Skills Spec**: https://github.com/anthropics/skills/blob/main/agent_skills_spec.md
-- **ONE_PAGE_CHECKLIST**: `/home/jez/Documents/claude-skills/ONE_PAGE_CHECKLIST.md`
-- **Standards Doc**: `/home/jez/Documents/claude-skills/planning/claude-code-skill-standards.md`
+- **ONE_PAGE_CHECKLIST**: `/home/wsladmin/dev/claude-skills/ONE_PAGE_CHECKLIST.md`
+- **Standards Doc**: `/home/wsladmin/dev/claude-skills/planning/claude-code-skill-standards.md`
 
 ---
 

@@ -237,7 +237,7 @@ This example validates the templates. Next:
 - **Static Assets**: https://developers.cloudflare.com/workers/static-assets/
 - **Hono**: https://hono.dev/docs/getting-started/cloudflare-workers
 - **Vite Plugin**: https://developers.cloudflare.com/workers/vite-plugin/
-- **Research Log**: `/home/jez/Documents/claude-skills/planning/research-logs/cloudflare-worker-base.md`
+- **Research Log**: `/home/wsladmin/dev/claude-skills/planning/research-logs/cloudflare-worker-base.md`
 
 ---
 

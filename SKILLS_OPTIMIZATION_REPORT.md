@@ -2,7 +2,7 @@
 
 **Generated**: 2025-11-21
 **Skills Analyzed**: 57 of 59 active skills (2 excluded: motion, project-workflow)
-**Repository**: /home/jez/Documents/claude-skills
+**Repository**: /home/wsladmin/dev/claude-skills/
 
 ---
 
@@ -701,7 +701,7 @@ Target: 19 skills with meta-commentary
 
 1. **Remove meta-commentary** (automated)
    ```bash
-   cd /home/jez/Documents/claude-skills/skills
+   cd /home/wsladmin/dev/claude-skills/skills
    find . -name "SKILL.md" -exec sed -i 's/INCLUDES CRITICAL[^:]*: //g' {} \;
    find . -name "SKILL.md" -exec sed -i 's/CRITICAL: //g' {} \;
    find . -name "SKILL.md" -exec sed -i 's/IMPORTANT: //g' {} \;

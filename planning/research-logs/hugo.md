@@ -29,7 +29,7 @@ hugo version
 
 ### 2. Test Hugo Blog with PaperMod Theme
 **Status**: ✅ Success
-**Location**: `/home/jez/Documents/claude-skills/test-hugo-project/hugo-blog-test/`
+**Location**: `/home/wsladmin/dev/claude-skills/test-hugo-project/hugo-blog-test/`
 **Theme**: PaperMod (via Git submodule)
 **Configuration Format**: YAML (hugo.yaml)
 
