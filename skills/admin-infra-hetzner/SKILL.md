@@ -1,7 +1,7 @@
 ---
 name: admin-infra-hetzner
 description: |
-  Deploy infrastructure on Hetzner Cloud with ARM64 or x86 servers.
+  Deploys infrastructure on Hetzner Cloud with ARM64 or x86 servers.
   Cost-effective European cloud with excellent price/performance ratio.
 
   Use when: setting up Hetzner Cloud infrastructure, deploying ARM64 servers (CAX), x86 servers (CX/CPX), looking for affordable alternative to OCI.
@@ -448,6 +448,8 @@ SSH_KEY_PATH=~/.ssh/id_rsa      # Local private key path
 ---
 
 ## Cost Comparison
+
+_Prices below are snapshots and may change; verify in the Hetzner console._
 
 | Provider | 4 vCPU ARM, 8GB | Monthly |
 |----------|-----------------|---------|

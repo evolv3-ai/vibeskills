@@ -5,6 +5,7 @@
     "platform": "",
     "hostname": "",
     "user": "",
+    "shell": "",
     "os": "",
     "osVersion": "",
     "adminRoot": "",

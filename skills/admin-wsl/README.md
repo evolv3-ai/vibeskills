@@ -54,6 +54,8 @@ Claude Code automatically discovers this skill when you mention:
 
 Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management, Docker containers, Python environments, shell configuration, and systemd services. Coordinates with admin-windows for Windows-side tasks via the shared `.admin` root and handoff protocol.
 
+**Shared admin root**: In WSL, `ADMIN_ROOT` defaults to `/mnt/c/Users/$WIN_USER/.admin`, sharing logs and profiles with Windows `C:/Users/<username>/.admin`. Override by setting `ADMIN_ROOT` in `.env` or `.env.local`.
+
 ### Core Capabilities
 
 - Linux package management (apt)
@@ -114,7 +116,7 @@ docker ps
 docker-compose up -d
 
 # Log the operation
-log_operation "SUCCESS" "Package Install" "Installed postgresql-client via apt" "installation"
+log_admin "SUCCESS" "installation" "Installed postgresql-client via apt"
 ```
 
 **Result**: Package installed and logged to central operations log

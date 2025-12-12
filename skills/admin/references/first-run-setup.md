@@ -2,14 +2,23 @@
 
 When the admin skill activates and no configuration exists, guide the user through setup.
 
+## Contents
+- Shared Admin Root (Windows + WSL)
+- Detection
+- Setup Flow
+- Subsequent Runs
+- Troubleshooting
+
+---
+
 ## Shared Admin Root (Windows + WSL)
 
 **IMPORTANT**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem. Both environments read/write to the same location.
 
 | Environment | ADMIN_ROOT Path | Physical Location |
 |-------------|-----------------|-------------------|
-| Windows | `C:\Users\<USERNAME>\.admin` | `C:\Users\<USERNAME>\.admin` |
-| WSL | `/mnt/c/Users/<USERNAME>/.admin` | `C:\Users\<USERNAME>\.admin` |
+| Windows | `C:/Users/<USERNAME>/.admin` | `C:/Users/<USERNAME>/.admin` |
+| WSL | `/mnt/c/Users/<USERNAME>/.admin` | `C:/Users/<USERNAME>/.admin` |
 | Linux (standalone) | `~/.admin` | `/home/user/.admin` |
 | macOS | `~/.admin` | `/Users/user/.admin` |
 
@@ -106,7 +115,7 @@ Configuration Options:
    > [press Enter for default or type custom name]
 
 2. Admin directory:
-   - Windows/WSL: C:\Users\<USERNAME>\.admin (shared)
+   - Windows/WSL: C:/Users/<USERNAME>/.admin (shared)
    - Linux/macOS: ~/.admin
    > [press Enter for default or type custom path]
 
@@ -571,7 +580,7 @@ winget install Microsoft.PowerShell
 **Environment Variables Not Found:**
 ```powershell
 # Verify essential variables exist
-$env:USERPROFILE   # Should be C:\Users\YourName
+$env:USERPROFILE   # Should be C:/Users/YourName
 $env:COMPUTERNAME  # Should be your PC name
 $env:USERNAME      # Should be your username
 

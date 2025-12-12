@@ -1,7 +1,7 @@
 ---
 name: admin-windows
 description: |
-  Administer Windows 11 systems with PowerShell 7.x. Includes command translations from bash/Linux, package manager usage (winget, scoop, npm, chocolatey), PATH configuration, and environment management for multi-device setups.
+  Administers Windows 11 systems with PowerShell 7.x. Includes command translations from bash/Linux, package manager usage (winget, scoop, npm, chocolatey), PATH configuration, and environment management for multi-device setups.
 
   Use when: setting up Windows admin environments, writing PowerShell automation scripts, translating bash commands to PowerShell, configuring PATH and environment variables, or troubleshooting "command not found", "Get-Content not recognized", "winget not working" errors.
 license: MIT
@@ -217,7 +217,7 @@ $env:PATH -split ';' | Where-Object { $_ -like "*npm*" }
 ```powershell
 # Add to User PATH (no admin required)
 $currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
-$newPath = "C:\new\path"
+$newPath = "C:/new/path"
 if ($currentPath -notlike "*$newPath*") {
     [Environment]::SetEnvironmentVariable('PATH', "$newPath;$currentPath", 'User')
     Write-Host "Added $newPath to User PATH"
@@ -231,16 +231,16 @@ $env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'User') + ";" + [Envir
 
 ```powershell
 # npm global packages
-C:\Users\${env:USERNAME}\AppData\Roaming\npm
+C:/Users/${env:USERNAME}/AppData/Roaming/npm
 
 # Scoop apps
-C:\Users\${env:USERNAME}\scoop\shims
+C:/Users/${env:USERNAME}/scoop/shims
 
 # Python (winget install)
-C:\Users\${env:USERNAME}\AppData\Local\Programs\Python\Python3xx
+C:/Users/${env:USERNAME}/AppData/Local/Programs/Python/Python3xx
 
 # Git
-C:\Program Files\Git\cmd
+C:/Program Files/Git/cmd
 ```
 
 ---
@@ -310,7 +310,7 @@ Load-EnvFile ".env"
 ```powershell
 # Current user, current host (most common)
 $PROFILE.CurrentUserCurrentHost
-# Typically: C:\Users\<user>\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
+# Typically: C:/Users/<user>/Documents/PowerShell/Microsoft.PowerShell_profile.ps1
 
 # View all profile paths
 $PROFILE | Get-Member -Type NoteProperty | ForEach-Object {

@@ -2,14 +2,27 @@
 
 Windows ↔ WSL coordination, path conversion, and handoff protocols.
 
+## Contents
+- Shared Admin Root
+- Decision Matrix
+- Path Conversion
+- Handoff Protocols
+- .wslconfig Management
+- wsl.conf (Per-Distribution)
+- Line Ending Handling
+- Common Operations
+- Troubleshooting
+
+---
+
 ## Shared Admin Root
 
 **CRITICAL**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem.
 
 | Environment | ADMIN_ROOT Value | Physical Location |
 |-------------|------------------|-------------------|
-| Windows | `C:\Users\Owner\.admin` | `C:\Users\Owner\.admin` |
-| WSL | `/mnt/c/Users/Owner/.admin` | `C:\Users\Owner\.admin` |
+| Windows | `C:/Users/Owner/.admin` | `C:/Users/Owner/.admin` |
+| WSL | `/mnt/c/Users/Owner/.admin` | `C:/Users/Owner/.admin` |
 
 **Benefits:**
 - **One device profile** (WOPR3.json) - not duplicated
@@ -49,9 +62,9 @@ Windows ↔ WSL coordination, path conversion, and handoff protocols.
 
 | Windows Path | WSL Path |
 |--------------|----------|
-| `C:\Users\Owner` | `/mnt/c/Users/Owner` |
-| `D:\projects` | `/mnt/d/projects` |
-| `N:\Dropbox` | `/mnt/n/Dropbox` |
+| `C:/Users/Owner` | `/mnt/c/Users/Owner` |
+| `D:/projects` | `/mnt/d/projects` |
+| `N:/Dropbox` | `/mnt/n/Dropbox` |
 
 **PowerShell function:**
 ```powershell
@@ -61,12 +74,12 @@ function Convert-ToWslPath {
     $path = $path -replace '^([A-Za-z]):', '/mnt/$1'.ToLower()
     $path
 }
-# Convert-ToWslPath "D:\projects\myapp" → /mnt/d/projects/myapp
+# Convert-ToWslPath "D:/projects/myapp" → /mnt/d/projects/myapp
 ```
 
 **Bash (using wslpath):**
 ```bash
-wslpath -u 'C:\Users\Owner\Documents'
+wslpath -u 'C:/Users/Owner/Documents'
 # Returns: /mnt/c/Users/Owner/Documents
 ```
 
@@ -75,7 +88,7 @@ wslpath -u 'C:\Users\Owner\Documents'
 | WSL Path | Windows Path |
 |----------|--------------|
 | `/home/user` | `\\wsl$\Ubuntu-24.04\home\user` |
-| `/mnt/c/Users` | `C:\Users` |
+| `/mnt/c/Users` | `C:/Users` |
 
 **Bash:**
 ```bash
@@ -150,7 +163,7 @@ request_winadmin_handoff() {
 ### File Location
 
 ```
-C:\Users\{USERNAME}\.wslconfig
+C:/Users/{USERNAME}/.wslconfig
 ```
 
 ### Configuration Template
@@ -182,7 +195,7 @@ autoMemoryReclaim=gradual
 
 ```powershell
 # Edit config
-notepad "$env:USERPROFILE\.wslconfig"
+notepad "$env:USERPROFILE/.wslconfig"
 
 # Restart WSL to apply
 wsl --shutdown

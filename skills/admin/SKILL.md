@@ -11,697 +11,101 @@ license: MIT
 
 # Admin - System Administration Orchestrator
 
-Central entry point for all administration tasks. Detects your platform and shell, routes to the right specialist skill, and maintains unified logging across all operations.
+**Purpose**: Central entry point for administration tasks. Detects platform + shell, validates context, routes to the right specialist skill, and maintains shared logs and device profiles.
 
-## Environment Detection (CRITICAL - Do This First)
+## Navigation
 
-Before running ANY commands, determine BOTH the platform AND the shell. These are separate concepts:
+Longer material is split into references (one level deep):
+- Shell + platform detection: `references/shell-detection.md`
+- First‑run setup and config loading: `references/first-run-setup.md`
+- Routing rules and context handoff: `references/routing-guide.md`
+- Centralized logging: `references/logging.md`
+- Device profiles (installed tools, servers): `references/device-profiles.md`
+- Cross‑platform coordination (Windows ↔ WSL): `references/cross-platform.md`
+- PowerShell command cheatsheet: `references/powershell-commands.md`
 
-- **ADMIN_PLATFORM**: The operating system (windows, wsl, linux, macos)
-- **ADMIN_SHELL**: The command interpreter (bash, powershell, zsh, cmd)
+## Core Rules
 
-### Why Both Matter
-
-| Scenario | ADMIN_PLATFORM | ADMIN_SHELL | Command Syntax | Available Tools |
-|----------|----------------|-------------|----------------|-----------------|
-| WSL Ubuntu | wsl | bash | Bash | apt, docker |
-| Windows PowerShell | windows | powershell | PowerShell | winget, scoop |
-| Windows Git Bash | windows | bash | Bash | winget (via cmd) |
-| macOS Terminal | macos | zsh | Bash-like | brew |
-| Linux | linux | bash | Bash | apt, dnf, etc. |
-
-### Detecting Shell (ADMIN_SHELL)
-
-**Quick test to determine shell:**
-- Try: `echo $BASH_VERSION`
-- If it returns a version → `ADMIN_SHELL=bash`
-- If it fails or returns empty on Windows → `ADMIN_SHELL=powershell`
-
-#### Bash Detection
-```bash
-# If this works, you're in bash/zsh
-if [[ -n "$BASH_VERSION" ]]; then
-    ADMIN_SHELL="bash"
-elif [[ -n "$ZSH_VERSION" ]]; then
-    ADMIN_SHELL="zsh"
-fi
-```
-
-#### PowerShell Detection
-```powershell
-# If this works, you're in PowerShell
-if ($PSVersionTable) {
-    $ADMIN_SHELL = "powershell"
-}
-```
-
-### Detecting Platform (ADMIN_PLATFORM)
-
-#### From Bash
-```bash
-if grep -qi microsoft /proc/version 2>/dev/null; then
-    ADMIN_PLATFORM="wsl"
-elif [[ "$OS" == "Windows_NT" ]]; then
-    ADMIN_PLATFORM="windows"  # Git Bash on Windows
-elif [[ "$(uname -s)" == "Darwin" ]]; then
-    ADMIN_PLATFORM="macos"
-else
-    ADMIN_PLATFORM="linux"
-fi
-```
-
-#### From PowerShell
-```powershell
-$ADMIN_PLATFORM = "windows"  # PowerShell only runs on Windows (or cross-platform pwsh)
-```
-
-### Shell Mode Reference
-
-| ADMIN_SHELL | Command Syntax | Path Variables | Path Separator |
-|-------------|----------------|----------------|----------------|
-| **bash** | `mkdir -p`, `$HOME` | `$HOME`, `$USER` | `/` |
-| **zsh** | Same as bash | `$HOME`, `$USER` | `/` |
-| **powershell** | `New-Item`, `$env:VAR` | `$env:USERPROFILE` | `\` |
-
-**IMPORTANT**: Use the syntax for your detected ADMIN_SHELL, regardless of ADMIN_PLATFORM.
-
-Example: Git Bash on Windows uses Bash syntax, even though platform is "windows".
-
----
+1. **Detect both platform and shell first**. `ADMIN_PLATFORM` and `ADMIN_SHELL` are separate; shell syntax wins over platform.
+2. **Use shell‑appropriate syntax** regardless of host OS (Git Bash on Windows counts as bash).
+3. **Validate context before routing**. If a task requires another context, log a handoff and stop.
+4. **Handle profile/logging tasks directly** in `admin`; do not route these.
+5. **Prefer forward‑slash Windows paths** in examples (`C:/Users/...`) to avoid shell ambiguity.
 
 ## Quick Start
 
-### First-Run Detection
-
-On first activation, if no configuration exists:
-
-#### Bash Mode (WSL/Linux/macOS)
-
-1. **Auto-detect environment**:
-   ```bash
-   # Platform detection (case-insensitive grep for WSL)
-   if grep -qi microsoft /proc/version 2>/dev/null; then
-       ADMIN_PLATFORM="wsl"
-   elif [[ "$OS" == "Windows_NT" ]]; then
-       ADMIN_PLATFORM="windows"
-   elif [[ "$(uname -s)" == "Darwin" ]]; then
-       ADMIN_PLATFORM="macos"
-   else
-       ADMIN_PLATFORM="linux"
-   fi
-   ```
-
-2. **Create default configuration**:
-   ```bash
-   DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
-   ADMIN_USER="${ADMIN_USER:-$(whoami)}"
-
-   # IMPORTANT: On WSL, default to Windows path for shared state
-   if [[ "$ADMIN_PLATFORM" == "wsl" ]]; then
-       # Get Windows username and use Windows .admin folder
-       WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-       ADMIN_ROOT="${ADMIN_ROOT:-/mnt/c/Users/$WIN_USER/.admin}"
-   else
-       ADMIN_ROOT="${ADMIN_ROOT:-$HOME/.admin}"
-   fi
-
-   mkdir -p "$ADMIN_ROOT"/{logs,profiles,config}
-   mkdir -p "$ADMIN_ROOT/logs/devices/$DEVICE_NAME"
-   ```
-
-3. **Guide user through setup** (see `references/first-run-setup.md`)
-
-#### PowerShell Mode (Windows Native)
-
-1. **Auto-detect environment**:
-   ```powershell
-   # Platform is always Windows in PowerShell mode
-   $ADMIN_PLATFORM = "windows"
-   ```
-
-2. **Create default configuration**:
-   ```powershell
-   $DEVICE_NAME = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
-   $ADMIN_USER = if ($env:ADMIN_USER) { $env:ADMIN_USER } else { $env:USERNAME }
-   $ADMIN_ROOT = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
-
-   # Create directories
-   @('logs', 'profiles', 'config') | ForEach-Object {
-       New-Item -ItemType Directory -Force -Path (Join-Path $ADMIN_ROOT $_) | Out-Null
-   }
-   New-Item -ItemType Directory -Force -Path (Join-Path $ADMIN_ROOT "logs\devices\$DEVICE_NAME") | Out-Null
-   ```
-
-3. **Guide user through setup** (see `references/first-run-setup.md`)
-
-### Loading Configuration
-
-#### Bash Mode
-
-```bash
-# Determine default ADMIN_ROOT based on platform
-if grep -qi microsoft /proc/version 2>/dev/null; then
-    # WSL: Use Windows path for shared state
-    WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-    DEFAULT_ADMIN_ROOT="/mnt/c/Users/$WIN_USER/.admin"
-else
-    DEFAULT_ADMIN_ROOT="$HOME/.admin"
-fi
-
-# Load config with fallback chain
-if [[ -f ".env.local" ]]; then
-    source .env.local
-elif [[ -f "$DEFAULT_ADMIN_ROOT/.env" ]]; then
-    source "$DEFAULT_ADMIN_ROOT/.env"
-fi
-
-# Apply defaults
-DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
-ADMIN_USER="${ADMIN_USER:-$(whoami)}"
-ADMIN_ROOT="${ADMIN_ROOT:-$DEFAULT_ADMIN_ROOT}"
-ADMIN_LOG_PATH="${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}"
-ADMIN_PROFILE_PATH="${ADMIN_PROFILE_PATH:-$ADMIN_ROOT/profiles}"
-```
-
-#### PowerShell Mode
-
-```powershell
-# Load config with fallback chain
-$envFile = $null
-if (Test-Path '.env.local') {
-    $envFile = '.env.local'
-} elseif (Test-Path (Join-Path $env:USERPROFILE '.admin\.env')) {
-    $envFile = Join-Path $env:USERPROFILE '.admin\.env'
-}
-
-if ($envFile) {
-    Get-Content $envFile | ForEach-Object {
-        if ($_ -match '^([^#][^=]*)=(.*)$') {
-            [Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim(), 'Process')
-        }
-    }
-}
-
-# Apply defaults
-$DEVICE_NAME = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
-$ADMIN_USER = if ($env:ADMIN_USER) { $env:ADMIN_USER } else { $env:USERNAME }
-$ADMIN_ROOT = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
-$ADMIN_LOG_PATH = if ($env:ADMIN_LOG_PATH) { $env:ADMIN_LOG_PATH } else { Join-Path $ADMIN_ROOT 'logs' }
-$ADMIN_PROFILE_PATH = if ($env:ADMIN_PROFILE_PATH) { $env:ADMIN_PROFILE_PATH } else { Join-Path $ADMIN_ROOT 'profiles' }
-```
-
-## Platform Detection
-
-### Bash Mode
-
-```bash
-detect_platform() {
-    # Check explicit override first
-    if [[ -n "$ADMIN_PLATFORM" ]]; then
-        echo "$ADMIN_PLATFORM"
-        return
-    fi
-
-    # Auto-detect (case-insensitive grep for WSL)
-    if grep -qi microsoft /proc/version 2>/dev/null; then
-        echo "wsl"
-    elif [[ "$OS" == "Windows_NT" ]]; then
-        echo "windows"
-    elif [[ "$(uname -s)" == "Darwin" ]]; then
-        echo "macos"
-    else
-        echo "linux"
-    fi
-}
-```
-
-### PowerShell Mode
-
-```powershell
-function Get-AdminPlatform {
-    # Check explicit override first
-    if ($env:ADMIN_PLATFORM) {
-        return $env:ADMIN_PLATFORM
-    }
-
-    # PowerShell 7+ provides $IsWindows/$IsLinux/$IsMacOS
-    if (Get-Variable -Name IsWindows -ErrorAction SilentlyContinue) {
-        if ($IsWindows) { return "windows" }
-        if ($IsMacOS) { return "macos" }
-        if ($IsLinux) {
-            $isWsl = $false
-            try {
-                $isWsl = (Get-Content /proc/version -ErrorAction Stop) -match 'microsoft'
-            } catch { }
-            if ($isWsl) { return "wsl" }
-            return "linux"
-        }
-    }
-
-    # Fallback for Windows PowerShell 5.1 (Windows-only)
-    if ($env:OS -eq "Windows_NT") { return "windows" }
-
-    return "linux"
-}
-
-# Usage: $platform = Get-AdminPlatform
-```
-
-## Routing Logic
-
-### Decision Tree
-
-```
-START
-│
-├─ SERVER task? (provision, deploy, cloud, infrastructure)
-│  └─ YES → admin-servers
-│     └─ May route to: admin-infra-* or admin-app-*
-│
-├─ WINDOWS SYSTEM task? (powershell, winget, registry, .wslconfig)
-│  ├─ In WSL context? → Log handoff, instruct to use Windows terminal
-│  └─ In Windows → admin-windows
-│     └─ MCP-related? → admin-mcp
-│
-├─ WSL/LINUX task? (apt, docker, bash, systemd)
-│  ├─ In Windows (non-WSL)? → Log handoff, instruct to enter WSL
-│  └─ In WSL/Linux → admin-wsl
-│
-└─ PROFILE/LOGGING task?
-   └─ Handle directly (don't route)
-```
-
-### Keyword Routing
-
-| Keywords | Route To | Context Required |
-|----------|----------|------------------|
-| server, provision, deploy, cloud, VPS | admin-servers | Any |
-| oracle, oci, ARM64, always free | admin-infra-oci | Any |
-| hetzner, hcloud, CAX | admin-infra-hetzner | Any |
-| digitalocean, doctl, droplet | admin-infra-digitalocean | Any |
-| vultr, high frequency | admin-infra-vultr | Any |
-| linode, akamai | admin-infra-linode | Any |
-| contabo, budget | admin-infra-contabo | Any |
-| coolify, paas, self-hosted | admin-app-coolify | Any |
-| kasm, vdi, virtual desktop | admin-app-kasm | Any |
-| powershell, winget, scoop, registry | admin-windows | Windows |
-| mcp, claude desktop, mcpServers | admin-mcp | Windows |
-| wsl, ubuntu, apt, docker, systemd | admin-wsl | WSL/Linux |
-| profile, my tools, logs, sync | self (admin) | Any |
-
-### Context Validation
-
-Before routing, validate context compatibility:
-
-#### Bash Mode
-
-```bash
-validate_context() {
-    local task_type="$1"
-    local current_platform=$(detect_platform)
-
-    case "$task_type" in
-        windows)
-            if [[ "$current_platform" == "wsl" || "$current_platform" == "linux" ]]; then
-                log_admin "HANDOFF" "handoff" "Windows task requested from $current_platform" \
-                    "Open Windows terminal to proceed"
-                return 1
-            fi
-            ;;
-        wsl|linux)
-            if [[ "$current_platform" == "windows" ]]; then
-                log_admin "HANDOFF" "handoff" "WSL/Linux task requested from Windows" \
-                    "Run: wsl -d ${WSL_DISTRO:-Ubuntu-24.04}"
-                return 1
-            fi
-            ;;
-    esac
-    return 0
-}
-```
-
-#### PowerShell Mode
-
-```powershell
-function Test-AdminContext {
-    param([string]$TaskType)
-
-    $platform = Get-AdminPlatform
-    $wslDistro = if ($env:WSL_DISTRO) { $env:WSL_DISTRO } else { "Ubuntu-24.04" }
-
-    switch ($TaskType) {
-        'wsl' {
-            if ($platform -eq 'windows') {
-                Log-Admin -Level "HANDOFF" -Category "handoff" `
-                    -Message "WSL/Linux task requested from Windows" `
-                    -Details "Run: wsl -d $wslDistro"
-                return $false
-            }
-        }
-        'windows' {
-            # Already in Windows - no handoff needed
-            return $true
-        }
-    }
-    return $true
-}
-```
-
-## Centralized Logging
-
-### Log Structure
-
-```
-$ADMIN_LOG_PATH/
-├── operations.log        # General operations
-├── installations.log     # Software installations
-├── system-changes.log    # Configuration changes
-├── handoffs.log          # Cross-platform handoffs
-└── devices/
-    └── $DEVICE_NAME/
-        └── history.log   # All logs for this device
-```
-
-### Log Format
-
-```
-ISO8601 [DEVICE][PLATFORM] LEVEL: message | details
-```
-
-Example:
-```
-2025-12-08T14:30:00-05:00 [WOPR3][wsl] SUCCESS: Package installed | apt install postgresql-client
-2025-12-08T14:31:00-05:00 [WOPR3][wsl] HANDOFF: Windows task required | task=update .wslconfig
-```
-
-### Bash Logging Function
-
-```bash
-log_admin() {
-    local level="$1"      # INFO|SUCCESS|ERROR|WARN|HANDOFF
-    local category="$2"   # operation|installation|system-change|handoff
-    local message="$3"
-    local details="${4:-}"
-
-    local timestamp=$(date -Iseconds 2>/dev/null || date +%Y-%m-%dT%H:%M:%S)
-    local device="${DEVICE_NAME:-$(hostname)}"
-    local platform="${ADMIN_PLATFORM:-$(detect_platform)}"
-
-    # Determine log directory (WSL uses Windows path for shared logs)
-    local log_dir
-    if [[ -n "$ADMIN_LOG_PATH" ]]; then
-        log_dir="$ADMIN_LOG_PATH"
-    elif grep -qi microsoft /proc/version 2>/dev/null; then
-        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-        log_dir="/mnt/c/Users/$win_user/.admin/logs"
-    else
-        log_dir="$HOME/.admin/logs"
-    fi
-
-    local log_line="$timestamp [$device][$platform] $level: $message"
-    [[ -n "$details" ]] && log_line="$log_line | $details"
-
-    mkdir -p "$log_dir/devices/$device" 2>/dev/null
-
-    echo "$log_line" >> "$log_dir/${category}s.log"
-    echo "$log_line" >> "$log_dir/devices/$device/history.log"
-
-    [[ "$level" == "ERROR" ]] && echo "ERROR: $message" >&2
-}
-```
-
-### PowerShell Logging Function
-
-```powershell
-function Log-Admin {
-    param(
-        [ValidateSet("INFO","SUCCESS","ERROR","WARN","HANDOFF")]
-        [string]$Level,
-        [ValidateSet("operation","installation","system-change","handoff")]
-        [string]$Category,
-        [string]$Message,
-        [string]$Details = ""
-    )
-
-    $timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssK"
-    $device = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
-    $platform = if ($env:ADMIN_PLATFORM) { $env:ADMIN_PLATFORM } else { "windows" }
-    $logDir = if ($env:ADMIN_LOG_PATH) { $env:ADMIN_LOG_PATH } else { "$env:USERPROFILE\.admin\logs" }
-
-    $logLine = "$timestamp [$device][$platform] ${Level}: $Message"
-    if ($Details) { $logLine += " | $Details" }
-
-    New-Item -ItemType Directory -Force -Path "$logDir\devices\$device" | Out-Null
-
-    Add-Content -Path "$logDir\${Category}s.log" -Value $logLine
-    Add-Content -Path "$logDir\devices\$device\history.log" -Value $logLine
-
-    if ($Level -eq "ERROR") { Write-Error $Message }
-}
-```
+1. Ensure `ADMIN_ROOT` exists. On Windows+WSL machines, this points to the Windows filesystem so logs/profiles are shared.
+2. Load config from `.env.local` (project) or `$ADMIN_ROOT/.env` (global).
+3. Determine `ADMIN_PLATFORM` and `ADMIN_SHELL` using helpers in `references/shell-detection.md`.
+4. Route to a specialist skill using the routing summary below (details in `references/routing-guide.md`).
+
+## Routing Summary
+
+- **Server / infrastructure / provisioning** → `admin-servers`  
+  May further route to `admin-infra-*` (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo) or `admin-app-*` (Coolify, KASM).
+- **Windows system administration** (PowerShell, winget/scoop, registry, `.wslconfig`, Windows Terminal) → `admin-windows`  
+  Requires Windows context.
+- **MCP / Claude Desktop config on Windows** → `admin-mcp`  
+  Requires Windows context.
+- **WSL / Linux / macOS administration** (apt/brew, docker, bash/zsh, systemd) → `admin-wsl`  
+  Requires WSL/Linux/macOS context.
+- **Profiles, logs, cross‑platform coordination** → handled here in `admin`.
+
+## Key Environment Variables
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `DEVICE_NAME` | Device identifier | `$(hostname)` / `$COMPUTERNAME` |
+| `ADMIN_USER` | Primary admin username | `$(whoami)` / `$USERNAME` |
+| `ADMIN_ROOT` | Shared admin directory | Windows: `C:/Users/<USERNAME>/.admin` • WSL: `/mnt/c/Users/<WIN_USER>/.admin` • Linux/macOS: `~/.admin` |
+| `ADMIN_LOG_PATH` | Log directory | `$ADMIN_ROOT/logs` |
+| `ADMIN_PROFILE_PATH` | Profiles directory | `$ADMIN_ROOT/profiles` |
+| `ADMIN_PLATFORM` | Override auto‑detection | Auto‑detected |
+| `ADMIN_SHELL` | Override shell detection | Auto‑detected |
+| `WSL_DISTRO` | Target WSL distro | `Ubuntu-24.04` |
+
+Full variable list: `assets/env-spec.txt` and `.env.template`.
+
+## Logging Integration
+
+- Bash mode uses `log_admin` (see `references/logging.md`).
+- PowerShell mode uses `Log-Operation` (see `references/logging.md`).
+- Always log handoffs (`LogType=handoff`) when a task requires switching contexts.
 
 ## Device Profiles
 
-### Profile Location
+Profiles track installed tools, package managers, and managed servers per device. Use:
+- `update_profile()` to create/locate the current device profile.
+- `log_tool_install()` after installing tools to update `installedTools`.
 
-```
-$ADMIN_PROFILE_PATH/$DEVICE_NAME.json
-```
+Details and canonical functions: `references/device-profiles.md`.
 
-### Profile Schema
+## Related Skills
 
-See `assets/profile-schema.json` for full JSON Schema.
+| Skill | Purpose |
+|-------|---------|
+| `admin-servers` | Server inventory & provisioning |
+| `admin-infra-oci` | Oracle Cloud Infrastructure |
+| `admin-infra-hetzner` | Hetzner Cloud |
+| `admin-infra-digitalocean` | DigitalOcean |
+| `admin-infra-vultr` | Vultr |
+| `admin-infra-linode` | Linode/Akamai |
+| `admin-infra-contabo` | Contabo |
+| `admin-app-coolify` | Coolify PaaS deployments |
+| `admin-app-kasm` | KASM Workspaces deployments |
+| `admin-windows` | Windows administration |
+| `admin-wsl` | WSL/Linux/macOS administration |
+| `admin-mcp` | MCP server management |
 
-Key sections:
-- `deviceInfo`: name, platform, hostname, user, lastUpdated
-- `installedTools`: tool name → version, installedVia, path, lastChecked
-- `managedServers`: array of server IDs from admin-servers inventory
+## Common Error Patterns
 
-### Profile Operations
-
-**Create/Update Profile**:
-```bash
-update_profile() {
-    # Determine profile directory (WSL uses Windows path for shared profiles)
-    local profile_dir
-    local admin_root
-    if [[ -n "$ADMIN_PROFILE_PATH" ]]; then
-        profile_dir="$ADMIN_PROFILE_PATH"
-        admin_root="${ADMIN_ROOT:-$(dirname "$ADMIN_PROFILE_PATH")}"
-    elif grep -qi microsoft /proc/version 2>/dev/null; then
-        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-        profile_dir="/mnt/c/Users/$win_user/.admin/profiles"
-        admin_root="/mnt/c/Users/$win_user/.admin"
-    else
-        profile_dir="$HOME/.admin/profiles"
-        admin_root="$HOME/.admin"
-    fi
-
-    local profile_path="$profile_dir/${DEVICE_NAME:-$(hostname)}.json"
-    mkdir -p "$(dirname "$profile_path")"
-
-    # Create if doesn't exist
-    if [[ ! -f "$profile_path" ]]; then
-        cat > "$profile_path" << EOF
-{
-  "schemaVersion": "2.0",
-  "deviceInfo": {
-    "name": "${DEVICE_NAME:-$(hostname)}",
-    "platform": "$(detect_platform)",
-    "hostname": "$(hostname)",
-    "user": "${ADMIN_USER:-$(whoami)}",
-    "shell": "${ADMIN_SHELL:-bash}",
-    "os": "",
-    "osVersion": "",
-    "adminRoot": "$admin_root",
-    "timezone": "",
-    "lastUpdated": "$(date -Iseconds)"
-  },
-  "packageManagers": {
-    "apt": {
-      "present": false,
-      "version": null,
-      "lastChecked": null
-    },
-    "brew": {
-      "present": false,
-      "version": null,
-      "lastChecked": null
-    },
-    "winget": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    },
-    "scoop": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    },
-    "npm": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    }
-  },
-  "installedTools": {},
-  "installationHistory": [],
-  "systemInfo": {
-    "shell": "",
-    "shellVersion": "",
-    "architecture": "",
-    "cpu": "",
-    "ram": "",
-    "lastSystemCheck": null
-  },
-  "paths": {
-    "npmGlobal": "",
-    "projectsRoot": ""
-  },
-  "managedServers": [],
-  "cloudProviders": {},
-  "syncSettings": {
-    "enabled": false,
-    "syncPath": null,
-    "lastSync": null,
-    "linkedDevices": []
-  },
-  "customMetadata": {}
-}
-EOF
-    fi
-
-    echo "$profile_path"
-}
-```
-
-**Log Tool Installation**:
-```bash
-log_tool_install() {
-    local tool="$1"
-    local version="$2"
-    local method="$3"  # apt, brew, winget, npm, etc.
-
-    local profile_path=$(update_profile)
-
-    # Update installedTools section (requires jq)
-    if command -v jq &>/dev/null; then
-        jq --arg tool "$tool" \
-           --arg ver "$version" \
-           --arg method "$method" \
-           --arg ts "$(date -Iseconds)" \
-           '.installedTools[$tool] = {version: $ver, installedVia: $method, lastChecked: $ts}' \
-           "$profile_path" > "${profile_path}.tmp" && mv "${profile_path}.tmp" "$profile_path"
-    fi
-
-    log_admin "SUCCESS" "installation" "Installed $tool" "version=$version method=$method"
-}
-```
-
-## Cross-Platform Coordination
-
-### Handoff Tags
-
-When a task requires switching contexts:
-
-- `[REQUIRES-WINADMIN]` - Must be done in Windows terminal
-- `[REQUIRES-WSL-ADMIN]` - Must be done in WSL/Linux
-
-### Path Conversion
-
-| Context | Windows Path | WSL Path |
-|---------|--------------|----------|
-| Windows user home | `C:\Users\$USERNAME` | `/mnt/c/Users/$USERNAME` |
-| WSL home from Windows | `\\wsl$\$DISTRO\home\$USER` | `~` or `/home/$USER` |
-| **Shared admin root** | `C:\Users\$USERNAME\.admin` | `/mnt/c/Users/$USERNAME/.admin` |
-
-**IMPORTANT**: On machines with both Windows and WSL, the `.admin` folder is **shared** on the Windows filesystem. Both environments read/write to the same location (`C:\Users\$USERNAME\.admin`), ensuring unified logs and profiles.
-
-### Common Cross-Platform Tasks
-
-| Task | Windows Handles | WSL Handles |
-|------|-----------------|-------------|
-| .wslconfig | ✓ | Read-only |
-| Docker Desktop | ✓ (installer) | ✓ (CLI) |
-| SSH keys | Both | Both |
-| Git config | Both | Both |
-| Claude Desktop MCP | ✓ | - |
-
-## Sub-Skills Reference
-
-| Skill | Purpose | Invoked When |
-|-------|---------|--------------|
-| admin-servers | Server inventory & provisioning | "provision server", "my servers" |
-| admin-infra-oci | Oracle Cloud Infrastructure | "oracle", "oci", "always free" |
-| admin-infra-hetzner | Hetzner Cloud | "hetzner", "hcloud", "CAX" |
-| admin-infra-digitalocean | DigitalOcean | "digitalocean", "droplet" |
-| admin-infra-vultr | Vultr | "vultr" |
-| admin-infra-linode | Linode/Akamai | "linode", "akamai" |
-| admin-infra-contabo | Contabo | "contabo", "budget vps" |
-| admin-app-coolify | Coolify PaaS | "coolify", "self-hosted paas" |
-| admin-app-kasm | KASM Workspaces | "kasm", "vdi", "workspaces" |
-| admin-windows | Windows administration | "powershell", "winget", "registry" |
-| admin-wsl | WSL/Linux administration | "apt", "docker", "systemd" |
-| admin-mcp | MCP server management | "mcp", "claude desktop" |
-
-## Configuration Reference
-
-See `.env.template` for all available variables.
-
-### Required Variables
-
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `DEVICE_NAME` | Unique device identifier | `$(hostname)` |
-| `ADMIN_USER` | Primary admin username | `$(whoami)` |
-| `ADMIN_ROOT` | Central admin directory | Windows: `$USERPROFILE\.admin`<br>WSL: `/mnt/c/Users/$WIN_USER/.admin`<br>Linux/macOS: `~/.admin` |
-
-### Optional Variables
-
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `ADMIN_PLATFORM` | Override auto-detection | Auto-detected |
-| `ADMIN_LOG_PATH` | Log directory | `$ADMIN_ROOT/logs` |
-| `ADMIN_PROFILE_PATH` | Profiles directory | `$ADMIN_ROOT/profiles` |
-| `ADMIN_SYNC_ENABLED` | Enable cross-device sync | `false` |
-| `ADMIN_SYNC_PATH` | Synced folder (Dropbox, etc.) | - |
-
-## Error Patterns
-
-### 1. Skill Not Found
-
-**Error**: Sub-skill not installed
-**Solution**:
-```bash
-./scripts/install-skill.sh admin-servers
-```
-
-### 2. Wrong Context
-
-**Error**: Windows task from WSL (or vice versa)
-**Solution**: Follow handoff instructions in log
-
-### 3. Missing Configuration
-
-**Error**: Required variable not set
-**Solution**: Copy `.env.template` to `.env.local` and fill values
-
-### 4. Permission Denied on Logs
-
-**Error**: Cannot write to log directory
-**Solution**:
-```bash
-mkdir -p "${ADMIN_LOG_PATH:-$HOME/.admin/logs}"
-chmod 755 "${ADMIN_LOG_PATH:-$HOME/.admin/logs}"
-```
+- **Wrong context**: Task requires a different platform/shell. Follow handoff instructions logged in `handoffs.log`.
+- **Missing config**: Create `.env.local` or run setup flow in `references/first-run-setup.md`.
+- **Sub‑skill not installed**: Install with `./scripts/install-skill.sh <skill-name>`.
 
 ## Bundled Resources
 
 - `assets/env-spec.txt` - Canonical environment variable specification
 - `assets/profile-schema.json` - JSON Schema for device profiles
-- `references/routing-guide.md` - Detailed routing rules
-- `references/first-run-setup.md` - New user setup guide
 - `templates/profile.json` - Empty profile template
+- `references/*` - Detailed behavior and workflows

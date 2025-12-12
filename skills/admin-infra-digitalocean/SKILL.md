@@ -1,8 +1,8 @@
 ---
 name: admin-infra-digitalocean
 description: |
-  Deploy infrastructure on DigitalOcean with Droplets (VMs), Firewalls, and VPCs.
-  Native Kasm Workspaces auto-scaling integration for dynamic agent provisioning.
+  Deploys infrastructure on DigitalOcean with Droplets (VMs), Firewalls, and VPCs.
+  Includes Kasm Workspaces auto-scaling integration for dynamic agent provisioning.
 
   Use when: setting up DigitalOcean infrastructure, deploying Droplets, configuring firewalls, integrating with Kasm auto-scaling, looking for US/global cloud with good API.
 
@@ -456,6 +456,8 @@ SSH_KEY_PATH=~/.ssh/id_rsa       # Local private key path
 ---
 
 ## Cost Comparison
+
+_Prices below are snapshots and may change; verify in the DigitalOcean console._
 
 | Provider | 4 vCPU, 8GB | Monthly |
 |----------|-------------|---------|

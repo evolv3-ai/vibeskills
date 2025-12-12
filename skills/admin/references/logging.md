@@ -2,6 +2,17 @@
 
 Unified logging across all admin operations and devices.
 
+## Contents
+- Log File Strategy
+- Log Entry Format
+- Bash Logging Function
+- PowerShell Logging Function
+- Reading Logs
+- Log Rotation (Optional)
+- Best Practices
+
+---
+
 ## Log File Strategy
 
 | Log File | Location | Purpose |

@@ -1,7 +1,7 @@
 ---
 name: admin-infra-vultr
 description: |
-  Deploy infrastructure on Vultr with Cloud Compute instances, High-Frequency servers, and VPCs.
+  Deploys infrastructure on Vultr with Cloud Compute instances, High-Frequency servers, and VPCs.
   Excellent value with Kubernetes autoscaling support and global data centers.
 
   Use when: setting up Vultr infrastructure, deploying cloud compute or high-frequency instances, configuring firewalls, needing good price/performance with global reach.
@@ -496,6 +496,8 @@ SSH_KEY_PATH=~/.ssh/id_rsa       # Local private key path
 ---
 
 ## Cost Comparison
+
+_Prices below are snapshots and may change; verify in the Vultr console._
 
 | Provider | 4 vCPU, 8GB | Monthly |
 |----------|-------------|---------|

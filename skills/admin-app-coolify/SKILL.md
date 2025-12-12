@@ -1,10 +1,10 @@
 ---
 name: admin-app-coolify
 description: |
-  Install and manage Coolify, an open-source self-hosted PaaS for deploying applications with Docker.
-  Heroku-like experience on your own infrastructure.
+  Installs and manages Coolify, an open-source self-hosted PaaS for deploying applications with Docker.
+  Provides a Heroku-like experience on your own infrastructure.
 
-  Use when: installing Coolify, deploying Docker apps, setting up self-hosted PaaS, configuring Traefik proxy.
+  Use when: installing Coolify, deploying Docker apps, setting up a self-hosted PaaS, or configuring the Traefik proxy.
 
   Keywords: coolify, self-hosted paas, docker deployment, traefik proxy, open source heroku
 license: MIT

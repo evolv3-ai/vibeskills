@@ -1,10 +1,10 @@
 ---
 name: admin-infra-contabo
 description: |
-  Deploy infrastructure on Contabo with Cloud VPS at industry-leading price/performance.
-  Exceptional value with 6 vCPU + 18GB RAM for just €8/month. Object storage auto-scaling.
+  Deploys infrastructure on Contabo using Cloud VPS and Object Storage.
+  Focuses on cost‑effective provisioning and Contabo-specific CLI/API quirks.
 
-  Use when: setting up Contabo infrastructure, deploying Cloud VPS, needing best price/performance ratio, budget-conscious deployments.
+  Use when: provisioning Contabo Cloud VPS, configuring Object Storage, or troubleshooting Contabo-specific issues.
 
   Keywords: contabo, cntb, VPS, cloud compute, budget hosting, best value, object storage, infrastructure
 license: MIT
@@ -439,6 +439,8 @@ SSH_KEY_PATH=~/.ssh/id_rsa       # Local private key path
 ---
 
 ## Cost Comparison
+
+_Prices below are snapshots and may change; verify in the Contabo console._
 
 | Provider | 6 vCPU, 16-18GB RAM | Monthly |
 |----------|---------------------|---------|

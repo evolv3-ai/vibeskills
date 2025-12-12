@@ -1,7 +1,7 @@
 ---
 name: admin-infra-oci
 description: |
-  Deploy infrastructure on Oracle Cloud Infrastructure (OCI) with ARM64 instances (Always Free tier eligible).
+  Deploys infrastructure on Oracle Cloud Infrastructure (OCI) with ARM64 instances (Always Free tier eligible).
   Handles compartments, VCNs, subnets, security lists, and compute instances.
 
   Use when: setting up Oracle Cloud infrastructure, deploying ARM64 instances, troubleshooting OUT_OF_HOST_CAPACITY errors, optimizing for Always Free tier.

@@ -1,7 +1,7 @@
 ---
 name: admin-wsl
 description: |
-  Administer WSL2 Ubuntu 24.04 environments from Linux. Covers apt package management, Docker containers, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
+  Administers WSL2 Ubuntu 24.04 environments from Linux. Covers apt package management, Docker containers, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
 
   Use when: managing WSL Linux packages, Docker containers, Python venv/uv, shell configs (.zshrc/.bashrc), systemd services, or troubleshooting "command not found", "permission denied", "Docker socket missing" errors in WSL.
 license: MIT
@@ -45,17 +45,18 @@ echo $SHELL       # Should return: /usr/bin/zsh (or /bin/bash)
 
 # 2. Load environment
 WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-WSL_ADMIN_PATH="${WSL_ADMIN_PATH:-/mnt/c/Users/$WIN_USER/.admin}"
-source "$WSL_ADMIN_PATH/.env"
+ADMIN_ROOT="${ADMIN_ROOT:-/mnt/c/Users/$WIN_USER/.admin}"
+WSL_ADMIN_PATH="${WSL_ADMIN_PATH:-$ADMIN_ROOT}"  # backward-compatible alias
+source "$ADMIN_ROOT/.env"
 
 # 3. Check WSL profile
-cat "$WSL_ADMIN_PATH/wsl-profile.json"
+cat "$ADMIN_ROOT/wsl-profile.json"
 
 # 4. Check recent logs
-tail -20 "${ADMIN_LOG_PATH:-$WSL_ADMIN_PATH/logs}/operations.log"
+tail -20 "${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}/operations.log"
 
 # 5. Cross-reference Windows changes (if mounted)
-[[ -d "$WSL_ADMIN_PATH" ]] && tail -10 "$WSL_ADMIN_PATH/logs/devices/$DEVICE_NAME/history.log"
+[[ -d "$ADMIN_ROOT" ]] && tail -10 "$ADMIN_ROOT/logs/devices/$DEVICE_NAME/history.log"
 
 # 6. Verify tools
 node --version    # Expected: 18.x or 20.x
@@ -115,7 +116,7 @@ docker ps         # List running containers
 ## Directory Structure
 
 ```
-$WSL_ADMIN_PATH/                        # Shared Windows+WSL admin root (default: /mnt/c/Users/$WIN_USER/.admin)
+$ADMIN_ROOT/                           # Shared Windows+WSL admin root (default in WSL: /mnt/c/Users/$WIN_USER/.admin)
 ├── .env                                # Environment config
 ├── wsl-profile.json                    # Source of truth for WSL state
 ├── logs/
@@ -130,17 +131,18 @@ $WSL_ADMIN_PATH/                        # Shared Windows+WSL admin root (default
 ```
 
 **Environment Variables Required:**
-- `$WSL_ADMIN_PATH` - Shared admin directory (default: `/mnt/c/Users/$WIN_USER/.admin`)
-- `$ADMIN_ROOT` - Shared admin root (default: `$WSL_ADMIN_PATH`)
-- `$ADMIN_LOG_PATH` - Log directory (default: `$WSL_ADMIN_PATH/logs`)
+- `$ADMIN_ROOT` - Shared admin root (default in WSL: `/mnt/c/Users/$WIN_USER/.admin`)
+- `$ADMIN_LOG_PATH` - Log directory (default: `$ADMIN_ROOT/logs`)
+- `$ADMIN_PROFILE_PATH` - Profiles directory (default: `$ADMIN_ROOT/profiles`)
 - `$DEVICE_NAME` - Current device name
 - `$ADMIN_USER` - Current admin username
+- Optional alias: `$WSL_ADMIN_PATH` (treated as `$ADMIN_ROOT` for backward compatibility)
 
 ---
 
 ## WSL Profile Schema
 
-**Location**: `$WSL_ADMIN_PATH/wsl-profile.json`
+**Location**: `$ADMIN_ROOT/wsl-profile.json`
 
 ```json
 {
@@ -291,11 +293,11 @@ docker-compose ps              # List services
 
 | Windows Path | WSL Path |
 |--------------|----------|
-| `C:\Users\<username>` | `/mnt/c/Users/<username>` |
-| `D:\<path>` | `/mnt/d/<path>` |
-| `$WIN_ADMIN_ROOT` | `$ADMIN_ROOT` (mounted) |
+| `C:/Users/<username>` | `/mnt/c/Users/<username>` |
+| `D:/<path>` | `/mnt/d/<path>` |
+| `C:/Users/<username>/.admin` | `/mnt/c/Users/<username>/.admin` |
 
-**Note:** The exact mount paths depend on your Windows drive letters and configuration.
+**Note:** In WSL, `$ADMIN_ROOT` defaults to `/mnt/c/Users/$WIN_USER/.admin` to share logs and profiles with Windows.
 
 ### Line Ending Handling
 
@@ -482,7 +484,7 @@ git config user.email          # Check email
 - [ ] uv installed at `~/.local/bin/uv`
 - [ ] Docker Desktop integration working
 - [ ] Git configured with credentials
-- [ ] `$WSL_ADMIN_PATH` directory structure created
+- [ ] `$ADMIN_ROOT` directory structure created
 - [ ] Environment variables configured in `.env`
 - [ ] Central logs accessible via `$ADMIN_ROOT` mount
 

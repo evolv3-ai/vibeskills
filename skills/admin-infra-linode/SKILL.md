@@ -1,7 +1,7 @@
 ---
 name: admin-infra-linode
 description: |
-  Deploy infrastructure on Linode (Akamai Cloud) with Linodes, Firewalls, and VLANs.
+  Deploys infrastructure on Linode (Akamai Cloud) with Linodes, Firewalls, and VLANs.
   Strong Kubernetes support with Cluster Autoscaler and Akamai edge network integration.
 
   Use when: setting up Linode/Akamai infrastructure, deploying Linodes, configuring firewalls, needing Kubernetes autoscaling, wanting Akamai CDN integration.
@@ -476,6 +476,8 @@ SSH_KEY_PATH=~/.ssh/id_rsa       # Local private key path
 ---
 
 ## Cost Comparison
+
+_Prices below are snapshots and may change; verify in the Linode console._
 
 | Provider | 4 vCPU, 8GB | Monthly |
 |----------|-------------|---------|

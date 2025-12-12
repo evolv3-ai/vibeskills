@@ -1,6 +1,6 @@
 # Session State
 
-**Current Phase**: Phase 12 - Schema-Compliant Profile Creation (In progress)
+**Current Phase**: Phase 19 - App Skills Concision (`admin-app-coolify`, `admin-app-kasm`) (Pending)
 **Current Stage**: Implementation
 **Last Checkpoint**: 771ef4c (2025-12-11)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
@@ -422,8 +422,8 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 
 Patch the admin suite after Windows/WSL unification: align generated profiles with the expanded schema, fix PowerShell detection/back-compat, and update WSL docs to the shared Windows `.admin` root.
 
-## Phase 12: Schema-Compliant Profile Creation 🔄
-**Type**: Bugfix | **Started**: 2025-12-11
+## Phase 12: Schema-Compliant Profile Creation ✅
+**Type**: Bugfix | **Started**: 2025-12-11 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-12`
 
 **Goals**:
@@ -431,8 +431,13 @@ Patch the admin suite after Windows/WSL unification: align generated profiles wi
 - Match defaults in `templates/profile.json` / `assets/profile-schema.json`.
 - Keep shared `.admin` root logic intact (Windows path for WSL).
 
-## Phase 13: PowerShell Detection & Back-Compat ⏸️
-**Type**: Bugfix | **Added**: 2025-12-11
+**Progress**:
+- [x] Updated `update_profile()` defaults and required sections
+- [x] Aligned `skills/admin/templates/profile.json` with schema
+- [x] Verified WSL shared-root profile path selection
+
+## Phase 13: PowerShell Detection & Back-Compat ✅
+**Type**: Bugfix | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-13`
 
 **Goals**:
@@ -440,19 +445,133 @@ Patch the admin suite after Windows/WSL unification: align generated profiles wi
 - Replace `??` in `Test-AdminContext` with PowerShell 5.1-safe fallback.
 - Preserve Bash behavior.
 
-## Phase 14: WSL Doc Alignment to Shared `.admin` Root ⏸️
-**Type**: Documentation | **Added**: 2025-12-11
+**Progress**:
+- [x] Updated `Get-AdminPlatform` to robustly detect Windows/WSL/Linux/macOS under pwsh.
+- [x] Updated `Test-AdminContext` to hand off Windows tasks when pwsh runs on non‑Windows and added linux alias.
+- [x] Verified Bash routing/validation unchanged.
+
+## Phase 14: WSL Doc Alignment to Shared `.admin` Root ✅
+**Type**: Documentation | **Started**: 2025-12-12 | **Completed**: 2025-12-12
 **Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-14`
 
 **Goals**:
 - Update `admin-wsl` SKILL/README to shared Windows `.admin` default and remove admin-sync dependency.
 - Update `admin` references (first-run, shell-detection) with shared-root paths and current log/profile structure.
 
+**Progress**:
+- [x] Updated `skills/admin-wsl/SKILL.md` to use `ADMIN_ROOT` defaults and shared-root paths.
+- [x] Updated `skills/admin-wsl/README.md` to document shared root and use `log_admin`.
+- [x] Updated `skills/admin/references/shell-detection.md` WSL matrix to shared-root default.
+
+**Files Modified**:
+- `skills/admin-wsl/SKILL.md`
+- `skills/admin-wsl/README.md`
+- `skills/admin/references/shell-detection.md`
+
 ---
 
+# Feature: Admin Skills Best‑Practices Compliance (Added 2025-12-12)
+
+Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: improve discovery metadata, enforce progressive disclosure and token budgets, standardize path examples, and fix any broken references.
+
+## Phase 15: Metadata + Quick Anti‑Patterns ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-15`
+
+**Progress**:
+- [x] Converted YAML `description` fields to third‑person discovery style across all `admin*` skills.
+- [x] Standardized Windows path examples to forward‑slash variants in SKILL bodies.
+- [x] Labeled infra cost comparisons as time‑sensitive snapshots.
+
+**Files Modified**:
+- `skills/admin/SKILL.md`
+- `skills/admin-app-coolify/SKILL.md`
+- `skills/admin-app-kasm/SKILL.md`
+- `skills/admin-infra-contabo/SKILL.md`
+- `skills/admin-infra-digitalocean/SKILL.md`
+- `skills/admin-infra-hetzner/SKILL.md`
+- `skills/admin-infra-linode/SKILL.md`
+- `skills/admin-infra-oci/SKILL.md`
+- `skills/admin-infra-vultr/SKILL.md`
+- `skills/admin-mcp/SKILL.md`
+- `skills/admin-servers/SKILL.md`
+- `skills/admin-windows/SKILL.md`
+- `skills/admin-wsl/SKILL.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+
+## Phase 16: `admin-mcp` Progressive Disclosure ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-16`
+
+**Progress**:
+- [x] Split `admin-mcp` into a short overview SKILL plus one‑level‑deep references.
+- [x] Added TOCs to all long reference files.
+- [x] Set NPX as the default install path/method with a single escape hatch to other methods.
+
+**Files Modified/Added**:
+- `skills/admin-mcp/SKILL.md`
+- `skills/admin-mcp/references/INSTALLATION.md`
+- `skills/admin-mcp/references/CONFIGURATION.md`
+- `skills/admin-mcp/references/CLI_TOOLS.md`
+- `skills/admin-mcp/references/REGISTRY.md`
+- `skills/admin-mcp/references/TROUBLESHOOTING.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+
+## Phase 17: `admin-servers` Progressive Disclosure ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-17`
+
+**Progress**:
+- [x] Split long inventory/spec/provider/workflow content into `references/`.
+- [x] Added TOCs to long reference files.
+- [x] Rewrote `skills/admin-servers/SKILL.md` as an overview under 500 lines.
+
+**Files Modified/Added**:
+- `skills/admin-servers/SKILL.md`
+- `skills/admin-servers/references/INVENTORY_FORMAT.md`
+- `skills/admin-servers/references/PROVIDER_DISCOVERY.md`
+- `skills/admin-servers/references/EXAMPLE_INVENTORY.md`
+- `skills/admin-servers/references/DEPLOYMENT_WORKFLOWS.md`
+- `skills/admin-servers/references/TROUBLESHOOTING.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+
+## Phase 18: `admin` Orchestrator Tightening ✅
+**Type**: Refactor | **Started**: 2025-12-12 | **Completed**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-18`
+
+**Progress**:
+- [x] Added TOCs to all long `skills/admin/references/*.md` files.
+- [x] Standardized obvious Windows drive paths in admin refs to forward‑slash form.
+- [x] Moved canonical platform detection helpers into `references/shell-detection.md`.
+- [x] Added PowerShell context validation helper to `references/routing-guide.md`.
+- [x] Created `references/device-profiles.md` and moved profile operations there.
+- [x] Rewrote `skills/admin/SKILL.md` as a concise orchestrator overview under 500 lines.
+
+**Files Modified/Added**:
+- `skills/admin/SKILL.md`
+- `skills/admin/references/cross-platform.md`
+- `skills/admin/references/first-run-setup.md`
+- `skills/admin/references/logging.md`
+- `skills/admin/references/powershell-commands.md`
+- `skills/admin/references/routing-guide.md`
+- `skills/admin/references/shell-detection.md`
+- `skills/admin/references/device-profiles.md`
+- `docs/IMPLEMENTATION_PHASES.md`
+
+## Phase 19: App Skills Concision (`admin-app-coolify`, `admin-app-kasm`) ⏸️
+**Type**: Refactor | **Added**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-19`
+
+## Phase 20: Infra Skills Concision + OCI Doc Fix ⏸️
+**Type**: Refactor | **Added**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-20`
+
+## Phase 21: Windows/WSL Skills Concision ⏸️
+**Type**: Refactor | **Added**: 2025-12-12
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-21`
+
 **Next Action**:
-- Implement Phase 12 tasks (schema-compliant profile creation)
-- Then Phase 13 (PowerShell detection/back-compat) and Phase 14 (WSL doc alignment)
+- Start Phase 19 (app skills concision).
 
 ---
 

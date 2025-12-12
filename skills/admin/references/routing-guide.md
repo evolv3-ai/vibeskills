@@ -2,6 +2,16 @@
 
 Detailed routing rules for the admin orchestrator skill.
 
+## Contents
+- Routing Decision Flow
+- Keyword → Skill Mapping
+- Context Validation
+- Handoff Protocol
+- Skill Availability Check
+- Examples
+
+---
+
 ## Routing Decision Flow
 
 ```
@@ -185,6 +195,50 @@ validate_context() {
             ;;
     esac
     return 0
+}
+```
+
+### PowerShell Mode
+
+```powershell
+function Test-AdminContext {
+    param([string]$TargetSkill)
+
+    $platform = Get-AdminPlatform
+    $wslDistro = if ($env:WSL_DISTRO) { $env:WSL_DISTRO } else { "Ubuntu-24.04" }
+
+    switch -Wildcard ($TargetSkill) {
+        'admin-windows' {
+            if ($platform -ne 'windows') {
+                Log-Operation -Status "HANDOFF" -Operation "Cross-Platform" `
+                    -Details "Windows task requested from $platform. Open a Windows terminal to proceed." `
+                    -LogType "handoff"
+                return $false
+            }
+        }
+        'admin-mcp' {
+            if ($platform -ne 'windows') {
+                Log-Operation -Status "HANDOFF" -Operation "Cross-Platform" `
+                    -Details "MCP/Windows task requested from $platform. Open a Windows terminal to proceed." `
+                    -LogType "handoff"
+                return $false
+            }
+        }
+        'admin-wsl' {
+            if ($platform -eq 'windows') {
+                Log-Operation -Status "HANDOFF" -Operation "Cross-Platform" `
+                    -Details "WSL/Linux task requested from Windows. Run: wsl -d $wslDistro" `
+                    -LogType "handoff"
+                return $false
+            }
+        }
+        'admin-servers' { return $true }
+        'admin-infra-*' { return $true }
+        'admin-app-*' { return $true }
+        default { return $true }
+    }
+
+    return $true
 }
 ```
 

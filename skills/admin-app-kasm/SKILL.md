@@ -1,7 +1,7 @@
 ---
 name: admin-app-kasm
 description: |
-  Install and manage KASM Workspaces, a container-based VDI platform for streaming desktops to browsers.
+  Installs and manages KASM Workspaces, a container-based VDI platform for streaming desktops to browsers.
   Supports Ubuntu ARM64, desktop streaming, isolated browser sessions, and remote workspace access.
 
   Use when: installing KASM on Ubuntu ARM64, setting up VDI, configuring browser-based desktops, deploying on OCI instances.

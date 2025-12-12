@@ -2,6 +2,21 @@
 
 This document explains how the admin skill detects and adapts to different shell environments.
 
+## Contents
+- Two Separate Concepts
+- Why Shell Detection Matters
+- IMPORTANT: Claude Code on Windows Uses Git Bash
+- Detection Method
+- Platform Detection Helpers
+- Shell Mode Syntax Comparison
+- Common Issues
+- Best Practices
+- Platform + Shell Matrix
+- Claude Code on Windows: Path Conversion
+- Related Files
+
+---
+
 ## Two Separate Concepts
 
 The admin skill tracks TWO environment variables:
@@ -76,6 +91,80 @@ Claude Code determines the shell based on which commands work:
 | `$HOME` | User home | Empty |
 | `$env:USERPROFILE` | Empty | User home |
 | Path separator | `/` | `\` |
+
+## Platform Detection Helpers
+
+Use these canonical helpers to determine `ADMIN_PLATFORM` separately from `ADMIN_SHELL`.
+
+### Bash Mode
+
+```bash
+detect_platform() {
+    # Check explicit override first
+    if [[ -n "$ADMIN_PLATFORM" ]]; then
+        echo "$ADMIN_PLATFORM"
+        return
+    fi
+
+    # Auto-detect (case-insensitive grep for WSL)
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "wsl"
+    elif [[ "$OS" == "Windows_NT" ]]; then
+        echo "windows"  # Git Bash on Windows
+    elif [[ "$(uname -s)" == "Darwin" ]]; then
+        echo "macos"
+    else
+        echo "linux"
+    fi
+}
+```
+
+### PowerShell Mode
+
+```powershell
+function Get-AdminPlatform {
+    # Check explicit override first
+    if ($env:ADMIN_PLATFORM) {
+        return $env:ADMIN_PLATFORM
+    }
+
+    # PowerShell 7+ provides $IsWindows/$IsLinux/$IsMacOS
+    if (Get-Variable -Name IsWindows -ErrorAction SilentlyContinue) {
+        if ($IsWindows) { return "windows" }
+        if ($IsMacOS) { return "macos" }
+        if ($IsLinux) {
+            $isWsl = $false
+            try {
+                $isWsl = (Get-Content /proc/version -ErrorAction Stop) -match 'microsoft'
+            } catch { }
+            if ($isWsl) { return "wsl" }
+            return "linux"
+        }
+    }
+
+    # Cross-platform fallback for pwsh builds without $Is* variables
+    try {
+        $ri = [System.Runtime.InteropServices.RuntimeInformation]
+        if ($ri::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { return "windows" }
+        if ($ri::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)) { return "macos" }
+        if ($ri::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)) {
+            $isWsl = $false
+            try {
+                $isWsl = (Get-Content /proc/version -ErrorAction Stop) -match 'microsoft'
+            } catch { }
+            if ($isWsl) { return "wsl" }
+            return "linux"
+        }
+    } catch { }
+
+    # Fallback for Windows PowerShell 5.1 (Windows-only)
+    if ($env:OS -eq "Windows_NT") { return "windows" }
+
+    return "linux"
+}
+
+# Usage: $platform = Get-AdminPlatform
+```
 
 ## Shell Mode Syntax Comparison
 
@@ -210,11 +299,13 @@ $logFile = Join-Path $env:USERPROFILE '.admin\logs\operations.log'
 
 | ADMIN_PLATFORM | ADMIN_SHELL | Environment | Config Location | Path Style |
 |----------------|-------------|-------------|-----------------|------------|
-| windows | powershell | Native Windows | `C:\Users\X\.admin` | Backslash |
+| windows | powershell | Native Windows | `C:/Users/X/.admin` | Backslash |
 | windows | bash | Git Bash / Claude Code | `/c/Users/X/.admin` | Forward slash |
-| wsl | bash | WSL Ubuntu | `/home/X/.admin` | Forward slash |
+| wsl | bash | WSL Ubuntu | `/mnt/c/Users/X/.admin` | Forward slash |
 | linux | bash | Native Linux | `/home/X/.admin` | Forward slash |
 | macos | zsh | macOS Terminal | `/Users/X/.admin` | Forward slash |
+
+**WSL default**: When `ADMIN_PLATFORM=wsl` and `ADMIN_ROOT` is unset, use `/mnt/c/Users/$WIN_USER/.admin` to share state with Windows.
 
 **Note**: Always store absolute paths in config files, never `~` (tilde).
 
@@ -224,8 +315,8 @@ When running on Windows through Claude Code (Git Bash):
 
 | Windows Path | Git Bash Path |
 |--------------|---------------|
-| `C:\Users\Owner` | `/c/Users/Owner` |
-| `D:\admin` | `/d/admin` |
+| `C:/Users/Owner` | `/c/Users/Owner` |
+| `D:/admin` | `/d/admin` |
 | `%USERPROFILE%` | `$HOME` |
 | `%COMPUTERNAME%` | `$(hostname)` (works) |
 

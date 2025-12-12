@@ -562,9 +562,9 @@ Patch the admin suite after Windows/WSL unification: align generated profiles wi
 
 ### Tasks
 
-- [ ] Update `skills/admin/SKILL.md` `update_profile()` to emit `schemaVersion` and all required top-level sections (deviceInfo fields, packageManagers, installationHistory, systemInfo, paths, syncSettings).
-- [ ] Ensure default values match `skills/admin/templates/profile.json` and `assets/profile-schema.json`.
-- [ ] Keep WSL shared-root logic intact when selecting profile path.
+- [x] Update `skills/admin/SKILL.md` `update_profile()` to emit `schemaVersion` and all required top-level sections (deviceInfo fields, packageManagers, installationHistory, systemInfo, paths, syncSettings).
+- [x] Ensure default values match `skills/admin/templates/profile.json` and `assets/profile-schema.json`.
+- [x] Keep WSL shared-root logic intact when selecting profile path.
 
 ### Verification Criteria
 
@@ -580,9 +580,9 @@ Patch the admin suite after Windows/WSL unification: align generated profiles wi
 
 ### Tasks
 
-- [ ] Update `Get-AdminPlatform` in `skills/admin/SKILL.md` to handle PowerShell Core on non-Windows (detect platform or explicitly guard with a clear error).
-- [ ] Replace the `??` operator in `Test-AdminContext` with Windows PowerShell 5.1-safe logic for handoff messaging.
-- [ ] Keep Bash behavior unchanged.
+- [x] Update `Get-AdminPlatform` in `skills/admin/SKILL.md` to handle PowerShell Core on non-Windows (detect platform or explicitly guard with a clear error).
+- [x] Replace the `??` operator in `Test-AdminContext` with Windows PowerShell 5.1-safe logic for handoff messaging.
+- [x] Keep Bash behavior unchanged.
 
 ### Verification Criteria
 
@@ -598,12 +598,136 @@ Patch the admin suite after Windows/WSL unification: align generated profiles wi
 
 ### Tasks
 
-- [ ] Update `skills/admin-wsl/SKILL.md` and `skills/admin-wsl/README.md` to default to the shared Windows `.admin` path (`/mnt/c/Users/$WIN_USER/.admin`) and remove admin-sync references.
-- [ ] Update `skills/admin/references/first-run-setup.md` and `skills/admin/references/shell-detection.md` to reflect the shared root, dual-shell setup, and new log/profile paths.
-- [ ] Align logging paths/examples with the unified `.admin` structure.
+- [x] Update `skills/admin-wsl/SKILL.md` and `skills/admin-wsl/README.md` to default to the shared Windows `.admin` path (`/mnt/c/Users/$WIN_USER/.admin`) and remove admin-sync references.
+- [x] Update `skills/admin/references/first-run-setup.md` and `skills/admin/references/shell-detection.md` to reflect the shared root, dual-shell setup, and new log/profile paths.
+- [x] Align logging paths/examples with the unified `.admin` structure.
 
 ### Verification Criteria
 
 - WSL docs consistently show the shared Windows `.admin` root and modern log paths.
 - No remaining references to `admin-sync` as a dependency.
 - Examples match current routing/logging behavior.
+
+---
+
+# Feature: Admin Skills Best‑Practices Compliance (Added 2025-12-12)
+
+Bring the admin skill suite into alignment with `SKILLS_BEST_PRACTICES.md`: improve discovery metadata, enforce progressive disclosure and token budgets, standardize path examples, and fix any broken references.
+
+---
+
+## Phase 15: Metadata + Quick Anti‑Patterns
+
+**Type**: Refactor | **Effort**: ~0.5 hours
+
+### Tasks
+
+- [x] Convert YAML `description` in all `skills/admin*/SKILL.md` to third‑person discovery style (e.g., “Installs…”, “Manages…”).
+- [x] Standardize path examples to include forward‑slash variants; avoid Windows backslash paths in SKILL bodies.
+- [x] Move time‑sensitive pricing or “verified on date” out of main narrative into explicit “Old patterns” or metadata blocks where needed.
+
+### Verification Criteria
+
+- Descriptions are third‑person, specific, and include “Use when” triggers.
+- No new Windows‑style backslash paths in SKILL bodies.
+- Time‑sensitive details are clearly isolated.
+
+---
+
+## Phase 16: `admin-mcp` Progressive Disclosure
+
+**Type**: Refactor | **Effort**: ~1.0 hours
+
+### Tasks
+
+- [x] Split `skills/admin-mcp/SKILL.md` into an overview plus one‑level‑deep references for install, config, registry, and troubleshooting.
+- [x] Add TOCs to any referenced files over 100 lines.
+- [x] Reduce SKILL body below 500 lines and ensure a clear default install path/method.
+
+### Verification Criteria
+
+- `skills/admin-mcp/SKILL.md` < 500 lines and links directly to all long refs.
+- Refs have TOCs and are only one level deep.
+- Default path/method is recommended with a single escape hatch.
+
+---
+
+## Phase 17: `admin-servers` Progressive Disclosure
+
+**Type**: Refactor | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [x] Move long inventory format/provider discovery detail out of `skills/admin-servers/SKILL.md` into `references/`.
+- [x] Add TOCs to new/long refs and keep SKILL as workflow + navigation.
+
+### Verification Criteria
+
+- `skills/admin-servers/SKILL.md` < 500 lines.
+- Inventory spec and provider discovery are referenced one level deep.
+
+---
+
+## Phase 18: `admin` Orchestrator Tightening
+
+**Type**: Refactor | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [x] Trim `skills/admin/SKILL.md` to routing + core commands; push detailed explanations into existing references.
+- [x] Add TOCs to `skills/admin/references/*.md` where >100 lines.
+
+### Verification Criteria
+
+- `skills/admin/SKILL.md` < 500 lines.
+- Admin references have TOCs and remain one‑level deep.
+
+---
+
+## Phase 19: App Skills Concision (`admin-app-coolify`, `admin-app-kasm`)
+
+**Type**: Refactor | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [ ] Reduce both app SKILLs under 500 lines by moving extended procedures into refs.
+- [ ] Add TOCs to large Cloudflare tunnel/origin‑cert refs.
+- [ ] Surface any bundled refs from SKILL or remove if obsolete.
+
+### Verification Criteria
+
+- App SKILLs < 500 lines.
+- All bundled refs are either linked from SKILL or removed.
+
+---
+
+## Phase 20: Infra Skills Concision + OCI Doc Fix
+
+**Type**: Refactor | **Effort**: ~1.0 hours
+
+### Tasks
+
+- [ ] Reduce each `admin-infra-*` SKILL under 500 lines via targeted splits (tables, troubleshooting, long guides → refs).
+- [ ] Add TOCs to long OCI docs in `skills/admin-infra-oci/docs/`.
+- [ ] Fix broken script references in `skills/admin-infra-oci/docs/TROUBLESHOOTING.md` (`preflight-check.sh`, `validate-env.sh`).
+
+### Verification Criteria
+
+- All infra SKILLs < 500 lines.
+- OCI docs have TOCs and no dead script links.
+
+---
+
+## Phase 21: Windows/WSL Skills Concision
+
+**Type**: Refactor | **Effort**: ~0.75 hours
+
+### Tasks
+
+- [ ] Reduce `skills/admin-windows/SKILL.md` and `skills/admin-wsl/SKILL.md` under 500 lines using refs.
+- [ ] Normalize path examples and add TOCs to any long refs.
+
+### Verification Criteria
+
+- Windows/WSL SKILLs < 500 lines.
+- Path guidance is consistent and forward‑slash safe.

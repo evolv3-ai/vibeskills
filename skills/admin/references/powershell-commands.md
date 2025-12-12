@@ -2,6 +2,24 @@
 
 Quick reference for PowerShell equivalents of common Bash commands used in admin skills.
 
+## Contents
+- Directory Operations
+- File Operations
+- Environment Variables
+- String Operations
+- Path Construction
+- Conditionals
+- Loops
+- Command Output Capture
+- JSON Operations
+- Date/Time
+- Process Management
+- Network
+- Admin-Specific Commands
+- Related Files
+
+---
+
 ## Directory Operations
 
 | Operation | Bash | PowerShell |
