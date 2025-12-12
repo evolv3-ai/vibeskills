@@ -1,0 +1,1 @@
+read GEMINI_GUIDE.md
