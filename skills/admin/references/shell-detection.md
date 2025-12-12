@@ -44,7 +44,7 @@ The commands for these shells are completely different. Using bash syntax in Pow
 **To run native PowerShell commands from Claude Code on Windows**:
 ```bash
 # Invoke PowerShell from Git Bash
-pwsh.exe -Command "Get-Content 'C:\Users\Owner\.admin\logs\operations.log'"
+pwsh.exe -Command "Get-Content \"$env:USERPROFILE\\.admin\\logs\\operations.log\""
 
 # Multi-line PowerShell script
 pwsh.exe -Command @'
@@ -83,7 +83,7 @@ Claude Code determines the shell based on which commands work:
 
 **Bash:**
 ```bash
-mkdir -p ~/.admin/logs/devices/$(hostname)
+mkdir -p "${ADMIN_LOG_PATH:-${ADMIN_ROOT:-$HOME/.admin}/logs}/devices/$(hostname)"
 ```
 
 **PowerShell:**
@@ -164,7 +164,7 @@ if ($platform -eq 'wsl') {
 
 **Bash:**
 ```bash
-log_file="$HOME/.admin/logs/operations.log"
+log_file="${ADMIN_LOG_PATH:-${ADMIN_ROOT:-$HOME/.admin}/logs}/operations.log"
 ```
 
 **PowerShell:**

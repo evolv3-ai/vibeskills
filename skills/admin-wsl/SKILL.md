@@ -1,7 +1,7 @@
 ---
 name: admin-wsl
 description: |
-  Administer WSL2 Ubuntu 24.04 environments from Linux. Covers apt package management, Docker containers, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via admin-sync handoff protocol.
+  Administer WSL2 Ubuntu 24.04 environments from Linux. Covers apt package management, Docker containers, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
 
   Use when: managing WSL Linux packages, Docker containers, Python venv/uv, shell configs (.zshrc/.bashrc), systemd services, or troubleshooting "command not found", "permission denied", "Docker socket missing" errors in WSL.
 license: MIT
@@ -10,8 +10,8 @@ license: MIT
 # WSL Admin
 
 **Status**: Production Ready
-**Last Updated**: 2025-12-08
-**Dependencies**: WSL2, Ubuntu 24.04, admin-sync skill
+**Last Updated**: 2025-12-11
+**Dependencies**: WSL2, Ubuntu 24.04, shared `.admin` root (Windows + WSL)
 **Shell**: Zsh 5.9
 
 ---
@@ -31,7 +31,7 @@ license: MIT
 **Scope Boundaries:**
 - Linux: apt, Docker, Python venv/uv, shell configs, systemd
 - Never: .wslconfig changes, Windows packages, MCP servers, registry
-- Hand off Windows tasks to admin-windows via admin-sync protocol
+- Hand off Windows tasks to admin-windows (handoff via shared logs)
 
 ---
 
@@ -44,16 +44,18 @@ whoami            # Should return: $ADMIN_USER
 echo $SHELL       # Should return: /usr/bin/zsh (or /bin/bash)
 
 # 2. Load environment
-source "${WSL_ADMIN_PATH:=$HOME/.admin}/.env"
+WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+WSL_ADMIN_PATH="${WSL_ADMIN_PATH:-/mnt/c/Users/$WIN_USER/.admin}"
+source "$WSL_ADMIN_PATH/.env"
 
 # 3. Check WSL profile
 cat "$WSL_ADMIN_PATH/wsl-profile.json"
 
 # 4. Check recent logs
-tail -20 "$ADMIN_LOG_PATH/wsl-operations.log"
+tail -20 "${ADMIN_LOG_PATH:-$WSL_ADMIN_PATH/logs}/operations.log"
 
 # 5. Cross-reference Windows changes (if mounted)
-[[ -d "$ADMIN_ROOT" ]] && tail -10 "$ADMIN_ROOT/devices/$DEVICE_NAME/logs.txt"
+[[ -d "$WSL_ADMIN_PATH" ]] && tail -10 "$WSL_ADMIN_PATH/logs/devices/$DEVICE_NAME/history.log"
 
 # 6. Verify tools
 node --version    # Expected: 18.x or 20.x
@@ -113,28 +115,23 @@ docker ps         # List running containers
 ## Directory Structure
 
 ```
-$WSL_ADMIN_PATH/                 # WSL Admin workspace (default: ~/.admin)
-├── .env                         # WSL-specific environment
-├── wsl-profile.json            # Source of truth for WSL state
+$WSL_ADMIN_PATH/                        # Shared Windows+WSL admin root (default: /mnt/c/Users/$WIN_USER/.admin)
+├── .env                                # Environment config
+├── wsl-profile.json                    # Source of truth for WSL state
 ├── logs/
-│   └── wsl-operations.log      # Local operations log
-├── scripts/
-│   └── log-operation.sh        # Logging utility
-└── docs/                       # Local documentation
-
-$ADMIN_ROOT/                     # Shared (via Windows mount)
-├── devices/$DEVICE_NAME/
-│   ├── profile.json            # Windows device profile
-│   └── logs.txt                # Windows device log
-└── logs/central/               # Cross-platform logs
-    ├── operations.log
-    ├── installations.log
-    └── system-changes.log
+│   ├── operations.log                  # General operations
+│   ├── installations.log               # Package installs
+│   ├── system-changes.log              # Config changes
+│   └── devices/$DEVICE_NAME/history.log# Device-specific history
+├── profiles/
+│   └── $DEVICE_NAME.json               # Device profile (shared)
+└── config/
+    └── ...                             # Additional config files
 ```
 
 **Environment Variables Required:**
-- `$WSL_ADMIN_PATH` - Local WSL admin directory (default: `~/.admin`)
-- `$ADMIN_ROOT` - Shared admin root (mounted from Windows)
+- `$WSL_ADMIN_PATH` - Shared admin directory (default: `/mnt/c/Users/$WIN_USER/.admin`)
+- `$ADMIN_ROOT` - Shared admin root (default: `$WSL_ADMIN_PATH`)
 - `$ADMIN_LOG_PATH` - Log directory (default: `$WSL_ADMIN_PATH/logs`)
 - `$DEVICE_NAME` - Current device name
 - `$ADMIN_USER` - Current admin username
@@ -188,10 +185,10 @@ Use the centralized logging system from the `admin` skill. See `admin/references
 
 | Log | Location | Purpose |
 |-----|----------|---------|
-| Local WSL | `$ADMIN_LOG_PATH/wsl-operations.log` | WSL-specific ops |
-| Central Ops | `$ADMIN_ROOT/logs/central/operations.log` | Cross-platform |
-| Central Install | `$ADMIN_ROOT/logs/central/installations.log` | Package installs |
-| Central Changes | `$ADMIN_ROOT/logs/central/system-changes.log` | Config changes |
+| Operations | `$ADMIN_LOG_PATH/operations.log` | General operations |
+| Installations | `$ADMIN_LOG_PATH/installations.log` | Package installs |
+| System Changes | `$ADMIN_LOG_PATH/system-changes.log` | Config changes |
+| Device History | `$ADMIN_LOG_PATH/devices/$DEVICE_NAME/history.log` | Device-specific history |
 
 ### Quick Reference
 
@@ -473,7 +470,7 @@ git config user.email          # Check email
 | `Get-Content not found` | Using PowerShell syntax | Use `cat` |
 | Line ending corruption | CRLF/LF mismatch | Use `dos2unix` |
 | Docker socket missing | Docker Desktop not running | Start from Windows |
-| WSL slow/OOM | Resource limits | Request via admin-sync |
+| WSL slow/OOM | Resource limits | Request via admin-windows |
 | Permission denied | Wrong ownership | Use `chown`/`chmod` |
 
 ---

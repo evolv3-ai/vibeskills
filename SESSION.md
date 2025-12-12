@@ -1,8 +1,8 @@
 # Session State
 
-**Current Phase**: Phase 10 - Testing PowerShell Compatibility (Ready to start)
-**Current Stage**: Verification
-**Last Checkpoint**: 942521e (2025-12-09)
+**Current Phase**: Phase 12 - Schema-Compliant Profile Creation (In progress)
+**Current Stage**: Implementation
+**Last Checkpoint**: 771ef4c (2025-12-11)
 **Planning Docs**: `docs/IMPLEMENTATION_PHASES.md`, `planning/admin-skills-redesign.md`
 
 ---
@@ -418,11 +418,41 @@ The WSL-side verification is complete. All Bash/Zsh commands work correctly.
 
 ---
 
-**Next Action**: None - Admin skills suite complete
-- All phases (1-11) completed
-- Issue 004 documented and resolved
-- Unified .admin folder implemented
-- Ready to merge to main
+# Feature: Admin Compatibility & Shared Root Fixes (Added 2025-12-11)
+
+Patch the admin suite after Windows/WSL unification: align generated profiles with the expanded schema, fix PowerShell detection/back-compat, and update WSL docs to the shared Windows `.admin` root.
+
+## Phase 12: Schema-Compliant Profile Creation 🔄
+**Type**: Bugfix | **Started**: 2025-12-11
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-12`
+
+**Goals**:
+- Update `update_profile` to emit schemaVersion + required sections (packageManagers, installationHistory, systemInfo, paths, syncSettings).
+- Match defaults in `templates/profile.json` / `assets/profile-schema.json`.
+- Keep shared `.admin` root logic intact (Windows path for WSL).
+
+## Phase 13: PowerShell Detection & Back-Compat ⏸️
+**Type**: Bugfix | **Added**: 2025-12-11
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-13`
+
+**Goals**:
+- Handle PowerShell Core on non-Windows (detect or guard) in `Get-AdminPlatform`.
+- Replace `??` in `Test-AdminContext` with PowerShell 5.1-safe fallback.
+- Preserve Bash behavior.
+
+## Phase 14: WSL Doc Alignment to Shared `.admin` Root ⏸️
+**Type**: Documentation | **Added**: 2025-12-11
+**Spec**: `docs/IMPLEMENTATION_PHASES.md#phase-14`
+
+**Goals**:
+- Update `admin-wsl` SKILL/README to shared Windows `.admin` default and remove admin-sync dependency.
+- Update `admin` references (first-run, shell-detection) with shared-root paths and current log/profile structure.
+
+---
+
+**Next Action**:
+- Implement Phase 12 tasks (schema-compliant profile creation)
+- Then Phase 13 (PowerShell detection/back-compat) and Phase 14 (WSL doc alignment)
 
 ---
 

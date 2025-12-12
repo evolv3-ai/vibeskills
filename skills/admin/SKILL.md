@@ -244,8 +244,24 @@ function Get-AdminPlatform {
         return $env:ADMIN_PLATFORM
     }
 
-    # In PowerShell, we're always on Windows
-    return "windows"
+    # PowerShell 7+ provides $IsWindows/$IsLinux/$IsMacOS
+    if (Get-Variable -Name IsWindows -ErrorAction SilentlyContinue) {
+        if ($IsWindows) { return "windows" }
+        if ($IsMacOS) { return "macos" }
+        if ($IsLinux) {
+            $isWsl = $false
+            try {
+                $isWsl = (Get-Content /proc/version -ErrorAction Stop) -match 'microsoft'
+            } catch { }
+            if ($isWsl) { return "wsl" }
+            return "linux"
+        }
+    }
+
+    # Fallback for Windows PowerShell 5.1 (Windows-only)
+    if ($env:OS -eq "Windows_NT") { return "windows" }
+
+    return "linux"
 }
 
 # Usage: $platform = Get-AdminPlatform
@@ -331,13 +347,14 @@ function Test-AdminContext {
     param([string]$TaskType)
 
     $platform = Get-AdminPlatform
+    $wslDistro = if ($env:WSL_DISTRO) { $env:WSL_DISTRO } else { "Ubuntu-24.04" }
 
     switch ($TaskType) {
         'wsl' {
             if ($platform -eq 'windows') {
                 Log-Admin -Level "HANDOFF" -Category "handoff" `
                     -Message "WSL/Linux task requested from Windows" `
-                    -Details "Run: wsl -d $($env:WSL_DISTRO ?? 'Ubuntu-24.04')"
+                    -Details "Run: wsl -d $wslDistro"
                 return $false
             }
         }
@@ -467,13 +484,17 @@ Key sections:
 update_profile() {
     # Determine profile directory (WSL uses Windows path for shared profiles)
     local profile_dir
+    local admin_root
     if [[ -n "$ADMIN_PROFILE_PATH" ]]; then
         profile_dir="$ADMIN_PROFILE_PATH"
+        admin_root="${ADMIN_ROOT:-$(dirname "$ADMIN_PROFILE_PATH")}"
     elif grep -qi microsoft /proc/version 2>/dev/null; then
         local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
         profile_dir="/mnt/c/Users/$win_user/.admin/profiles"
+        admin_root="/mnt/c/Users/$win_user/.admin"
     else
         profile_dir="$HOME/.admin/profiles"
+        admin_root="$HOME/.admin"
     fi
 
     local profile_path="$profile_dir/${DEVICE_NAME:-$(hostname)}.json"
@@ -483,15 +504,72 @@ update_profile() {
     if [[ ! -f "$profile_path" ]]; then
         cat > "$profile_path" << EOF
 {
+  "schemaVersion": "2.0",
   "deviceInfo": {
     "name": "${DEVICE_NAME:-$(hostname)}",
     "platform": "$(detect_platform)",
     "hostname": "$(hostname)",
     "user": "${ADMIN_USER:-$(whoami)}",
+    "shell": "${ADMIN_SHELL:-bash}",
+    "os": "",
+    "osVersion": "",
+    "adminRoot": "$admin_root",
+    "timezone": "",
     "lastUpdated": "$(date -Iseconds)"
   },
+  "packageManagers": {
+    "apt": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "brew": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "winget": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "scoop": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "npm": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    }
+  },
   "installedTools": {},
-  "managedServers": []
+  "installationHistory": [],
+  "systemInfo": {
+    "shell": "",
+    "shellVersion": "",
+    "architecture": "",
+    "cpu": "",
+    "ram": "",
+    "lastSystemCheck": null
+  },
+  "paths": {
+    "npmGlobal": "",
+    "projectsRoot": ""
+  },
+  "managedServers": [],
+  "cloudProviders": {},
+  "syncSettings": {
+    "enabled": false,
+    "syncPath": null,
+    "lastSync": null,
+    "linkedDevices": []
+  },
+  "customMetadata": {}
 }
 EOF
     fi

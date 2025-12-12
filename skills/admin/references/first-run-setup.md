@@ -8,8 +8,8 @@ When the admin skill activates and no configuration exists, guide the user throu
 
 | Environment | ADMIN_ROOT Path | Physical Location |
 |-------------|-----------------|-------------------|
-| Windows | `C:\Users\Owner\.admin` | `C:\Users\Owner\.admin` |
-| WSL | `/mnt/c/Users/Owner/.admin` | `C:\Users\Owner\.admin` |
+| Windows | `C:\Users\<USERNAME>\.admin` | `C:\Users\<USERNAME>\.admin` |
+| WSL | `/mnt/c/Users/<USERNAME>/.admin` | `C:\Users\<USERNAME>\.admin` |
 | Linux (standalone) | `~/.admin` | `/home/user/.admin` |
 | macOS | `~/.admin` | `/Users/user/.admin` |
 
@@ -106,7 +106,7 @@ Configuration Options:
    > [press Enter for default or type custom name]
 
 2. Admin directory:
-   - Windows/WSL: C:\Users\Owner\.admin (shared)
+   - Windows/WSL: C:\Users\<USERNAME>\.admin (shared)
    - Linux/macOS: ~/.admin
    > [press Enter for default or type custom path]
 
@@ -160,7 +160,7 @@ ADMIN_PROFILE_PATH=$config_dir/profiles
 
 # Platform-specific (WSL)
 WSL_DISTRO=${WSL_DISTRO:-Ubuntu-24.04}
-WSL_ADMIN_PATH=${WSL_ADMIN_PATH:-$HOME/dev/wsl-admin}
+WSL_ADMIN_PATH=${WSL_ADMIN_PATH:-$config_dir}
 
 # Sync (optional)
 ADMIN_SYNC_ENABLED=${sync_enabled:-false}
@@ -218,7 +218,17 @@ Generate device profile.
 
 ```bash
 create_profile() {
-    local profile_dir="${ADMIN_PROFILE_PATH:-$HOME/.admin/profiles}"
+    local admin_root
+    if [[ -n "$ADMIN_ROOT" ]]; then
+        admin_root="$ADMIN_ROOT"
+    elif grep -qi microsoft /proc/version 2>/dev/null; then
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        admin_root="/mnt/c/Users/$win_user/.admin"
+    else
+        admin_root="$HOME/.admin"
+    fi
+
+    local profile_dir="${ADMIN_PROFILE_PATH:-$admin_root/profiles}"
     local device="${DEVICE_NAME:-$(hostname)}"
     local profile_file="$profile_dir/$device.json"
 
@@ -233,18 +243,63 @@ create_profile() {
     "shell": "${ADMIN_SHELL:-bash}",
     "hostname": "$(hostname)",
     "user": "${ADMIN_USER:-$(whoami)}",
-    "adminRoot": "${ADMIN_ROOT:-$HOME/.admin}",
+    "os": "",
+    "osVersion": "",
+    "adminRoot": "$admin_root",
+    "timezone": "",
     "lastUpdated": "$(date -Iseconds)"
   },
-  "packageManagers": {},
+  "packageManagers": {
+    "apt": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "brew": {
+      "present": false,
+      "version": null,
+      "lastChecked": null
+    },
+    "winget": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "scoop": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    },
+    "npm": {
+      "present": false,
+      "version": null,
+      "lastChecked": null,
+      "location": null
+    }
+  },
   "installedTools": {},
   "installationHistory": [],
-  "systemInfo": {},
-  "paths": {},
+  "systemInfo": {
+    "shell": "",
+    "shellVersion": "",
+    "architecture": "",
+    "cpu": "",
+    "ram": "",
+    "lastSystemCheck": null
+  },
+  "paths": {
+    "npmGlobal": "",
+    "projectsRoot": ""
+  },
   "managedServers": [],
   "cloudProviders": {},
   "syncSettings": {
-    "enabled": ${ADMIN_SYNC_ENABLED:-false}
+    "enabled": ${ADMIN_SYNC_ENABLED:-false},
+    "syncPath": null,
+    "lastSync": null,
+    "linkedDevices": []
   },
   "customMetadata": {}
 }
@@ -262,6 +317,7 @@ function New-AdminProfile {
     $device = if ($env:DEVICE_NAME) { $env:DEVICE_NAME } else { $env:COMPUTERNAME }
     $profileFile = Join-Path $profileDir "$device.json"
     $adminRoot = if ($env:ADMIN_ROOT) { $env:ADMIN_ROOT } else { Join-Path $env:USERPROFILE '.admin' }
+    $platform = if (Get-Command Get-AdminPlatform -ErrorAction SilentlyContinue) { Get-AdminPlatform } else { "windows" }
 
     New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
 
@@ -269,22 +325,44 @@ function New-AdminProfile {
         schemaVersion = "2.0"
         deviceInfo = @{
             name = $device
-            platform = "windows"
+            platform = $platform
             shell = "powershell"
             hostname = $env:COMPUTERNAME
             user = $env:USERNAME
+            os = ""
+            osVersion = ""
             adminRoot = $adminRoot
+            timezone = ""
             lastUpdated = (Get-Date -Format 'o')
         }
-        packageManagers = @{}
+        packageManagers = @{
+            apt   = @{ present = $false; version = $null; lastChecked = $null }
+            brew  = @{ present = $false; version = $null; lastChecked = $null }
+            winget= @{ present = $false; version = $null; lastChecked = $null; location = $null }
+            scoop = @{ present = $false; version = $null; lastChecked = $null; location = $null }
+            npm   = @{ present = $false; version = $null; lastChecked = $null; location = $null }
+        }
         installedTools = @{}
         installationHistory = @()
-        systemInfo = @{}
-        paths = @{}
+        systemInfo = @{
+            shell = ""
+            shellVersion = ""
+            architecture = ""
+            cpu = ""
+            ram = ""
+            lastSystemCheck = $null
+        }
+        paths = @{
+            npmGlobal = ""
+            projectsRoot = ""
+        }
         managedServers = @()
         cloudProviders = @{}
         syncSettings = @{
             enabled = $false
+            syncPath = $null
+            lastSync = $null
+            linkedDevices = @()
         }
         customMetadata = @{}
     }
@@ -348,13 +426,13 @@ Device: WOPR3 (wsl)
 User: wsladmin
 
 Directories Created:
-  ~/.admin/
-  ~/.admin/logs/
-  ~/.admin/profiles/
+  $ADMIN_ROOT/
+  $ADMIN_LOG_PATH/
+  $ADMIN_PROFILE_PATH/
 
 Files Created:
-  ~/.admin/.env (configuration)
-  ~/.admin/profiles/WOPR3.json (device profile)
+  $ADMIN_ROOT/.env (configuration)
+  $ADMIN_PROFILE_PATH/WOPR3.json (device profile)
 
 ───────────────────────────────────────────────────────────────────
 NEXT STEPS
@@ -363,8 +441,8 @@ NEXT STEPS
 • To manage servers: "provision a server" or "list my servers"
 • To manage this PC: "install [package]" or "update system"
 • To manage WSL: Already in WSL - use apt, docker, etc.
-• To view logs: cat ~/.admin/logs/operations.log
-• To view profile: cat ~/.admin/profiles/WOPR3.json
+• To view logs: cat $ADMIN_LOG_PATH/operations.log
+• To view profile: cat $ADMIN_PROFILE_PATH/WOPR3.json
 
 ═══════════════════════════════════════════════════════════════════
 ```
@@ -375,17 +453,25 @@ After initial setup, admin loads configuration silently:
 
 ```bash
 load_config() {
+    local default_root
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        local win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        default_root="/mnt/c/Users/$win_user/.admin"
+    else
+        default_root="$HOME/.admin"
+    fi
+
     # Source config in priority order
     if [[ -f ".env.local" ]]; then
         source .env.local
-    elif [[ -f "$HOME/.admin/.env" ]]; then
-        source "$HOME/.admin/.env"
+    elif [[ -f "$default_root/.env" ]]; then
+        source "$default_root/.env"
     fi
 
     # Apply defaults for any unset values
     DEVICE_NAME="${DEVICE_NAME:-$(hostname)}"
     ADMIN_USER="${ADMIN_USER:-$(whoami)}"
-    ADMIN_ROOT="${ADMIN_ROOT:-$HOME/.admin}"
+    ADMIN_ROOT="${ADMIN_ROOT:-$default_root}"
     ADMIN_LOG_PATH="${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}"
     ADMIN_PROFILE_PATH="${ADMIN_PROFILE_PATH:-$ADMIN_ROOT/profiles}"
 
@@ -403,11 +489,11 @@ load_config() {
 **Bash:**
 ```bash
 # Check config locations
-ls -la ~/.admin/.env
+ls -la "${ADMIN_ROOT:-$HOME/.admin}/.env"
 ls -la .env.local
 
 # Verify syntax
-bash -n ~/.admin/.env
+bash -n "${ADMIN_ROOT:-$HOME/.admin}/.env"
 ```
 
 **PowerShell:**
@@ -425,12 +511,12 @@ Get-Content "$env:USERPROFILE\.admin\.env"
 **Bash:**
 ```bash
 # Fix ownership
-chown -R $(whoami) ~/.admin
+chown -R $(whoami) "${ADMIN_ROOT:-$HOME/.admin}"
 
 # Fix permissions
-chmod 700 ~/.admin
-chmod 600 ~/.admin/.env
-chmod 755 ~/.admin/logs ~/.admin/profiles
+chmod 700 "${ADMIN_ROOT:-$HOME/.admin}"
+chmod 600 "${ADMIN_ROOT:-$HOME/.admin}/.env"
+chmod 755 "${ADMIN_LOG_PATH:-${ADMIN_ROOT:-$HOME/.admin}/logs}" "${ADMIN_PROFILE_PATH:-${ADMIN_ROOT:-$HOME/.admin}/profiles}"
 ```
 
 **PowerShell:**
@@ -453,7 +539,7 @@ Set-Acl $adminPath $acl
 **Bash:**
 ```bash
 # Backup and reset
-mv ~/.admin ~/.admin.backup.$(date +%Y%m%d)
+mv "${ADMIN_ROOT:-$HOME/.admin}" "${ADMIN_ROOT:-$HOME/.admin}.backup.$(date +%Y%m%d)"
 
 # Re-run setup
 # (admin skill will detect missing config and run setup)

@@ -1,7 +1,7 @@
 # WSL Admin
 
 **Status**: Production Ready
-**Last Updated**: 2025-12-08
+**Last Updated**: 2025-12-11
 **Production Tested**: WOPR3 with Ubuntu 24.04 WSL2
 
 ---
@@ -52,7 +52,7 @@ Claude Code automatically discovers this skill when you mention:
 
 ## What This Skill Does
 
-Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management, Docker containers, Python environments, shell configuration, and systemd services. Coordinates with admin-windows for Windows-side tasks via the admin-sync handoff protocol.
+Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management, Docker containers, Python environments, shell configuration, and systemd services. Coordinates with admin-windows for Windows-side tasks via the shared `.admin` root and handoff protocol.
 
 ### Core Capabilities
 
@@ -73,7 +73,7 @@ Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management,
 | Docker socket missing | Docker Desktop not running | Notes Windows dependency |
 | uv not in PATH | Missing .local/bin in PATH | Shows PATH configuration |
 | Line ending corruption | CRLF/LF mismatch | Documents dos2unix usage |
-| WSL slow | Resource constraints | Handoff to admin-sync |
+| WSL slow | Resource constraints | Handoff to admin-windows (.wslconfig) |
 
 ---
 
@@ -88,7 +88,7 @@ Administer WSL2 Ubuntu 24.04 environments from Linux. Handle package management,
 - Git operations within WSL
 
 ### Don't Use When:
-- Configuring WSL resources (.wslconfig) - use admin-sync
+- Configuring WSL resources (.wslconfig) - use admin-windows
 - Installing Windows applications - use admin-windows
 - Setting up MCP servers - use admin-mcp
 - Windows PowerShell scripting - use admin-windows
@@ -135,17 +135,17 @@ log_operation "SUCCESS" "Package Install" "Installed postgresql-client via apt" 
 
 ## Scope Boundaries
 
-| Task | admin-wsl | admin-windows | admin-sync |
-|------|-----------|---------------|------------|
-| apt packages | X | - | - |
-| Docker containers | X | - | - |
-| Python venv/uv | X | - | - |
-| .zshrc/.bashrc | X | - | - |
-| systemd services | X | - | - |
-| .wslconfig | - | - | X |
-| MCP servers | - | X | - |
-| WSL memory/CPU | - | - | X |
-| winget/scoop | - | X | - |
+| Task | admin-wsl | admin-windows |
+|------|-----------|---------------|
+| apt packages | X | - |
+| Docker containers | X | - |
+| Python venv/uv | X | - |
+| .zshrc/.bashrc | X | - |
+| systemd services | X | - |
+| .wslconfig | - | X |
+| MCP servers | - | X |
+| WSL memory/CPU | - | X |
+| winget/scoop | - | X |
 
 ---
 
@@ -154,9 +154,8 @@ log_operation "SUCCESS" "Package Install" "Installed postgresql-client via apt" 
 **Prerequisites**: WSL2 installed, Ubuntu 24.04
 
 **Integrates With**:
-- admin-sync (cross-platform coordination)
+- admin (centralized logging/profile schema)
 - admin-windows (Windows handoffs)
-- admin-specs (logging)
 
 ---
 
@@ -180,9 +179,8 @@ admin-wsl/
 
 ## Related Skills
 
-- **admin-sync** - Windows-WSL coordination
+- **admin** - Orchestrator, shared logging/profiles
 - **admin-windows** - Windows administration
-- **admin-specs** - Logging and profiles
 
 ---
 

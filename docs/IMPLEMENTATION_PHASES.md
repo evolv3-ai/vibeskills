@@ -547,3 +547,63 @@ Phase 7 (shell detection)
 | Environment variable expansion | Use proper PowerShell syntax ($env:VAR) |
 | Breaking bash functionality | Keep both modes, don't remove bash |
 | Claude Code shell detection | Test actual behavior in both terminals |
+
+---
+
+# Feature: Admin Compatibility & Shared Root Fixes (Added 2025-12-11)
+
+Patch the admin suite after Windows/WSL unification: align generated profiles with the expanded schema, fix PowerShell detection/back-compat, and update WSL docs to the shared Windows `.admin` root.
+
+---
+
+## Phase 12: Schema-Compliant Profile Creation
+
+**Type**: Bugfix | **Effort**: ~0.5 hours
+
+### Tasks
+
+- [ ] Update `skills/admin/SKILL.md` `update_profile()` to emit `schemaVersion` and all required top-level sections (deviceInfo fields, packageManagers, installationHistory, systemInfo, paths, syncSettings).
+- [ ] Ensure default values match `skills/admin/templates/profile.json` and `assets/profile-schema.json`.
+- [ ] Keep WSL shared-root logic intact when selecting profile path.
+
+### Verification Criteria
+
+- Running `update_profile` creates a profile that validates against `assets/profile-schema.json`.
+- Profile contains `schemaVersion` and the new sections with sensible defaults.
+- No regressions to logging or handoff behavior.
+
+---
+
+## Phase 13: PowerShell Detection & Back-Compat
+
+**Type**: Bugfix | **Effort**: ~0.5 hours
+
+### Tasks
+
+- [ ] Update `Get-AdminPlatform` in `skills/admin/SKILL.md` to handle PowerShell Core on non-Windows (detect platform or explicitly guard with a clear error).
+- [ ] Replace the `??` operator in `Test-AdminContext` with Windows PowerShell 5.1-safe logic for handoff messaging.
+- [ ] Keep Bash behavior unchanged.
+
+### Verification Criteria
+
+- PowerShell logic does not assume Windows when running on pwsh on Linux/macOS/WSL (or errors with clear guidance).
+- `Test-AdminContext` runs without syntax errors on Windows PowerShell 5.1 and PowerShell 7.x.
+- Handoff messages still include WSL distro guidance when available.
+
+---
+
+## Phase 14: WSL Doc Alignment to Shared `.admin` Root
+
+**Type**: Documentation | **Effort**: ~0.5 hours
+
+### Tasks
+
+- [ ] Update `skills/admin-wsl/SKILL.md` and `skills/admin-wsl/README.md` to default to the shared Windows `.admin` path (`/mnt/c/Users/$WIN_USER/.admin`) and remove admin-sync references.
+- [ ] Update `skills/admin/references/first-run-setup.md` and `skills/admin/references/shell-detection.md` to reflect the shared root, dual-shell setup, and new log/profile paths.
+- [ ] Align logging paths/examples with the unified `.admin` structure.
+
+### Verification Criteria
+
+- WSL docs consistently show the shared Windows `.admin` root and modern log paths.
+- No remaining references to `admin-sync` as a dependency.
+- Examples match current routing/logging behavior.
