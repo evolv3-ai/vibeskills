@@ -6,6 +6,24 @@
 
 ---
 
+## Contents
+
+- Auto-Trigger Keywords
+- What This Skill Does
+- When to Use This Skill
+- When NOT to Use This Skill
+- Known Issues Prevented
+- Token Efficiency
+- Quick Start
+- What You Get
+- Documentation
+- Scripts
+- File Structure
+- Official Documentation
+- License
+
+---
+
 ## Auto-Trigger Keywords
 
 - oracle cloud, OCI, oracle cloud infrastructure, ARM64 instance

@@ -51,7 +51,7 @@
     "allowedPaths": [
       "C:/Users/USERNAME",
       "D:/",
-      "N:/Dropbox"
+      "D:/Dropbox"
     ],
     "blockedCommands": [
       "format",

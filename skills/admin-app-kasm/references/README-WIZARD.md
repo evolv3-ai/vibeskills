@@ -58,7 +58,7 @@ The wizard will show you a menu of available customization modules:
 
 Installation Detected:
   ✓ KASM Version: 1.17.0
-  ✓ Server IP: 157.151.193.18
+  ✓ Server IP: <SERVER_IP>
   ✓ Resources: 2 CPU, 12GB RAM
   ✓ Containers: 10 running
 

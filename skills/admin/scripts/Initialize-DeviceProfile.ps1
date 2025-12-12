@@ -1,6 +1,6 @@
 # Initialize-DeviceProfile.ps1
 # Set up device profile and directory structure for a new device
-# Usage: .\scripts\Initialize-DeviceProfile.ps1 -AdminRoot "N:/Dropbox/Admin"
+# Usage: .\scripts\Initialize-DeviceProfile.ps1 -AdminRoot "$env:USERPROFILE/.admin"
 
 param(
     [Parameter(Mandatory)]

@@ -6,6 +6,20 @@
 
 ---
 
+## Contents
+
+- Auto-Trigger Keywords
+- What This Skill Does
+- When to Use This Skill
+- When NOT to Use This Skill
+- Known Issues Prevented
+- Token Efficiency
+- Quick Example
+- Official Documentation
+- License
+
+---
+
 ## Auto-Trigger Keywords
 
 - kasm workspaces, VDI platform, virtual desktop infrastructure, browser-based desktop

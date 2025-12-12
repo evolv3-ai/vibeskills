@@ -2,6 +2,22 @@
 
 This guide shows how to install Coolify with automated credential generation and domain configuration.
 
+## Contents
+
+- Option 1: One-Command Automated Setup
+- Option 2: Customized Automated Setup
+- Option 3: Manual Credential Setup
+- Post-Installation Steps
+- Environment Variables Reference
+- Useful Commands
+- Security Best Practices
+- Troubleshooting
+- Benefits of Enhanced Setup
+- Next Steps
+- Additional Resources
+
+---
+
 ## Option 1: One-Command Automated Setup
 
 The easiest way to install Coolify with all credentials and domains pre-configured:

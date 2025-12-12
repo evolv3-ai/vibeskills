@@ -33,9 +33,9 @@ YYYY-MM-DDTHH:MM:SS±HH:MM [DEVICE][PLATFORM] LEVEL: Operation - Details
 
 Example entries:
 ```
-2025-12-08T14:30:15-05:00 [WOPR3][wsl] SUCCESS: Install - Installed git via apt
-2025-12-08T14:31:00-05:00 [WOPR3][windows] ERROR: Install - Python installation failed
-2025-12-08T14:32:00-05:00 [WOPR3][wsl] HANDOFF: Windows task required - Update .wslconfig
+2025-12-08T14:30:15-05:00 [<DEVICE_NAME>][wsl] SUCCESS: Install - Installed git via apt
+2025-12-08T14:31:00-05:00 [<DEVICE_NAME>][windows] ERROR: Install - Python installation failed
+2025-12-08T14:32:00-05:00 [<DEVICE_NAME>][wsl] HANDOFF: Windows task required - Update .wslconfig
 ```
 
 ### Log Levels

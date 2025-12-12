@@ -5,6 +5,21 @@
 
 ---
 
+## Contents
+
+- Auto-Trigger Keywords
+- What This Skill Does
+- Quick Start
+- Inventory Format
+- Known Provider Skills
+- File Structure
+- Deployment Workflows
+- When to Use This Skill
+- Parser Scripts
+- License
+
+---
+
 ## Auto-Trigger Keywords
 
 - server admin, infrastructure inventory, devops management

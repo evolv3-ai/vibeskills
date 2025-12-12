@@ -100,8 +100,8 @@ Display to user:
 ```
 Detected Environment:
   Platform: wsl
-  Hostname: WOPR3
-  User: wsladmin
+  Hostname: <DEVICE_NAME>
+  User: <ADMIN_USER>
 ```
 
 ### Step 2: Prompt for Configuration
@@ -111,7 +111,7 @@ Ask user for optional customizations:
 ```
 Configuration Options:
 
-1. Device name (default: WOPR3)
+1. Device name (default: <DEVICE_NAME>)
    > [press Enter for default or type custom name]
 
 2. Admin directory:
@@ -431,8 +431,8 @@ Show user what was created:
    ADMIN SETUP COMPLETE
 ═══════════════════════════════════════════════════════════════════
 
-Device: WOPR3 (wsl)
-User: wsladmin
+Device: <DEVICE_NAME> (wsl)
+User: <ADMIN_USER>
 
 Directories Created:
   $ADMIN_ROOT/
@@ -441,7 +441,7 @@ Directories Created:
 
 Files Created:
   $ADMIN_ROOT/.env (configuration)
-  $ADMIN_PROFILE_PATH/WOPR3.json (device profile)
+  $ADMIN_PROFILE_PATH/<DEVICE_NAME>.json (device profile)
 
 ───────────────────────────────────────────────────────────────────
 NEXT STEPS
@@ -451,7 +451,7 @@ NEXT STEPS
 • To manage this PC: "install [package]" or "update system"
 • To manage WSL: Already in WSL - use apt, docker, etc.
 • To view logs: cat $ADMIN_LOG_PATH/operations.log
-• To view profile: cat $ADMIN_PROFILE_PATH/WOPR3.json
+• To view profile: cat $ADMIN_PROFILE_PATH/<DEVICE_NAME>.json
 
 ═══════════════════════════════════════════════════════════════════
 ```

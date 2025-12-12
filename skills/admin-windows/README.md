@@ -2,7 +2,24 @@
 
 **Status**: Production Ready
 **Last Updated**: 2025-12-06
-**Production Tested**: WOPR3 Windows 11 admin environment
+**Production Tested**: Windows 11 PowerShell 7.x environments
+
+---
+
+## Contents
+
+- Auto-Trigger Keywords
+- What This Skill Does
+- Known Issues This Skill Prevents
+- When to Use This Skill
+- Quick Usage Example
+- Token Efficiency Metrics
+- Package Versions (Snapshot)
+- Dependencies
+- File Structure
+- Official Documentation
+- Related Skills
+- License
 
 ---
 
@@ -203,7 +220,7 @@ MIT License - See main repo LICENSE file
 
 ---
 
-**Production Tested**: WOPR3, DELTABOT Windows 11 environments
+**Production Tested**: Multiple Windows 11 environments
 **Token Savings**: ~67%
 **Error Prevention**: 100%
 **Ready to use!** See [SKILL.md](SKILL.md) for complete setup.

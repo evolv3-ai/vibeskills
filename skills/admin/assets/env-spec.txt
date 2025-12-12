@@ -34,7 +34,7 @@
 # DEVICE_NAME
 # Purpose: Unique identifier for this device
 # Default: $(hostname)
-# Example: WOPR3, macbook-pro, dev-server-01
+# Example: example-device, macbook-pro, dev-server-01
 # Used by: Logging, profile management, multi-device sync
 # Format: alphanumeric + hyphens, no spaces
 
@@ -63,7 +63,7 @@
 # Default: ~/.admin
 # Contains: logs/, profiles/, config/
 # Can be: Local path OR synced folder (Dropbox, OneDrive, etc.)
-# Example: /home/user/.admin or /mnt/n/Dropbox/Admin
+# Example: /home/user/.admin or /mnt/d/Dropbox/Admin
 
 # ADMIN_LOG_PATH
 # Purpose: Directory for all log files
@@ -97,8 +97,8 @@
 
 # WSL_ADMIN_PATH
 # Purpose: WSL admin workspace
-# Default: ~/dev/wsl-admin
-# From Windows: \\wsl$\$WSL_DISTRO\home\$ADMIN_USER\dev\wsl-admin
+# Default: ~/dev/admin
+# From Windows: \\wsl$\$WSL_DISTRO\home\$ADMIN_USER\dev\admin
 # Used when: Running WSL/Linux tasks
 
 # WSL_DISTRO
@@ -138,9 +138,9 @@
 
 # ADMIN_SYNC_PATH
 # Purpose: Synced folder for multi-device setups
-# Example: /mnt/n/Dropbox/Admin (WSL)
+# Example: /mnt/d/Dropbox/Admin (WSL)
 # Example: ~/Dropbox/Admin (macOS/Linux)
-# Example: C:\Users\Owner\Dropbox\Admin (Windows)
+# Example: C:\Users\<WIN_USER>\Dropbox\Admin (Windows)
 # Only used if: ADMIN_SYNC_ENABLED=true
 
 # ----------------------------------------------------------------------------

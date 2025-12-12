@@ -21,11 +21,11 @@ Windows ↔ WSL coordination, path conversion, and handoff protocols.
 
 | Environment | ADMIN_ROOT Value | Physical Location |
 |-------------|------------------|-------------------|
-| Windows | `C:/Users/Owner/.admin` | `C:/Users/Owner/.admin` |
-| WSL | `/mnt/c/Users/Owner/.admin` | `C:/Users/Owner/.admin` |
+| Windows | `C:/Users/<WIN_USER>/.admin` | `C:/Users/<WIN_USER>/.admin` |
+| WSL | `/mnt/c/Users/<WIN_USER>/.admin` | `C:/Users/<WIN_USER>/.admin` |
 
 **Benefits:**
-- **One device profile** (WOPR3.json) - not duplicated
+- **One device profile** (`<DEVICE_NAME>.json`) - not duplicated
 - **Unified logs** - operations from both environments in one place
 - **Single source of truth** - installed tools tracked once
 
@@ -62,9 +62,9 @@ Windows ↔ WSL coordination, path conversion, and handoff protocols.
 
 | Windows Path | WSL Path |
 |--------------|----------|
-| `C:/Users/Owner` | `/mnt/c/Users/Owner` |
+| `C:/Users/<WIN_USER>` | `/mnt/c/Users/<WIN_USER>` |
 | `D:/projects` | `/mnt/d/projects` |
-| `N:/Dropbox` | `/mnt/n/Dropbox` |
+| `D:/Dropbox` | `/mnt/d/Dropbox` |
 
 **PowerShell function:**
 ```powershell
@@ -79,7 +79,7 @@ function Convert-ToWslPath {
 
 **Bash (using wslpath):**
 ```bash
-wslpath -u 'C:/Users/Owner/Documents'
+wslpath -u 'C:/Users/<WIN_USER>/Documents'
 # Returns: /mnt/c/Users/Owner/Documents
 ```
 

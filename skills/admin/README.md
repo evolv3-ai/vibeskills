@@ -2,6 +2,16 @@
 
 Central entry point for all system administration tasks. Detects platform context, routes to specialist skills, and maintains unified logging.
 
+## Contents
+
+- Auto-Trigger Keywords
+- Features
+- Sub-Skills
+- Quick Start
+- Related Skills
+
+---
+
 ## Auto-Trigger Keywords
 
 ### Primary (always trigger admin)
