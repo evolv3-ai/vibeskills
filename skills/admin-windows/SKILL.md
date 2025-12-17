@@ -1,490 +1,269 @@
 ---
 name: admin-windows
 description: |
-  Administers Windows 11 systems with PowerShell 7.x. Includes command translations from bash/Linux, package manager usage (winget, scoop, npm, chocolatey), PATH configuration, and environment management for multi-device setups.
+  Windows system administration with PowerShell 7.x. Profile-aware - reads your preferences
+  for package managers (scoop vs winget), paths, and installed tools.
 
-  Use when: setting up Windows admin environments, writing PowerShell automation scripts, translating bash commands to PowerShell, configuring PATH and environment variables, or troubleshooting "command not found", "Get-Content not recognized", "winget not working" errors.
+  Use when: Windows-specific admin tasks, PowerShell automation, PATH configuration,
+  package installation, bash-to-PowerShell translation.
 license: MIT
 ---
 
-# WinAdmin PowerShell
+# Windows Administration
 
-**Status**: Production Ready
-**Last Updated**: 2025-12-06
-**Dependencies**: PowerShell 7.x, Windows 11
-**Latest Versions**: PowerShell 7.5.x, winget 1.x
+**Requires**: Windows platform, PowerShell 7.x
 
 ---
 
-## Navigation
+## Profile-First Approach
 
-- Operations and troubleshooting: `references/OPERATIONS.md`
-
-## Quick Start (5 Minutes)
-
-### 1. Verify PowerShell Version
+**Always load profile before operations:**
 
 ```powershell
-$PSVersionTable.PSVersion
-# Should show 7.x (NOT 5.1)
+. $HOME/.admin/scripts/Load-Profile.ps1  # Or from admin skill
+Load-AdminProfile -Export
 ```
 
-**If PowerShell 7 not installed:**
-```powershell
-winget install Microsoft.PowerShell
-```
-
-### 2. Set Up Environment File
-
-Create `.env` in your admin directory:
+Then check preferences before suggesting commands:
 
 ```powershell
-# Create .env from template
-Copy-Item ".env.template" ".env"
-# Edit with your device-specific values
-notepad .env
-```
-
-### 3. Verify Environment
-
-```powershell
-# Run verification script
-.\scripts\Verify-ShellEnvironment.ps1
+# User wants to install a package
+$preferredManager = $AdminProfile.preferences.packages.manager
+# Returns: "scoop" or "winget" or "chocolatey"
 ```
 
 ---
 
-## Critical Rules
+## Package Installation (Profile-Aware)
 
-### Always Do
+### Check Preference First
 
-- Use PowerShell 7.x (`pwsh.exe`), not Windows PowerShell 5.1 (`powershell.exe`)
-- Use PowerShell cmdlets, not bash/Linux commands
-- Use full paths with `Test-Path` before file operations
-- Set PATH in Windows Registry for persistence (not just profile)
-- Use `${env:VARIABLE}` syntax for environment variables
+```powershell
+$pkgMgr = $AdminProfile.preferences.packages.manager
 
-### Never Do
+switch ($pkgMgr) {
+    "scoop"   { scoop install $package }
+    "winget"  { winget install $package }
+    "choco"   { choco install $package -y }
+    default   { winget install $package }
+}
+```
 
-- Use bash commands (`cat`, `ls`, `grep`, `echo`, `export`)
-- Use relative paths without verification
-- Modify system PATH without backup
-- Run scripts without execution policy check
-- Create multiple config files (update existing ones)
+### Quick Reference by Manager
+
+| Manager | Install | Update | List |
+|---------|---------|--------|------|
+| scoop | `scoop install x` | `scoop update x` | `scoop list` |
+| winget | `winget install x` | `winget upgrade x` | `winget list` |
+| choco | `choco install x -y` | `choco upgrade x` | `choco list` |
+
+---
+
+## Python Commands (Profile-Aware)
+
+**Check profile first:**
+
+```powershell
+$pyMgr = $AdminProfile.preferences.python.manager
+# Returns: "uv", "pip", "conda", "poetry"
+```
+
+| Profile Says | Instead of `pip install x` | Use |
+|--------------|---------------------------|-----|
+| `uv` | ❌ | `uv pip install x` |
+| `pip` | ✅ | `pip install x` |
+| `conda` | ❌ | `conda install x` |
+| `poetry` | ❌ | `poetry add x` |
+
+---
+
+## Node Commands (Profile-Aware)
+
+```powershell
+$nodeMgr = $AdminProfile.preferences.node.manager
+# Returns: "npm", "pnpm", "yarn", "bun"
+```
+
+| Profile Says | Instead of `npm install` | Use |
+|--------------|--------------------------|-----|
+| `npm` | ✅ | `npm install` |
+| `pnpm` | ❌ | `pnpm install` |
+| `yarn` | ❌ | `yarn` |
+| `bun` | ❌ | `bun install` |
 
 ---
 
 ## Bash to PowerShell Translation
 
-| Bash Command | PowerShell Equivalent | Notes |
-|--------------|----------------------|-------|
-| `cat file.txt` | `Get-Content file.txt` | Or `gc` alias |
-| `cat file.txt \| head -20` | `Get-Content file.txt -Head 20` | Built-in parameter |
-| `cat file.txt \| tail -20` | `Get-Content file.txt -Tail 20` | Built-in parameter |
-| `ls` | `Get-ChildItem` | Or `dir`, `gci` aliases |
-| `ls -la` | `Get-ChildItem -Force` | Shows hidden files |
-| `grep "pattern" file` | `Select-String "pattern" file` | Or `sls` alias |
-| `grep -r "pattern" .` | `Get-ChildItem -Recurse \| Select-String "pattern"` | Recursive search |
-| `echo "text"` | `Write-Output "text"` | Or `Write-Host` for display |
-| `echo "text" > file` | `Set-Content file -Value "text"` | Overwrites file |
-| `echo "text" >> file` | `Add-Content file -Value "text"` | Appends to file |
-| `export VAR=value` | `$env:VAR = "value"` | Session only |
-| `export VAR=value` (permanent) | `[Environment]::SetEnvironmentVariable("VAR", "value", "User")` | Persists |
-| `test -f file` | `Test-Path file -PathType Leaf` | Check file exists |
-| `test -d dir` | `Test-Path dir -PathType Container` | Check dir exists |
-| `mkdir -p dir/sub` | `New-Item -ItemType Directory -Path dir/sub -Force` | Creates parents |
-| `rm file` | `Remove-Item file` | Delete file |
-| `rm -rf dir` | `Remove-Item dir -Recurse -Force` | Delete directory |
-| `cp src dst` | `Copy-Item src dst` | Copy file |
-| `mv src dst` | `Move-Item src dst` | Move/rename |
-| `pwd` | `Get-Location` | Or `$PWD` variable |
-| `cd dir` | `Set-Location dir` | Or `cd` alias works |
-| `which cmd` | `Get-Command cmd` | Find command location |
-| `ps aux` | `Get-Process` | List processes |
-| `kill PID` | `Stop-Process -Id PID` | Kill process |
-| `curl URL` | `Invoke-WebRequest URL` | Or `Invoke-RestMethod` for APIs |
-| `wget URL -O file` | `Invoke-WebRequest URL -OutFile file` | Download file |
-| `jq` | `ConvertFrom-Json` / `ConvertTo-Json` | JSON handling |
-| `sed 's/old/new/g'` | `(Get-Content file) -replace 'old','new'` | Text replacement |
-| `awk` | `Select-Object`, `ForEach-Object` | Data processing |
-| `source file.sh` | `. .\file.ps1` | Dot-source script |
+| Bash | PowerShell | Notes |
+|------|------------|-------|
+| `cat file` | `Get-Content file` | Or `gc` |
+| `cat file \| head -20` | `Get-Content file -Head 20` | |
+| `cat file \| tail -20` | `Get-Content file -Tail 20` | |
+| `ls -la` | `Get-ChildItem -Force` | |
+| `grep "x" file` | `Select-String "x" file` | Or `sls` |
+| `echo "x"` | `Write-Output "x"` | |
+| `echo "x" > file` | `Set-Content file -Value "x"` | |
+| `echo "x" >> file` | `Add-Content file -Value "x"` | |
+| `export VAR=x` | `$env:VAR = "x"` | Session only |
+| `export VAR=x` (perm) | `[Environment]::SetEnvironmentVariable("VAR", "x", "User")` | |
+| `test -f file` | `Test-Path file -PathType Leaf` | |
+| `test -d dir` | `Test-Path dir -PathType Container` | |
+| `mkdir -p dir` | `New-Item -ItemType Directory -Path dir -Force` | |
+| `rm -rf dir` | `Remove-Item dir -Recurse -Force` | |
+| `which cmd` | `Get-Command cmd` | |
+| `curl URL` | `Invoke-WebRequest URL` | |
+| `jq` | `ConvertFrom-Json` / `ConvertTo-Json` | |
 
 ---
 
-## Package Managers
+## PATH Operations
 
-### winget (Preferred for Windows Apps)
-
-```powershell
-# Search for package
-winget search "package-name"
-
-# Install package
-winget install Package.Name
-
-# Install specific version
-winget install Package.Name --version 1.2.3
-
-# List installed packages
-winget list
-
-# Upgrade package
-winget upgrade Package.Name
-
-# Upgrade all packages
-winget upgrade --all
-
-# Uninstall package
-winget uninstall Package.Name
-```
-
-### scoop (Developer Tools)
+### Check Tool Path from Profile
 
 ```powershell
-# Install scoop (if not installed)
-irm get.scoop.sh | iex
-
-# Add buckets (repositories)
-scoop bucket add extras
-scoop bucket add versions
-
-# Install package
-scoop install git
-
-# List installed
-scoop list
-
-# Update package
-scoop update git
-
-# Update all
-scoop update *
-
-# Uninstall
-scoop uninstall git
-```
-
-### npm (Node.js Packages)
-
-```powershell
-# Install globally
-npm install -g package-name
-
-# List global packages
-npm list -g --depth=0
-
-# Update global package
-npm update -g package-name
-
-# Uninstall global
-npm uninstall -g package-name
-```
-
-### chocolatey (Alternative)
-
-```powershell
-# Install chocolatey (admin required)
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-# Install package
-choco install package-name -y
-
-# List installed
-choco list --local-only
-
-# Upgrade
-choco upgrade package-name -y
-```
-
----
-
-## PATH Configuration
-
-### Check Current PATH
-
-```powershell
-# View full PATH
-$env:PATH -split ';'
-
-# Check if path exists in PATH
-$env:PATH -split ';' | Where-Object { $_ -like "*npm*" }
-
-# Check User vs Machine PATH separately
-[Environment]::GetEnvironmentVariable('PATH', 'User') -split ';'
-[Environment]::GetEnvironmentVariable('PATH', 'Machine') -split ';'
+# Instead of searching, use profile
+$gitPath = $AdminProfile.tools.git.path
+# Returns: "C:/Program Files/Git/mingw64/bin/git.exe"
 ```
 
 ### Add to PATH (Permanent)
 
 ```powershell
-# Add to User PATH (no admin required)
-$currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
 $newPath = "C:/new/path"
+$currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
 if ($currentPath -notlike "*$newPath*") {
     [Environment]::SetEnvironmentVariable('PATH', "$newPath;$currentPath", 'User')
-    Write-Host "Added $newPath to User PATH"
 }
-
-# Refresh current session
+# Refresh session
 $env:PATH = [Environment]::GetEnvironmentVariable('PATH', 'User') + ";" + [Environment]::GetEnvironmentVariable('PATH', 'Machine')
-```
-
-### Common PATH Entries
-
-```powershell
-# npm global packages
-C:/Users/${env:USERNAME}/AppData/Roaming/npm
-
-# Scoop apps
-C:/Users/${env:USERNAME}/scoop/shims
-
-# Python (winget install)
-C:/Users/${env:USERNAME}/AppData/Local/Programs/Python/Python3xx
-
-# Git
-C:/Program Files/Git/cmd
 ```
 
 ---
 
 ## Environment Variables
 
-### Session Variables (Temporary)
+### From Profile
 
 ```powershell
-# Set variable
-$env:MY_VAR = "value"
-
-# Read variable
-$env:MY_VAR
-
-# Remove variable
-Remove-Item Env:\MY_VAR
+# Key paths are in profile
+$AdminProfile.paths.sshKeys      # C:/Users/Owner/.ssh
+$AdminProfile.paths.npmGlobal    # C:/Users/Owner/AppData/Roaming/npm
+$AdminProfile.paths.projects     # D:/
 ```
 
-### Permanent Variables
+### Set Permanent Variable
 
 ```powershell
-# Set User variable (persists across sessions)
 [Environment]::SetEnvironmentVariable("MY_VAR", "value", "User")
-
-# Set Machine variable (requires admin)
-[Environment]::SetEnvironmentVariable("MY_VAR", "value", "Machine")
-
-# Read from specific scope
-[Environment]::GetEnvironmentVariable("MY_VAR", "User")
-
-# Remove permanent variable
-[Environment]::SetEnvironmentVariable("MY_VAR", $null, "User")
-```
-
-### Load Variables from .env File
-
-```powershell
-# Load .env file into current session
-function Load-EnvFile {
-    param([string]$Path = ".env")
-
-    if (Test-Path $Path) {
-        Get-Content $Path | ForEach-Object {
-            if ($_ -match '^([^#][^=]+)=(.*)$') {
-                $name = $matches[1].Trim()
-                $value = $matches[2].Trim()
-                Set-Item -Path "Env:\$name" -Value $value
-                Write-Host "Loaded: $name"
-            }
-        }
-    } else {
-        Write-Warning "File not found: $Path"
-    }
-}
-
-# Usage
-Load-EnvFile ".env"
 ```
 
 ---
 
-## PowerShell Profile
+## Check Tool Status
 
-### Profile Locations
+Before installing, check profile:
 
 ```powershell
-# Current user, current host (most common)
-$PROFILE.CurrentUserCurrentHost
-# Typically: C:/Users/<user>/Documents/PowerShell/Microsoft.PowerShell_profile.ps1
-
-# View all profile paths
-$PROFILE | Get-Member -Type NoteProperty | ForEach-Object {
-    [PSCustomObject]@{
-        Name = $_.Name
-        Path = $PROFILE.($_.Name)
-        Exists = Test-Path $PROFILE.($_.Name)
-    }
+$tool = Get-AdminTool "docker"
+if ($tool.present -and $tool.installStatus -eq "working") {
+    Write-Host "Docker already installed: $($tool.version)"
+} else {
+    # Install using preferred manager
+    $mgr = $AdminProfile.preferences.packages.manager
+    # ... install logic
 }
 ```
 
-### Create/Edit Profile
+---
+
+## After Installation
+
+Update profile:
 
 ```powershell
-# Create profile if not exists
-if (-not (Test-Path $PROFILE)) {
-    New-Item -ItemType File -Path $PROFILE -Force
+$AdminProfile.tools["newtool"] = @{
+    present = $true
+    version = "1.0.0"
+    installedVia = $AdminProfile.preferences.packages.manager
+    path = (Get-Command newtool).Source
+    installStatus = "working"
+    lastChecked = (Get-Date).ToString("o")
 }
 
-# Edit profile
-notepad $PROFILE
-# Or: code $PROFILE (VS Code)
-```
-
-### Recommended Profile Content
-
-```powershell
-# PowerShell Profile
-# Location: $PROFILE
-
-# === ENVIRONMENT ===
-$env:COLORTERM = "truecolor"
-
-# === PATH VERIFICATION ===
-$npmPath = "$env:APPDATA\npm"
-if ($env:PATH -notlike "*$npmPath*") {
-    Write-Warning "npm not in PATH. Add to User PATH via Environment Variables."
+# Add to history
+$AdminProfile.history += @{
+    date = (Get-Date).ToString("o")
+    action = "install"
+    tool = "newtool"
+    method = $AdminProfile.preferences.packages.manager
+    status = "success"
 }
 
-# === FUNCTIONS ===
-
-# Load .env file
-function Load-Env {
-    param([string]$Path = ".env")
-    if (Test-Path $Path) {
-        Get-Content $Path | ForEach-Object {
-            if ($_ -match '^([^#][^=]+)=(.*)$') {
-                Set-Item -Path "Env:\$($matches[1].Trim())" -Value $matches[2].Trim()
-            }
-        }
-    }
-}
-
-# Quick navigation
-function admin { Set-Location "${env:ADMIN_ROOT}" }
-
-# === ALIASES ===
-Set-Alias -Name which -Value Get-Command
-Set-Alias -Name ll -Value Get-ChildItem
+# Save
+$AdminProfile | ConvertTo-Json -Depth 10 | Set-Content $AdminProfile.paths.deviceProfile
 ```
 
 ---
 
 ## Execution Policy
 
-### Check Current Policy
-
 ```powershell
-Get-ExecutionPolicy
-Get-ExecutionPolicy -List  # Shows all scopes
-```
+# Check
+Get-ExecutionPolicy -List
 
-### Set Execution Policy
-
-```powershell
-# For current user (recommended)
+# Set for current user (recommended)
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Options:
-# - Restricted: No scripts allowed
-# - AllSigned: Only signed scripts
-# - RemoteSigned: Local scripts OK, downloaded must be signed
-# - Unrestricted: All scripts (warning for downloaded)
-# - Bypass: No restrictions, no warnings
-```
-
-### Bypass for Single Script
-
-```powershell
+# Bypass for single script
 powershell -ExecutionPolicy Bypass -File script.ps1
 ```
 
 ---
 
-## JSON Operations
+## PowerShell Profile
 
-### Read JSON
+Location: `$AdminProfile.preferences.shell.profilePath`
 
 ```powershell
-# Read and parse JSON file
-$config = Get-Content "config.json" | ConvertFrom-Json
+# Edit
+notepad $PROFILE
 
-# Access properties
-$config.propertyName
-$config.nested.property
-
-# Access array items
-$config.items[0]
+# Recommended: Source admin profile loader
+. "$HOME\.admin\scripts\Load-Profile.ps1"
+Load-AdminProfile -Export -Quiet
 ```
 
-### Write JSON
+---
+
+## Capabilities Check
+
+Before operations, verify capabilities:
 
 ```powershell
-# Create object and save as JSON
-$data = @{
-    name = "value"
-    nested = @{
-        property = "value"
-    }
-    items = @("item1", "item2")
+if (-not (Test-AdminCapability "canRunPowershell")) {
+    Write-Error "PowerShell not available"
+    return
 }
-$data | ConvertTo-Json -Depth 10 | Set-Content "config.json"
-```
 
-### Modify JSON
-
-```powershell
-# Read, modify, save
-$config = Get-Content "config.json" | ConvertFrom-Json
-$config.propertyName = "new value"
-$config.newProperty = "added"
-$config | ConvertTo-Json -Depth 10 | Set-Content "config.json"
+if (Test-AdminCapability "hasDocker") {
+    # Docker operations safe
+}
 ```
 
 ---
 
-## Logging Integration
+## Related Skills
 
-Use the centralized logging system from the `admin` skill. See `admin/references/logging.md` for full documentation.
-
-### Quick Reference
-
-```powershell
-# Use Log-Operation from centralized logging
-Log-Operation -Status "SUCCESS" -Operation "Install" -Details "Installed git 2.47.0 via winget" -LogType "installation"
-Log-Operation -Status "ERROR" -Operation "PATH" -Details "npm not found in PATH"
-Log-Operation -Status "SUCCESS" -Operation "Config" -Details "Updated PATH in registry" -LogType "system-change"
-```
-
-### Log Types
-
-| LogType | Use Case |
-|---------|----------|
-| `operation` | General operations (default) |
-| `installation` | Software installations |
-| `system-change` | Config/registry changes |
-| `handoff` | Cross-platform coordination |
-
-### Log Levels
-
-| Status | Use Case |
-|--------|----------|
-| `SUCCESS` | Completed operations |
-| `ERROR` | Failed operations |
-| `WARNING` | Non-critical issues |
-| `INFO` | General information |
-| `HANDOFF` | Cross-platform coordination |
+| Task | Route To |
+|------|----------|
+| WSL operations | `admin-wsl` |
+| MCP servers | `admin-mcp` |
+| Server provisioning | `admin-devops` |
+| Profile management | `admin` |
 
 ---
 
-## Operations
+## References
 
-Known issues prevention, bundled resources, troubleshooting, setup checklist, and version snapshots are in `references/OPERATIONS.md`.
+- `references/OPERATIONS.md` - Troubleshooting, known issues

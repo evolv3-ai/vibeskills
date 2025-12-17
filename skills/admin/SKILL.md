@@ -1,114 +1,186 @@
 ---
 name: admin
 description: |
-  Central orchestrator for system administration. Detects context (Windows/WSL/Linux/macOS),
-  routes to specialist skills, provides centralized logging and device profiles.
+  Context-aware development companion that knows your machine and adapts instructions accordingly.
+  Central orchestrator for system administration - reads device profile, routes to specialists.
 
-  Use when: managing servers, administering Windows or Linux systems, tracking installed tools,
-  coordinating cross-platform tasks, or troubleshooting any admin-related issues.
+  Use when: installing tools, managing servers, setting up dev environments, coordinating any admin task.
+  The skill adapts to YOUR preferences (uv over pip, scoop over winget, etc.)
 license: MIT
 ---
 
-# Admin - System Administration Orchestrator
+# Admin - Context-Aware DevOps Companion
 
-**Purpose**: Central entry point for administration tasks. Detects platform + shell, validates context, routes to the right specialist skill, and maintains shared logs and device profiles.
+**Purpose**: Read your device profile, adapt instructions to your setup, route to specialist skills.
 
-## Navigation
+## Core Value
 
-Longer material is split into references (one level deep):
-- Shell + platform detection: `references/shell-detection.md`
-- First‑run setup and config loading: `references/first-run-setup.md`
-- Routing rules and context handoff: `references/routing-guide.md`
-- Centralized logging: `references/logging.md`
-- Device profiles (installed tools, servers): `references/device-profiles.md`
-- Cross‑platform coordination (Windows ↔ WSL): `references/cross-platform.md`
-- PowerShell command cheatsheet: `references/powershell-commands.md`
+When a GitHub repo says `pip install package`, this skill knows you prefer `uv` and suggests `uv pip install package` instead.
 
-## Core Rules
+## Profile Location
 
-1. **Detect both platform and shell first**. `ADMIN_PLATFORM` and `ADMIN_SHELL` are separate; shell syntax wins over platform.
-2. **Use shell‑appropriate syntax** regardless of host OS (Git Bash on Windows counts as bash).
-3. **Validate context before routing**. If a task requires another context, log a handoff and stop.
-4. **Handle profile/logging tasks directly** in `admin`; do not route these.
-5. **Prefer forward‑slash Windows paths** in examples (`C:/Users/...`) to avoid shell ambiguity.
+```
+$HOME/.admin/profiles/{HOSTNAME}.json    # Schema v3.0
+```
 
-## Quick Start
+**Profile contains**: installed tools, paths, preferences, servers, deployments, capabilities.
 
-1. Ensure `ADMIN_ROOT` exists. On Windows+WSL machines, this points to the Windows filesystem so logs/profiles are shared.
-2. Load config from `.env.local` (project) or `$ADMIN_ROOT/.env` (global).
-3. Determine `ADMIN_PLATFORM` and `ADMIN_SHELL` using helpers in `references/shell-detection.md`.
-4. Route to a specialist skill using the routing summary below (details in `references/routing-guide.md`).
+---
 
-## Routing Summary
+## Quick Start: Load Profile First
 
-- **Server / infrastructure / provisioning** → `admin-devops`  
-  May further route to `admin-infra-*` (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo) or `admin-app-*` (Coolify, KASM).
-- **Windows system administration** (PowerShell, winget/scoop, registry, `.wslconfig`, Windows Terminal) → `admin-windows`  
-  Requires Windows context.
-- **MCP / Claude Desktop config on Windows** → `admin-mcp`  
-  Requires Windows context.
-- **WSL administration** (Ubuntu in WSL, Docker Desktop integration, WSL profile) → `admin-wsl`  
-  Requires WSL context.
-- **Linux/macOS administration** (apt on Linux, brew on macOS, unix services) → `admin-unix`  
-  Requires Linux/macOS context (non-WSL).
-- **Profiles, logs, cross‑platform coordination** → handled here in `admin`.
+### PowerShell (Windows)
+```powershell
+. scripts/Load-Profile.ps1
+Load-AdminProfile -Export
+Show-AdminSummary
+```
 
-## Key Environment Variables
+### Bash (WSL/Linux/macOS)
+```bash
+source scripts/load-profile.sh
+load_admin_profile
+show_admin_summary
+```
 
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `DEVICE_NAME` | Device identifier | `$(hostname)` / `$COMPUTERNAME` |
-| `ADMIN_USER` | Primary admin username | `$(whoami)` / `$USERNAME` |
-| `ADMIN_ROOT` | Shared admin directory | Windows: `C:/Users/<USERNAME>/.admin` • WSL: `/mnt/c/Users/<WIN_USER>/.admin` • Linux/macOS: `~/.admin` |
-| `ADMIN_LOG_PATH` | Log directory | `$ADMIN_ROOT/logs` |
-| `ADMIN_PROFILE_PATH` | Profiles directory | `$ADMIN_ROOT/profiles` |
-| `ADMIN_PLATFORM` | Override auto‑detection | Auto‑detected |
-| `ADMIN_SHELL` | Override shell detection | Auto‑detected |
-| `WSL_DISTRO` | Target WSL distro | `Ubuntu-24.04` |
+---
 
-Full variable list: `assets/env-spec.txt` and `.env.template`.
+## The Key Innovation: Preferences
 
-## Logging Integration
+```json
+"preferences": {
+  "python": { "manager": "uv", "reason": "Fast, modern, replaces pip+venv" },
+  "node": { "manager": "npm", "reason": "Default, bun for speed" },
+  "packages": { "manager": "scoop", "reason": "Portable installs" }
+}
+```
 
-- Bash mode uses `log_admin` (see `references/logging.md`).
-- PowerShell mode uses `Log-Operation` (see `references/logging.md`).
-- Always log handoffs (`LogType=handoff`) when a task requires switching contexts.
+**Always check preferences before suggesting commands.**
 
-## Device Profiles
+---
 
-Profiles track installed tools, package managers, and managed servers per device. Use:
-- `update_profile()` to create/locate the current device profile.
-- `log_tool_install()` after installing tools to update `installedTools`.
+## Adaptation Examples
 
-Details and canonical functions: `references/device-profiles.md`.
+| User Wants | README Says | Profile Shows | You Suggest |
+|------------|-------------|---------------|-------------|
+| Install Python pkg | `pip install x` | `preferences.python.manager: "uv"` | `uv pip install x` |
+| Install Node pkg | `npm install` | `preferences.node.manager: "pnpm"` | `pnpm install` |
+| Install CLI tool | `brew install x` | `preferences.packages.manager: "scoop"` | `scoop install x` |
+
+---
+
+## Profile Sections Quick Reference
+
+| Section | What It Contains | When To Use |
+|---------|------------------|-------------|
+| `device` | OS, hostname, hardware | Platform detection |
+| `paths` | Critical locations | Finding configs, skills, keys |
+| `tools` | Installed tools + paths | Check before install |
+| `preferences` | User choices | **Adapt commands** |
+| `servers` | Managed servers | SSH, deployments |
+| `deployments` | .env.local references | Load provider configs |
+| `capabilities` | Quick flags | Route decisions |
+| `issues` | Known problems | Avoid repeating fixes |
+| `mcp` | MCP server configs | MCP troubleshooting |
+| `wsl` | WSL config (Windows) | Cross-platform |
+
+---
+
+## Routing Rules
+
+| Task Type | Route To | Requires |
+|-----------|----------|----------|
+| Server provisioning | `admin-devops` | - |
+| OCI infrastructure | `admin-infra-oci` | OCI CLI configured |
+| Hetzner infrastructure | `admin-infra-hetzner` | Hetzner token |
+| Other clouds | `admin-infra-{provider}` | Provider credentials |
+| Coolify installation | `admin-app-coolify` | Server access |
+| KASM installation | `admin-app-kasm` | Server access |
+| Windows system admin | `admin-windows` | Windows platform |
+| WSL administration | `admin-wsl` | WSL present |
+| Linux/macOS admin | `admin-unix` | Non-Windows |
+| MCP servers | `admin-mcp` | - |
+
+---
+
+## Tool Installation Workflow
+
+1. **Check if installed**: `profile.tools.{name}.present`
+2. **If installed, check status**: `profile.tools.{name}.installStatus`
+3. **If not installed**:
+   - Check preferred manager: `profile.preferences.packages.manager`
+   - Construct install command for that manager
+4. **After install**:
+   - Update `profile.tools.{name}` with version, path
+   - Add entry to `profile.history`
+
+---
+
+## Server Operations Workflow
+
+1. **List servers**: `profile.servers[]`
+2. **Get SSH details**: `profile.servers[id].{username, host, keyPath, port}`
+3. **Construct command**:
+   ```bash
+   ssh -i {keyPath} -p {port} {username}@{host}
+   ```
+
+---
+
+## Deployment Workflow
+
+1. **Find deployment**: `profile.deployments.{name}`
+2. **Load env file**: `profile.deployments.{name}.envFile`
+3. **Get provider**: `profile.deployments.{name}.provider`
+4. **Get linked servers**: `profile.deployments.{name}.serverIds`
+
+---
+
+## Capability Checks
+
+```javascript
+// Before running PowerShell commands
+if (!profile.capabilities.canRunPowershell) { /* route to bash */ }
+
+// Before using Docker
+if (!profile.capabilities.hasDocker) { /* offer to install */ }
+
+// Before WSL operations
+if (!profile.capabilities.hasWsl) { /* Windows-only alternative */ }
+```
+
+---
+
+## References
+
+- `references/device-profiles.md` - Profile management details
+- `references/routing-guide.md` - Detailed routing logic
+- `references/logging.md` - Centralized logging
+- `references/first-run-setup.md` - Initial setup flow
+- `references/cross-platform.md` - Windows ↔ WSL coordination
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `Load-Profile.ps1` | PowerShell profile loader |
+| `load-profile.sh` | Bash profile loader |
+
+## Templates
+
+| File | Purpose |
+|------|---------|
+| `templates/profile-v3-example.json` | Complete profile example |
+| `templates/env-template.env` | Universal deployment config |
 
 ## Related Skills
 
 | Skill | Purpose |
 |-------|---------|
 | `admin-devops` | Server inventory & provisioning |
-| `admin-infra-oci` | Oracle Cloud Infrastructure |
-| `admin-infra-hetzner` | Hetzner Cloud |
-| `admin-infra-digitalocean` | DigitalOcean |
-| `admin-infra-vultr` | Vultr |
-| `admin-infra-linode` | Linode/Akamai |
-| `admin-infra-contabo` | Contabo |
-| `admin-app-coolify` | Coolify PaaS deployments |
-| `admin-app-kasm` | KASM Workspaces deployments |
+| `admin-infra-*` | Cloud provider provisioning |
+| `admin-app-*` | Application deployment |
 | `admin-windows` | Windows administration |
-| `admin-wsl` | WSL administration (WSL-only) |
-| `admin-unix` | Linux/macOS administration (non-WSL) |
+| `admin-wsl` | WSL administration |
+| `admin-unix` | Linux/macOS administration |
 | `admin-mcp` | MCP server management |
-
-## Common Error Patterns
-
-- **Wrong context**: Task requires a different platform/shell. Follow handoff instructions logged in `handoffs.log`.
-- **Missing config**: Create `.env.local` or run setup flow in `references/first-run-setup.md`.
-- **Sub‑skill not installed**: Install with `./scripts/install-skill.sh <skill-name>`.
-
-## Bundled Resources
-
-- `assets/env-spec.txt` - Canonical environment variable specification
-- `assets/profile-schema.json` - JSON Schema for device profiles
-- `templates/profile.json` - Empty profile template
-- `references/*` - Detailed behavior and workflows

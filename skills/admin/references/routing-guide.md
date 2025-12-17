@@ -3,12 +3,54 @@
 Detailed routing rules for the admin orchestrator skill.
 
 ## Contents
+- ⚠️ Environment Detection (Run First!)
 - Routing Decision Flow
+- Step 0: Admin Environment Check
 - Keyword → Skill Mapping
 - Context Validation
 - Handoff Protocol
 - Skill Availability Check
 - Examples
+
+---
+
+## ⚠️ Environment Detection (MUST Run First)
+
+**Before ANY routing logic, detect the execution environment:**
+
+```bash
+# Run this FIRST - determines WSL vs Windows Git Bash vs Native Linux
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    ENV="wsl"
+    ADMIN_ROOT="/mnt/c/Users/$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')/.admin"
+elif [[ "$OS" == "Windows_NT" || -n "$MSYSTEM" ]]; then
+    ENV="windows-gitbash"
+    ADMIN_ROOT="$HOME/.admin"
+elif [[ "$(uname -s)" == "Darwin" ]]; then
+    ENV="macos"
+    ADMIN_ROOT="$HOME/.admin"
+else
+    ENV="linux"
+    ADMIN_ROOT="$HOME/.admin"
+fi
+echo "Detected: ENV=$ENV, ADMIN_ROOT=$ADMIN_ROOT"
+```
+
+### Quick Reference
+
+| Session Started From | ENV Value | Key Indicator | Path Example |
+|---------------------|-----------|---------------|--------------|
+| WSL terminal | `wsl` | `/proc/version` has "microsoft" | `/mnt/c/Users/Owner/.admin` |
+| Windows (PowerShell/CMD/Terminal) | `windows-gitbash` | `$OS=Windows_NT` | `/c/Users/Owner/.admin` |
+| Native Linux | `linux` | No Microsoft, no Windows_NT | `/home/user/.admin` |
+| macOS | `macos` | `uname -s` = "Darwin" | `/Users/user/.admin` |
+
+### Critical Rules
+
+1. **Claude Code ALWAYS uses bash** - even on Windows (via Git Bash/MINGW)
+2. **Never run PowerShell syntax directly** - no `Test-Path`, `$env:VAR`, etc.
+3. **To run PowerShell**: Use `pwsh.exe -Command "..."`
+4. **WSL vs Git Bash paths**: `/mnt/c/` only works in WSL, use `C:/` or `/c/` in Git Bash
 
 ---
 
@@ -20,16 +62,38 @@ Detailed routing rules for the admin orchestrator skill.
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-                    ┌─────────────────┐
-                    │ Detect Platform │
-                    └────────┬────────┘
-                             │
-         ┌───────────────────┼───────────────────┐
+              ┌───────────────────────────────┐
+              │  STEP 0a: DETECT ENVIRONMENT  │
+              │  (wsl / windows-gitbash /     │
+              │   linux / macos)              │
+              │  → Sets $ENV and $ADMIN_ROOT  │
+              └───────────────┬───────────────┘
+                              │
+                              ▼
+              ┌───────────────────────────────┐
+              │  STEP 0b: Check Admin Env     │
+              │  $ADMIN_ROOT/.env exists?     │
+              │  $ADMIN_ROOT/logs/ exists?    │
+              └───────────────┬───────────────┘
+                              │
+              ┌───────────────┴───────────────┐
+              │                               │
+              ▼                               ▼
+        ┌───────────┐                 ┌───────────────┐
+        │    YES    │                 │      NO       │
+        │  Continue │                 │ Run First-Run │
+        └─────┬─────┘                 │    Setup      │
+              │                       └───────┬───────┘
+              │                               │
+              │◄──────────────────────────────┘
+              │
+              ▼
+         ┌───────────────────┬───────────────────┐
          ▼                   ▼                   ▼
-    ┌─────────┐        ┌─────────┐        ┌─────────┐
-    │ Windows │        │   WSL   │        │  Linux  │
-    │(non-WSL)│        │         │        │ /macOS  │
-    └────┬────┘        └────┬────┘        └────┬────┘
+    ┌─────────────┐    ┌─────────┐        ┌─────────┐
+    │ windows-    │    │   wsl   │        │  linux  │
+    │ gitbash     │    │         │        │ /macos  │
+    └──────┬──────┘    └────┬────┘        └────┬────┘
          │                  │                  │
          ▼                  ▼                  ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -79,6 +143,36 @@ Detailed routing rules for the admin orchestrator skill.
 │(coolify, kasm) │
 └────────────────┘
 ```
+
+## Step 0b: Admin Environment Check
+
+**After environment detection, verify the admin environment exists.**
+
+### What to Verify
+
+1. `$ADMIN_ROOT` directory exists
+2. `$ADMIN_ROOT/.env` configuration file exists
+3. `$ADMIN_ROOT/logs/` directory exists
+4. `$ADMIN_ROOT/profiles/` directory exists
+
+### If Any Check Fails
+
+Run the first-run setup flow from `first-run-setup.md`:
+
+1. Detect platform (Windows, WSL, Linux, macOS)
+2. Create directory structure
+3. Generate `.env` with detected values
+4. Create device profile
+5. Verify write permissions
+
+### Why This Must Be First
+
+- **Logging requires `$ADMIN_ROOT/logs/`** - handoffs can't be tracked without it
+- **Profiles require `$ADMIN_ROOT/profiles/`** - installed tool history will be lost
+- **Sub-skills read `$ADMIN_ROOT/.env`** - config must exist before routing
+- **Late setup corrupts state** - tasks may run without proper logging
+
+---
 
 ## Keyword → Skill Mapping
 

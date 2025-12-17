@@ -1,68 +1,85 @@
 {
-  "schemaVersion": "2.0",
-  "deviceInfo": {
-    "name": "",
-    "platform": "",
-    "hostname": "",
-    "user": "",
-    "shell": "",
+  "schemaVersion": "3.0",
+  
+  "device": {
+    "name": "DEVICE_NAME",
+    "platform": "windows",
+    "shell": "powershell",
+    "user": "USERNAME",
     "os": "",
     "osVersion": "",
-    "adminRoot": "",
-    "timezone": "",
-    "lastUpdated": ""
-  },
-  "packageManagers": {
-    "apt": {
-      "present": false,
-      "version": null,
-      "lastChecked": null
-    },
-    "brew": {
-      "present": false,
-      "version": null,
-      "lastChecked": null
-    },
-    "winget": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    },
-    "scoop": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    },
-    "npm": {
-      "present": false,
-      "version": null,
-      "lastChecked": null,
-      "location": null
-    }
-  },
-  "installedTools": {},
-  "installationHistory": [],
-  "systemInfo": {
-    "shell": "",
-    "shellVersion": "",
     "architecture": "",
     "cpu": "",
+    "cores": 0,
+    "threads": 0,
     "ram": "",
-    "lastSystemCheck": null
+    "timezone": "",
+    "initialized": "",
+    "lastUpdated": ""
   },
+
   "paths": {
+    "adminRoot": "",
+    "deviceProfile": "",
+    "logs": "",
+    "claudeConfig": "",
+    "claudeSkills": "",
+    "mcpServers": "",
+    "sshKeys": "",
+    "projects": "",
+    "dropbox": null,
     "npmGlobal": "",
-    "projectsRoot": ""
+    "pythonVenvs": ""
   },
-  "managedServers": [],
-  "cloudProviders": {},
-  "syncSettings": {
-    "enabled": false,
-    "syncPath": null,
-    "lastSync": null,
-    "linkedDevices": []
+
+  "packageManagers": {
+    "scoop": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "winget": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "npm": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "pip": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "uv": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "brew": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false },
+    "apt": { "present": false, "version": null, "path": null, "location": null, "lastChecked": null, "preferred": false }
   },
-  "customMetadata": {}
+
+  "tools": {},
+
+  "preferences": {
+    "python": { "manager": "pip", "reason": "" },
+    "node": { "manager": "npm", "reason": "" },
+    "packages": { "manager": "", "reason": "" },
+    "shell": { "preferred": "", "profilePath": "" },
+    "editor": "",
+    "terminal": ""
+  },
+
+  "wsl": null,
+  "docker": null,
+
+  "mcp": {
+    "configFile": "",
+    "servers": {}
+  },
+
+  "servers": [],
+  "deployments": {},
+  
+  "issues": {
+    "current": [],
+    "resolved": []
+  },
+
+  "history": [],
+
+  "capabilities": {
+    "canRunPowershell": false,
+    "canRunBash": false,
+    "hasWsl": false,
+    "hasDocker": false,
+    "hasSsh": false,
+    "hasGit": false,
+    "canAccessNetwork": true,
+    "canAccessDropbox": false,
+    "mcpEnabled": false
+  }
 }

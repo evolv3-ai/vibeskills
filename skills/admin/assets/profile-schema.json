@@ -1,263 +1,185 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/jezweb/claude-skills/admin/profile-schema.json",
-  "title": "Admin Device Profile",
-  "description": "Schema for device profiles managed by the admin skill",
+  "$id": "https://github.com/evolv3ai/admin-suite/profile-schema.json",
+  "title": "Device Profile Schema v3.0",
+  "description": "Unified device profile for context-aware development assistance",
   "type": "object",
-  "required": ["schemaVersion", "deviceInfo"],
+  "required": ["schemaVersion", "device", "packageManagers", "tools"],
   "properties": {
     "schemaVersion": {
       "type": "string",
-      "description": "Profile schema version for migration compatibility",
-      "examples": ["2.0"]
+      "const": "3.0",
+      "description": "Schema version for migration support"
     },
-    "deviceInfo": {
+    "device": {
       "type": "object",
-      "description": "Core device identification",
-      "required": ["name", "platform", "hostname", "user", "lastUpdated"],
+      "description": "Core device identity and hardware",
+      "required": ["name", "platform", "user"],
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Unique device identifier (DEVICE_NAME)",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_]*$"
-        },
-        "platform": {
-          "type": "string",
-          "enum": ["windows", "wsl", "linux", "macos"],
-          "description": "Operating platform"
-        },
-        "shell": {
-          "type": "string",
-          "enum": ["powershell", "bash", "zsh", "cmd"],
-          "description": "Primary shell environment (ADMIN_SHELL)"
-        },
-        "hostname": {
-          "type": "string",
-          "description": "System hostname"
-        },
-        "user": {
-          "type": "string",
-          "description": "Primary admin user (ADMIN_USER)"
-        },
-        "os": {
-          "type": "string",
-          "description": "Operating system name",
-          "examples": ["Windows 11", "Ubuntu 24.04", "macOS Sonoma"]
-        },
-        "osVersion": {
-          "type": "string",
-          "description": "Operating system version"
-        },
-        "adminRoot": {
-          "type": "string",
-          "description": "Path to admin root directory (ADMIN_ROOT)"
-        },
-        "timezone": {
-          "type": "string",
-          "description": "System timezone",
-          "examples": ["America/Chicago", "UTC", "Europe/London"]
-        },
-        "lastUpdated": {
-          "type": "string",
-          "format": "date-time",
-          "description": "ISO 8601 timestamp of last profile update"
-        }
-      }
-    },
-    "packageManagers": {
-      "type": "object",
-      "description": "Available package managers on this device",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "present": {
-            "type": "boolean",
-            "description": "Whether this package manager is installed"
-          },
-          "version": {
-            "type": ["string", "null"],
-            "description": "Installed version"
-          },
-          "location": {
-            "type": ["string", "null"],
-            "description": "Path to executable"
-          },
-          "lastChecked": {
-            "type": ["string", "null"],
-            "format": "date-time",
-            "description": "When this was last verified"
-          }
-        }
-      }
-    },
-    "installedTools": {
-      "type": "object",
-      "description": "Map of tool name to installation details",
-      "additionalProperties": {
-        "type": "object",
-        "required": ["version", "installedVia", "lastChecked"],
-        "properties": {
-          "version": {
-            "type": "string",
-            "description": "Installed version"
-          },
-          "installedVia": {
-            "type": "string",
-            "description": "Installation method",
-            "examples": ["apt", "brew", "winget", "scoop", "npm", "pip", "cargo", "manual"]
-          },
-          "path": {
-            "type": "string",
-            "description": "Installation path (optional)"
-          },
-          "lastChecked": {
-            "type": "string",
-            "format": "date-time",
-            "description": "ISO 8601 timestamp of last version check"
-          },
-          "config": {
-            "type": "object",
-            "description": "Tool-specific configuration metadata",
-            "additionalProperties": true
-          }
-        }
-      }
-    },
-    "installationHistory": {
-      "type": "array",
-      "description": "Log of installations performed via admin skills",
-      "items": {
-        "type": "object",
-        "properties": {
-          "tool": {
-            "type": "string",
-            "description": "Tool name"
-          },
-          "version": {
-            "type": "string",
-            "description": "Version installed"
-          },
-          "method": {
-            "type": "string",
-            "description": "Installation method"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "success": {
-            "type": "boolean"
-          }
-        }
-      }
-    },
-    "systemInfo": {
-      "type": "object",
-      "description": "System hardware and environment details",
-      "properties": {
-        "shell": {
-          "type": "string",
-          "description": "Current shell path"
-        },
-        "shellVersion": {
-          "type": "string",
-          "description": "Shell version"
-        },
-        "architecture": {
-          "type": "string",
-          "description": "CPU architecture",
-          "examples": ["x64", "arm64", "x86"]
-        },
-        "cpu": {
-          "type": "string",
-          "description": "CPU model"
-        },
-        "ram": {
-          "type": "string",
-          "description": "Total RAM"
-        },
-        "lastSystemCheck": {
-          "type": ["string", "null"],
-          "format": "date-time"
-        }
+        "name": { "type": "string", "description": "Hostname/device name" },
+        "platform": { "enum": ["windows", "macos", "linux"], "description": "Primary OS" },
+        "shell": { "enum": ["powershell", "pwsh", "bash", "zsh", "fish"], "description": "Default shell" },
+        "user": { "type": "string", "description": "Primary username" },
+        "os": { "type": "string", "description": "Full OS name (e.g., Windows 11 Pro)" },
+        "osVersion": { "type": "string", "description": "OS build/version" },
+        "architecture": { "enum": ["AMD64", "ARM64", "x86"], "description": "CPU architecture" },
+        "cpu": { "type": "string", "description": "CPU model" },
+        "cores": { "type": "integer", "description": "Physical cores" },
+        "threads": { "type": "integer", "description": "Logical threads" },
+        "ram": { "type": "string", "description": "Total RAM (e.g., 64 GB)" },
+        "timezone": { "type": "string", "description": "System timezone" },
+        "initialized": { "type": "string", "format": "date-time" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
       }
     },
     "paths": {
       "type": "object",
-      "description": "Common paths on this system",
+      "description": "Critical filesystem locations - THE KEY TO CONTEXT",
       "properties": {
-        "npmGlobal": {
-          "type": "string",
-          "description": "NPM global packages path"
-        },
-        "projectsRoot": {
-          "type": "string",
-          "description": "Default projects directory"
-        }
-      },
-      "additionalProperties": {
-        "type": "string"
+        "adminRoot": { "type": "string", "description": "Admin skills data root" },
+        "deviceProfile": { "type": "string", "description": "This profile file location" },
+        "logs": { "type": "string", "description": "Centralized log directory" },
+        "claudeConfig": { "type": "string", "description": "Claude Desktop config.json" },
+        "claudeSkills": { "type": "string", "description": "Claude skills directory" },
+        "mcpServers": { "type": "string", "description": "MCP servers root directory" },
+        "sshKeys": { "type": "string", "description": "SSH keys directory" },
+        "projects": { "type": "string", "description": "Default projects root" },
+        "dropbox": { "type": ["string", "null"], "description": "Dropbox sync folder" },
+        "npmGlobal": { "type": "string", "description": "Global npm modules path" },
+        "pythonVenvs": { "type": "string", "description": "Python venvs root" }
       }
     },
-    "managedServers": {
-      "type": "array",
-      "description": "Server IDs from admin-devops inventory",
-      "items": {
-        "type": "string",
-        "description": "Server identifier (matches SERVER_<ID> in inventory)"
-      }
-    },
-    "cloudProviders": {
+    "packageManagers": {
       "type": "object",
-      "description": "Configured cloud provider accounts",
+      "description": "Available package managers - determines HOW to install",
       "additionalProperties": {
         "type": "object",
         "properties": {
-          "configured": {
-            "type": "boolean",
-            "description": "Whether credentials are configured"
-          },
-          "defaultRegion": {
-            "type": "string",
-            "description": "Default region for this provider"
-          },
-          "lastUsed": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last time this provider was used"
-          }
+          "present": { "type": "boolean" },
+          "version": { "type": ["string", "null"] },
+          "path": { "type": ["string", "null"], "description": "Executable path" },
+          "location": { "type": ["string", "null"], "description": "Install root" },
+          "lastChecked": { "type": "string", "format": "date-time" },
+          "preferred": { "type": "boolean", "description": "User prefers this" }
         }
       }
     },
-    "syncSettings": {
+    "tools": {
       "type": "object",
-      "description": "Cross-device sync configuration",
+      "description": "Installed development tools - THE CORE CONTEXT",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "present": { "type": "boolean" },
+          "version": { "type": ["string", "null"] },
+          "installedVia": { "type": ["string", "null"] },
+          "path": { "type": ["string", "null"], "description": "Primary executable" },
+          "shimPath": { "type": ["string", "null"], "description": "Shim if using scoop" },
+          "configPath": { "type": ["string", "null"], "description": "Config file location" },
+          "lastChecked": { "type": "string", "format": "date-time" },
+          "installStatus": { "enum": ["working", "failed", "pending", "deprecated"] },
+          "notes": { "type": ["string", "null"], "description": "Context for AI" }
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "description": "User preferences - CRITICAL FOR SMART ADAPTATION",
       "properties": {
-        "enabled": {
-          "type": "boolean",
-          "default": false
+        "python": {
+          "type": "object",
+          "properties": {
+            "manager": { "enum": ["uv", "pip", "conda", "poetry", "pipenv"] },
+            "reason": { "type": "string" }
+          }
         },
-        "syncPath": {
-          "type": ["string", "null"],
-          "description": "Path to synced folder"
+        "node": {
+          "type": "object",
+          "properties": {
+            "manager": { "enum": ["npm", "pnpm", "yarn", "bun"] },
+            "reason": { "type": "string" }
+          }
         },
-        "lastSync": {
-          "type": ["string", "null"],
-          "format": "date-time"
+        "packages": {
+          "type": "object",
+          "properties": {
+            "manager": { "enum": ["scoop", "winget", "chocolatey", "brew", "apt"] },
+            "reason": { "type": "string" }
+          }
         },
-        "linkedDevices": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Other device names in sync group"
-        }
+        "shell": {
+          "type": "object",
+          "properties": {
+            "preferred": { "type": "string" },
+            "profilePath": { "type": "string" }
+          }
+        },
+        "editor": { "type": "string" },
+        "terminal": { "type": "string" }
       }
     },
-    "customMetadata": {
+    "wsl": {
+      "type": ["object", "null"],
+      "description": "WSL configuration (Windows only)"
+    },
+    "docker": {
+      "type": ["object", "null"],
+      "description": "Docker configuration"
+    },
+    "mcp": {
       "type": "object",
-      "description": "User-defined metadata",
-      "additionalProperties": true
+      "description": "MCP server configurations"
+    },
+    "servers": {
+      "type": "array",
+      "description": "Managed remote servers"
+    },
+    "issues": {
+      "type": "object",
+      "description": "Known problems and pending fixes"
+    },
+    "history": {
+      "type": "array",
+      "description": "Installation and configuration history"
+    },
+    "capabilities": {
+      "type": "object",
+      "description": "Quick capability flags for routing decisions"
+    },
+    "deployments": {
+      "type": "object",
+      "description": "References to deployment configurations (.env.local files)",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "envFile": { 
+            "type": "string", 
+            "description": "Path to .env.local file with deployment config" 
+          },
+          "type": { 
+            "enum": ["coolify", "kasm", "both", "custom"],
+            "description": "Deployment type"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Infrastructure provider (oci, hetzner, contabo, etc.)"
+          },
+          "status": { 
+            "enum": ["active", "stopped", "failed", "pending", "retired"],
+            "description": "Current deployment status"
+          },
+          "serverIds": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "References to servers[] by id"
+          },
+          "lastDeployed": { 
+            "type": "string", 
+            "format": "date-time" 
+          },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
     }
   }
 }

@@ -1,87 +1,220 @@
 ---
 name: admin-unix
 description: |
-  Administers macOS and Linux systems with shell-first commands. Covers Homebrew (macOS), apt (Linux),
-  core filesystem/process/service operations, and centralized logging integration.
+  Native macOS and Linux administration (non-WSL). Profile-aware - reads preferences
+  from ~/.admin/profiles/{hostname}.json.
 
-  Use when: managing packages on macOS/Linux, troubleshooting Unix tooling issues, administering services,
-  or performing system maintenance outside of Windows/WSL contexts.
-
-  Keywords: macos, linux, unix, homebrew, brew, apt, systemctl, journalctl, shell, bash, zsh
+  Use when: macOS/Linux system admin, Homebrew (macOS), apt (Linux), services.
+  NOT for WSL - use admin-wsl instead.
 license: MIT
 ---
 
-# Unix Admin (macOS + Linux)
+# Unix Administration (macOS + Linux)
 
-**Purpose**: Administer native macOS and Linux systems using shell-first commands, consistent logging, and portable paths. This skill is intentionally separate from `admin-wsl` (WSL-only).
+**Requires**: macOS or native Linux (NOT WSL)
 
-## Navigation
+---
 
-- Operations and troubleshooting: `references/OPERATIONS.md`
+## Profile-First Approach
 
-## Scope
-
-### Handles
-
-- macOS and Linux administration
-- Package management:
-  - macOS: Homebrew (`brew`)
-  - Linux: apt (`apt`)
-- Services/logs:
-  - Linux: systemd (`systemctl`, `journalctl`)
-  - macOS: Homebrew services (`brew services`) where applicable
-
-### Does Not Handle
-
-- WSL-specific administration (use `admin-wsl`)
-- Windows administration (use `admin-windows`)
-- MCP / Claude Desktop Windows config (use `admin-mcp`)
-
-## Quick Start
-
-### 1. Confirm platform and shell
+Profile location:
 
 ```bash
-uname -s
-echo "$SHELL"
+ADMIN_ROOT="${HOME}/.admin"
+PROFILE_PATH="${ADMIN_ROOT}/profiles/$(hostname).json"
 ```
 
-Expected:
-
-- macOS: `Darwin`
-- Linux: `Linux`
-
-### 2. Load admin config (optional but recommended)
-
-Prefer project-local `.env.local`, otherwise `$ADMIN_ROOT/.env`.
+**Load profile:**
 
 ```bash
-if [[ -f ".env.local" ]]; then
-  source ".env.local"
-elif [[ -n "${ADMIN_ROOT:-}" && -f "$ADMIN_ROOT/.env" ]]; then
-  source "$ADMIN_ROOT/.env"
-fi
+source /path/to/admin/scripts/load-profile.sh
+load_admin_profile
+show_admin_summary
 ```
 
-### 3. Log the session start
+---
 
-Central logging lives in the `admin` skill (`admin/references/logging.md`).
+## Platform Detection
 
 ```bash
-log_admin "INFO" "operation" "Session started" "platform=$(uname -s) user=$USER"
+OS=$(uname -s)
+case "$OS" in
+    Darwin) echo "macOS" ;;
+    Linux)  
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            echo "WSL - use admin-wsl instead"
+        else
+            echo "Native Linux"
+        fi
+        ;;
+esac
 ```
 
-## Critical Rules
+---
 
-- Prefer shell-appropriate syntax and safe quoting.
-- Use forward slashes in all path examples.
-- Avoid WSL-only paths like `/mnt/c/...` unless you are explicitly in WSL (that belongs to `admin-wsl`).
-- Keep SKILL.md concise; load details from `references/`.
+## Package Management (Profile-Aware)
 
-## Related Skills
+### Check Preference
 
-- `admin`: orchestrator and centralized logging/profiles
-- `admin-wsl`: WSL2 Ubuntu administration (WSL-only)
-- `admin-windows`: Windows administration
-- `admin-devops`: server inventory and provisioning
+```bash
+PKG_MGR=$(jq -r '.preferences.packages.manager' "$PROFILE_PATH")
+```
 
+### macOS (Homebrew)
+
+```bash
+# Install
+brew install $package
+
+# Update
+brew upgrade $package
+
+# List
+brew list
+
+# Search
+brew search $package
+```
+
+### Linux (apt)
+
+```bash
+# Update index
+sudo apt update
+
+# Install
+sudo apt install -y $package
+
+# Upgrade all
+sudo apt upgrade -y
+
+# Search
+apt search $package
+```
+
+---
+
+## Python Commands (Profile-Aware)
+
+```bash
+PY_MGR=$(get_preferred_manager python)
+
+case "$PY_MGR" in
+    uv)     uv pip install "$package" ;;
+    pip)    pip3 install "$package" ;;
+    conda)  conda install "$package" ;;
+esac
+```
+
+---
+
+## Node Commands (Profile-Aware)
+
+```bash
+NODE_MGR=$(get_preferred_manager node)
+
+case "$NODE_MGR" in
+    npm)    npm install "$package" ;;
+    pnpm)   pnpm add "$package" ;;
+    yarn)   yarn add "$package" ;;
+    bun)    bun add "$package" ;;
+esac
+```
+
+---
+
+## Services
+
+### Linux (systemd)
+
+```bash
+# Status
+sudo systemctl status $service
+
+# Start/Stop/Restart
+sudo systemctl start $service
+sudo systemctl stop $service
+sudo systemctl restart $service
+
+# Enable/Disable on boot
+sudo systemctl enable $service
+sudo systemctl disable $service
+
+# View logs
+journalctl -u $service -f
+```
+
+### macOS (Homebrew services)
+
+```bash
+# List
+brew services list
+
+# Start/Stop
+brew services start $service
+brew services stop $service
+brew services restart $service
+```
+
+---
+
+## SSH to Servers
+
+Use profile server data:
+
+```bash
+ssh_to_server "cool-two"  # Helper from load-profile.sh
+```
+
+Or manually:
+
+```bash
+SERVER=$(jq '.servers[] | select(.id == "cool-two")' "$PROFILE_PATH")
+HOST=$(echo "$SERVER" | jq -r '.host')
+USER=$(echo "$SERVER" | jq -r '.username')
+KEY=$(echo "$SERVER" | jq -r '.keyPath')
+
+ssh -i "$KEY" "$USER@$HOST"
+```
+
+---
+
+## Update Profile
+
+After installing a tool:
+
+```bash
+PROFILE=$(cat "$PROFILE_PATH")
+PROFILE=$(echo "$PROFILE" | jq --arg ver "$(python3 --version | cut -d' ' -f2)" \
+    '.tools.python.version = $ver | .tools.python.present = true')
+echo "$PROFILE" | jq . > "$PROFILE_PATH"
+```
+
+---
+
+## Capabilities Check
+
+```bash
+has_capability "hasDocker" && docker info
+has_capability "hasGit" && git --version
+```
+
+---
+
+## Scope Boundaries
+
+| Task | Handle Here | Route To |
+|------|-------------|----------|
+| Homebrew (macOS) | ✅ | - |
+| apt (Linux) | ✅ | - |
+| systemd services | ✅ | - |
+| Python/Node | ✅ | - |
+| WSL operations | ❌ | admin-wsl |
+| Windows operations | ❌ | admin-windows |
+| Server provisioning | ❌ | admin-devops |
+
+---
+
+## References
+
+- `references/OPERATIONS.md` - Common operations, troubleshooting

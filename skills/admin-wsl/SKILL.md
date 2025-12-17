@@ -1,410 +1,295 @@
 ---
 name: admin-wsl
 description: |
-  Administers WSL2 Ubuntu 24.04 environments (WSL-only) from the Linux side. Covers apt package management, Docker Desktop integration, Python/uv environments, shell configuration, and systemd services. Coordinates with admin-windows via shared `.admin` root and handoff protocol.
+  WSL2 Ubuntu administration from Linux side. Profile-aware - reads preferences from
+  shared profile at /mnt/c/Users/{WIN_USER}/.admin/profiles/{hostname}.json
 
-  Use when: working inside WSL (Ubuntu) to manage apt packages, Docker containers, Python venv/uv, shell configs (.zshrc/.bashrc), systemd services, or troubleshooting "command not found", "permission denied", "Docker socket missing" errors in WSL.
+  Use when: Inside WSL for apt packages, Docker, Python/uv, shell configs, systemd.
+  Coordinates with admin-windows via shared profile.
 license: MIT
 ---
 
-# WSL Admin
+# WSL Administration
 
-**Status**: Production Ready
-**Last Updated**: 2025-12-11
-**Dependencies**: WSL2, Ubuntu 24.04, shared `.admin` root (Windows + WSL)
-**Shell**: Zsh 5.9
+**Requires**: WSL2 context, Ubuntu 24.04
 
 ---
 
-## Navigation
+## Profile-First Approach
 
-- Operations and troubleshooting: `references/OPERATIONS.md`
-
-## Agent Identity
-
-**YOU ARE WSL-ADMIN** - Linux system administrator for Ubuntu 24.04 LTS on WSL2
-
-**Responsibilities:**
-- Linux system administration and package management (apt)
-- Docker container management
-- Python/Node.js development environments
-- Shell configuration (.zshrc, .bashrc)
-- systemd services
-- Git operations within WSL
-
-**Scope Boundaries:**
-- WSL (Ubuntu): apt, Docker, Python venv/uv, shell configs, systemd
-- Handoff: native Linux/macOS tasks to admin-unix
-- Never: .wslconfig changes, Windows packages, MCP servers, registry
-- Hand off Windows tasks to admin-windows (handoff via shared logs)
-
----
-
-## Mandatory Initialization (EVERY SESSION)
+Profile location from WSL:
 
 ```bash
-# 1. Verify identity (values from environment)
-hostname          # Should return: $DEVICE_NAME
-whoami            # Should return: $ADMIN_USER
-echo $SHELL       # Should return: /usr/bin/zsh (or /bin/bash)
-
-# 2. Load environment
 WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-ADMIN_ROOT="${ADMIN_ROOT:-/mnt/c/Users/$WIN_USER/.admin}"
-WSL_ADMIN_PATH="${WSL_ADMIN_PATH:-$ADMIN_ROOT}"  # backward-compatible alias
-source "$ADMIN_ROOT/.env"
-
-# 3. Check WSL profile
-cat "$ADMIN_ROOT/wsl-profile.json"
-
-# 4. Check recent logs
-tail -20 "${ADMIN_LOG_PATH:-$ADMIN_ROOT/logs}/operations.log"
-
-# 5. Cross-reference Windows changes (if mounted)
-[[ -d "$ADMIN_ROOT" ]] && tail -10 "$ADMIN_ROOT/logs/devices/$DEVICE_NAME/history.log"
-
-# 6. Verify tools
-node --version    # Expected: 18.x or 20.x
-uv --version      # Expected: 0.9.x+
-docker --version  # Docker CLI
+ADMIN_ROOT="/mnt/c/Users/$WIN_USER/.admin"
+PROFILE_PATH="$ADMIN_ROOT/profiles/$(hostname).json"
 ```
 
----
-
-## Quick Start (5 Minutes)
-
-### 1. Verify WSL Environment
+**Load profile:**
 
 ```bash
-cat /etc/os-release | grep PRETTY_NAME
-# Should show: Ubuntu 24.04.x LTS
+source /path/to/admin/scripts/load-profile.sh
+load_admin_profile "$PROFILE_PATH"
+show_admin_summary
 ```
 
-### 2. Check Resources
+---
+
+## Check WSL Config from Profile
 
 ```bash
-free -h           # Memory
-nproc             # CPU cores
-df -h /           # Disk space
+# Profile has WSL section
+jq '.wsl' "$PROFILE_PATH"
+
+# Resource limits
+jq '.wsl.resourceLimits' "$PROFILE_PATH"
+# Returns: {"memory": "16GB", "processors": 8, "swap": "4GB"}
+
+# WSL tools
+jq '.wsl.distributions["Ubuntu-24.04"].tools' "$PROFILE_PATH"
 ```
 
-### 3. Verify Docker
+---
+
+## Package Installation (Profile-Aware)
+
+### Python - Check Preference
 
 ```bash
-docker info       # Check Docker Desktop integration
-docker ps         # List running containers
+PY_MGR=$(jq -r '.preferences.python.manager' "$PROFILE_PATH")
+# Returns: "uv" or "pip" or "conda"
+
+case "$PY_MGR" in
+    uv)     uv pip install "$package" ;;
+    pip)    pip install "$package" ;;
+    conda)  conda install "$package" ;;
+esac
+```
+
+### Node - Check Preference
+
+```bash
+NODE_MGR=$(jq -r '.preferences.node.manager' "$PROFILE_PATH")
+
+case "$NODE_MGR" in
+    npm)    npm install "$package" ;;
+    pnpm)   pnpm add "$package" ;;
+    yarn)   yarn add "$package" ;;
+    bun)    bun add "$package" ;;
+esac
+```
+
+### System Packages (apt)
+
+```bash
+sudo apt update
+sudo apt install -y $package
 ```
 
 ---
 
-## Critical Rules
+## Docker Operations
 
-### Always Do
+### Check Docker from Profile
 
-- Use bash/zsh syntax (not PowerShell)
-- Use `apt` for system packages
-- Use `uv` for Python environments
-- Log operations to both local and central logs
-- Check line endings when moving files cross-platform
-- Defer Windows operations to admin-windows
+```bash
+DOCKER_PRESENT=$(jq -r '.docker.present' "$PROFILE_PATH")
+DOCKER_BACKEND=$(jq -r '.docker.backend' "$PROFILE_PATH")
 
-### Never Do
+if [[ "$DOCKER_PRESENT" == "true" && "$DOCKER_BACKEND" == "WSL2" ]]; then
+    # Docker Desktop with WSL2 integration
+    docker ps
+fi
+```
 
-- Use PowerShell cmdlets (`Get-Content`, `Set-Content`)
-- Modify `.wslconfig` (admin-windows territory)
-- Install MCP servers (admin-windows territory)
-- Use `winget`, `scoop`, `choco`
-- Run Windows installers
+### Common Commands
+
+```bash
+docker ps                    # List running
+docker images               # List images
+docker logs <container>     # View logs
+docker exec -it <c> bash    # Shell into container
+docker-compose up -d        # Start compose stack
+```
 
 ---
 
-## Directory Structure
+## Path Conversions
 
-```
-$ADMIN_ROOT/                           # Shared Windows+WSL admin root (default in WSL: /mnt/c/Users/$WIN_USER/.admin)
-├── .env                                # Environment config
-├── wsl-profile.json                    # Source of truth for WSL state
-├── logs/
-│   ├── operations.log                  # General operations
-│   ├── installations.log               # Package installs
-│   ├── system-changes.log              # Config changes
-│   └── devices/$DEVICE_NAME/history.log# Device-specific history
-├── profiles/
-│   └── $DEVICE_NAME.json               # Device profile (shared)
-└── config/
-    └── ...                             # Additional config files
-```
+Windows paths in profile need conversion:
 
-**Environment Variables Required:**
-- `$ADMIN_ROOT` - Shared admin root (default in WSL: `/mnt/c/Users/$WIN_USER/.admin`)
-- `$ADMIN_LOG_PATH` - Log directory (default: `$ADMIN_ROOT/logs`)
-- `$ADMIN_PROFILE_PATH` - Profiles directory (default: `$ADMIN_ROOT/profiles`)
-- `$DEVICE_NAME` - Current device name
-- `$ADMIN_USER` - Current admin username
-- Optional alias: `$WSL_ADMIN_PATH` (treated as `$ADMIN_ROOT` for backward compatibility)
+```bash
+# Profile path: "C:/Users/Owner/.ssh"
+# WSL path:     "/mnt/c/Users/Owner/.ssh"
 
----
-
-## WSL Profile Schema
-
-**Location**: `$ADMIN_ROOT/wsl-profile.json`
-
-```json
-{
-  "wslInfo": {
-    "distro": "Ubuntu-24.04",
-    "version": "24.04.2 LTS",
-    "user": "$ADMIN_USER",
-    "shell": "zsh",
-    "systemd": true,
-    "lastUpdated": "YYYY-MM-DDTHH:MM:SSZ"
-  },
-  "installedTools": {
-    "node": {
-      "present": true,
-      "version": "v18.x.x",
-      "path": "/usr/bin/node",
-      "installedVia": "apt"
-    },
-    "uv": {
-      "present": true,
-      "version": "0.9.x",
-      "path": "~/.local/bin/uv",
-      "installedVia": "standalone"
-    }
-  },
-  "resourceLimits": {
-    "memory": "16GB",
-    "processors": 8,
-    "swap": "4GB",
-    "managedBy": "admin-windows (.wslconfig)"
-  }
+win_to_wsl() {
+    local win_path="$1"
+    local drive=$(echo "$win_path" | cut -c1 | tr '[:upper:]' '[:lower:]')
+    local rest=$(echo "$win_path" | cut -c3- | sed 's|\\|/|g')
+    echo "/mnt/$drive$rest"
 }
+
+# Usage
+SSH_PATH=$(jq -r '.paths.sshKeys' "$PROFILE_PATH")
+WSL_SSH_PATH=$(win_to_wsl "$SSH_PATH")
 ```
 
 ---
 
-## Logging Integration
+## SSH to Servers
 
-Use the centralized logging system from the `admin` skill. See `admin/references/logging.md` for full documentation.
-
-### Log Locations
-
-| Log | Location | Purpose |
-|-----|----------|---------|
-| Operations | `$ADMIN_LOG_PATH/operations.log` | General operations |
-| Installations | `$ADMIN_LOG_PATH/installations.log` | Package installs |
-| System Changes | `$ADMIN_LOG_PATH/system-changes.log` | Config changes |
-| Device History | `$ADMIN_LOG_PATH/devices/$DEVICE_NAME/history.log` | Device-specific history |
-
-### Quick Reference
+Use profile server data:
 
 ```bash
-# Use log_admin from centralized logging
-log_admin "SUCCESS" "installation" "Installed postgresql" "version=16 method=apt"
-log_admin "ERROR" "operation" "Docker failed to start" "error=socket not found"
-log_admin "SUCCESS" "system-change" "Updated .zshrc" "added=PATH entry"
-log_admin "HANDOFF" "handoff" "Windows task required" "task=update .wslconfig"
+# Get server info
+SERVER=$(jq '.servers[] | select(.id == "cool-two")' "$PROFILE_PATH")
+HOST=$(echo "$SERVER" | jq -r '.host')
+USER=$(echo "$SERVER" | jq -r '.username')
+KEY=$(echo "$SERVER" | jq -r '.keyPath')
+
+# Convert Windows key path
+WSL_KEY=$(win_to_wsl "$KEY")
+
+# Connect
+ssh -i "$WSL_KEY" "$USER@$HOST"
 ```
 
-### Log Levels
-
-| Level | Use Case |
-|-------|----------|
-| SUCCESS | Completed operations |
-| ERROR | Failed operations |
-| WARNING | Non-critical issues |
-| INFO | General information |
-| HANDOFF | Cross-platform coordination |
-
----
-
-## Package Management
-
-### APT (System Packages)
+Or use the loader helper:
 
 ```bash
-sudo apt update                 # Update package lists
-sudo apt install package-name   # Install package
-sudo apt upgrade               # Upgrade all packages
-sudo apt remove package-name   # Remove package
-apt list --installed           # List installed
-apt search keyword             # Search packages
-```
-
-### Python (via uv)
-
-```bash
-# Project management
-uv init my-project             # Create new project
-uv add requests pandas         # Add dependencies
-uv run python script.py        # Run with dependencies
-
-# Virtual environments
-uv venv                        # Create .venv
-source .venv/bin/activate      # Activate
-
-# Global tools
-uv tool install ruff           # Install CLI tool
-```
-
-### Node.js (via npm)
-
-```bash
-npm install -g package         # Global install
-npm install package            # Local install
-npm list -g --depth=0         # List global packages
+source load-profile.sh
+load_admin_profile
+ssh_to_server "cool-two"  # Auto-converts paths
 ```
 
 ---
 
-## Docker Management
+## Update Profile from WSL
 
-### Container Operations
-
-```bash
-docker ps                      # List running containers
-docker ps -a                   # List all containers
-docker logs container-name     # View logs
-docker logs -f container-name  # Follow logs
-docker exec -it container bash # Shell into container
-docker stop container-name     # Stop container
-docker rm container-name       # Remove container
-```
-
-### Image Operations
+After installing a tool in WSL:
 
 ```bash
-docker images                  # List images
-docker build -t name:tag .     # Build image
-docker pull image:tag          # Pull image
-docker rmi image:tag           # Remove image
-```
+# Read profile
+PROFILE=$(cat "$PROFILE_PATH")
 
-### Docker Compose
+# Update WSL tools section
+PROFILE=$(echo "$PROFILE" | jq --arg ver "$(node --version)" \
+    '.wsl.distributions["Ubuntu-24.04"].tools.node.version = $ver')
 
-```bash
-docker-compose up -d           # Start services
-docker-compose down            # Stop services
-docker-compose logs -f         # Follow logs
-docker-compose ps              # List services
+# Save
+echo "$PROFILE" | jq . > "$PROFILE_PATH"
 ```
 
 ---
 
-## Cross-Platform File Access
+## Resource Limits
 
-### Path Mapping
-
-| Windows Path | WSL Path |
-|--------------|----------|
-| `C:/Users/<username>` | `/mnt/c/Users/<username>` |
-| `D:/<path>` | `/mnt/d/<path>` |
-| `C:/Users/<username>/.admin` | `/mnt/c/Users/<username>/.admin` |
-
-**Note:** In WSL, `$ADMIN_ROOT` defaults to `/mnt/c/Users/$WIN_USER/.admin` to share logs and profiles with Windows.
-
-### Line Ending Handling
+Controlled by `.wslconfig` (Windows side). Profile tracks current settings:
 
 ```bash
-# Install dos2unix
-sudo apt install dos2unix
+jq '.wsl.resourceLimits' "$PROFILE_PATH"
+```
 
-# Convert Windows (CRLF) to Linux (LF)
-dos2unix filename
+To change, hand off to `admin-windows`:
 
-# Convert Linux (LF) to Windows (CRLF)
-unix2dos filename
-
-# Check line endings
-file filename
+```bash
+# Log handoff
+echo "[$(date -Iseconds)] HANDOFF: Need .wslconfig change - increase memory to 24GB" \
+    >> "$ADMIN_ROOT/logs/handoffs.log"
 ```
 
 ---
 
-## Bash Command Reference
-
-### File Operations
+## Capabilities Check
 
 ```bash
-cat file.txt                   # Read file
-head -20 file.txt             # First 20 lines
-tail -20 file.txt             # Last 20 lines
-echo "text" > file.txt        # Write (overwrite)
-echo "text" >> file.txt       # Append
-test -f file && echo exists   # Check file exists
-test -d dir && echo exists    # Check dir exists
-```
+# From profile
+HAS_DOCKER=$(jq -r '.capabilities.hasDocker' "$PROFILE_PATH")
+HAS_GIT=$(jq -r '.capabilities.hasGit' "$PROFILE_PATH")
 
-### Directory Operations
-
-```bash
-ls -la                         # List detailed
-mkdir -p path/to/dir          # Create with parents
-rm -rf directory              # Remove recursively
-cp -r source dest             # Copy recursively
-mv source dest                # Move/rename
-find /path -name "pattern"    # Find files
-```
-
-### Process Management
-
-```bash
-ps aux | grep pattern         # Find processes
-kill -9 PID                   # Kill process
-htop                          # Interactive process viewer
-```
-
-### Environment Variables
-
-```bash
-export VAR="value"            # Set variable
-echo $VAR                     # Get variable
-printenv                      # List all variables
+if [[ "$HAS_DOCKER" == "true" ]]; then
+    docker info
+fi
 ```
 
 ---
 
-## Systemd Services
+## Issues Tracking
+
+Check known issues before troubleshooting:
 
 ```bash
-# User services (no sudo)
-systemctl --user status service-name
-systemctl --user start service-name
-systemctl --user stop service-name
-systemctl --user enable service-name
+jq '.issues.current[]' "$PROFILE_PATH"
+```
 
-# System services (requires sudo)
-sudo systemctl status service-name
-sudo systemctl start service-name
+Add new issue:
 
-# View logs
-journalctl --user -u service-name -f
+```bash
+PROFILE=$(cat "$PROFILE_PATH")
+PROFILE=$(echo "$PROFILE" | jq '.issues.current += [{
+    "id": "wsl-docker-'"$(date +%s)"'",
+    "tool": "docker",
+    "issue": "Docker socket not found",
+    "priority": "high",
+    "status": "pending",
+    "created": "'"$(date -Iseconds)"'"
+}]')
+echo "$PROFILE" | jq . > "$PROFILE_PATH"
 ```
 
 ---
 
-## Handoff Protocol
+## Common Tasks
 
-### When to Defer to admin-windows
-
-| Task | Action |
-|------|--------|
-| Change WSL memory/CPU | Defer (`.wslconfig`) |
-| Install MCP server | Defer (Claude Desktop) |
-| Windows packages | Defer (winget/scoop) |
-| Windows Terminal config | Defer |
-| Registry changes | Defer |
-
-### Handoff Format
+### Update System
 
 ```bash
-# Log the handoff using centralized logging
-log_admin "HANDOFF" "handoff" "Windows task required" "task=.wslconfig memory increase to 32GB"
+sudo apt update && sudo apt upgrade -y
+```
+
+### Install Python Package (Profile-Aware)
+
+```bash
+PY_MGR=$(get_preferred_manager python)
+case "$PY_MGR" in
+    uv)  uv pip install requests ;;
+    *)   pip install requests ;;
+esac
+```
+
+### Create Python Venv
+
+```bash
+PY_MGR=$(get_preferred_manager python)
+if [[ "$PY_MGR" == "uv" ]]; then
+    uv venv .venv
+    source .venv/bin/activate
+    uv pip install -r requirements.txt
+else
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+fi
 ```
 
 ---
 
-## Operations
+## Scope Boundaries
 
-Troubleshooting, Git setup, known issues prevention, checklists, and version snapshots are in `references/OPERATIONS.md`.
+| Task | Handle Here | Hand Off To |
+|------|-------------|-------------|
+| apt packages | ✅ | - |
+| Docker containers | ✅ | - |
+| Python/Node in WSL | ✅ | - |
+| .bashrc/.zshrc | ✅ | - |
+| systemd services | ✅ | - |
+| .wslconfig | ❌ | admin-windows |
+| Windows packages | ❌ | admin-windows |
+| MCP servers | ❌ | admin-mcp |
+| Native Linux (non-WSL) | ❌ | admin-unix |
+
+---
+
+## References
+
+- `references/OPERATIONS.md` - Troubleshooting, known issues

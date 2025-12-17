@@ -1,191 +1,279 @@
 ---
 name: admin-devops
 description: |
-  Manages infrastructure inventory with Agent DevOps Inventory format. Supports both Bash and PowerShell workflows. Tracks cloud providers (OCI, Hetzner, DigitalOcean, Vultr, Linode, Contabo), local networks, and servers in a simple .env-style file.
+  Infrastructure management using the device profile. Servers are stored in profile.servers[],
+  deployments reference .env.local files via profile.deployments{}.
 
-  Use when: managing server inventory, provisioning infrastructure, checking existing servers, deploying to cloud providers, or administering multi-provider environments.
-
-  Keywords: devops, infrastructure inventory, server inventory, provisioning, cloud providers, ssh, OCI, hetzner, digitalocean, vultr, linode, contabo
+  Use when: managing server inventory, provisioning infrastructure, deploying to cloud providers.
 license: MIT
 ---
 
-# DevOps Admin - Infrastructure Management
+# DevOps Administration
 
-**Purpose**: Maintain a single inventory of servers/providers and coordinate provisioning across `admin-infra-*` and `admin-app-*` skills.
-
-## Step 0: Determine Operation & Gather Info
-
-**STOP. Before ANY commands, determine what operation the user wants and gather required info.**
-
-### Operation A: Provision New Server
-
-Gather these parameters:
-
-```
-Provisioning Parameters:
-- [ ] PROVIDER         - Which provider? (oci, hetzner, digitalocean, vultr, linode, contabo)
-- [ ] SERVER_ID        - Unique ID for inventory (e.g., WEB01, COOLIFY01)
-- [ ] SERVER_NAME      - Human-friendly name
-- [ ] SERVER_ROLE      - Role: web, db, dev, desktop, coolify, kasm
-- [ ] SERVER_ENV       - Environment: prod, staging, dev, test, personal, lab
-- [ ] SSH_KEY_PATH     - Path to SSH private key for access
-- [ ] SSH_PUBLIC_KEY   - Public key to authorize on new server
-
-Provider-specific (ask based on PROVIDER):
-- [ ] Region/Zone
-- [ ] Instance shape/size
-- [ ] OS image
-```
-
-**Then**: Load the relevant `admin-infra-*` skill for provisioning.
-
-### Operation B: Add Existing Server to Inventory
-
-Gather these parameters:
-
-```
-Server Parameters:
-- [ ] SERVER_ID        - Unique ID (e.g., WEB01)
-- [ ] SERVER_NAME      - Human-friendly name
-- [ ] SERVER_HOST      - IP address or hostname
-- [ ] SERVER_USER      - SSH username
-- [ ] SSH_KEY_PATH     - Path to SSH private key
-- [ ] SERVER_PROVIDER  - Provider name (must exist in inventory)
-- [ ] SERVER_ROLE      - Role: web, db, dev, desktop, coolify, kasm
-- [ ] SERVER_ENV       - Environment: prod, staging, dev, test, personal, lab
-- [ ] SERVER_KIND      - Type: vm, physical, local_pc, container_host
-```
-
-### Operation C: Query/List Inventory
-
-No parameters needed. Proceed to Quick Start section.
-
-### Operation D: Update Server Status
-
-```
-Update Parameters:
-- [ ] SERVER_ID        - Which server to update
-- [ ] NEW_STATUS       - New status: active, stopped, retired, unreachable
-```
-
-**DO NOT proceed until operation type is confirmed and required parameters gathered.**
+**Purpose**: Coordinate server provisioning and deployment across `admin-infra-*` and `admin-app-*` skills using the unified profile.
 
 ---
 
-## Navigation
+## Profile-First Approach
 
-Detailed references (one level deep):
-- Inventory spec and agent behavior: `references/INVENTORY_FORMAT.md`
-- Provider discovery: `references/PROVIDER_DISCOVERY.md`
-- Example inventory file: `references/EXAMPLE_INVENTORY.md`
-- Deployment workflows: `references/DEPLOYMENT_WORKFLOWS.md`
-- Troubleshooting: `references/TROUBLESHOOTING.md`
+**Servers are in the profile, not a separate inventory file.**
 
-## Quick Start (Query Operations)
-
-### 1. Find inventory file
-
-Bash:
-```bash
-for f in .agent-devops.env agent-devops.env.local ~/.agent-devops.env; do
-  [ -f "$f" ] && echo "Found: $f"
-done
-```
-
-PowerShell:
 ```powershell
-@('.agent-devops.env', 'agent-devops.env.local', "$env:USERPROFILE/.agent-devops.env") |
-  ForEach-Object { if (Test-Path $_) { Write-Host "Found: $_" } }
+# PowerShell
+. scripts/Load-Profile.ps1
+Load-AdminProfile -Export
+$AdminProfile.servers | Format-Table id, name, host, role, provider, status
 ```
 
-### 2. Create inventory from template (if missing)
-
-Bash:
 ```bash
-cp ~/.claude/skills/admin-devops/assets/agent-devops.env.template .agent-devops.env
+# Bash
+source scripts/load-profile.sh
+load_admin_profile
+jq '.servers[] | {id, name, host, role, provider, status}' "$ADMIN_PROFILE_PATH"
 ```
 
-PowerShell:
+---
+
+## Server Operations
+
+### List All Servers
+
 ```powershell
-Copy-Item "$env:USERPROFILE/.claude/skills/admin-devops/assets/agent-devops.env.template" ".agent-devops.env"
+Get-AdminServer | Format-Table
 ```
-
-### 3. Discover installed providers
 
 ```bash
-ls -d ~/.claude/skills/admin-infra-* 2>/dev/null | xargs -I{} basename {} | sed 's/^admin-infra-//'
+get_admin_server all ""
 ```
 
-Full discovery and adding providers: `references/PROVIDER_DISCOVERY.md`.
+### Filter by Role
 
-### 4. List servers
+```powershell
+Get-AdminServer -Role "coolify"
+```
 
 ```bash
-grep -oP 'SERVER_\\K[A-Z0-9_]+(?=_NAME)' .agent-devops.env | sort -u
+get_admin_server role "coolify"
 ```
 
-### 5. Connect to a server
+### Filter by Provider
+
+```powershell
+Get-AdminServer -Provider "contabo"
+```
 
 ```bash
-SERVER_ID="WEB01"
-HOST=$(grep "SERVER_${SERVER_ID}_HOST=" .agent-devops.env | cut -d= -f2)
-USER=$(grep "SERVER_${SERVER_ID}_USER=" .agent-devops.env | cut -d= -f2)
-KEY=$(grep "SERVER_${SERVER_ID}_SSH_KEY_PATH=" .agent-devops.env | cut -d= -f2)
-ssh -i "$KEY" "$USER@$HOST"
+get_admin_server provider "contabo"
 ```
 
-## Common Operations
+### Get Specific Server
 
-### Provision a new server
-
-1. Check inventory for an existing match (env/role/provider/status).
-2. If none found, load the relevant `admin-infra-*` skill.
-3. Provision via the provider’s CLI.
-4. Add the new `SERVER_<ID>_*` block to inventory.
-5. Verify SSH connectivity.
-
-Inventory field details and required keys: `references/INVENTORY_FORMAT.md`.
-
-### Update server status
-
-Example (Bash):
-```bash
-sed -i "s/SERVER_WEB01_STATUS=active/SERVER_WEB01_STATUS=stopped/" .agent-devops.env
+```powershell
+Get-AdminServer -Id "cool-two"
 ```
-
-### Retire a server
-
-Set `SERVER_<ID>_STATUS=retired` but keep the block for history.
-
-## Parser Scripts
-
-Programmatic parsers live in `scripts/`:
-- `scripts/agentDevopsInventory.ts`
-- `scripts/agent_devops_inventory.py`
-
-Use these when you need to query or update inventory in code.
-
-## Related Skills
-
-Infrastructure providers are discovered dynamically:
-- `admin-infra-oci`, `admin-infra-hetzner`, `admin-infra-digitalocean`, `admin-infra-vultr`, `admin-infra-linode`, `admin-infra-contabo`
-
-Service skills for deployments:
-- `admin-app-coolify`, `admin-app-kasm`
-
-## Logging Integration
-
-Log provisioning and inventory changes using centralized logging from `admin`:
 
 ```bash
-log_admin "SUCCESS" "operation" "Provisioned server" "id=WEB02 provider=OCI"
-log_admin "SUCCESS" "operation" "Updated server status" "id=WEB01 status=stopped"
-log_admin "INFO" "operation" "Updated inventory" "action=added servers=WEB02"
+get_admin_server id "cool-two"
 ```
+
+---
+
+## SSH to Server
+
+Profile contains all SSH details:
+
+```powershell
+$server = Get-AdminServer -Id "cool-two"
+ssh -i $server.keyPath -p $server.port "$($server.username)@$($server.host)"
+```
+
+```bash
+ssh_to_server "cool-two"  # Helper from load-profile.sh
+```
+
+---
+
+## Add New Server
+
+### After Provisioning
+
+```powershell
+$AdminProfile.servers += @{
+    id = "new-server"
+    name = "NEW_SERVER"
+    host = "192.168.1.100"
+    port = 22
+    username = "root"
+    authMethod = "key"
+    keyPath = "C:/Users/Owner/.ssh/id_rsa"
+    provider = "hetzner"
+    role = "coolify"
+    domain = "example.com"
+    status = "active"
+    addedAt = (Get-Date).ToString("o")
+    lastConnected = $null
+    notes = "Provisioned via admin-infra-hetzner"
+}
+
+# Save
+$AdminProfile | ConvertTo-Json -Depth 10 | Set-Content $AdminProfile.paths.deviceProfile
+```
+
+---
+
+## Deployments
+
+Deployments reference `.env.local` files containing provider credentials and config.
+
+### List Deployments
+
+```powershell
+$AdminProfile.deployments.PSObject.Properties | ForEach-Object {
+    [PSCustomObject]@{
+        Name = $_.Name
+        Type = $_.Value.type
+        Provider = $_.Value.provider
+        Status = $_.Value.status
+        HasEnvFile = [bool]$_.Value.envFile
+    }
+}
+```
+
+### Load Deployment Config
+
+```powershell
+Load-AdminProfile -Deployment "vibeskills-oci" -Export
+$DeploymentEnv  # Contains .env.local variables
+```
+
+```bash
+load_admin_profile
+load_deployment "vibeskills-oci"
+# Variables exported to environment
+```
+
+### Add New Deployment
+
+```powershell
+$AdminProfile.deployments["my-new-deploy"] = @{
+    envFile = "D:/projects/my-deploy/.env.local"
+    type = "coolify"
+    provider = "hetzner"
+    status = "pending"
+    serverIds = @("new-server")
+    lastDeployed = $null
+    notes = $null
+}
+```
+
+---
+
+## Provisioning Workflow
+
+### Step 1: Choose Provider
+
+| Provider | Skill | Notes |
+|----------|-------|-------|
+| OCI | `admin-infra-oci` | Free tier ARM |
+| Hetzner | `admin-infra-hetzner` | Best price/perf |
+| Contabo | `admin-infra-contabo` | Budget VPS |
+| DigitalOcean | `admin-infra-digitalocean` | Simple |
+| Vultr | `admin-infra-vultr` | Global |
+| Linode | `admin-infra-linode` | Akamai |
+
+### Step 2: Create .env.local
+
+Copy template and fill provider section:
+
+```bash
+cp templates/env-template.env ./my-deploy/.env.local
+# Edit with provider credentials
+```
+
+### Step 3: Register Deployment
+
+```powershell
+$AdminProfile.deployments["my-deploy"] = @{
+    envFile = "D:/projects/my-deploy/.env.local"
+    type = "coolify"
+    provider = "hetzner"
+    status = "pending"
+    serverIds = @()
+}
+```
+
+### Step 4: Run Infrastructure Skill
+
+```
+# Route to appropriate skill
+admin-infra-hetzner → Provisions server
+# Returns server details
+```
+
+### Step 5: Update Profile
+
+```powershell
+# Add server
+$AdminProfile.servers += @{ ... }
+
+# Link to deployment
+$AdminProfile.deployments["my-deploy"].serverIds += "new-server-id"
+$AdminProfile.deployments["my-deploy"].status = "active"
+
+# Save
+$AdminProfile | ConvertTo-Json -Depth 10 | Set-Content $AdminProfile.paths.deviceProfile
+```
+
+---
+
+## Application Deployment
+
+### After Infrastructure Ready
+
+| App | Skill | Prerequisites |
+|-----|-------|---------------|
+| Coolify | `admin-app-coolify` | Server with Docker |
+| KASM | `admin-app-kasm` | Server with Docker |
+
+### Workflow
+
+1. Load deployment: `Load-AdminProfile -Deployment "my-deploy" -Export`
+2. Get server: `$server = Get-AdminServer -Id $DeploymentEnv.SERVER_ID`
+3. SSH and deploy via `admin-app-*` skill
+
+---
+
+## Status Updates
+
+```powershell
+# Find server
+$idx = $AdminProfile.servers.FindIndex({ param($s) $s.id -eq "cool-two" })
+
+# Update status
+$AdminProfile.servers[$idx].status = "stopped"
+$AdminProfile.servers[$idx].lastConnected = (Get-Date).ToString("o")
+
+# Save
+$AdminProfile | ConvertTo-Json -Depth 10 | Set-Content $AdminProfile.paths.deviceProfile
+```
+
+---
+
+## Routing Summary
+
+| Task | Route To |
+|------|----------|
+| Provision OCI | `admin-infra-oci` |
+| Provision Hetzner | `admin-infra-hetzner` |
+| Provision others | `admin-infra-{provider}` |
+| Install Coolify | `admin-app-coolify` |
+| Install KASM | `admin-app-kasm` |
+| Windows tasks | `admin-windows` |
+| WSL tasks | `admin-wsl` |
+
+---
 
 ## References
 
-- Oracle Cloud Free Tier: https://www.oracle.com/cloud/free/
-- Hetzner Cloud: https://www.hetzner.com/cloud
-- Coolify docs: https://coolify.io/docs
-- KASM docs: https://kasmweb.com/docs
+- `references/DEPLOYMENT_WORKFLOWS.md` - Detailed deployment steps
+- `references/TROUBLESHOOTING.md` - Common issues
