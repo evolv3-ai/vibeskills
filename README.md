@@ -1,8 +1,26 @@
-# Claude Code Skills
+# VibeSkills - Claude Code Skills
 
-**60 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
+**Custom skills collection** for Claude Code CLI — Built on the excellent foundation of [claude-skills](https://github.com/jezweb/claude-skills) by Jeremy Dawes.
 
 ~50% token savings | 400+ errors prevented | Auto-discovered by Claude
+
+---
+
+## 🙏 Attribution
+
+This repository is a fork of **[claude-skills](https://github.com/jezweb/claude-skills)** by **[Jeremy Dawes](https://jezweb.com.au)**. 
+
+The original project provides an outstanding framework for Claude AI skills development. This fork maintains the core framework while customizing the skills collection for specific use cases.
+
+### What's Different in VibeSkills
+- **Custom skills** in the `/skills` folder tailored for evolv3.ai workflows
+- Periodic upstream syncs to incorporate framework improvements
+- Maintained separately to allow independent skill development
+
+### Upstream Repository
+- **Original**: [github.com/jezweb/claude-skills](https://github.com/jezweb/claude-skills)
+- **License**: MIT License
+- **Author**: Jeremy Dawes
 
 ---
 
@@ -11,15 +29,15 @@
 ### Marketplace (Recommended)
 
 ```bash
-/plugin marketplace add https://github.com/jezweb/claude-skills
-/plugin install cloudflare-worker-base@claude-skills
+/plugin marketplace add https://github.com/evolv3-ai/vibeskills
+/plugin install cloudflare-worker-base@vibeskills
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/jezweb/claude-skills.git ~/Documents/claude-skills
-cd ~/Documents/claude-skills
+git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+cd ~/Documents/vibeskills
 ./scripts/install-skill.sh cloudflare-worker-base  # or ./scripts/install-all.sh
 ```
 
@@ -85,10 +103,27 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 ## Documentation
 
 - [START_HERE.md](START_HERE.md) — Navigation guide
-- [SKILLS_CATALOG.md](SKILLS_CATALOG.md) — All 60 skills with details
+- [SKILLS_CATALOG.md](SKILLS_CATALOG.md) — All skills with details
 - [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
 - [MARKETPLACE.md](MARKETPLACE.md) — Marketplace installation
 - [CLAUDE.md](CLAUDE.md) — Project standards
+
+---
+
+## Syncing with Upstream
+
+This fork periodically syncs with the upstream repository to incorporate framework improvements:
+
+```bash
+# Sync with upstream (preserves custom skills)
+./scripts/sync-upstream.sh
+```
+
+The sync script automatically:
+- Fetches latest changes from upstream
+- Merges framework updates
+- Preserves your custom skills folder
+- Maintains your customizations
 
 ---
 
@@ -108,10 +143,11 @@ npx contextbricks  # One-command install
 
 ## Links
 
-- **Issues**: [github.com/jezweb/claude-skills/issues](https://github.com/jezweb/claude-skills/issues)
+- **This Fork**: [github.com/evolv3-ai/vibeskills](https://github.com/evolv3-ai/vibeskills)
+- **Upstream**: [github.com/jezweb/claude-skills](https://github.com/jezweb/claude-skills)
+- **Issues**: [github.com/evolv3-ai/vibeskills/issues](https://github.com/evolv3-ai/vibeskills/issues)
 - **Claude Code**: [claude.com/claude-code](https://claude.com/claude-code)
-- **Jezweb**: [jezweb.com.au](https://jezweb.com.au)
 
 ---
 
-MIT License | Built by Jeremy Dawes
+MIT License | Fork maintained by evolv3.ai | Original by Jeremy Dawes ([jezweb.com.au](https://jezweb.com.au))
