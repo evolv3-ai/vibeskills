@@ -1,0 +1,12 @@
+{
+  "name": "admin-wsl",
+  "description": "WSL2 Ubuntu administration from Linux side. Profile-aware - reads preferences from Windows-side profile at /mnt/c/Users/{WIN_USER}/.admin/profiles/{hostname}.json Use when: Inside WSL for apt packages, Docker, Python/uv, shell configs, systemd. Coordinates with admin-windows via shared profile ON THE WINDOWS SIDE.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": []
+}

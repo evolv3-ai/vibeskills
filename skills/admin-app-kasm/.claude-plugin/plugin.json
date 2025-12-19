@@ -1,0 +1,12 @@
+{
+  "name": "admin-app-kasm",
+  "description": "Installs and manages KASM Workspaces, a container-based VDI platform for streaming desktops to browsers. Supports Ubuntu ARM64, desktop streaming, isolated browser sessions, and remote workspace access. Use when: installing KASM on Ubuntu ARM64, setting up VDI, configuring browser-based desktops, deploying on OCI instances.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": ["kasm workspaces","VDI","virtual desktop","browser streaming","ARM64","kasm port 8443","container desktop"]
+}

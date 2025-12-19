@@ -1,0 +1,12 @@
+{
+  "name": "deckmate",
+  "description": "Stream Deck integration assistant for VSCode. Create, manage, and organize Stream Deck profiles, buttons, snippets, and scripts. Helps build productivity workflows for developers using Stream Deck with Claude Code and TAC (Tactical Agentic Coding) patterns.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": []
+}

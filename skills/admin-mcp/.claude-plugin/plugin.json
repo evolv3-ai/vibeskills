@@ -1,0 +1,12 @@
+{
+  "name": "admin-mcp",
+  "description": "MCP server management for Claude Desktop. Profile-aware - reads MCP server inventory from profile.mcp.servers{} and config path from profile.paths.claudeConfig. Use when: installing MCP servers, configuring Claude Desktop, troubleshooting MCP issues.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": []
+}
