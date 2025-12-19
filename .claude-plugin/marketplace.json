@@ -5,128 +5,55 @@
     "email": "hello@evolv3.ai"
   },
   "metadata": {
-    "description": "Production-tested skills for Claude Code - Cloudflare, AI, React, Tailwind v4, and modern web development",
-    "version": "2.1.0",
-    "updated": "2025-12-15"
+    "description": "18 production-tested skills for system administration and infrastructure management",
+    "version": "3.0.0",
+    "updated": "2025-12-18"
   },
   "plugins": [
     {
-      "name": "cloudflare-skills",
-      "description": "Complete Cloudflare platform skills - Workers, D1, R2, KV, AI, Queues, Durable Objects, and more. 16 production-tested skills for edge computing.",
+      "name": "admin-skills",
+      "description": "System administration skills - Unix, Windows, WSL, DevOps, and MCP server management. 6 profile-aware skills.",
       "source": "./",
       "skills": [
-        "./skills/cloudflare-worker-base",
-        "./skills/cloudflare-d1",
-        "./skills/cloudflare-r2",
-        "./skills/cloudflare-kv",
-        "./skills/cloudflare-workers-ai",
-        "./skills/cloudflare-vectorize",
-        "./skills/cloudflare-queues",
-        "./skills/cloudflare-workflows",
-        "./skills/cloudflare-durable-objects",
-        "./skills/cloudflare-agents",
-        "./skills/cloudflare-mcp-server",
-        "./skills/cloudflare-hyperdrive",
-        "./skills/cloudflare-images",
-        "./skills/cloudflare-browser-rendering",
-        "./skills/cloudflare-turnstile",
-        "./skills/cloudflare-python-workers"
+        "./skills/admin",
+        "./skills/admin-unix",
+        "./skills/admin-windows",
+        "./skills/admin-wsl",
+        "./skills/admin-devops",
+        "./skills/admin-mcp"
       ]
     },
     {
-      "name": "ai-skills",
-      "description": "AI and LLM integration skills - Vercel AI SDK, OpenAI, Google Gemini, Claude API, ElevenLabs. 14 skills for building AI applications.",
+      "name": "infra-skills",
+      "description": "Cloud infrastructure skills - DigitalOcean, Vultr, Linode, Hetzner, Contabo, and Oracle Cloud. 6 skills for multi-cloud deployments.",
       "source": "./",
       "skills": [
-        "./skills/ai-sdk-core",
-        "./skills/ai-sdk-ui",
-        "./skills/openai-api",
-        "./skills/openai-agents",
-        "./skills/openai-assistants",
-        "./skills/openai-responses",
-        "./skills/openai-apps-mcp",
-        "./skills/google-gemini-api",
-        "./skills/google-gemini-embeddings",
-        "./skills/google-gemini-file-search",
-        "./skills/google-chat-api",
-        "./skills/claude-api",
-        "./skills/claude-agent-sdk",
-        "./skills/elevenlabs-agents"
+        "./skills/admin-infra-digitalocean",
+        "./skills/admin-infra-vultr",
+        "./skills/admin-infra-linode",
+        "./skills/admin-infra-hetzner",
+        "./skills/admin-infra-contabo",
+        "./skills/admin-infra-oci"
       ]
     },
     {
-      "name": "frontend-skills",
-      "description": "Frontend and UI skills - Tailwind v4, shadcn/ui, TanStack suite, animations, and React Native. 13 skills for modern web and mobile UIs.",
+      "name": "app-skills",
+      "description": "Application deployment skills - Coolify self-hosted PaaS and Kasm Workspaces VDI platform.",
       "source": "./",
       "skills": [
-        "./skills/tailwind-v4-shadcn",
-        "./skills/react-hook-form-zod",
-        "./skills/tanstack-query",
-        "./skills/tanstack-router",
-        "./skills/tanstack-start",
-        "./skills/tanstack-table",
-        "./skills/zustand-state-management",
-        "./skills/nextjs",
-        "./skills/hono-routing",
-        "./skills/auto-animate",
-        "./skills/motion",
-        "./skills/tiptap",
-        "./skills/react-native-expo"
+        "./skills/admin-app-coolify",
+        "./skills/admin-app-kasm"
       ]
     },
     {
-      "name": "auth-skills",
-      "description": "Authentication skills - Clerk and Better Auth integrations for user management and security.",
+      "name": "tools-skills",
+      "description": "Specialized tools - Stream Deck integration, ImageMagick processing, Cloudflare Python Workers, and MCP OAuth.",
       "source": "./",
       "skills": [
-        "./skills/clerk-auth",
-        "./skills/better-auth"
-      ]
-    },
-    {
-      "name": "cms-skills",
-      "description": "Content management skills - TinaCMS, Sveltia CMS, and WordPress plugin development.",
-      "source": "./",
-      "skills": [
-        "./skills/tinacms",
-        "./skills/sveltia-cms",
-        "./skills/wordpress-plugin-core"
-      ]
-    },
-    {
-      "name": "database-skills",
-      "description": "Database and storage skills - Drizzle ORM, Neon Postgres, Vercel KV, and Vercel Blob.",
-      "source": "./",
-      "skills": [
-        "./skills/drizzle-orm-d1",
-        "./skills/neon-vercel-postgres",
-        "./skills/vercel-kv",
-        "./skills/vercel-blob"
-      ]
-    },
-    {
-      "name": "backend-skills",
-      "description": "Backend framework skills - FastAPI and Flask for Python web services.",
-      "source": "./",
-      "skills": [
-        "./skills/fastapi",
-        "./skills/flask"
-      ]
-    },
-    {
-      "name": "tooling-skills",
-      "description": "Development tooling skills - MCP servers, project planning, session management, workflow automation, and skill development.",
-      "source": "./",
-      "skills": [
-        "./skills/typescript-mcp",
-        "./skills/fastmcp",
-        "./skills/ts-agent-sdk",
-        "./skills/project-planning",
-        "./skills/project-session-management",
-        "./skills/project-workflow",
-        "./skills/skill-creator",
-        "./skills/skill-review",
-        "./skills/open-source-contributions"
+        "./skills/deckmate",
+        "./skills/imagemagick",
+        "./skills/cloudflare-python-workers",
+        "./skills/mcp-oauth-cloudflare"
       ]
     }
   ]
