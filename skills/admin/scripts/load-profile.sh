@@ -17,8 +17,21 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-# Default paths
-ADMIN_ROOT="${HOME}/.admin"
+# Detect environment and set correct ADMIN_ROOT
+detect_admin_root() {
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        # WSL - profile lives on Windows side
+        local win_user
+        win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        echo "/mnt/c/Users/$win_user/.admin"
+    else
+        # Native Linux/macOS - use home directory
+        echo "${HOME}/.admin"
+    fi
+}
+
+# Default paths - auto-detect based on environment
+ADMIN_ROOT="${ADMIN_ROOT:-$(detect_admin_root)}"
 HOSTNAME=$(hostname)
 DEFAULT_PROFILE="${ADMIN_ROOT}/profiles/${HOSTNAME}.json"
 
@@ -32,6 +45,27 @@ log_info() { echo -e "${CYAN}[INFO]${NC} $1"; }
 log_ok() { echo -e "${GREEN}[OK]${NC} $1"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# Show detected environment (useful for debugging)
+show_environment() {
+    echo ""
+    echo -e "${CYAN}=== Environment Detection ===${NC}"
+    if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "Type:        WSL (Windows Subsystem for Linux)"
+        local win_user
+        win_user=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+        echo "Win User:    $win_user"
+    elif [[ "$(uname -s)" == "Darwin" ]]; then
+        echo "Type:        macOS"
+    else
+        echo "Type:        Native Linux"
+    fi
+    echo "Hostname:    $(hostname)"
+    echo "ADMIN_ROOT:  $ADMIN_ROOT"
+    echo "Profile:     $DEFAULT_PROFILE"
+    echo "Exists:      $(test -f "$DEFAULT_PROFILE" && echo 'YES' || echo 'NO')"
+    echo ""
+}
 
 check_dependencies() {
     if ! command -v jq &> /dev/null; then
@@ -48,7 +82,14 @@ load_admin_profile() {
     
     if [[ ! -f "$profile_path" ]]; then
         log_error "Profile not found: $profile_path"
-        log_warn "Run initialize_admin_profile to create one"
+        log_warn "ADMIN_ROOT is: $ADMIN_ROOT"
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            log_warn "Running in WSL - profile should be on Windows side"
+            log_warn "Expected: /mnt/c/Users/{WIN_USER}/.admin/profiles/$(hostname).json"
+            log_warn "Create profile from Windows: Initialize-AdminProfile.ps1"
+        else
+            log_warn "Create profile with: Initialize-AdminProfile.ps1 (Windows)"
+        fi
         return 1
     fi
     

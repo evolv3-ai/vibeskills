@@ -2,10 +2,10 @@
 name: admin-wsl
 description: |
   WSL2 Ubuntu administration from Linux side. Profile-aware - reads preferences from
-  shared profile at /mnt/c/Users/{WIN_USER}/.admin/profiles/{hostname}.json
+  Windows-side profile at /mnt/c/Users/{WIN_USER}/.admin/profiles/{hostname}.json
 
   Use when: Inside WSL for apt packages, Docker, Python/uv, shell configs, systemd.
-  Coordinates with admin-windows via shared profile.
+  Coordinates with admin-windows via shared profile ON THE WINDOWS SIDE.
 license: MIT
 ---
 
@@ -15,22 +15,41 @@ license: MIT
 
 ---
 
-## Profile-First Approach
+## ⚠️ Critical: Profile Location
 
-Profile location from WSL:
+**The profile lives on the WINDOWS side, not in WSL home.**
 
 ```bash
+# WRONG - this doesn't exist in WSL
+ls ~/.admin/profiles/  # Empty!
+
+# RIGHT - profile is on Windows, accessed via /mnt/c
 WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
 ADMIN_ROOT="/mnt/c/Users/$WIN_USER/.admin"
 PROFILE_PATH="$ADMIN_ROOT/profiles/$(hostname).json"
+ls "$PROFILE_PATH"  # Found!
 ```
 
-**Load profile:**
+---
+
+## Quick Start
+
+The loader auto-detects WSL and uses the correct path:
 
 ```bash
 source /path/to/admin/scripts/load-profile.sh
-load_admin_profile "$PROFILE_PATH"
+show_environment  # Verify detection
+load_admin_profile
 show_admin_summary
+```
+
+Output should show:
+```
+Type:        WSL (Windows Subsystem for Linux)
+Win User:    {your-windows-username}
+ADMIN_ROOT:  /mnt/c/Users/{username}/.admin
+Profile:     /mnt/c/Users/{username}/.admin/profiles/{hostname}.json
+Exists:      YES
 ```
 
 ---

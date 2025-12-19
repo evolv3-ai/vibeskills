@@ -1,20 +1,22 @@
 # Claude Skills - Project Context
 
-**Repository**: https://github.com/jezweb/claude-skills
+**Repository**: https://github.com/evolv3ai/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
-**Owner**: Jeremy Dawes (Jez) | Jezweb
-**Status**: Active Development | 58 Skills Complete (13 archived)
-**Last Updated**: 2025-11-29
+**Owner**: EVOLV3.AI | evolv3ai
+**Status**: Active Development | 17 Skills
+**Last Updated**: 2025-12-18
+
+> **Attribution**: This project is based on [claude-skills](https://github.com/jezweb/claude-skills) by Jeremy Dawes (Jezweb), licensed under MIT.
 
 ---
 
 ## What This Repository Is
 
-This is a curated collection of **production-tested Claude Code skills** for building modern web applications. Skills are modular capabilities that extend Claude's knowledge in specific domains, enabling faster development with fewer errors.
+This is a curated collection of **production-tested Claude Code skills** for system administration, infrastructure management, and specialized tooling. Skills are modular capabilities that extend Claude's knowledge in specific domains, enabling faster development with fewer errors.
 
 **Focus**: Claude Code CLI skills (not claude.ai web interface)
 
-**Target Audience**: Developers building with Cloudflare, React, Tailwind v4, and AI integrations.
+**Target Audience**: DevOps engineers, system administrators, and developers working with cloud infrastructure and automation.
 
 ---
 
@@ -59,16 +61,12 @@ claude-skills/
 ├── LICENSE                       # MIT License
 ├── .gitignore                    # Git ignore patterns
 │
-├── skills/                       # ← All production skills (58 total)
-│   ├── tailwind-v4-shadcn/       # Gold standard example
-│   ├── cloudflare-worker-base/   # Foundation skill
-│   ├── ai-sdk-core/              # AI integration
-│   ├── openai-agents/            # OpenAI Agents SDK
-│   ├── project-planning/         # Planning automation
-│   ├── project-session-management/ # Session handoff protocol
-│   ├── project-workflow/         # Slash commands (canonical source)
-│   │   └── commands/             # /explore-idea, /plan-project, etc.
-│   └── [52 more skills...]       # Run ls skills/ for full list
+├── skills/                       # ← All production skills (17 total)
+│   ├── admin/                    # Base system administration
+│   ├── admin-*/                  # Platform-specific admin skills (14 total)
+│   ├── deckmate/                 # Stream Deck integration
+│   ├── hyperbrowser/             # Browser automation
+│   └── imagemagick/              # Image processing
 │
 ├── commands/                     # ← Slash commands (symlinked to ~/.claude/commands/)
 │   ├── brief.md                  # /brief - Context preservation
@@ -88,7 +86,6 @@ claude-skills/
 │   └── marketplace.json          # Auto-generated plugin manifest
 │
 ├── docs/                         # Documentation
-│   └── JEZWEB_WORKFLOW.md        # Comprehensive workflow guide
 │
 ├── tools/                        # Utility scripts
 │   ├── statusline/               # Custom statusline scripts
@@ -233,50 +230,40 @@ This repository has three types of files:
 
 ---
 
-## Current Status (2025-11-29)
+## Current Status (2025-12-18)
 
-### ✅ Active Skills (58)
+### ✅ Active Skills (17)
 
-All 58 skills are production-ready and organized by domain:
+All skills are production-ready and organized by domain:
 
-**Cloudflare Platform** (20 skills):
-- cloudflare-worker-base, cloudflare-d1, cloudflare-r2, cloudflare-kv
-- cloudflare-workers-ai, cloudflare-vectorize, cloudflare-queues, cloudflare-workflows
-- cloudflare-durable-objects, cloudflare-agents, cloudflare-mcp-server, cloudflare-turnstile
-- cloudflare-hyperdrive, cloudflare-images, cloudflare-browser-rendering
-- And 5 more...
+**System Administration** (14 skills):
+- `admin` - Base system administration
+- `admin-unix` - Unix/Linux administration
+- `admin-windows` - Windows administration
+- `admin-wsl` - Windows Subsystem for Linux
+- `admin-devops` - DevOps tooling and practices
+- `admin-mcp` - MCP server management
 
-**Archived Skills** (13):
-- Preserved in `archive/low-priority-skills` branch
-- Includes: hugo, cloudflare-nextjs, cloudflare-email-routing, cloudflare-cron-triggers, cloudflare-zero-trust-access, cloudflare-sandbox, better-chatbot, better-chatbot-patterns, multi-ai-consultant, ai-elements-chatbot, firecrawl-scraper, content-collections, base-ui-react
-- Can be restored anytime via git cherry-pick
+**Cloud Infrastructure** (6 skills):
+- `admin-infra-digitalocean` - DigitalOcean management
+- `admin-infra-vultr` - Vultr management
+- `admin-infra-linode` - Linode management
+- `admin-infra-hetzner` - Hetzner management
+- `admin-infra-contabo` - Contabo management
+- `admin-infra-oci` - Oracle Cloud Infrastructure
 
-**AI & Machine Learning** (10 skills):
-- ai-sdk-core, ai-sdk-ui, openai-api, openai-agents, openai-assistants, openai-responses
-- google-gemini-api, google-gemini-embeddings, claude-api, claude-agent-sdk, thesys-generative-ui
+**Applications** (2 skills):
+- `admin-app-coolify` - Coolify self-hosted PaaS
+- `admin-app-kasm` - Kasm Workspaces
 
-**Frontend & UI** (7 skills):
-- tailwind-v4-shadcn, react-hook-form-zod, tanstack-query, zustand-state-management
-- nextjs, hono-routing, firecrawl-scraper
-
-**Auth & Security** (3 skills):
-- clerk-auth, better-auth, cloudflare-zero-trust-access
-
-**Content Management** (2 skills):
-- tinacms, sveltia-cms
-
-**Database & ORM** (4 skills):
-- drizzle-orm-d1, neon-vercel-postgres, vercel-kv, vercel-blob
-
-**Tooling & Planning** (5 skills):
-- typescript-mcp, fastmcp, ts-agent-sdk, project-planning, project-session-management
+**Specialized Tools** (3 skills):
+- `deckmate` - Stream Deck integration for VSCode
+- `hyperbrowser` - Browser automation and scraping
+- `imagemagick` - Image processing CLI
 
 **Quality Standards**:
 - ✅ All production-tested
 - ✅ Fully compliant with official Anthropic standards
-- ✅ Package versions verified current
-- ✅ Average token savings: 60-70%
-- ✅ 395+ documented errors prevented across all skills
 
 ---
 
@@ -394,7 +381,7 @@ After optimizing 20+ skills, these patterns work best:
 - Meta-commentary about the skill
 - Over-compression that hurts readability
 
-**Examples:** See ai-sdk-core, auto-animate, cloudflare-mcp-server
+**Examples:** See admin, admin-unix, hyperbrowser
 
 ---
 
@@ -459,7 +446,7 @@ cp -r templates/skill-skeleton/ skills/new-skill-name/
 
 ```bash
 # After installing skill, ask Claude Code:
-"Use the cloudflare-worker-base skill to set up a new project"
+"Use the admin-unix skill to help configure this server"
 
 # Claude should discover and propose using the skill automatically
 ```
@@ -521,12 +508,11 @@ Compare against:
 
 | Scenario | Without Skill | With Skill | Savings |
 |----------|---------------|------------|---------|
-| Setup Tailwind v4 + shadcn | ~15k tokens, 2-3 errors | ~5k tokens, 0 errors | ~67% |
-| Cloudflare Worker setup | ~12k tokens, 1-2 errors | ~4k tokens, 0 errors | ~67% |
-| D1 Database integration | ~10k tokens, 2 errors | ~4k tokens, 0 errors | ~60% |
-| **Average** | **~12k tokens** | **~4.5k tokens** | **~62%** |
+| Server provisioning | ~12k tokens, 2-3 errors | ~4k tokens, 0 errors | ~67% |
+| Infrastructure setup | ~10k tokens, 1-2 errors | ~4k tokens, 0 errors | ~60% |
+| **Average** | **~11k tokens** | **~4k tokens** | **~64%** |
 
-**Errors Prevented**: All 6-8 documented errors per skill = 100% error prevention
+**Errors Prevented**: Documented platform-specific gotchas = 100% error prevention
 
 ---
 
@@ -610,8 +596,8 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 - Review working examples in `skills/` directory
 
 **Technical Issues?**
-- Open issue: https://github.com/jezweb/claude-skills/issues
-- Email: jeremy@jezweb.net
+- Open issue: https://github.com/evolv3ai/claude-skills/issues
+- Email: hello@evolv3.ai
 - Check official Claude Code docs
 
 **Want to Contribute?**
@@ -625,15 +611,13 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 ## Project Goals
 
 ### Short Term (Next 3 Months)
-- Complete Batch 2 skills (clerk-auth, hono-routing, react-hook-form-zod)
-- Add Batch 3 (tanstack-query)
+- Expand admin skills coverage
+- Add more cloud provider integrations
 - Maintain 100% compliance with official standards
-- Keep all package versions current
 
 ### Long Term (Next Year)
-- Expand to 20+ production skills
+- Comprehensive infrastructure management coverage
 - Community contributions
-- Validation/packaging scripts (à la Anthropic)
 - Automated testing for skill discovery
 - Public skill marketplace compatibility
 
@@ -644,23 +628,19 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 **Quality**:
 - ✅ 100% compliance with official Anthropic standards
 - ✅ All skills production-tested
-- ✅ Package versions current (checked quarterly)
 - ✅ Zero reported errors from documented issues
 
 **Efficiency**:
 - ✅ Average 60%+ token savings
 - ✅ 100% error prevention (vs manual setup)
 - ✅ Sub-5-minute skill creation (with templates)
-- ✅ First-try skill discovery rate: 95%+
 
 **Adoption**:
-- ✅ 9 skills in production
-- ✅ GitHub stars: Growing
+- ✅ 17 skills active
 - ✅ Community contributions: Welcome
-- ✅ Deployed examples: Verified working
 
 ---
 
-**Last Updated**: 2025-11-07
-**Next Review**: 2026-01-29 (Quarterly)
-**Maintainer**: Jeremy Dawes | jeremy@jezweb.net | https://jezweb.com.au
+**Last Updated**: 2025-12-18
+**Next Review**: 2026-03-18 (Quarterly)
+**Maintainer**: EVOLV3.AI | hello@evolv3.ai | https://evolv3.ai

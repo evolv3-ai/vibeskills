@@ -17,30 +17,83 @@ license: MIT
 
 When a GitHub repo says `pip install package`, this skill knows you prefer `uv` and suggests `uv pip install package` instead.
 
-## Profile Location
+---
 
-```
-$HOME/.admin/profiles/{HOSTNAME}.json    # Schema v3.0
+## ⚠️ STEP 0: Detect Environment (MANDATORY FIRST)
+
+**Before ANY operation, run this detection to find the profile:**
+
+```bash
+# Detect environment and set ADMIN_ROOT
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    # WSL - profile is on Windows side
+    WIN_USER=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+    ADMIN_ROOT="/mnt/c/Users/$WIN_USER/.admin"
+    ENV_TYPE="wsl"
+elif [[ "$OS" == "Windows_NT" || -n "$MSYSTEM" ]]; then
+    # Git Bash on Windows
+    ADMIN_ROOT="$HOME/.admin"
+    ENV_TYPE="windows-gitbash"
+elif [[ "$(uname -s)" == "Darwin" ]]; then
+    # macOS
+    ADMIN_ROOT="$HOME/.admin"
+    ENV_TYPE="macos"
+else
+    # Native Linux
+    ADMIN_ROOT="$HOME/.admin"
+    ENV_TYPE="linux"
+fi
+
+HOSTNAME=$(hostname)
+PROFILE_PATH="$ADMIN_ROOT/profiles/$HOSTNAME.json"
+
+echo "Environment: $ENV_TYPE"
+echo "Admin Root:  $ADMIN_ROOT"
+echo "Profile:     $PROFILE_PATH"
+echo "Exists:      $(test -f "$PROFILE_PATH" && echo 'YES' || echo 'NO')"
 ```
 
-**Profile contains**: installed tools, paths, preferences, servers, deployments, capabilities.
+### Critical Path Rules
+
+| Running From | Profile Location | Why |
+|--------------|------------------|-----|
+| **WSL** | `/mnt/c/Users/{WIN_USER}/.admin/profiles/` | Profile lives on Windows, WSL accesses via /mnt/c |
+| **Windows Git Bash** | `$HOME/.admin/profiles/` | Same as Windows native |
+| **Windows PowerShell** | `$HOME\.admin\profiles\` | Windows native |
+| **Native Linux** | `~/.admin/profiles/` | Linux home |
+| **macOS** | `~/.admin/profiles/` | macOS home |
+
+### Common Mistake
+
+❌ **WRONG**: Assume `~/.admin` always works
+```bash
+# This FAILS in WSL because ~ is /home/wsladmin, not Windows
+ls ~/.admin/profiles/  # Empty or doesn't exist
+```
+
+✅ **RIGHT**: Detect environment first, then find profile
+```bash
+# In WSL, profile is on Windows side
+ls /mnt/c/Users/Owner/.admin/profiles/  # Found!
+```
 
 ---
 
-## Quick Start: Load Profile First
+## Quick Start: After Detection
+
+### Bash (WSL/Linux/macOS)
+```bash
+# After running detection above
+source /path/to/admin/scripts/load-profile.sh
+load_admin_profile "$PROFILE_PATH"
+show_admin_summary
+```
 
 ### PowerShell (Windows)
 ```powershell
 . scripts/Load-Profile.ps1
 Load-AdminProfile -Export
 Show-AdminSummary
-```
-
-### Bash (WSL/Linux/macOS)
-```bash
-source scripts/load-profile.sh
-load_admin_profile
-show_admin_summary
 ```
 
 ---
@@ -105,48 +158,59 @@ show_admin_summary
 
 ## Tool Installation Workflow
 
-1. **Check if installed**: `profile.tools.{name}.present`
-2. **If installed, check status**: `profile.tools.{name}.installStatus`
-3. **If not installed**:
-   - Check preferred manager: `profile.preferences.packages.manager`
+1. **Detect environment** (Step 0 above)
+2. **Load profile**: `load_admin_profile "$PROFILE_PATH"`
+3. **Check if installed**: `jq '.tools.{name}.present' "$PROFILE_PATH"`
+4. **If not installed**:
+   - Check preferred manager: `jq '.preferences.packages.manager' "$PROFILE_PATH"`
    - Construct install command for that manager
-4. **After install**:
-   - Update `profile.tools.{name}` with version, path
-   - Add entry to `profile.history`
+5. **After install**: Update profile
 
 ---
 
 ## Server Operations Workflow
 
-1. **List servers**: `profile.servers[]`
-2. **Get SSH details**: `profile.servers[id].{username, host, keyPath, port}`
-3. **Construct command**:
+1. **List servers**: `jq '.servers[]' "$PROFILE_PATH"`
+2. **Get SSH details**: 
    ```bash
-   ssh -i {keyPath} -p {port} {username}@{host}
+   SERVER=$(jq '.servers[] | select(.id == "cool-two")' "$PROFILE_PATH")
+   ```
+3. **Handle path conversion** (WSL needs to convert Windows paths):
+   ```bash
+   KEY_PATH=$(echo "$SERVER" | jq -r '.keyPath')
+   # Convert C:/Users/... to /mnt/c/Users/...
+   if [[ "$KEY_PATH" == *":"* ]]; then
+       DRIVE=$(echo "$KEY_PATH" | cut -c1 | tr '[:upper:]' '[:lower:]')
+       REST=$(echo "$KEY_PATH" | cut -c3- | sed 's|\\|/|g')
+       KEY_PATH="/mnt/$DRIVE$REST"
+   fi
    ```
 
 ---
 
-## Deployment Workflow
+## First-Run Setup
 
-1. **Find deployment**: `profile.deployments.{name}`
-2. **Load env file**: `profile.deployments.{name}.envFile`
-3. **Get provider**: `profile.deployments.{name}.provider`
-4. **Get linked servers**: `profile.deployments.{name}.serverIds`
+If profile doesn't exist:
+
+**Windows (PowerShell)**:
+```powershell
+.\scripts\Initialize-AdminProfile.ps1
+```
+
+**WSL/Linux** - Profile should be created from Windows side first, then accessed from WSL via `/mnt/c/...`
 
 ---
 
 ## Capability Checks
 
-```javascript
-// Before running PowerShell commands
-if (!profile.capabilities.canRunPowershell) { /* route to bash */ }
+```bash
+# Load profile first, then check
+HAS_DOCKER=$(jq -r '.capabilities.hasDocker' "$PROFILE_PATH")
+HAS_WSL=$(jq -r '.capabilities.hasWsl' "$PROFILE_PATH")
 
-// Before using Docker
-if (!profile.capabilities.hasDocker) { /* offer to install */ }
-
-// Before WSL operations
-if (!profile.capabilities.hasWsl) { /* Windows-only alternative */ }
+if [[ "$HAS_DOCKER" == "true" ]]; then
+    docker info
+fi
 ```
 
 ---
@@ -155,7 +219,6 @@ if (!profile.capabilities.hasWsl) { /* Windows-only alternative */ }
 
 - `references/device-profiles.md` - Profile management details
 - `references/routing-guide.md` - Detailed routing logic
-- `references/logging.md` - Centralized logging
 - `references/first-run-setup.md` - Initial setup flow
 - `references/cross-platform.md` - Windows ↔ WSL coordination
 
@@ -165,13 +228,7 @@ if (!profile.capabilities.hasWsl) { /* Windows-only alternative */ }
 |--------|---------|
 | `Load-Profile.ps1` | PowerShell profile loader |
 | `load-profile.sh` | Bash profile loader |
-
-## Templates
-
-| File | Purpose |
-|------|---------|
-| `templates/profile-v3-example.json` | Complete profile example |
-| `templates/env-template.env` | Universal deployment config |
+| `Initialize-AdminProfile.ps1` | Create new profile (Windows) |
 
 ## Related Skills
 
