@@ -91,6 +91,56 @@ If SESSION.md doesn't exist:
 
 **Note:** Don't ask about docs that don't exist or aren't relevant to changes.
 
+### 3b. Check for Rule Candidates
+
+**Analyze the session for correction patterns:**
+
+Look for instances in this session where:
+- Claude suggested syntax that was corrected
+- A pattern was established for specific file types
+- "Don't do X, do Y instead" was discovered
+- Version-specific differences were learned (e.g., v3 → v4)
+
+**If rule candidates found, ask:**
+```
+Correction patterns detected this session:
+1. [Pattern]: [Wrong → Right]
+   - Would apply to: [file patterns]
+
+Create project rule(s)? (y/n)
+```
+
+**If yes:**
+
+1. Create directory if needed:
+   ```bash
+   mkdir -p .claude/rules
+   ```
+
+2. For each rule, determine appropriate file paths (globs)
+
+3. Generate rule file:
+   ```markdown
+   ---
+   paths: "[patterns]"
+   ---
+
+   # [Rule Name]
+
+   [Context for why this rule exists]
+
+   | If Claude suggests... | Use instead... |
+   |----------------------|----------------|
+   | `[wrong]` | `[correct]` |
+   ```
+
+4. Create `.claude/rules/[name].md`
+
+5. Optionally ask: "Also update skill for all future projects? (y/n)"
+   - If yes and skill exists, update `~/.claude/skills/[skill]/rules/[name].md`
+
+**If no rule candidates found:** Skip this step silently.
+
 ### 4. Create Git Checkpoint
 
 **a) Stage all changes:**
@@ -175,6 +225,7 @@ Display a formatted summary:
 📄 Docs Updated:
    • SESSION.md
    • [CHANGELOG.md] (if updated)
+   • [.claude/rules/[name].md] (if created)
    • [other docs] (if updated)
 
 ═══════════════════════════════════════════════
@@ -237,5 +288,6 @@ To resume: Run `/continue-session` in your next session.
 ✅ SESSION.md updated with current progress
 ✅ Git checkpoint created with structured message
 ✅ Relevant docs updated (if needed)
+✅ Project rules created for correction patterns (if any)
 ✅ Clear "Next Action" for resuming
 ✅ User knows exactly what to do next

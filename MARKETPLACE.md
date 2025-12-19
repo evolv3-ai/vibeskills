@@ -1,41 +1,65 @@
 # Claude Skills Marketplace
 
-Welcome to the **claude-skills** marketplace - a curated collection of 62 production-ready skills for Claude Code CLI.
+Welcome to the **claude-skills** marketplace - a curated collection of 62 production-ready skills for Claude Code CLI, organized into 7 plugins.
 
 ## Quick Start
 
-### Installation
-
-**Step 1: Add the marketplace**
+### Step 1: Add the Marketplace
 
 ```bash
 /plugin marketplace add https://github.com/jezweb/claude-skills
 ```
 
-**Step 2: Install skills**
+### Step 2: Install Plugins
+
+Skills are grouped into logical plugins. Install the ones you need:
 
 ```bash
-# Install a single skill
-/plugin install cloudflare-worker-base@claude-skills
+# Install all Cloudflare skills (22 skills)
+/plugin install cloudflare-skills@claude-skills
 
-# Install multiple skills
-/plugin install tailwind-v4-shadcn@claude-skills openai-agents@claude-skills
+# Install AI/LLM skills (15 skills)
+/plugin install ai-skills@claude-skills
+
+# Install frontend/UI skills (7 skills)
+/plugin install frontend-skills@claude-skills
+
+# Install all plugins at once
+/plugin install cloudflare-skills@claude-skills ai-skills@claude-skills frontend-skills@claude-skills auth-skills@claude-skills cms-skills@claude-skills database-skills@claude-skills tooling-skills@claude-skills
 ```
 
-**Step 3: Use the skills**
+### Step 3: Use the Skills
 
 Once installed, Claude Code automatically discovers and uses skills when relevant:
 
 ```
 User: "Set up a new Cloudflare Worker project with Hono"
 Claude: [Automatically uses cloudflare-worker-base skill]
+
+User: "Add Tailwind v4 with shadcn/ui to my React project"
+Claude: [Automatically uses tailwind-v4-shadcn skill]
+```
+
+### Alternative: Manual Installation
+
+For development or if you prefer symlinks:
+
+```bash
+git clone https://github.com/jezweb/claude-skills.git
+cd claude-skills
+
+# Install single skill
+./scripts/install-skill.sh cloudflare-worker-base
+
+# Install all skills
+./scripts/install-all.sh
 ```
 
 ---
 
-## Available Skills (62)
+## Available Plugins (7)
 
-### Cloudflare Platform (22 skills)
+### cloudflare-skills (22 skills)
 
 Core infrastructure and services for edge computing:
 
@@ -64,7 +88,7 @@ Core infrastructure and services for edge computing:
 | `cloudflare-full-stack-integration` | Integrate multiple CF services |
 | `cloudflare-sandbox` | Testing and development environment |
 
-### AI & Machine Learning (14 skills)
+### ai-skills (15 skills)
 
 LLM integrations, agents, and AI frameworks:
 
@@ -86,7 +110,7 @@ LLM integrations, agents, and AI frameworks:
 | `better-chatbot` | Production chatbot patterns |
 | `better-chatbot-patterns` | Advanced chatbot architectures |
 
-### Frontend & UI (7 skills)
+### frontend-skills (7 skills)
 
 React, Next.js, and modern UI components:
 
@@ -100,7 +124,7 @@ React, Next.js, and modern UI components:
 | `hono-routing` | Hono for Workers and edge |
 | `firecrawl-scraper` | Web scraping API |
 
-### Authentication (2 skills)
+### auth-skills (2 skills)
 
 User management and auth solutions:
 
@@ -109,7 +133,7 @@ User management and auth solutions:
 | `clerk-auth` | Clerk user management |
 | `better-auth` | Better Auth library |
 
-### Content Management (3 skills)
+### cms-skills (3 skills)
 
 Git-based and WordPress CMS:
 
@@ -119,7 +143,7 @@ Git-based and WordPress CMS:
 | `sveltia-cms` | Sveltia CMS for Git |
 | `wordpress-plugin-core` | WordPress plugin development |
 
-### Database & Storage (4 skills)
+### database-skills (4 skills)
 
 ORMs and serverless databases:
 
@@ -130,7 +154,7 @@ ORMs and serverless databases:
 | `vercel-kv` | Vercel KV Redis storage |
 | `vercel-blob` | Vercel Blob file storage |
 
-### Tooling & Planning (10 skills)
+### tooling-skills (9 skills)
 
 Development tools and workflow automation:
 
@@ -153,9 +177,9 @@ Development tools and workflow automation:
 
 ### For Users
 
-- ✅ **One-command installation**: No manual cloning or symlinks
+- ✅ **One-command installation**: Install entire skill categories at once
 - ✅ **Automatic updates**: Keep skills current with `/plugin update`
-- ✅ **Centralized discovery**: Browse entire catalog
+- ✅ **Auto-discovery**: Claude automatically uses relevant skills
 - ✅ **Team deployment**: Share via `.claude/settings.json`
 
 ### For Projects
@@ -167,28 +191,28 @@ Development tools and workflow automation:
 
 ---
 
-## Managing Skills
+## Managing Plugins
 
-### Update Skills
+### Update Plugins
 
 ```bash
-# Update single skill
-/plugin update cloudflare-worker-base@claude-skills
+# Update single plugin
+/plugin update cloudflare-skills@claude-skills
 
-# Update all skills from marketplace
+# Update all plugins from marketplace
 /plugin update-all@claude-skills
 ```
 
-### List Installed Skills
+### List Installed Plugins
 
 ```bash
 /plugin list
 ```
 
-### Remove Skills
+### Remove Plugins
 
 ```bash
-/plugin uninstall cloudflare-worker-base@claude-skills
+/plugin uninstall cloudflare-skills@claude-skills
 ```
 
 ---
@@ -232,6 +256,30 @@ See [README.md](README.md) for development workflow.
 
 ---
 
+## Troubleshooting
+
+### Skills not triggering automatically
+
+Skills auto-trigger based on keywords in their description. If a skill isn't triggering:
+
+1. Try explicitly asking: "Use the tailwind-v4-shadcn skill to..."
+2. Restart Claude Code after installing new plugins
+3. Verify the plugin is installed: `/plugin list`
+
+### Plugin not found
+
+Make sure you've added the marketplace first:
+```bash
+/plugin marketplace add https://github.com/jezweb/claude-skills
+```
+
+Then install the plugin (not individual skills):
+```bash
+/plugin install frontend-skills@claude-skills
+```
+
+---
+
 ## Support
 
 **Issues**: https://github.com/jezweb/claude-skills/issues
@@ -258,7 +306,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Last Updated**: 2025-11-13
-**Marketplace Version**: 1.0.0
-**Skills**: 62
+**Last Updated**: 2025-12-12
+**Marketplace Version**: 2.0.0
+**Plugins**: 7 (containing 62 skills)
 **Maintainer**: Jeremy Dawes | Jezweb

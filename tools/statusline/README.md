@@ -7,10 +7,10 @@ A custom status line for Claude Code CLI that displays real-time context trackin
 ## ✨ Features
 
 ### Real-Time Context Tracking
-- **Accurate token usage** from Claude Code's transcript files
-- **Brick visualization** showing context breakdown by category
-- **Model-aware limits** (200k for all models in Claude Code)
-- **Token breakdown**: System, Tools, MCP, Memory, Messages
+- **Accurate context tracking** using `current_usage` API (Claude Code 2.0.70+)
+- **Brick visualization** showing context usage at a glance
+- **Session duration** - track how long you've been working
+- **Session cost** - API users see spending (hidden for Max subscribers)
 
 ### Git Integration
 - Current **repo name and branch**
@@ -25,6 +25,8 @@ A custom status line for Claude Code CLI that displays real-time context trackin
 - **Model name** (Sonnet 4.5, Opus 4, Haiku, etc.)
 - **Lines changed** this session (+added/-removed)
 - **Free space** remaining in context
+- **Duration** - time spent in session
+- **Cost** - API usage cost (only shown if > $0)
 
 ## 📦 Installation
 
@@ -78,17 +80,20 @@ The installer will:
 [Sonnet 4.5] claude-skills:main [5f2ce67] Remove auth-js skill | jezweb/claude-skills *↑2 | +145/-23
 ```
 
-### Line 2: Context Bricks + Breakdown
+### Line 2: Context Bricks + Duration + Cost
 ```
-ctx [■■■■■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□] 43% (86k/200k tokens) | sys:4k tools:16k mcp:2k mem:10k msg:54k | 113k free
+[■■■■■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□] 43% (86k/200k) | 113k free | 12m45s | $0.87
 ```
 
+For Max subscribers (no API cost):
+```
+[■■■■■■■■■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□] 43% (86k/200k) | 113k free | 12m45s
+```
+
+![ContextBricks in action](assets/contextbricks02.png)
+
 **Color Legend:**
-- 🔲 Dim white = System prompt
-- 🟨 Yellow = Tools
-- 🟪 Magenta = MCP servers
-- 🟦 Blue = Memory/files
-- 🟦 Cyan = Messages
+- 🟦 Cyan = Used context
 - ⬜ Dim hollow = Free space
 
 ## 🔧 Requirements
@@ -106,34 +111,32 @@ ctx [■■■■■■■■■■■■■■■■■□□□□□□□□
 
 ## 📖 How It Works
 
-### Context Tracking
+### Context Tracking (v3.1+)
 
-Claude Code stores session transcripts in JSONL format at:
-```
-~/.claude/projects/{project-dir}/{session-id}.jsonl
-```
-
-Each assistant message includes cumulative token usage:
+**Claude Code 2.0.70+** provides accurate context data via the `current_usage` field:
 ```json
 {
-  "type": "assistant",
-  "message": {
-    "usage": {
-      "input_tokens": 3,
-      "cache_read_input_tokens": 93279,
-      "cache_creation_input_tokens": 2822,
-      "output_tokens": 467
+  "context_window": {
+    "context_window_size": 200000,
+    "current_usage": {
+      "input_tokens": 45000,
+      "cache_creation_input_tokens": 3000,
+      "cache_read_input_tokens": 5000
     }
   }
 }
 ```
 
-The status line:
-1. Receives `transcript_path` from Claude Code via JSON stdin
-2. Parses the **last assistant message** (cumulative counts)
-3. Sums all token types
-4. Calculates percentage against model's context limit
-5. Generates brick visualization proportional to usage
+The status line calculates current context as:
+```
+used_tokens = input_tokens + cache_creation_input_tokens + cache_read_input_tokens
+```
+
+This provides accurate usage that properly reflects context state after compaction.
+
+### Older Versions
+
+For Claude Code < 2.0.70 without `current_usage`, the status line shows 0% until data becomes available.
 
 ### Git Information
 
@@ -149,18 +152,15 @@ Queries git commands in the current workspace:
 
 ### Status line shows 0% (0k/200k tokens)
 
-**Cause**: Transcript file not found or parsing failed
+**Cause**: No context data available (new session) or Claude Code < 2.0.70
 
 **Debug**:
 ```bash
 # Check if jq is installed
 which jq
 
-# Test the script manually
-echo '{"transcript_path":"~/.claude/projects/test.jsonl","model":{"id":"claude-sonnet-4-5"}}' | ~/.claude/statusline.sh
-
-# Check Claude Code logs
-tail -f ~/.claude/logs/claude-code.log
+# Test with current_usage data (2.0.70+)
+echo '{"context_window":{"context_window_size":200000,"current_usage":{"input_tokens":50000,"cache_creation_input_tokens":3000,"cache_read_input_tokens":2000}},"model":{"display_name":"Sonnet 4.5"},"workspace":{"current_dir":"'"$PWD"'"},"cost":{"total_duration_ms":300000}}' | ~/.claude/statusline.sh
 ```
 
 ### Brick visualization looks wrong
@@ -185,35 +185,18 @@ git rev-parse --git-dir
 sudo apt install git
 ```
 
-### Script runs slowly
-
-**Cause**: Large transcript files (>10MB)
-
-**Optimization**: The script uses `grep | tail -1` which is fast for most cases. For very large files, consider:
-- Clearing old sessions: `rm ~/.claude/projects/*/old-session-*.jsonl`
-- Using `tail -1000` to limit parsing
-
 ## 🎛️ Customization
 
 ### Change Brick Count
 
-Edit `statusline.sh` line 166:
+Edit `statusline.sh` line ~156:
 ```bash
 total_bricks=40  # Increase for more granular visualization
 ```
 
-### Adjust Token Breakdown Estimates
-
-Edit lines 140-147:
-```bash
-system_tokens=$((total_tokens * 2 / 100))   # Adjust percentages
-tools_tokens=$((total_tokens * 8 / 100))
-# ...
-```
-
 ### Hide Git Status
 
-Comment out lines 84-87:
+Comment out lines ~85-88:
 ```bash
 # if [[ -n "$git_status" ]]; then
 #     line1+=" \033[1;31m$git_status\033[0m"
@@ -222,7 +205,7 @@ Comment out lines 84-87:
 
 ### Compact Mode (Single Line)
 
-Comment out line 197:
+Comment out the second echo:
 ```bash
 echo -e "$line1"
 # echo -e "$brick_line"  # Disable context line
@@ -245,6 +228,33 @@ Manual uninstall:
 rm ~/.claude/statusline.sh
 # Edit ~/.claude/settings.json and remove the "statusLine" section
 ```
+
+## 📋 Changelog
+
+### v3.1.0 (2025-12-16)
+- **Re-enabled context tracking** - Uses new `current_usage` API (Claude Code 2.0.70+)
+- **Simplified code** - Removed complex compaction detection (~100 lines removed)
+- **Accurate tracking** - `current_usage` provides proper context state after compaction
+
+### v3.0.0 (2025-12-15)
+- **Disabled context tracking** - Temporary due to Anthropic API bug #13783
+- **Git-only mode** - Shows git info, duration, and cost while waiting for fix
+
+### v2.1.0 (2025-12-13)
+- **Compaction detection** - Shows accurate context usage after automatic compaction
+- **📦 indicator** - Purple box emoji when context has been compacted
+- **Hybrid calculation** - Uses cumulative tokens when normal, transcript parsing when compacted
+
+### v2.0.0 (2025-12-11)
+- **Native context_window support** - Uses Claude Code 2.0.65+ native data
+- **Added session duration** - Shows time spent in session (e.g., `12m45s`)
+- **Added session cost** - Shows API cost (only if > $0, hidden for Max subscribers)
+- **Simplified visualization** - Single cyan colour for used context
+- **Removed breakdown estimates** - No more estimated sys/tools/mcp/mem/msg
+- **Backwards compatible** - Falls back to transcript parsing for older versions
+
+### v1.0.0
+- Initial release with transcript parsing and multi-colour breakdown
 
 ## 🤝 Contributing
 
