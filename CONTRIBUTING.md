@@ -338,7 +338,7 @@ The repository includes comprehensive version checking tools in `scripts/`:
 ./scripts/check-all-versions.sh
 
 # Check specific skill
-./scripts/check-all-versions.sh cloudflare-worker-base
+./scripts/check-all-versions.sh admin
 
 # Generates: VERSIONS_REPORT.md with actionable recommendations
 ```
@@ -396,9 +396,8 @@ Looking for ideas? We need skills for:
 
 ## 📞 Getting Help
 
-- **Issues**: https://github.com/jezweb/claude-skills/issues
-- **Discussions**: https://github.com/jezweb/claude-skills/discussions
-- **Email**: jeremy@jezweb.net
+- **Issues**: https://github.com/evolv3-ai/vibeskills/issues
+- **Upstream**: https://github.com/jezweb/claude-skills (original by Jeremy Dawes)
 
 ---
 

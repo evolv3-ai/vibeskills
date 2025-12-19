@@ -1,12 +1,30 @@
-# START HERE 👋
+# START HERE
 
-**Welcome to claude-skills!** This is your entry point for building production-ready skills for Claude Code.
+**Welcome to VibeSkills!** This is your entry point for building and using production-ready skills for Claude Code.
 
 ---
 
 ## What Do You Want To Do?
 
-### 🆕 Build a New Skill
+### Use Existing Skills
+
+**Quick Install** (all 18 skills):
+```bash
+git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+cd ~/Documents/vibeskills
+./scripts/install-all.sh
+```
+
+**Single Skill**:
+```bash
+./scripts/install-skill.sh admin
+```
+
+**View All Skills**: See [SKILLS_CATALOG.md](SKILLS_CATALOG.md)
+
+---
+
+### Build a New Skill
 
 **Quick Start** (5 minutes):
 1. Copy the template: `cp -r templates/skill-skeleton/ skills/my-skill-name/`
@@ -20,16 +38,15 @@
 
 ---
 
-### ✅ Verify an Existing Skill
+### Verify an Existing Skill
 
 **Compliance Check**:
 - Use [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md) for quick verification
-- See [CLOUDFLARE_SKILLS_AUDIT.md](CLOUDFLARE_SKILLS_AUDIT.md) for example audit
 - Check against [planning/claude-code-skill-standards.md](planning/claude-code-skill-standards.md)
 
 ---
 
-### 🔬 Research Before Building
+### Research Before Building
 
 **Research Protocol**:
 1. Read [planning/research-protocol.md](planning/research-protocol.md)
@@ -40,7 +57,7 @@
 
 ---
 
-### 📚 Understand the Standards
+### Understand the Standards
 
 **Official Documentation**:
 - Anthropic Skills Repo: https://github.com/anthropics/skills
@@ -50,23 +67,17 @@
 
 ---
 
-### 📝 Learn From Examples
+### Learn From Examples
 
 **Working Examples**:
-- **Gold Standard**: `~/.claude/skills/tailwind-v4-shadcn/`
-- **Cloudflare Suite** (7 production skills):
-  - cloudflare-worker-base
-  - cloudflare-d1
-  - cloudflare-r2
-  - cloudflare-kv
-  - cloudflare-workers-ai
-  - cloudflare-vectorize
-  - cloudflare-queues
+- **Admin Suite** (14 skills): admin, admin-unix, admin-windows, admin-wsl, admin-devops, admin-mcp, admin-infra-*
+- **Infrastructure**: admin-infra-digitalocean, admin-infra-vultr, admin-infra-hetzner
+- **Applications**: admin-app-coolify, admin-app-kasm
 - **Official Examples**: https://github.com/anthropics/skills
 
 ---
 
-### 🤖 Teach AI Agents About This Repository
+### Teach AI Agents About This Repository
 
 **For Other AI Assistants** (Gemini, GPT, etc.):
 
@@ -81,7 +92,7 @@ If you want to teach another AI agent how to use these skills:
 - How to extract knowledge from skills
 - Tech stack context and critical rules
 - Practical examples and integration tips
-- Full skills inventory (59 production skills)
+- Full skills inventory (18 production skills)
 - Command reference for accessing skills
 
 **Use Cases**:
@@ -167,34 +178,21 @@ If you want to teach another AI agent how to use these skills:
 | **templates/SKILL-TEMPLATE.md** | Copy-paste starter | Building new skill |
 | **planning/claude-code-skill-standards.md** | Official standards | Understanding requirements |
 | **planning/research-protocol.md** | Research process | Before building skill |
-| **CLOUDFLARE_SKILLS_AUDIT.md** | Example audit | Learning compliance |
 
 ---
 
-## Project Status (2025-10-29)
+## Project Status (2025-12-18)
 
-### ✅ Completed (50 skills) - All Production-Ready!
+### Active Skills (18) - All Production-Ready
 
-All 50 skills are complete, tested, and available. View full list:
-- **README.md** - Complete skill listing with descriptions
-- **CLAUDE.md** - Organized by category (26 Cloudflare, 10 AI, 7 Frontend, etc.)
-- **skills/** directory - Run `ls skills/` to see all
+| Category | Count | Skills |
+|----------|-------|--------|
+| System Admin | 6 | admin, admin-unix, admin-windows, admin-wsl, admin-devops, admin-mcp |
+| Cloud Infra | 6 | admin-infra-digitalocean, vultr, linode, hetzner, contabo, oci |
+| Applications | 2 | admin-app-coolify, admin-app-kasm |
+| Tools | 4 | deckmate, imagemagick, cloudflare-python-workers, mcp-oauth-cloudflare |
 
-**Recent Additions**:
-- OpenAI Agents SDK, Claude Agent SDK, Google Gemini API
-- TinaCMS, Sveltia CMS for content management
-- TypeScript MCP, FastMCP for MCP server development
-- Project Planning, Session Management for workflow automation
-- Vercel platform skills (KV, Blob, Neon Postgres)
-
-**Skill Categories**:
-- Cloudflare Platform (26 skills)
-- AI & Machine Learning (10 skills)
-- Frontend & UI (7 skills)
-- Auth & Security (3 skills)
-- Content Management (2 skills)
-- Database & ORM (4 skills)
-- Tooling & Planning (4 skills)
+**Full List**: Run `ls skills/` or see [SKILLS_CATALOG.md](SKILLS_CATALOG.md)
 
 ---
 
@@ -222,7 +220,7 @@ A: See [planning/STANDARDS_COMPARISON.md](planning/STANDARDS_COMPARISON.md)
 1. Check [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for what NOT to do
 2. Look at existing skills in `skills/` directory for working examples
 3. Review [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
-4. Open an issue: https://github.com/jezweb/claude-skills/issues
+4. Open an issue: https://github.com/evolv3-ai/vibeskills/issues
 
 ---
 
@@ -234,6 +232,7 @@ A: See [planning/STANDARDS_COMPARISON.md](planning/STANDARDS_COMPARISON.md)
   - [What are skills?](https://support.claude.com/en/articles/12512176-what-are-skills)
   - [Creating custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills)
 - **Engineering Blog**: [Equipping agents with skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+- **Upstream Repository**: [jezweb/claude-skills](https://github.com/jezweb/claude-skills)
 
 ---
 

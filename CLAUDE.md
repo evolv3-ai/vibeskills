@@ -3,7 +3,7 @@
 **Repository**: https://github.com/evolv3ai/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: EVOLV3.AI | evolv3ai
-**Status**: Active Development | 17 Skills
+**Status**: Active Development | 18 Skills
 **Last Updated**: 2025-12-18
 
 > **Attribution**: This project is based on [claude-skills](https://github.com/jezweb/claude-skills) by Jeremy Dawes (Jezweb), licensed under MIT.
@@ -61,12 +61,13 @@ claude-skills/
 ├── LICENSE                       # MIT License
 ├── .gitignore                    # Git ignore patterns
 │
-├── skills/                       # ← All production skills (17 total)
+├── skills/                       # ← All production skills (18 total)
 │   ├── admin/                    # Base system administration
-│   ├── admin-*/                  # Platform-specific admin skills (14 total)
+│   ├── admin-*/                  # Platform-specific admin skills (13 total)
 │   ├── deckmate/                 # Stream Deck integration
-│   ├── hyperbrowser/             # Browser automation
-│   └── imagemagick/              # Image processing
+│   ├── imagemagick/              # Image processing
+│   ├── cloudflare-python-workers/  # Python Workers (from upstream)
+│   └── mcp-oauth-cloudflare/     # MCP OAuth (from upstream)
 │
 ├── commands/                     # ← Slash commands (symlinked to ~/.claude/commands/)
 │   ├── brief.md                  # /brief - Context preservation
@@ -256,10 +257,11 @@ All skills are production-ready and organized by domain:
 - `admin-app-coolify` - Coolify self-hosted PaaS
 - `admin-app-kasm` - Kasm Workspaces
 
-**Specialized Tools** (3 skills):
+**Specialized Tools** (4 skills):
 - `deckmate` - Stream Deck integration for VSCode
-- `hyperbrowser` - Browser automation and scraping
 - `imagemagick` - Image processing CLI
+- `cloudflare-python-workers` - Python Workers on Cloudflare (from upstream)
+- `mcp-oauth-cloudflare` - OAuth for MCP servers (from upstream)
 
 **Quality Standards**:
 - ✅ All production-tested
@@ -636,7 +638,7 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 - ✅ Sub-5-minute skill creation (with templates)
 
 **Adoption**:
-- ✅ 17 skills active
+- ✅ 18 skills active
 - ✅ Community contributions: Welcome
 
 ---

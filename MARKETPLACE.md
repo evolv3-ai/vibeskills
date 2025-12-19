@@ -1,31 +1,28 @@
-# Claude Skills Marketplace
+# VibeSkills Marketplace
 
-Welcome to the **claude-skills** marketplace - a curated collection of 62 production-ready skills for Claude Code CLI, organized into 7 plugins.
+A curated collection of **18 production-ready skills** for Claude Code CLI, focused on system administration and infrastructure management.
 
 ## Quick Start
 
 ### Step 1: Add the Marketplace
 
 ```bash
-/plugin marketplace add https://github.com/jezweb/claude-skills
+/plugin marketplace add https://github.com/evolv3-ai/vibeskills
 ```
 
-### Step 2: Install Plugins
+### Step 2: Install Skills
 
-Skills are grouped into logical plugins. Install the ones you need:
+Install individual skills or all at once:
 
 ```bash
-# Install all Cloudflare skills (22 skills)
-/plugin install cloudflare-skills@claude-skills
+# Install the admin skill (orchestrator)
+/plugin install admin@vibeskills
 
-# Install AI/LLM skills (15 skills)
-/plugin install ai-skills@claude-skills
+# Install a specific infrastructure skill
+/plugin install admin-infra-vultr@vibeskills
 
-# Install frontend/UI skills (7 skills)
-/plugin install frontend-skills@claude-skills
-
-# Install all plugins at once
-/plugin install cloudflare-skills@claude-skills ai-skills@claude-skills frontend-skills@claude-skills auth-skills@claude-skills cms-skills@claude-skills database-skills@claude-skills tooling-skills@claude-skills
+# Install all skills
+/plugin install all@vibeskills
 ```
 
 ### Step 3: Use the Skills
@@ -33,11 +30,11 @@ Skills are grouped into logical plugins. Install the ones you need:
 Once installed, Claude Code automatically discovers and uses skills when relevant:
 
 ```
-User: "Set up a new Cloudflare Worker project with Hono"
-Claude: [Automatically uses cloudflare-worker-base skill]
+User: "Set up a new Hetzner ARM64 server with Docker"
+Claude: [Automatically uses admin-infra-hetzner skill]
 
-User: "Add Tailwind v4 with shadcn/ui to my React project"
-Claude: [Automatically uses tailwind-v4-shadcn skill]
+User: "Configure my WSL2 environment"
+Claude: [Automatically uses admin-wsl skill]
 ```
 
 ### Alternative: Manual Installation
@@ -45,11 +42,11 @@ Claude: [Automatically uses tailwind-v4-shadcn skill]
 For development or if you prefer symlinks:
 
 ```bash
-git clone https://github.com/jezweb/claude-skills.git
-cd claude-skills
+git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+cd ~/Documents/vibeskills
 
 # Install single skill
-./scripts/install-skill.sh cloudflare-worker-base
+./scripts/install-skill.sh admin
 
 # Install all skills
 ./scripts/install-all.sh
@@ -57,119 +54,45 @@ cd claude-skills
 
 ---
 
-## Available Plugins (7)
+## Available Skills (18)
 
-### cloudflare-skills (22 skills)
-
-Core infrastructure and services for edge computing:
+### System Administration (6 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `cloudflare-worker-base` | Production Workers setup with Hono, Vite, Static Assets |
-| `cloudflare-d1` | SQLite database with migrations and schemas |
-| `cloudflare-r2` | Object storage (S3-compatible) |
-| `cloudflare-kv` | Key-value storage for caching |
-| `cloudflare-workers-ai` | LLM inference and embeddings |
-| `cloudflare-vectorize` | Vector search and embeddings storage |
-| `cloudflare-queues` | Async message processing |
-| `cloudflare-workflows` | Multi-step process orchestration |
-| `cloudflare-durable-objects` | Stateful coordination and WebSockets |
-| `cloudflare-agents` | AI agents on the edge |
-| `cloudflare-mcp-server` | Deploy MCP servers on Workers |
-| `cloudflare-nextjs` | Next.js on Cloudflare Pages |
-| `cloudflare-cron-triggers` | Scheduled tasks |
-| `cloudflare-email-routing` | Handle incoming emails |
-| `cloudflare-hyperdrive` | Accelerated Postgres connections |
-| `cloudflare-images` | Image optimization and delivery |
-| `cloudflare-browser-rendering` | Headless browser automation |
-| `cloudflare-turnstile` | CAPTCHA-free bot protection |
-| `cloudflare-zero-trust-access` | Secure authentication |
-| `cloudflare-full-stack-scaffold` | Complete full-stack template |
-| `cloudflare-full-stack-integration` | Integrate multiple CF services |
-| `cloudflare-sandbox` | Testing and development environment |
+| `admin` | Central orchestrator - routes to specialized admin-* skills |
+| `admin-unix` | macOS and Linux administration |
+| `admin-windows` | Windows and PowerShell administration |
+| `admin-wsl` | WSL2 Ubuntu administration |
+| `admin-devops` | Infrastructure and deployment management |
+| `admin-mcp` | MCP server management for Claude Desktop |
 
-### ai-skills (15 skills)
-
-LLM integrations, agents, and AI frameworks:
+### Cloud Infrastructure (6 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `ai-sdk-core` | Vercel AI SDK for unified LLM integration |
-| `ai-sdk-ui` | AI SDK UI for chat interfaces |
-| `openai-api` | OpenAI GPT models and embeddings |
-| `openai-agents` | OpenAI Agents SDK with realtime voice |
-| `openai-assistants` | Stateful AI assistants |
-| `openai-responses` | Conversational AI applications |
-| `google-gemini-api` | Google Gemini multimodal models |
-| `google-gemini-embeddings` | Gemini embeddings for search |
-| `google-gemini-file-search` | Managed RAG with File Search API |
-| `claude-api` | Anthropic Claude API integration |
-| `claude-agent-sdk` | Claude autonomous agents |
-| `thesys-generative-ui` | LLM-powered dynamic UI |
-| `elevenlabs-agents` | Voice AI applications |
-| `better-chatbot` | Production chatbot patterns |
-| `better-chatbot-patterns` | Advanced chatbot architectures |
+| `admin-infra-digitalocean` | DigitalOcean Droplets, firewalls, VPCs |
+| `admin-infra-vultr` | Vultr Cloud Compute and High-Frequency servers |
+| `admin-infra-linode` | Linode/Akamai with Kubernetes support |
+| `admin-infra-hetzner` | Hetzner Cloud ARM64 and x86 servers |
+| `admin-infra-contabo` | Contabo budget VPS and storage |
+| `admin-infra-oci` | Oracle Cloud Always Free ARM64 instances |
 
-### frontend-skills (7 skills)
-
-React, Next.js, and modern UI components:
+### Applications (2 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `tailwind-v4-shadcn` | Tailwind v4 + shadcn/ui setup (gold standard) |
-| `react-hook-form-zod` | Forms with validation |
-| `tanstack-query` | Data fetching and caching |
-| `zustand-state-management` | Lightweight state management |
-| `nextjs` | Next.js App Router development |
-| `hono-routing` | Hono for Workers and edge |
-| `firecrawl-scraper` | Web scraping API |
+| `admin-app-coolify` | Coolify self-hosted PaaS |
+| `admin-app-kasm` | Kasm Workspaces VDI platform |
 
-### auth-skills (2 skills)
-
-User management and auth solutions:
+### Specialized Tools (4 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `clerk-auth` | Clerk user management |
-| `better-auth` | Better Auth library |
-
-### cms-skills (3 skills)
-
-Git-based and WordPress CMS:
-
-| Skill | Description |
-|-------|-------------|
-| `tinacms` | TinaCMS Git-backed CMS |
-| `sveltia-cms` | Sveltia CMS for Git |
-| `wordpress-plugin-core` | WordPress plugin development |
-
-### database-skills (4 skills)
-
-ORMs and serverless databases:
-
-| Skill | Description |
-|-------|-------------|
-| `drizzle-orm-d1` | Drizzle ORM with D1 |
-| `neon-vercel-postgres` | Neon Postgres with Vercel |
-| `vercel-kv` | Vercel KV Redis storage |
-| `vercel-blob` | Vercel Blob file storage |
-
-### tooling-skills (9 skills)
-
-Development tools and workflow automation:
-
-| Skill | Description |
-|-------|-------------|
-| `project-workflow` | Complete project lifecycle with 7 slash commands |
-| `project-planning` | Generate planning docs |
-| `project-session-management` | Session handoff protocol |
-| `gemini-cli` | Use Gemini CLI for second opinions and code review |
-| `typescript-mcp` | Build MCP servers with TypeScript |
-| `fastmcp` | FastMCP Python framework |
-| `firecrawl-scraper` | Web scraping API integration |
-| `hugo` | Hugo static site generator |
-| `github-project-automation` | Automate GitHub Projects |
-| `open-source-contributions` | Open-source workflow best practices |
+| `deckmate` | Stream Deck integration for VSCode |
+| `imagemagick` | Image processing CLI |
+| `cloudflare-python-workers` | Python APIs on Cloudflare Workers |
+| `mcp-oauth-cloudflare` | OAuth for MCP servers |
 
 ---
 
@@ -177,42 +100,41 @@ Development tools and workflow automation:
 
 ### For Users
 
-- ✅ **One-command installation**: Install entire skill categories at once
-- ✅ **Automatic updates**: Keep skills current with `/plugin update`
-- ✅ **Auto-discovery**: Claude automatically uses relevant skills
-- ✅ **Team deployment**: Share via `.claude/settings.json`
+- One-command installation via marketplace or script
+- Automatic updates with `/plugin update`
+- Auto-discovery - Claude automatically uses relevant skills
+- Team deployment via `.claude/settings.json`
 
 ### For Projects
 
-- ✅ **60-70% token savings** vs manual implementation
-- ✅ **395+ errors prevented** across all skills
-- ✅ **Production-tested** patterns and templates
-- ✅ **Current packages** (verified quarterly)
+- ~50% token savings vs manual implementation
+- Production-tested patterns and templates
+- Current package versions (verified quarterly)
 
 ---
 
-## Managing Plugins
+## Managing Skills
 
-### Update Plugins
+### Update Skills
 
 ```bash
-# Update single plugin
-/plugin update cloudflare-skills@claude-skills
+# Update single skill
+/plugin update admin@vibeskills
 
-# Update all plugins from marketplace
-/plugin update-all@claude-skills
+# Update all from marketplace
+/plugin update-all@vibeskills
 ```
 
-### List Installed Plugins
+### List Installed Skills
 
 ```bash
 /plugin list
 ```
 
-### Remove Plugins
+### Remove Skills
 
 ```bash
-/plugin uninstall cloudflare-skills@claude-skills
+/plugin uninstall admin@vibeskills
 ```
 
 ---
@@ -225,8 +147,8 @@ Add to `.claude/settings.json` for automatic marketplace availability:
 {
   "extraKnownMarketplaces": [
     {
-      "name": "jezweb-skills",
-      "url": "https://github.com/jezweb/claude-skills"
+      "name": "vibeskills",
+      "url": "https://github.com/evolv3-ai/vibeskills"
     }
   ]
 }
@@ -236,23 +158,13 @@ Team members will automatically have access to the marketplace.
 
 ---
 
-## Alternative: Direct Installation
+## Syncing with Upstream
 
-If you prefer manual installation or want to contribute:
+This fork periodically syncs with [jezweb/claude-skills](https://github.com/jezweb/claude-skills) for framework improvements:
 
 ```bash
-# Clone repository
-git clone https://github.com/jezweb/claude-skills.git
-cd claude-skills
-
-# Install single skill
-./scripts/install-skill.sh cloudflare-worker-base
-
-# Install all skills
-./scripts/install-all.sh
+./scripts/sync-upstream.sh
 ```
-
-See [README.md](README.md) for development workflow.
 
 ---
 
@@ -262,28 +174,27 @@ See [README.md](README.md) for development workflow.
 
 Skills auto-trigger based on keywords in their description. If a skill isn't triggering:
 
-1. Try explicitly asking: "Use the tailwind-v4-shadcn skill to..."
-2. Restart Claude Code after installing new plugins
-3. Verify the plugin is installed: `/plugin list`
+1. Try explicitly asking: "Use the admin-unix skill to..."
+2. Restart Claude Code after installing new skills
+3. Verify the skill is installed: `/plugin list`
 
-### Plugin not found
+### Skill not found
 
 Make sure you've added the marketplace first:
 ```bash
-/plugin marketplace add https://github.com/jezweb/claude-skills
+/plugin marketplace add https://github.com/evolv3-ai/vibeskills
 ```
 
-Then install the plugin (not individual skills):
+Then install the skill:
 ```bash
-/plugin install frontend-skills@claude-skills
+/plugin install admin@vibeskills
 ```
 
 ---
 
 ## Support
 
-**Issues**: https://github.com/jezweb/claude-skills/issues
-**Email**: jeremy@jezweb.net
+**Issues**: https://github.com/evolv3-ai/vibeskills/issues
 **Documentation**: See individual skill directories for detailed guides
 
 ---
@@ -306,7 +217,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Last Updated**: 2025-12-12
-**Marketplace Version**: 2.0.0
-**Plugins**: 7 (containing 62 skills)
-**Maintainer**: Jeremy Dawes | Jezweb
+**Last Updated**: 2025-12-18
+**Skills**: 18
+**Maintainer**: evolv3.ai | Original framework by Jeremy Dawes
