@@ -3,10 +3,10 @@
   "description": "Windows system administration with PowerShell 7.x. Profile-aware - reads your preferences for package managers (scoop vs winget), paths, and installed tools. Use when: Windows-specific admin tasks, PowerShell automation, PATH configuration, package installation, bash-to-PowerShell translation.",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": []
 }

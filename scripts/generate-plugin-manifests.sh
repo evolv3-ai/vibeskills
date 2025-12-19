@@ -97,11 +97,11 @@ for skill_dir in "$SKILLS_DIR"/*; do
   "description": "$description",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": $keywords_json
 }
 EOF

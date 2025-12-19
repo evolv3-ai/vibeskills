@@ -3,10 +3,10 @@
   "description": "Deploys infrastructure on Contabo using Cloud VPS and Object Storage. Focuses on cost‑effective provisioning and Contabo-specific CLI/API quirks. Use when: provisioning Contabo Cloud VPS, configuring Object Storage, or troubleshooting Contabo-specific issues.",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": ["contabo","cntb","VPS","cloud compute","budget hosting","best value","object storage","infrastructure"]
 }

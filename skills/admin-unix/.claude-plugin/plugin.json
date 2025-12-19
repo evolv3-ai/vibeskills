@@ -3,10 +3,10 @@
   "description": "Native macOS and Linux administration (non-WSL). Profile-aware - reads preferences from ~/.admin/profiles/{hostname}.json. Use when: macOS/Linux system admin, Homebrew (macOS), apt (Linux), services. NOT for WSL - use admin-wsl instead.",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": []
 }

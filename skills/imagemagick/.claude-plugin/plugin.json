@@ -3,10 +3,10 @@
   "description": "Guide for using ImageMagick command-line tools to perform advanced image processing tasks including format conversion, resizing, cropping, effects, transformations, and batch operations. Use when manipulating images programmatically via shell commands.",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": []
 }

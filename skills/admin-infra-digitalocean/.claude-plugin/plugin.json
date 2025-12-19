@@ -3,10 +3,10 @@
   "description": "Deploys infrastructure on DigitalOcean with Droplets (VMs), Firewalls, and VPCs. Includes Kasm Workspaces auto-scaling integration for dynamic agent provisioning. Use when: setting up DigitalOcean infrastructure, deploying Droplets, configuring firewalls, integrating with Kasm auto-scaling, looking for US/global cloud with good API.",
   "version": "1.0.0",
   "author": {
-    "name": "Jeremy Dawes",
-    "email": "jeremy@jezweb.net"
+    "name": "evolv3ai",
+    "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/jezweb/claude-skills",
+  "repository": "https://github.com/evolv3-ai/vibeskills",
   "keywords": ["digitalocean","doctl","droplet","VPS","firewall","VPC","kasm autoscale","cloud infrastructure"]
 }
