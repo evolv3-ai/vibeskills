@@ -199,7 +199,7 @@ A skill is "complete" when:
 - **Roadmap**: `/home/wsladmin/dev/claude-skills/planning/skills-roadmap.md`
 - **Research Protocol**: `/home/wsladmin/dev/claude-skills/planning/research-protocol.md`
 - **Official Standards**: `/home/wsladmin/dev/claude-skills/planning/claude-code-skill-standards.md`
-- **GitHub Repo**: https://github.com/jezweb/claude-skills
+- **GitHub Repo**: https://github.com/evolv3-ai/vibe-skills
 
 ---
 

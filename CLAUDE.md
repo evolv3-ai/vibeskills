@@ -66,8 +66,6 @@ claude-skills/
 │   ├── admin-*/                  # Platform-specific admin skills (13 total)
 │   ├── deckmate/                 # Stream Deck integration
 │   ├── imagemagick/              # Image processing
-│   ├── cloudflare-python-workers/  # Python Workers (from upstream)
-│   └── mcp-oauth-cloudflare/     # MCP OAuth (from upstream)
 │
 ├── commands/                     # ← Slash commands (symlinked to ~/.claude/commands/)
 │   ├── brief.md                  # /brief - Context preservation
@@ -257,11 +255,11 @@ All skills are production-ready and organized by domain:
 - `admin-app-coolify` - Coolify self-hosted PaaS
 - `admin-app-kasm` - Kasm Workspaces
 
-**Specialized Tools** (4 skills):
+**Specialized Tools** (2 skills):
 - `deckmate` - Stream Deck integration for VSCode
 - `imagemagick` - Image processing CLI
-- `cloudflare-python-workers` - Python Workers on Cloudflare (from upstream)
-- `mcp-oauth-cloudflare` - OAuth for MCP servers (from upstream)
+
+
 
 **Quality Standards**:
 - ✅ All production-tested

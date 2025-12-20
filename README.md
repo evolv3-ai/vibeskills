@@ -29,7 +29,7 @@ The original project provides an outstanding framework for Claude AI skills deve
 ### Manual Installation (Recommended)
 
 ```bash
-git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+git clone https://github.com/evolv3-ai/vibe-skills.git ~/Documents/vibeskills
 cd ~/Documents/vibeskills
 ./scripts/install-skill.sh admin  # Single skill
 # or
@@ -39,7 +39,7 @@ cd ~/Documents/vibeskills
 ### Marketplace
 
 ```bash
-/plugin marketplace add https://github.com/evolv3-ai/vibeskills
+/plugin marketplace add https://github.com/evolv3-ai/vibe-skills
 /plugin install admin@vibeskills
 ```
 
@@ -169,9 +169,9 @@ npx contextbricks  # One-command install
 
 ## Links
 
-- **This Fork**: [github.com/evolv3-ai/vibeskills](https://github.com/evolv3-ai/vibeskills)
+- **This Fork**: [github.com/evolv3-ai/vibe-skills](https://github.com/evolv3-ai/vibe-skills)
 - **Upstream**: [github.com/jezweb/claude-skills](https://github.com/jezweb/claude-skills)
-- **Issues**: [github.com/evolv3-ai/vibeskills/issues](https://github.com/evolv3-ai/vibeskills/issues)
+- **Issues**: [github.com/evolv3-ai/vibe-skills/issues](https://github.com/evolv3-ai/vibe-skills/issues)
 - **Claude Code**: [claude.com/claude-code](https://claude.com/claude-code)
 
 ---

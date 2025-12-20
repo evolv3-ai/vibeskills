@@ -7,6 +7,6 @@
     "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/evolv3-ai/vibeskills",
+  "repository": "https://github.com/evolv3-ai/vibe-skills",
   "keywords": ["digitalocean","doctl","droplet","VPS","firewall","VPC","kasm autoscale","cloud infrastructure"]
 }

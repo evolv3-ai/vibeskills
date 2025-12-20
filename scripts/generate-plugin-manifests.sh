@@ -101,7 +101,7 @@ for skill_dir in "$SKILLS_DIR"/*; do
     "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/evolv3-ai/vibeskills",
+  "repository": "https://github.com/evolv3-ai/vibe-skills",
   "keywords": $keywords_json
 }
 EOF

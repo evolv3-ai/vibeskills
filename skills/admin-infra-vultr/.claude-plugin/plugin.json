@@ -7,6 +7,6 @@
     "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/evolv3-ai/vibeskills",
+  "repository": "https://github.com/evolv3-ai/vibe-skills",
   "keywords": ["vultr","vultr-cli","VPS","cloud compute","high-frequency","firewall","VPC","kubernetes autoscale","infrastructure"]
 }

@@ -10,7 +10,7 @@
 
 **Quick Install** (all 18 skills):
 ```bash
-git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+git clone https://github.com/evolv3-ai/vibe-skills.git ~/Documents/vibeskills
 cd ~/Documents/vibeskills
 ./scripts/install-all.sh
 ```
@@ -190,7 +190,7 @@ If you want to teach another AI agent how to use these skills:
 | System Admin | 6 | admin, admin-unix, admin-windows, admin-wsl, admin-devops, admin-mcp |
 | Cloud Infra | 6 | admin-infra-digitalocean, vultr, linode, hetzner, contabo, oci |
 | Applications | 2 | admin-app-coolify, admin-app-kasm |
-| Tools | 4 | deckmate, imagemagick, cloudflare-python-workers, mcp-oauth-cloudflare |
+| Tools | 2 | deckmate, imagemagick |
 
 **Full List**: Run `ls skills/` or see [SKILLS_CATALOG.md](SKILLS_CATALOG.md)
 
@@ -220,7 +220,7 @@ A: See [planning/STANDARDS_COMPARISON.md](planning/STANDARDS_COMPARISON.md)
 1. Check [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for what NOT to do
 2. Look at existing skills in `skills/` directory for working examples
 3. Review [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines
-4. Open an issue: https://github.com/evolv3-ai/vibeskills/issues
+4. Open an issue: https://github.com/evolv3-ai/vibe-skills/issues
 
 ---
 

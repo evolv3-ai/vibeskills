@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Installation** (official method):
 ```bash
-/plugin marketplace add jezweb/claude-skills
+/plugin marketplace add evolv3-ai/vibe-skills
 /plugin install cloudflare-skills@claude-skills
 ```
 
@@ -2266,7 +2266,7 @@ Complete production-ready setup for Tailwind CSS v4 with shadcn/ui, Vite, and Re
 
 ## Project Information
 
-**Repository**: https://github.com/jezweb/claude-skills
+**Repository**: https://github.com/evolv3-ai/vibe-skills
 **Maintainer**: Jeremy Dawes (Jezweb)
 **License**: MIT
 **Issues**: https://github.com/jezweb/claude-skills/issues

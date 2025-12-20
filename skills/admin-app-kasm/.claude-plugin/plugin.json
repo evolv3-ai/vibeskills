@@ -7,6 +7,6 @@
     "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/evolv3-ai/vibeskills",
+  "repository": "https://github.com/evolv3-ai/vibe-skills",
   "keywords": ["kasm workspaces","VDI","virtual desktop","browser streaming","ARM64","kasm port 8443","container desktop"]
 }

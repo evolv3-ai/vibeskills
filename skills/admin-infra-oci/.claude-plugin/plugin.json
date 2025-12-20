@@ -7,6 +7,6 @@
     "email": "hello@evolv3.ai"
   },
   "license": "MIT",
-  "repository": "https://github.com/evolv3-ai/vibeskills",
+  "repository": "https://github.com/evolv3-ai/vibe-skills",
   "keywords": ["oracle cloud","OCI","ARM64","VM.Standard.A1.Flex","Always Free tier","OUT_OF_HOST_CAPACITY","oci compartment","oci vcn"]
 }

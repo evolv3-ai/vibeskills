@@ -396,7 +396,7 @@ Looking for ideas? We need skills for:
 
 ## 📞 Getting Help
 
-- **Issues**: https://github.com/evolv3-ai/vibeskills/issues
+- **Issues**: https://github.com/evolv3-ai/vibe-skills/issues
 - **Upstream**: https://github.com/jezweb/claude-skills (original by Jeremy Dawes)
 
 ---

@@ -1,5 +1,5 @@
 {
-  "name": "vibeskills",
+  "name": "vibe-skills",
   "owner": {
     "name": "EVOLV3.AI",
     "email": "hello@evolv3.ai"
@@ -51,9 +51,7 @@
       "source": "./",
       "skills": [
         "./skills/deckmate",
-        "./skills/imagemagick",
-        "./skills/cloudflare-python-workers",
-        "./skills/mcp-oauth-cloudflare"
+        "./skills/imagemagick"
       ]
     }
   ]

@@ -7,7 +7,7 @@ A curated collection of **18 production-ready skills** for Claude Code CLI, focu
 ### Step 1: Add the Marketplace
 
 ```bash
-/plugin marketplace add https://github.com/evolv3-ai/vibeskills
+/plugin marketplace add https://github.com/evolv3-ai/vibe-skills
 ```
 
 ### Step 2: Install Skills
@@ -42,7 +42,7 @@ Claude: [Automatically uses admin-wsl skill]
 For development or if you prefer symlinks:
 
 ```bash
-git clone https://github.com/evolv3-ai/vibeskills.git ~/Documents/vibeskills
+git clone https://github.com/evolv3-ai/vibe-skills.git ~/Documents/vibeskills
 cd ~/Documents/vibeskills
 
 # Install single skill
@@ -85,14 +85,12 @@ cd ~/Documents/vibeskills
 | `admin-app-coolify` | Coolify self-hosted PaaS |
 | `admin-app-kasm` | Kasm Workspaces VDI platform |
 
-### Specialized Tools (4 skills)
+### Specialized Tools (2 skills)
 
 | Skill | Description |
 |-------|-------------|
 | `deckmate` | Stream Deck integration for VSCode |
 | `imagemagick` | Image processing CLI |
-| `cloudflare-python-workers` | Python APIs on Cloudflare Workers |
-| `mcp-oauth-cloudflare` | OAuth for MCP servers |
 
 ---
 
@@ -148,7 +146,7 @@ Add to `.claude/settings.json` for automatic marketplace availability:
   "extraKnownMarketplaces": [
     {
       "name": "vibeskills",
-      "url": "https://github.com/evolv3-ai/vibeskills"
+      "url": "https://github.com/evolv3-ai/vibe-skills"
     }
   ]
 }
@@ -182,7 +180,7 @@ Skills auto-trigger based on keywords in their description. If a skill isn't tri
 
 Make sure you've added the marketplace first:
 ```bash
-/plugin marketplace add https://github.com/evolv3-ai/vibeskills
+/plugin marketplace add https://github.com/evolv3-ai/vibe-skills
 ```
 
 Then install the skill:
@@ -194,7 +192,7 @@ Then install the skill:
 
 ## Support
 
-**Issues**: https://github.com/evolv3-ai/vibeskills/issues
+**Issues**: https://github.com/evolv3-ai/vibe-skills/issues
 **Documentation**: See individual skill directories for detailed guides
 
 ---
