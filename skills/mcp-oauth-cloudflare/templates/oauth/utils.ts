@@ -15,6 +15,7 @@ export type Props = {
   name: string;    // User's display name
   picture?: string; // Profile picture URL
   accessToken: string; // Google access token (for Google API calls)
+  refreshToken?: string; // Google refresh token (for long-lived access)
 };
 
 /**
@@ -51,9 +52,20 @@ export function getUpstreamAuthorizeUrl({
 }
 
 /**
+ * Token response from Google OAuth
+ */
+export type TokenResponse = {
+  accessToken: string;
+  refreshToken?: string; // Only returned on first authorization with access_type=offline
+};
+
+/**
  * Fetches an authorization token from Google
  *
- * @returns Tuple of [accessToken, null] on success or [null, Response] on error
+ * @returns Tuple of [TokenResponse, null] on success or [null, Response] on error
+ *
+ * Note: refresh_token is only returned on first authorization when access_type=offline.
+ * Subsequent authorizations won't include it unless the user revokes access and reauthorizes.
  */
 export async function fetchUpstreamAuthToken({
   client_id,
@@ -67,7 +79,7 @@ export async function fetchUpstreamAuthToken({
   client_secret: string;
   redirect_uri: string;
   client_id: string;
-}): Promise<[string, null] | [null, Response]> {
+}): Promise<[TokenResponse, null] | [null, Response]> {
   if (!code) {
     return [null, new Response('Missing code', { status: 400 })];
   }
@@ -92,7 +104,11 @@ export async function fetchUpstreamAuthToken({
     return [null, new Response('Failed to fetch access token', { status: 500 })];
   }
 
-  const body = await resp.json() as { access_token?: string; error?: string };
+  const body = await resp.json() as {
+    access_token?: string;
+    refresh_token?: string;
+    error?: string;
+  };
 
   if (body.error) {
     console.error('Google OAuth error:', body.error);
@@ -104,7 +120,10 @@ export async function fetchUpstreamAuthToken({
     return [null, new Response('Missing access token', { status: 400 })];
   }
 
-  return [accessToken, null];
+  return [{
+    accessToken,
+    refreshToken: body.refresh_token, // May be undefined for subsequent auths
+  }, null];
 }
 
 /**
