@@ -1664,7 +1664,7 @@ import { GoogleGenAI, DynamicRetrievalConfigMode } from '@google/genai';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const response = await ai.models.generateContent({
-  model: 'gemini-1.5-flash',
+  model: 'gemini-2.5-flash',
   contents: 'Who won the euro 2024?',
   config: {
     tools: [

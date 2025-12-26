@@ -351,9 +351,9 @@ for skill_dir in "$SKILLS_DIR"/*/ ; do
     ((TOTAL_SKILLS++))
 
     # Check if skill references AI models
-    local before_count=$TOTAL_MODEL_REFS
+    before_count=$TOTAL_MODEL_REFS
     check_skill_ai_models "$skill_dir" "$skill_name"
-    local after_count=$TOTAL_MODEL_REFS
+    after_count=$TOTAL_MODEL_REFS
 
     if [ $after_count -gt $before_count ]; then
         ((SKILLS_WITH_MODELS++))

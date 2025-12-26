@@ -276,7 +276,7 @@ AI SDK v5 introduced extensive breaking changes. If migrating from v4, follow th
 import { generateText } from 'ai';
 
 const result = await generateText({
-  model: openai.chat('gpt-4'),
+  model: openai.chat('gpt-4-turbo'),
   maxTokens: 500,
   providerMetadata: { openai: { user: 'user-123' } },
   tools: {
@@ -295,7 +295,7 @@ const result = await generateText({
 import { generateText, tool, stopWhen, stepCountIs } from 'ai';
 
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-4-turbo'),
   maxOutputTokens: 500,
   providerOptions: { openai: { user: 'user-123' } },
   tools: {
@@ -349,7 +349,7 @@ import { AI_APICallError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -388,7 +388,7 @@ import { AI_NoObjectGeneratedError } from 'ai';
 
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     schema: z.object({ /* complex schema */ }),
     prompt: 'Generate data',
   });
@@ -456,7 +456,7 @@ export default {
 ```typescript
 // Use the onError callback (added in v4.1.22)
 const stream = streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-4-turbo'),
   prompt: 'Hello',
   onError({ error }) {
     console.error('Stream error:', error);
@@ -475,7 +475,7 @@ for await (const chunk of stream.textStream) {
 // Fallback if not using onError callback
 try {
   const stream = streamText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     prompt: 'Hello',
   });
 
@@ -507,7 +507,7 @@ import { AI_LoadAPIKeyError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -540,7 +540,7 @@ import { AI_InvalidArgumentError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     maxOutputTokens: -1,  // Invalid!
     prompt: 'Hello',
   });
@@ -570,7 +570,7 @@ import { AI_NoContentGeneratedError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     prompt: 'Some prompt',
   });
 } catch (error) {
@@ -606,7 +606,7 @@ import { AI_TypeValidationError } from 'ai';
 
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     schema: z.object({
       age: z.number().min(0).max(120),  // Strict validation
     }),
@@ -642,7 +642,7 @@ import { AI_RetryError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     prompt: 'Hello',
     maxRetries: 3,  // Default is 2
   });
@@ -678,7 +678,7 @@ async function generateWithBackoff(prompt: string, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
       return await generateText({
-        model: openai('gpt-4'),
+        model: openai('gpt-4-turbo'),
         prompt,
       });
     } catch (error) {
@@ -715,7 +715,7 @@ async function generateWithBackoff(prompt: string, retries = 3) {
 // Define inside functions or use type assertions:
 function generateData() {
   const schema = z.object({ /* complex schema */ });
-  return generateObject({ model: openai('gpt-4'), schema, prompt: '...' });
+  return generateObject({ model: openai('gpt-4-turbo'), schema, prompt: '...' });
 }
 
 // Or use z.lazy() for recursive schemas:
@@ -747,7 +747,7 @@ https://ai-sdk.dev/docs/troubleshooting/common-issues/slow-type-checking
 ```typescript
 // Use built-in retry and mode selection
 const result = await generateObject({
-  model: openai('gpt-4'),
+  model: openai('gpt-4-turbo'),
   schema: mySchema,
   prompt: 'Generate data',
   mode: 'json',  // Force JSON mode (supported by GPT-4)
@@ -757,7 +757,7 @@ const result = await generateObject({
 // Or catch and retry manually:
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-4-turbo'),
     schema: mySchema,
     prompt: 'Generate data',
   });

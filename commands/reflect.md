@@ -1,5 +1,23 @@
 You are performing a self-reflection on the current conversation to capture operational knowledge that would otherwise be lost when context clears.
 
+## CRITICAL: Work from Memory Only
+
+**DO NOT** run bash commands to scan files for dates, versions, or "last updated" references. This reflection is about the **conversation that just happened** - work entirely from what you remember from our session.
+
+**DO NOT**:
+- Loop through files looking for dates
+- Run grep/head/cat commands to analyze docs
+- Search for "last updated" or version strings
+- Scan CLAUDE.md, README.md, or other docs
+
+**DO**:
+- Reflect on what we discussed and learned
+- Extract patterns from the work we did together
+- Identify workflows discovered during our conversation
+- Note corrections made during this session
+
+---
+
 ## Purpose
 
 Extract **operational knowledge** from this session - workflows discovered, patterns learned, tool sequences, and nuanced approaches that don't belong in commits, planning docs, or progress tracking but would be valuable for future Claude Code sessions.

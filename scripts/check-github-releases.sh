@@ -233,7 +233,7 @@ for skill_dir in "$SKILLS_DIR"/*/ ; do
 
     # Check if skill has GitHub URLs
     if [ -f "$skill_dir/SKILL.md" ]; then
-        local has_github=$(grep -c 'https://github\.com/' "$skill_dir/SKILL.md" || true)
+        has_github=$(grep -c 'https://github\.com/' "$skill_dir/SKILL.md" || true)
         if [ "$has_github" -gt 0 ]; then
             check_skill_github_releases "$skill_dir" "$skill_name"
             ((SKILLS_WITH_REPOS++))
