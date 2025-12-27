@@ -1,0 +1,12 @@
+{
+  "name": "mcp-cli-scripts",
+  "description": "Build CLI scripts alongside MCP servers for terminal environments. Scripts provide file I/O, batch processing, caching, and richer output formats that remote MCP servers cannot offer. Includes templates for TypeScript scripts and SCRIPTS.md. Use when: creating MCP server companion scripts, adding batch processing to MCP tools, saving MCP results to files, building CLI wrappers for APIs, or troubleshooting context too large, no file access, or batch input handling. └── lookup.ts # CLI wrapp",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": []
+}
