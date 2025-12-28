@@ -1,6 +1,6 @@
 # Claude Code Slash Commands
 
-Nine slash commands for automating project exploration, planning, session workflow, knowledge capture, skill creation, and release safety with Claude Code.
+Ten slash commands for automating project exploration, planning, session workflow, knowledge capture, skill creation, deployment, and release safety with Claude Code.
 
 ## ⚠️ New Installation Method
 
@@ -308,6 +308,51 @@ Commands are immediately available in Claude Code after copying.
 
 ---
 
+### Deployment Commands
+
+#### `/deploy`
+
+**Purpose**: Automated commit, push, and deploy for Cloudflare Workers projects
+
+**Usage**: Type `/deploy` in a Cloudflare Workers project when ready to ship changes
+
+**What it does**:
+
+**Phase 1: Pre-flight Checks**
+1. Verifies wrangler.jsonc/toml exists (Cloudflare project)
+2. Runs `npm run build` (fails fast if build broken)
+3. Runs `npx tsc --noEmit` if TypeScript project
+
+**Phase 2: Commit & Push**
+4. Stages all changes
+5. Generates conventional commit message from diff
+6. Commits with Claude Code signature
+7. Pushes to remote
+
+**Phase 3: Deploy**
+8. Runs `npx wrangler deploy`
+9. Captures Worker URL from output
+
+**Phase 4: Report**
+10. Shows summary: commit hash, push destination, Worker URL
+11. Reports any warnings from wrangler
+
+**Time savings**: 2-3 minutes per deploy (manual steps → single command)
+
+**When to use**:
+- Ready to deploy Cloudflare Worker changes
+- Want automated commit message generation
+- Need consistent deploy workflow
+
+**When to skip**:
+- Non-Cloudflare projects (Vercel, Firebase, etc.)
+- Need manual control over commit message
+- Want to review changes before committing
+
+**Output**: Deploy summary with commit, push, and Worker URL
+
+---
+
 ## Requirements
 
 **Planning Commands**:
@@ -428,19 +473,29 @@ Release project? → /release → [Safety checks + GitHub release]
 - ✅ Auto-fix capabilities
 - ✅ GitHub release creation (optional)
 
+**`/deploy`**:
+- ✅ Cloudflare Workers project detection
+- ✅ Pre-flight build and TypeScript checks
+- ✅ Automatic conventional commit message generation
+- ✅ Git stage, commit, and push
+- ✅ Wrangler deploy execution
+- ✅ Worker URL extraction and reporting
+- ✅ Comprehensive error handling
+
 ## Total Time Savings
 
-**40-70 minutes per project lifecycle**:
+**45-75 minutes per project lifecycle**:
 - Exploration: 10-15 minutes (explore-idea)
 - Planning: 5-7 minutes (plan-project)
 - Feature additions: 7-10 minutes each (plan-feature)
 - Session cycles: 3-5 minutes each (wrap + resume)
 - Knowledge capture: 5-15 minutes per session (reflect)
+- Deployments: 2-3 minutes each (deploy)
 - Release safety: 10-15 minutes (release)
 - Workflow navigation: Instant (workflow)
 
 ---
 
-**Version**: 5.0.0
+**Version**: 5.1.0
 **Last Updated**: 2025-12-12
 **Author**: Jeremy Dawes | Jezweb
