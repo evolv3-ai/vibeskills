@@ -21,18 +21,18 @@
 | ai-gateway-providers.md | Missing 16 of 24 providers (only 8 documented) | 0.5 | ✅ Done |
 | cloudflare-ai-gateway.md | BYOK now uses Secrets Store (Aug 2025), custom providers missing | 0.5 | ✅ Done |
 
-### TIER 2: HIGH (Next Sprint) - ~5 hours
+### TIER 2: HIGH (Next Sprint) - ~5 hours ✅ COMPLETE (2026-01-03)
 
 | Rule File | Issue | Est. Hours | Status |
 |-----------|-------|------------|--------|
-| snowflake-native-app-marketplace.md | Legacy SQL → snow CLI, release channels, NAAPS details | 1.5 | ⏳ Not Started |
-| snowflake-native-apps.md | Release channels workflow, `snow app publish` command | 1 | ⏳ Not Started |
-| snowflake-marketplace-listing.md | Data dictionary now MANDATORY, data attributes field | 0.5 | ⏳ Not Started |
-| cloudflare-workers-ai-models.md | Missing 8 new 2025 models (OpenAI GPT-OSS, Deepgram, Leonardo) | 0.5 | ⏳ Not Started |
-| expo-android-sdk.md | Update deadline to Aug 31, 2025 (was "late 2024") | 0.25 | ⏳ Not Started |
-| git-patterns.md | Add tag performance impact, modern monorepo tools | 0.5 | ⏳ Not Started |
-| drizzle-orm.md | Add `timestamp_ms` mode info, modernize journal drift | 0.5 | ⏳ Not Started |
-| d1-batch-operations.md | Clarify Free (50) vs Paid (1,000) tier limits | 0.25 | ⏳ Not Started |
+| snowflake-native-app-marketplace.md | Legacy SQL → snow CLI, release channels, NAAPS details | 1.5 | ✅ Done |
+| snowflake-native-apps.md | Release channels workflow, `snow app publish` command | 1 | ✅ Done |
+| snowflake-marketplace-listing.md | Data dictionary now MANDATORY, data attributes field | 0.5 | ✅ Done |
+| cloudflare-workers-ai-models.md | Missing 8 new 2025 models (OpenAI GPT-OSS, Deepgram, Leonardo) | 0.5 | ✅ Done |
+| expo-android-sdk.md | Update deadline to Aug 31, 2025 (was "late 2024") | 0.25 | ✅ Done |
+| git-patterns.md | Add tag performance impact, modern monorepo tools | 0.5 | ✅ Done |
+| drizzle-orm.md | Add `timestamp_ms` mode info, modernize journal drift | 0.5 | ✅ Done |
+| d1-batch-operations.md | Clarify Free (50) vs Paid (1,000) tier limits | 0.25 | ✅ Done |
 
 ### TIER 3: MEDIUM (Following Sprint) - ~2 hours
 
@@ -164,6 +164,7 @@
 |------|---------|-----------|------------|
 | 2026-01-03 | Initial Audit | Launched 9 parallel rule audits, compiled findings | Start TIER 1 updates |
 | 2026-01-03 | TIER 1 Updates | Completed all 5 TIER 1 rules (clerk-auth, better-auth-vite, vite-node, ai-gateway-providers, cloudflare-ai-gateway) | TIER 2 updates |
+| 2026-01-03 | TIER 2 Updates | Completed all 8 TIER 2 rules (snowflake ×3, workers-ai-models, expo, git, drizzle, d1) | TIER 3 when time permits |
 
 ---
 
@@ -180,7 +181,9 @@
 ## Completion Criteria
 
 - [x] All TIER 1 rules updated ✅ (2026-01-03)
-- [ ] All TIER 2 rules updated
+- [x] All TIER 2 rules updated ✅ (2026-01-03)
+- [ ] All TIER 3 rules updated
+- [ ] All TIER 4 rules updated
 - [ ] No rule below 90% accuracy
 - [ ] All deprecated patterns removed
 - [ ] Version references current
