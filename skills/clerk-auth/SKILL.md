@@ -1,18 +1,115 @@
 ---
 name: clerk-auth
 description: |
-  Clerk auth with API version 2025-11-10 breaking changes (billing endpoints, payment_source→payment_method), Next.js v6 async auth(), PKCE for custom OAuth, credential stuffing defense. Use when: troubleshooting "Missing Clerk Secret Key", JWKS errors, authorizedParties CSRF, JWT size limits (1.2KB), 431 header errors (Vite dev mode), or testing with 424242 OTP.
+  Clerk auth with API Keys beta (Dec 2025), Next.js 16 proxy.ts, API version 2025-11-10 breaking changes, clerkMiddleware() options, webhooks, and component reference. Use when: API keys for users/orgs, Next.js 16 middleware filename, troubleshooting JWKS/CSRF/JWT errors, webhook verification, or testing with 424242 OTP.
 ---
 
 # Clerk Auth - Breaking Changes & Error Prevention Guide
 
 **Package Versions**: @clerk/nextjs@6.36.5, @clerk/backend@2.23.2, @clerk/clerk-react@5.56.2, @clerk/testing@1.13.18
 **Breaking Changes**: Nov 2025 - API version 2025-11-10, Oct 2024 - Next.js v6 async auth()
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-01-03
 
 ---
 
-## What's New in v6.35.x & API 2025-11-10 (Nov 2025)
+## What's New (Dec 2025 - Jan 2026)
+
+### 1. API Keys Beta (Dec 11, 2025) - NEW ✨
+
+User-scoped and organization-scoped API keys for your application. Zero-code UI component.
+
+```typescript
+// 1. Add the component for self-service API key management
+import { APIKeys } from '@clerk/nextjs'
+
+export default function SettingsPage() {
+  return (
+    <div>
+      <h2>API Keys</h2>
+      <APIKeys />  {/* Full CRUD UI for user's API keys */}
+    </div>
+  )
+}
+```
+
+**Backend Verification:**
+```typescript
+import { verifyToken } from '@clerk/backend'
+
+// API keys are verified like session tokens
+const { data, error } = await verifyToken(apiKey, {
+  secretKey: process.env.CLERK_SECRET_KEY,
+  authorizedParties: ['https://yourdomain.com'],
+})
+
+// Check token type
+if (data?.tokenType === 'api_key') {
+  // Handle API key auth
+}
+```
+
+**clerkMiddleware Token Types:**
+```typescript
+// v6.36.0+: Middleware can distinguish token types
+clerkMiddleware((auth, req) => {
+  const { userId, tokenType } = auth()
+
+  if (tokenType === 'api_key') {
+    // API key auth - programmatic access
+  } else if (tokenType === 'session_token') {
+    // Regular session - web UI access
+  }
+})
+```
+
+**Pricing (Beta = Free):**
+- Creation: $0.001/key
+- Verification: $0.0001/verification
+
+### 2. Next.js 16: proxy.ts Middleware Filename (Dec 2025)
+
+**⚠️ BREAKING**: Next.js 16 changed middleware filename:
+
+```
+Next.js 15 and earlier: middleware.ts
+Next.js 16+:            proxy.ts
+```
+
+**Correct Setup for Next.js 16:**
+```typescript
+// src/proxy.ts (NOT middleware.ts!)
+import { clerkMiddleware } from '@clerk/nextjs/server'
+
+export default clerkMiddleware()
+
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
+}
+```
+
+### 3. Force Password Reset (Dec 19, 2025)
+
+Administrators can mark passwords as compromised and force reset:
+
+```typescript
+import { clerkClient } from '@clerk/backend'
+
+// Force password reset for a user
+await clerkClient.users.updateUser(userId, {
+  passwordDigest: 'compromised',  // Triggers reset on next sign-in
+})
+```
+
+### 4. Organization Reports & Filters (Dec 15-17, 2025)
+
+Dashboard now includes org creation metrics and filtering by name/slug/date.
+
+---
+
+## API Version 2025-11-10 Breaking Changes
 
 ### 1. API Version 2025-11-10 (Nov 10, 2025) - BREAKING CHANGES ⚠️
 
@@ -132,6 +229,145 @@ const { data, error } = await verifyToken(token, {
 **Why:** Without `authorizedParties`, attackers can use valid tokens from other domains.
 
 **Source:** https://clerk.com/docs/reference/backend/verify-token
+
+---
+
+## clerkMiddleware() Configuration
+
+### Route Protection Patterns
+
+```typescript
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+
+// Define protected routes
+const isProtectedRoute = createRouteMatcher([
+  '/dashboard(.*)',
+  '/api/private(.*)',
+])
+
+const isAdminRoute = createRouteMatcher(['/admin(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  // Protect routes
+  if (isProtectedRoute(req)) {
+    await auth.protect()  // Redirects unauthenticated users
+  }
+
+  // Require specific permissions
+  if (isAdminRoute(req)) {
+    await auth.protect({
+      role: 'org:admin',  // Requires organization admin role
+    })
+  }
+})
+```
+
+### All Middleware Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `debug` | `boolean` | Enable debug logging |
+| `jwtKey` | `string` | JWKS public key for networkless verification |
+| `clockSkewInMs` | `number` | Token time variance (default: 5000ms) |
+| `organizationSyncOptions` | `object` | URL-based org activation |
+| `signInUrl` | `string` | Custom sign-in URL |
+| `signUpUrl` | `string` | Custom sign-up URL |
+
+### Organization Sync (URL-based Org Activation)
+
+```typescript
+clerkMiddleware({
+  organizationSyncOptions: {
+    organizationPatterns: ['/orgs/:slug', '/orgs/:slug/(.*)'],
+    personalAccountPatterns: ['/personal', '/personal/(.*)'],
+  },
+})
+```
+
+---
+
+## Webhooks
+
+### Webhook Verification
+
+```typescript
+import { Webhook } from 'svix'
+
+export async function POST(req: Request) {
+  const payload = await req.text()
+  const headers = {
+    'svix-id': req.headers.get('svix-id')!,
+    'svix-timestamp': req.headers.get('svix-timestamp')!,
+    'svix-signature': req.headers.get('svix-signature')!,
+  }
+
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SIGNING_SECRET!)
+
+  try {
+    const event = wh.verify(payload, headers)
+    // Process event
+    return Response.json({ success: true })
+  } catch (err) {
+    return Response.json({ error: 'Invalid signature' }, { status: 400 })
+  }
+}
+```
+
+### Common Event Types
+
+| Event | Trigger |
+|-------|---------|
+| `user.created` | New user signs up |
+| `user.updated` | User profile changes |
+| `user.deleted` | User account deleted |
+| `session.created` | New sign-in |
+| `session.ended` | Sign-out |
+| `organization.created` | New org created |
+| `organization.membership.created` | User joins org |
+
+**⚠️ Important:** Webhook routes must be PUBLIC (no auth). Add to middleware exclude list:
+
+```typescript
+const isPublicRoute = createRouteMatcher([
+  '/api/webhooks/clerk(.*)',  // Clerk webhooks are public
+])
+
+clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) {
+    auth.protect()
+  }
+})
+```
+
+---
+
+## UI Components Quick Reference
+
+| Component | Purpose |
+|-----------|---------|
+| `<SignIn />` | Full sign-in flow |
+| `<SignUp />` | Full sign-up flow |
+| `<SignInButton />` | Trigger sign-in modal |
+| `<SignUpButton />` | Trigger sign-up modal |
+| `<SignedIn>` | Render only when authenticated |
+| `<SignedOut>` | Render only when unauthenticated |
+| `<UserButton />` | User menu with sign-out |
+| `<UserProfile />` | Full profile management |
+| `<OrganizationSwitcher />` | Switch between orgs |
+| `<OrganizationProfile />` | Org settings |
+| `<CreateOrganization />` | Create new org |
+| `<APIKeys />` | API key management (NEW) |
+
+### React Hooks
+
+| Hook | Returns |
+|------|---------|
+| `useAuth()` | `{ userId, sessionId, isLoaded, isSignedIn, getToken }` |
+| `useUser()` | `{ user, isLoaded, isSignedIn }` |
+| `useClerk()` | Clerk instance with methods |
+| `useSession()` | Current session object |
+| `useOrganization()` | Current org context |
+| `useOrganizationList()` | All user's orgs |
 
 ---
 
@@ -368,13 +604,13 @@ Add to `package.json`:
 ---
 
 **Token Efficiency**:
-- **Without skill**: ~5,200 tokens (setup tutorials, JWT templates, testing setup)
-- **With skill**: ~2,500 tokens (breaking changes + critical patterns + error prevention)
-- **Savings**: ~52% (~2,700 tokens)
+- **Without skill**: ~6,000 tokens (setup tutorials, JWT templates, testing setup, webhooks)
+- **With skill**: ~2,800 tokens (breaking changes + critical patterns + error prevention)
+- **Savings**: ~53% (~3,200 tokens)
 
 **Errors prevented**: 11 documented issues with exact solutions
-**Key value**: API 2025-11-10 breaking changes, Next.js v6 async auth(), PKCE for custom OAuth, credential stuffing defense, JWT size limits, 431 header error workaround
+**Key value**: API Keys beta, Next.js 16 proxy.ts, clerkMiddleware() options, webhooks, component reference, API 2025-11-10 breaking changes, JWT size limits
 
 ---
 
-**Last verified**: 2025-11-22 | **Skill version**: 2.0.0 | **Changes**: Added API version 2025-11-10 breaking changes (billing endpoints), PKCE support, Client Trust defense, Next.js 16 support. Removed tutorials (~480 lines). Updated SDK versions. Focused on breaking changes + error prevention + critical patterns.
+**Last verified**: 2026-01-03 | **Skill version**: 3.0.0 | **Changes**: Added API Keys beta (Dec 2025), Next.js 16 proxy.ts filename, clerkMiddleware() configuration options, webhooks verification patterns, UI components + React hooks reference tables, organization sync patterns.

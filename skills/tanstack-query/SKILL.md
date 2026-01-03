@@ -1,16 +1,204 @@
 ---
 name: tanstack-query
 description: |
-  Manage server state in React with TanStack Query v5. Set up queries with useQuery, mutations with useMutation, configure QueryClient caching strategies, implement optimistic updates, and handle infinite scroll with useInfiniteQuery.
+  Manage server state in React with TanStack Query v5. Covers useMutationState (cross-component mutations), simplified optimistic updates, throwOnError for error boundaries, network mode (offline/PWA), useQueries combine, infiniteQueryOptions, and maxPages for memory optimization.
 
-  Use when: setting up data fetching in React projects, migrating from v4 to v5, or fixing object syntax required errors, query callbacks removed issues, cacheTime renamed to gcTime, isPending vs isLoading confusion, keepPreviousData removed problems.
+  Use when: setting up data fetching, useMutationState, optimistic updates with variables, throwOnError error boundaries, offline/PWA network mode, or fixing v4→v5 migration errors (object syntax, gcTime, isPending, keepPreviousData).
 ---
 
 # TanStack Query (React Query) v5
 
-**Last Updated**: 2025-11-28
+**Last Updated**: 2026-01-03
 **Versions**: @tanstack/react-query@5.90.16, @tanstack/react-query-devtools@5.90.2
 **Requires**: React 18.0+ (useSyncExternalStore), TypeScript 4.7+ (recommended)
+
+---
+
+## v5 New Features
+
+### useMutationState - Cross-Component Mutation Tracking
+
+Access mutation state from anywhere without prop drilling:
+
+```tsx
+import { useMutationState } from '@tanstack/react-query'
+
+function GlobalLoadingIndicator() {
+  // Get all pending mutations
+  const pendingMutations = useMutationState({
+    filters: { status: 'pending' },
+    select: (mutation) => mutation.state.variables,
+  })
+
+  if (pendingMutations.length === 0) return null
+  return <div>Saving {pendingMutations.length} items...</div>
+}
+
+// Filter by mutation key
+const todoMutations = useMutationState({
+  filters: { mutationKey: ['addTodo'] },
+})
+```
+
+### Simplified Optimistic Updates
+
+New pattern using `variables` - no cache manipulation, no rollback needed:
+
+```tsx
+function TodoList() {
+  const { data: todos } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos })
+
+  const addTodo = useMutation({
+    mutationKey: ['addTodo'],
+    mutationFn: (newTodo) => api.addTodo(newTodo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    },
+  })
+
+  // Show optimistic UI using variables from pending mutations
+  const pendingTodos = useMutationState({
+    filters: { mutationKey: ['addTodo'], status: 'pending' },
+    select: (mutation) => mutation.state.variables,
+  })
+
+  return (
+    <ul>
+      {todos?.map(todo => <li key={todo.id}>{todo.title}</li>)}
+      {/* Show pending items with visual indicator */}
+      {pendingTodos.map((todo, i) => (
+        <li key={`pending-${i}`} style={{ opacity: 0.5 }}>{todo.title}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+### throwOnError - Error Boundaries
+
+Renamed from `useErrorBoundary` (breaking change):
+
+```tsx
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
+import { ErrorBoundary } from 'react-error-boundary'
+
+function App() {
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary onReset={reset} fallbackRender={({ resetErrorBoundary }) => (
+          <div>
+            Error! <button onClick={resetErrorBoundary}>Retry</button>
+          </div>
+        )}>
+          <Todos />
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  )
+}
+
+function Todos() {
+  const { data } = useQuery({
+    queryKey: ['todos'],
+    queryFn: fetchTodos,
+    throwOnError: true, // ✅ v5 (was useErrorBoundary in v4)
+  })
+  return <div>{data.map(...)}</div>
+}
+```
+
+### Network Mode (Offline/PWA Support)
+
+Control behavior when offline:
+
+```tsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      networkMode: 'offlineFirst', // Use cache when offline
+    },
+  },
+})
+
+// Per-query override
+useQuery({
+  queryKey: ['todos'],
+  queryFn: fetchTodos,
+  networkMode: 'always', // Always try, even offline (for local APIs)
+})
+```
+
+| Mode | Behavior |
+|------|----------|
+| `online` (default) | Only fetch when online |
+| `always` | Always try (useful for local/service worker APIs) |
+| `offlineFirst` | Use cache first, fetch when online |
+
+**Detecting paused state:**
+```tsx
+const { isPending, fetchStatus } = useQuery(...)
+// isPending + fetchStatus === 'paused' = offline, waiting for network
+```
+
+### useQueries with Combine
+
+Combine results from parallel queries:
+
+```tsx
+const results = useQueries({
+  queries: userIds.map(id => ({
+    queryKey: ['user', id],
+    queryFn: () => fetchUser(id),
+  })),
+  combine: (results) => ({
+    data: results.map(r => r.data),
+    pending: results.some(r => r.isPending),
+    error: results.find(r => r.error)?.error,
+  }),
+})
+
+// Access combined result
+if (results.pending) return <Loading />
+console.log(results.data) // [user1, user2, user3]
+```
+
+### infiniteQueryOptions Helper
+
+Type-safe factory for infinite queries (parallel to `queryOptions`):
+
+```tsx
+import { infiniteQueryOptions, useInfiniteQuery, prefetchInfiniteQuery } from '@tanstack/react-query'
+
+const todosInfiniteOptions = infiniteQueryOptions({
+  queryKey: ['todos', 'infinite'],
+  queryFn: ({ pageParam }) => fetchTodosPage(pageParam),
+  initialPageParam: 0,
+  getNextPageParam: (lastPage) => lastPage.nextCursor,
+})
+
+// Reuse across hooks
+useInfiniteQuery(todosInfiniteOptions)
+useSuspenseInfiniteQuery(todosInfiniteOptions)
+prefetchInfiniteQuery(queryClient, todosInfiniteOptions)
+```
+
+### maxPages - Memory Optimization
+
+Limit pages stored in cache for infinite queries:
+
+```tsx
+useInfiniteQuery({
+  queryKey: ['posts'],
+  queryFn: ({ pageParam }) => fetchPosts(pageParam),
+  initialPageParam: 0,
+  getNextPageParam: (lastPage) => lastPage.nextCursor,
+  getPreviousPageParam: (firstPage) => firstPage.prevCursor, // Required with maxPages
+  maxPages: 3, // Only keep 3 pages in memory
+})
+```
+
+**Note:** `maxPages` requires bi-directional pagination (`getNextPageParam` AND `getPreviousPageParam`).
 
 ---
 

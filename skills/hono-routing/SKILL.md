@@ -1,16 +1,16 @@
 ---
 name: hono-routing
 description: |
-  Build type-safe APIs with Hono - fast, lightweight routing for Cloudflare Workers, Deno, Bun, and Node.js. Set up routing patterns, middleware composition, request validation (Zod/Valibot/Typia/ArkType), RPC client/server with full type inference, and error handling with HTTPException.
+  Build type-safe APIs with Hono - fast, lightweight routing for Cloudflare Workers, Deno, Bun, and Node.js. Covers routing, middleware, validation (Zod/Valibot), RPC client/server, streaming (SSE, streamText), WebSocket, security middleware (secureHeaders, CSRF), and combine middleware.
 
-  Use when: building APIs with Hono, setting up request validation with schema libraries, creating type-safe RPC client/server communication, implementing custom middleware chains, handling errors with HTTPException, extending context with custom variables, or troubleshooting middleware type inference issues, validation hook confusion, RPC performance problems, or middleware response typing errors.
+  Use when: building APIs with Hono, streaming responses (SSE, AI), WebSocket connections, security middleware (CSRF, secureHeaders), request validation, RPC communication, or troubleshooting validation hooks, RPC types, middleware chains.
 
 ---
 
 # Hono Routing & Middleware
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-26
+**Last Updated**: 2026-01-03
 **Dependencies**: None (framework-agnostic)
 **Latest Versions**: hono@4.11.3, zod@4.1.13, valibot@1.2.0, @hono/zod-validator@0.7.5, @hono/valibot-validator@0.6.0
 
@@ -207,6 +207,153 @@ app.use(
 ```
 
 **Built-in Middleware Reference**: See `references/middleware-catalog.md`
+
+#### Streaming Helpers (SSE, AI Responses)
+
+```typescript
+import { Hono } from 'hono'
+import { stream, streamText, streamSSE } from 'hono/streaming'
+
+const app = new Hono()
+
+// Binary streaming
+app.get('/download', (c) => {
+  return stream(c, async (stream) => {
+    await stream.write(new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]))
+    await stream.pipe(readableStream)
+  })
+})
+
+// Text streaming (AI responses)
+app.get('/ai', (c) => {
+  return streamText(c, async (stream) => {
+    for await (const chunk of aiResponse) {
+      await stream.write(chunk)
+      await stream.sleep(50) // Rate limit if needed
+    }
+  })
+})
+
+// Server-Sent Events (real-time updates)
+app.get('/sse', (c) => {
+  return streamSSE(c, async (stream) => {
+    let id = 0
+    while (true) {
+      await stream.writeSSE({
+        data: JSON.stringify({ time: Date.now() }),
+        event: 'update',
+        id: String(id++),
+      })
+      await stream.sleep(1000)
+    }
+  })
+})
+```
+
+**Use Cases:**
+- `stream()` - Binary files, video, audio
+- `streamText()` - AI chat responses, typewriter effects
+- `streamSSE()` - Real-time notifications, live feeds
+
+#### WebSocket Helper
+
+```typescript
+import { Hono } from 'hono'
+import { upgradeWebSocket } from 'hono/cloudflare-workers' // Platform-specific!
+
+const app = new Hono()
+
+app.get('/ws', upgradeWebSocket((c) => ({
+  onMessage(event, ws) {
+    console.log(`Message: ${event.data}`)
+    ws.send(`Echo: ${event.data}`)
+  },
+  onClose: () => console.log('Closed'),
+  onError: (event) => console.error('Error:', event),
+  // onOpen is NOT supported on Cloudflare Workers!
+})))
+
+export default app
+```
+
+**⚠️ Cloudflare Workers WebSocket Caveats:**
+- Import from `hono/cloudflare-workers` (not `hono/ws`)
+- `onOpen` callback is **NOT supported** (Cloudflare limitation)
+- CORS/header-modifying middleware conflicts with WebSocket routes
+- Use route grouping to exclude WebSocket routes from CORS:
+
+```typescript
+const api = new Hono()
+api.use('*', cors()) // CORS for API only
+app.route('/api', api)
+app.get('/ws', upgradeWebSocket(...)) // No CORS on WebSocket
+```
+
+#### Security Middleware
+
+```typescript
+import { Hono } from 'hono'
+import { secureHeaders } from 'hono/secure-headers'
+import { csrf } from 'hono/csrf'
+
+const app = new Hono()
+
+// Security headers (X-Frame-Options, CSP, HSTS, etc.)
+app.use('*', secureHeaders({
+  xFrameOptions: 'DENY',
+  xXssProtection: '1; mode=block',
+  contentSecurityPolicy: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+  },
+}))
+
+// CSRF protection (validates Origin header)
+app.use('/api/*', csrf({
+  origin: ['https://example.com', 'https://admin.example.com'],
+}))
+```
+
+**Security Middleware Options:**
+
+| Middleware | Purpose |
+|------------|---------|
+| `secureHeaders` | X-Frame-Options, CSP, HSTS, XSS protection |
+| `csrf` | CSRF via Origin/Sec-Fetch-Site validation |
+| `bearerAuth` | Bearer token authentication |
+| `basicAuth` | HTTP Basic authentication |
+| `ipRestriction` | IP allowlist/blocklist |
+
+#### Combine Middleware
+
+Compose middleware with conditional logic:
+
+```typescript
+import { Hono } from 'hono'
+import { some, every, except } from 'hono/combine'
+import { bearerAuth } from 'hono/bearer-auth'
+import { ipRestriction } from 'hono/ip-restriction'
+
+const app = new Hono()
+
+// some: ANY middleware must pass (OR logic)
+app.use('/admin/*', some(
+  bearerAuth({ token: 'admin-token' }),
+  ipRestriction({ allowList: ['10.0.0.0/8'] }),
+))
+
+// every: ALL middleware must pass (AND logic)
+app.use('/secure/*', every(
+  bearerAuth({ token: 'secret' }),
+  ipRestriction({ allowList: ['192.168.1.0/24'] }),
+))
+
+// except: Skip middleware for certain paths
+app.use('*', except(
+  ['/health', '/metrics'],
+  logger(),
+))
+```
 
 ---
 

@@ -1,16 +1,16 @@
 ---
 name: openai-api
 description: |
-  Build with OpenAI's stateless APIs - Chat Completions (GPT-5, GPT-4o), Embeddings, Images (DALL-E 3), Audio (Whisper + TTS), and Moderation. Includes Node.js SDK and fetch-based approaches for Cloudflare Workers.
+  Build with OpenAI's stateless APIs - Chat Completions (GPT-5.2, GPT-5.1, o3, o4-mini), Realtime API (voice), Batch API (50% savings), Embeddings, Images (DALL-E 3), Audio (Whisper + TTS), and Moderation. Node.js SDK and fetch for Cloudflare Workers.
 
-  Use when: implementing chat completions with GPT-5/GPT-4o, streaming responses with SSE, using function calling/tools, creating structured outputs with JSON schemas, generating embeddings for RAG (text-embedding-3-small/large), generating images with DALL-E 3, editing images with GPT-Image-1, transcribing audio with Whisper, synthesizing speech with TTS (11 voices), moderating content (11 safety categories), or troubleshooting rate limits (429), invalid API keys (401), function calling failures, streaming parse errors, embeddings dimension mismatches, or token limit exceeded.
+  Use when: implementing chat with GPT-5.2/5.1/o3/o4-mini, Realtime voice API (WebSocket), Batch API for cost savings, xhigh reasoning (GPT-5.2), streaming responses, function calling/tools, structured outputs, embeddings for RAG, DALL-E 3 images, Whisper transcription, TTS (13 voices), or troubleshooting rate limits (429), API keys (401), streaming errors.
 ---
 
 # OpenAI API - Complete Guide
 
 **Version**: Production Ready ✅
-**Package**: openai@6.9.1
-**Last Updated**: 2025-11-26
+**Package**: openai@6.15.0
+**Last Updated**: 2026-01-03
 
 ---
 
@@ -181,45 +181,68 @@ Three roles: **system** (behavior), **user** (input), **assistant** (model respo
 
 ## GPT-5 Series Models
 
-GPT-5 models (released August 2025) introduce reasoning and verbosity controls:
+GPT-5 models (released August 2025) introduce reasoning and verbosity controls.
+
+### GPT-5.2 (Released December 11, 2025)
+
+**Latest flagship model**:
+- **gpt-5.2**: 400k context window, 128k output tokens
+- **xhigh reasoning_effort**: New level beyond "high" for complex problems
+- **Compaction**: Extends context for long workflows (via API endpoint)
+- **Pricing**: $1.75/$14 per million tokens (1.4x of GPT-5.1)
+
+```typescript
+// GPT-5.2 with maximum reasoning
+const completion = await openai.chat.completions.create({
+  model: 'gpt-5.2',
+  messages: [{ role: 'user', content: 'Solve this extremely complex problem...' }],
+  reasoning_effort: 'xhigh', // NEW: Beyond "high"
+});
+```
 
 ### GPT-5.1 (Released November 13, 2025)
 
-**Latest model with major improvements**:
+**Warmer, more intelligent model**:
 - **gpt-5.1**: Adaptive reasoning that varies thinking time dynamically
 - **24-hour extended prompt caching**: Faster follow-up queries at lower cost
 - **New developer tools**: apply_patch (code editing), shell (command execution)
 
-**BREAKING CHANGE**: GPT-5.1 defaults to `reasoning_effort: 'none'` (vs GPT-5 defaulting to `'medium'`). Update your code when migrating!
+**BREAKING CHANGE**: GPT-5.1/5.2 default to `reasoning_effort: 'none'` (vs GPT-5 defaulting to `'medium'`).
 
-### reasoning_effort Parameter
+### O-Series Reasoning Models
 
-Controls thinking depth (available on GPT-5 and GPT-5.1):
-- **"none"**: No reasoning (fastest, lowest latency) - GPT-5.1 default
-- **"minimal"**: Quick responses, minimal thinking
-- **"low"**: Basic reasoning
-- **"medium"**: Balanced reasoning - GPT-5 default
-- **"high"**: Deep reasoning for complex problems
+Dedicated reasoning models (separate from GPT-5):
+
+| Model | Released | Purpose |
+|-------|----------|---------|
+| **o3** | Apr 16, 2025 | Successor to o1, advanced reasoning |
+| **o3-pro** | Jun 10, 2025 | Extended compute version of o3 |
+| **o3-mini** | Jan 31, 2025 | Smaller, faster o3 variant |
+| **o4-mini** | Apr 16, 2025 | Fast, cost-efficient reasoning |
 
 ```typescript
-// GPT-5.1 with no reasoning (fast)
+// O-series models
 const completion = await openai.chat.completions.create({
-  model: 'gpt-5.1',
-  messages: [{ role: 'user', content: 'Simple query' }],
-  // reasoning_effort: 'none' is implicit default for GPT-5.1
-});
-
-// GPT-5.1 with high reasoning (complex tasks)
-const completion = await openai.chat.completions.create({
-  model: 'gpt-5.1',
-  messages: [{ role: 'user', content: 'Solve this complex math problem...' }],
-  reasoning_effort: 'high',
+  model: 'o3',  // or 'o3-mini', 'o4-mini'
+  messages: [{ role: 'user', content: 'Complex reasoning task...' }],
 });
 ```
 
+**Note**: O-series may be deprecated in favor of GPT-5 with `reasoning_effort` parameter.
+
+### reasoning_effort Parameter
+
+Controls thinking depth (GPT-5/5.1/5.2):
+- **"none"**: No reasoning (fastest) - GPT-5.1/5.2 default
+- **"minimal"**: Quick responses
+- **"low"**: Basic reasoning
+- **"medium"**: Balanced - GPT-5 default
+- **"high"**: Deep reasoning
+- **"xhigh"**: Maximum reasoning (GPT-5.2 only)
+
 ### verbosity Parameter
 
-Controls output detail (GPT-5/GPT-5.1):
+Controls output detail (GPT-5 series):
 - **"low"**: Concise
 - **"medium"**: Balanced (default)
 - **"high"**: Verbose
@@ -708,6 +731,124 @@ const moderation = await openai.moderations.create({
 ```
 
 **Best Practices**: Use lower thresholds for severe categories (sexual/minors: 0.1, self-harm/intent: 0.2), batch requests, fail closed on errors.
+
+---
+
+## Realtime API (Voice/Audio)
+
+Low-latency voice and audio interactions via WebSocket/WebRTC. GA August 28, 2025.
+
+### WebSocket Connection
+
+```typescript
+const ws = new WebSocket('wss://api.openai.com/v1/realtime', {
+  headers: {
+    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    'OpenAI-Beta': 'realtime=v1',
+  },
+});
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'session.update',
+    session: {
+      voice: 'alloy',  // or: echo, fable, onyx, nova, shimmer, marin, cedar
+      instructions: 'You are a helpful assistant',
+      input_audio_transcription: { model: 'whisper-1' },
+    },
+  }));
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  switch (data.type) {
+    case 'response.audio.delta':
+      // Handle audio chunk (base64 encoded)
+      playAudioChunk(data.delta);
+      break;
+    case 'response.text.delta':
+      // Handle text transcript
+      console.log(data.delta);
+      break;
+  }
+};
+
+// Send user audio
+ws.send(JSON.stringify({
+  type: 'input_audio_buffer.append',
+  audio: base64AudioData,
+}));
+```
+
+### Model
+
+- **gpt-realtime**: Production model ($32/1M input, $64/1M output)
+- **gpt-realtime-mini**: Smaller, faster variant
+
+### Features
+
+- Voice activity detection
+- Interruption handling
+- Function calling while speaking
+- 13 voices (including new: marin, cedar)
+- WebRTC, WebSocket, SIP connections
+
+---
+
+## Batch API (50% Cost Savings)
+
+Process large volumes with 24-hour turnaround at 50% lower cost.
+
+### Create Batch
+
+```typescript
+// 1. Create JSONL file with requests
+const requests = [
+  { custom_id: 'req-1', method: 'POST', url: '/v1/chat/completions',
+    body: { model: 'gpt-5.1', messages: [{ role: 'user', content: 'Hello 1' }] } },
+  { custom_id: 'req-2', method: 'POST', url: '/v1/chat/completions',
+    body: { model: 'gpt-5.1', messages: [{ role: 'user', content: 'Hello 2' }] } },
+];
+
+// 2. Upload file
+const file = await openai.files.create({
+  file: new File([requests.map(r => JSON.stringify(r)).join('\n')], 'batch.jsonl'),
+  purpose: 'batch',
+});
+
+// 3. Create batch
+const batch = await openai.batches.create({
+  input_file_id: file.id,
+  endpoint: '/v1/chat/completions',
+  completion_window: '24h',
+});
+
+console.log(batch.id); // batch_abc123
+```
+
+### Check Status
+
+```typescript
+const batch = await openai.batches.retrieve('batch_abc123');
+
+console.log(batch.status);  // validating, in_progress, completed, failed
+console.log(batch.request_counts); // { total, completed, failed }
+
+if (batch.status === 'completed') {
+  const results = await openai.files.content(batch.output_file_id);
+  // Parse JSONL results
+}
+```
+
+### When to Use Batch API
+
+| Use Case | Batch API? |
+|----------|------------|
+| Content moderation at scale | ✅ |
+| Document processing (embeddings) | ✅ |
+| Bulk summarization | ✅ |
+| Real-time chat | ❌ Use Chat API |
+| Streaming responses | ❌ Use Chat API |
 
 ---
 
