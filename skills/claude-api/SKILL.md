@@ -8,7 +8,7 @@ description: |
 
 **Package**: @anthropic-ai/sdk@0.70.1 (Nov 20, 2025)
 **Breaking Changes**: Oct 2025 - Claude 3.5/3.7 models retired, Nov 2025 - Structured outputs beta
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-01-06
 
 ---
 

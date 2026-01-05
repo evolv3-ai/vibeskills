@@ -9,7 +9,7 @@ allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
 
 # TypeScript MCP on Cloudflare Workers
 
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-06
 **Versions**: @modelcontextprotocol/sdk@1.25.1, hono@4.11.3, zod@3.24.2
 **Spec Version**: 2025-11-25
 

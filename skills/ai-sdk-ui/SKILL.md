@@ -15,7 +15,7 @@ Frontend React hooks for AI-powered user interfaces with Vercel AI SDK v6.
 
 **Version**: AI SDK v6.0.6 (Stable)
 **Framework**: React 18+/19, Next.js 14+/15+
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-06
 
 ---
 
@@ -499,4 +499,4 @@ See `references/` for:
 ---
 
 **Production Tested**: WordPress Auditor (https://wordpress-auditor.webfonts.workers.dev)
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-06

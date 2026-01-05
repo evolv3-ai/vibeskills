@@ -9,7 +9,7 @@ description: |
 Production-ready knowledge domain for building browser automation workflows with Cloudflare Browser Rendering.
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-23
+**Last Updated**: 2026-01-06
 **Dependencies**: cloudflare-worker-base (for Worker setup)
 **Latest Versions**: @cloudflare/puppeteer@1.0.4 (July 2025), @cloudflare/playwright@1.0.0 (Playwright v1.55 GA Sept 2025), wrangler@4.50.0
 

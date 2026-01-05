@@ -14,7 +14,7 @@ Type-safe, file-based routing for React SPAs with route-level data loading and T
 
 ## Quick Start
 
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-06
 **Version**: @tanstack/react-router@1.144.0
 
 ```bash

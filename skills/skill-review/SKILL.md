@@ -103,4 +103,4 @@ Invoke: `/review-skill <skill-name>` or use this skill when detecting outdated p
 
 ---
 
-**Last Verified**: 2025-11-28 | **Version**: 1.0.0
+**Last Verified**: 2026-01-06 | **Version**: 1.0.0

@@ -10,7 +10,7 @@ description: |
 # Hono Routing & Middleware
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-06
 **Dependencies**: None (framework-agnostic)
 **Latest Versions**: hono@4.11.3, zod@4.1.13, valibot@1.2.0, @hono/zod-validator@0.7.5, @hono/valibot-validator@0.6.0
 

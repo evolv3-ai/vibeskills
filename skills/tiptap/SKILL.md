@@ -9,7 +9,7 @@ description: |
 # Tiptap Rich Text Editor
 
 **Status**: Production Ready
-**Last Updated**: 2025-11-29
+**Last Updated**: 2026-01-06
 **Dependencies**: React 19+, Tailwind v4, shadcn/ui (recommended)
 **Latest Versions**: @tiptap/react@3.11.1, @tiptap/starter-kit@3.11.1, @tiptap/pm@3.11.1
 
