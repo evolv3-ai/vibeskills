@@ -24,8 +24,8 @@ description: |
 # Drizzle ORM for Cloudflare D1
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-03
-**Latest Version**: drizzle-orm@0.45.1, drizzle-kit@0.31.8, better-sqlite3@12.4.6
+**Last Updated**: 2026-01-06
+**Latest Version**: drizzle-orm@0.45.1, drizzle-kit@0.31.8, better-sqlite3@12.5.0
 **Dependencies**: cloudflare-d1, cloudflare-worker-base
 
 ---
@@ -375,7 +375,7 @@ Claude should load these when you need specific deep-dive information:
 
 ---
 
-## Package Versions (Verified 2026-01-03)
+## Package Versions (Verified 2026-01-06)
 
 ```json
 {
@@ -385,7 +385,7 @@ Claude should load these when you need specific deep-dive information:
   "devDependencies": {
     "drizzle-kit": "^0.31.8",
     "@cloudflare/workers-types": "^4.20260103.0",
-    "better-sqlite3": "^12.4.6"
+    "better-sqlite3": "^12.5.0"
   }
 }
 ```
