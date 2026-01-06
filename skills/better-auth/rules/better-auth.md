@@ -28,14 +28,27 @@ database: {
 }
 ```
 
-## v1.4.0 Breaking Changes (Nov 2025)
+## v1.4.x Breaking Changes
 
 ```typescript
-/* ❌ CommonJS no longer supported */
+/* ❌ CommonJS no longer supported (v1.4.0) */
 const { betterAuth } = require('better-auth')
 
 /* ✅ ESM only */
 import { betterAuth } from 'better-auth'
+
+/* ❌ MCP plugin deprecated (v1.4.9) */
+import { mcp } from 'better-auth/plugins'
+
+/* ✅ Use OAuth 2.1 Provider instead */
+import { oauthProvider, jwt } from 'better-auth/plugins'
+plugins: [jwt(), oauthProvider({ accessTokenExpiresIn: 3600 })]
+
+/* ❌ Admin impersonation of admins (v1.4.6 default changed) */
+admin() // allowImpersonatingAdmins now defaults to false
+
+/* ✅ Explicit if you need admin-on-admin impersonation */
+admin({ allowImpersonatingAdmins: true })
 ```
 
 ## TanStack Start: Cookie Plugin Required

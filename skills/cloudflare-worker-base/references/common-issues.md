@@ -312,7 +312,7 @@ Error: A hanging Promise was canceled
 Update to latest `@cloudflare/vite-plugin`:
 
 ```bash
-npm install -D @cloudflare/vite-plugin@1.13.13
+npm install -D @cloudflare/vite-plugin@1.17.1
 ```
 
 **Fixed in version 1.13.13** (October 2025)
@@ -555,10 +555,10 @@ export default app
 npm list hono @cloudflare/vite-plugin wrangler
 ```
 
-**Expected (as of 2025-10-20):**
-- `hono@4.10.1`
-- `@cloudflare/vite-plugin@1.13.13`
-- `wrangler@4.43.0`
+**Expected (as of 2026-01-06):**
+- `hono@4.11.3`
+- `@cloudflare/vite-plugin@1.17.1`
+- `wrangler@4.54.0`
 
 ### Clear Wrangler Cache
 
@@ -614,7 +614,7 @@ curl -i http://localhost:8787/styles.css
 | **#1** | "Cannot read properties of undefined" | hono #3955 | `export default app` |
 | **#2** | API routes return HTML | workers-sdk #8879 | `run_worker_first: ["/api/*"]` |
 | **#3** | "Handler does not export scheduled()" | vite-plugins #275 | Module Worker format or @cloudflare/vite-plugin |
-| **#4** | "A hanging Promise was canceled" | workers-sdk #9518 | Update to vite-plugin@1.13.13+ |
+| **#4** | "A hanging Promise was canceled" | workers-sdk #9518 | Update to vite-plugin@1.17.1+ |
 | **#5** | Non-deterministic deployment failures | workers-sdk #7555 | Use Wrangler 4.x+ with retry |
 | **#6** | Service Worker format issues | Cloudflare migration | Use ES Module format |
 

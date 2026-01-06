@@ -6,8 +6,8 @@ description: |
   Use when building MCP servers that need user authentication, implementing Dynamic Client Registration (DCR) for Claude.ai, or replacing static auth tokens with OAuth flows. Prevents CSRF vulnerabilities, state validation errors, and OAuth misconfiguration.
 license: MIT
 metadata:
-  version: "1.0.0"
-  last_verified: "2025-12-18"
+  version: "1.1.0"
+  last_verified: "2026-01-03"
   keywords:
     - mcp oauth
     - mcp authentication
@@ -133,8 +133,27 @@ echo "YOUR_GOOGLE_CLIENT_SECRET" | npx wrangler secret put GOOGLE_CLIENT_SECRET
 # Cookie encryption key (32+ chars)
 python3 -c "import secrets; print(secrets.token_urlsafe(32))" | npx wrangler secret put COOKIE_ENCRYPTION_KEY
 
+# Optional: Custom Google OAuth scopes (default: 'openid email profile')
+# See "Common Google Scopes" section below for scope recipes
+echo "openid email profile https://www.googleapis.com/auth/drive" | npx wrangler secret put GOOGLE_SCOPES
+
 # Deploy to activate secrets
 npx wrangler deploy
+```
+
+### 5. Type Definitions (Optional but Recommended)
+
+Copy `templates/env.d.ts` to `src/env.d.ts` for TypeScript type support:
+
+```typescript
+interface Env {
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  COOKIE_ENCRYPTION_KEY: string;
+  GOOGLE_SCOPES?: string;  // Optional: Override default scopes
+  OAUTH_KV: KVNamespace;
+  MCP_OBJECT: DurableObjectNamespace;
+}
 ```
 
 ## Implementation Guide
@@ -155,6 +174,7 @@ type Props = {
   name: string;
   picture?: string;
   accessToken: string;
+  refreshToken?: string; // Available on first auth with access_type=offline
 };
 
 export class MyMcpServer extends McpAgent<Env, Record<string, never>, Props> {
@@ -313,6 +333,9 @@ app.get('/callback', async (c) => {
 });
 
 async function redirectToGoogle(request: Request, stateToken: string, headers: Record<string, string> = {}) {
+  // Scopes configurable via GOOGLE_SCOPES env var (see "Common Google Scopes" section)
+  const scopes = env.GOOGLE_SCOPES || 'openid email profile';
+
   return new Response(null, {
     status: 302,
     headers: {
@@ -320,7 +343,7 @@ async function redirectToGoogle(request: Request, stateToken: string, headers: R
       location: getUpstreamAuthorizeUrl({
         client_id: env.GOOGLE_CLIENT_ID,
         redirect_uri: new URL('/callback', request.url).href,
-        scope: 'openid email profile',
+        scope: scopes,
         state: stateToken,
         upstream_url: 'https://accounts.google.com/o/oauth2/v2/auth',
       }),
@@ -448,6 +471,162 @@ export async function addApprovedClient(request: Request, clientId: string, cook
 6. Add authorized redirect URI: `https://your-worker.workers.dev/callback`
 7. Copy Client ID and Client Secret
 
+## Common Google Scopes
+
+Configure scopes via the `GOOGLE_SCOPES` environment variable or modify the `redirectToGoogle` function.
+
+| Use Case | Scopes |
+|----------|--------|
+| Basic user info (default) | `openid email profile` |
+| Google Drive (full access) | `openid email profile https://www.googleapis.com/auth/drive` |
+| Google Drive (file-level only) | `openid email profile https://www.googleapis.com/auth/drive.file` |
+| Google Docs | `openid email profile https://www.googleapis.com/auth/documents` |
+| Google Docs + Drive | `openid email profile https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/documents` |
+| Gmail (read/send) | `openid email profile https://www.googleapis.com/auth/gmail.modify` |
+| Gmail (read only) | `openid email profile https://www.googleapis.com/auth/gmail.readonly` |
+| Google Calendar | `openid email profile https://www.googleapis.com/auth/calendar` |
+| Google Sheets | `openid email profile https://www.googleapis.com/auth/spreadsheets` |
+| Google Slides | `openid email profile https://www.googleapis.com/auth/presentations` |
+| YouTube Data | `openid email profile https://www.googleapis.com/auth/youtube` |
+
+**Setting Scopes:**
+
+```bash
+# Option 1: Via environment variable (recommended for flexibility)
+echo "openid email profile https://www.googleapis.com/auth/drive" | npx wrangler secret put GOOGLE_SCOPES
+
+# Option 2: In wrangler.jsonc (for non-sensitive scopes)
+{
+  "vars": {
+    "GOOGLE_SCOPES": "openid email profile https://www.googleapis.com/auth/drive"
+  }
+}
+```
+
+**Important Notes:**
+
+- Always include `openid email profile` - required for user identification
+- Additional scopes must be enabled in Google Cloud Console (APIs & Services → Library)
+- Some scopes require OAuth consent screen verification for production use
+- `drive.file` only accesses files the app created or user explicitly opened with it
+
+## Refresh Token Lifecycle (v0.2.0+)
+
+For long-lived sessions (Google APIs, Gmail, Drive), you need refresh tokens.
+
+### Requesting Refresh Tokens
+
+Add `access_type=offline` to the authorization URL:
+
+```typescript
+// In google-handler.ts, redirectToGoogle function
+googleAuthUrl.searchParams.set('access_type', 'offline');
+googleAuthUrl.searchParams.set('prompt', 'consent'); // Forces new refresh token
+```
+
+**When to use `access_type=offline`:**
+- MCP server needs to call Google APIs after initial auth
+- Long-running sessions (background tasks, scheduled jobs)
+- User data synchronization
+
+**When to use `access_type=online` (default):**
+- Simple user identification only
+- No API calls beyond initial auth
+- Short sessions (admin login, one-time actions)
+
+### Storing Refresh Tokens
+
+Store encrypted in your Props type:
+
+```typescript
+export type Props = {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string;
+  accessToken: string;
+  refreshToken?: string;      // Store when received
+  tokenExpiresAt?: number;    // Track expiration
+};
+```
+
+### Refreshing Expired Tokens
+
+```typescript
+export async function refreshAccessToken(
+  client_id: string,
+  client_secret: string,
+  refresh_token: string
+): Promise<{ accessToken: string; expiresAt: number } | null> {
+  const resp = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id,
+      client_secret,
+      refresh_token,
+      grant_type: 'refresh_token',
+    }).toString(),
+  });
+
+  if (!resp.ok) return null; // Token revoked, requires re-auth
+
+  const body = await resp.json();
+  return {
+    accessToken: body.access_token,
+    expiresAt: Date.now() + (body.expires_in * 1000),
+  };
+}
+```
+
+### When Refresh Tokens Become Invalid
+
+- User revokes access at https://myaccount.google.com/permissions
+- User changes password (if using certain scopes)
+- Token unused for 6+ months
+- OAuth app credentials regenerated
+
+**Handle gracefully**: Catch refresh failures and redirect to re-authorize.
+
+## Bearer Token + OAuth Coexistence
+
+Modern MCP servers support **both** OAuth (Claude.ai) and Bearer tokens (CLI tools, ElevenLabs):
+
+```typescript
+// In your main fetch handler
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    const authHeader = request.headers.get('Authorization');
+    const url = new URL(request.url);
+
+    // Check for Bearer token auth on MCP endpoints
+    if (env.AUTH_TOKEN && authHeader?.startsWith('Bearer ') &&
+        (url.pathname === '/sse' || url.pathname === '/mcp')) {
+      const token = authHeader.slice(7);
+
+      if (token === env.AUTH_TOKEN) {
+        // Programmatic access (CLI, ElevenLabs)
+        const headerAuthCtx = { ...ctx, props: { source: 'bearer' } };
+        return mcpHandler.fetch(request, env, headerAuthCtx);
+      }
+      // NOT env.AUTH_TOKEN - fall through to OAuth provider
+      // (it may be an OAuth token from Claude.ai)
+    }
+
+    // OAuth flow for web clients
+    return oauthProvider.fetch(request, env, ctx);
+  }
+};
+```
+
+**Critical Pattern**: Non-matching Bearer tokens must **fall through** to OAuth provider, not return 401. OAuth tokens from Claude.ai are also sent as Bearer tokens.
+
+**Adding AUTH_TOKEN secret:**
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(32))" | npx wrangler secret put AUTH_TOKEN
+npx wrangler deploy  # Required to activate
+```
+
 ## Common Issues
 
 ### "Invalid state" Error
@@ -492,6 +671,7 @@ export async function addApprovedClient(request: Request, clientId: string, cook
 | `GOOGLE_CLIENT_ID` | OAuth app ID | Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | OAuth app secret | Google Cloud Console |
 | `COOKIE_ENCRYPTION_KEY` | Sign approval cookies | `secrets.token_urlsafe(32)` |
+| `GOOGLE_SCOPES` (optional) | Override default OAuth scopes | See "Common Google Scopes" section |
 
 ## Token Efficiency
 
@@ -506,6 +686,7 @@ export async function addApprovedClient(request: Request, clientId: string, cook
 3. **Token theft** - Session binding via SHA-256
 4. **Missing DCR** - OAuthProvider handles automatically
 5. **Cookie tampering** - HMAC signatures
+6. **Hardcoded scopes** - Configurable via environment variable
 
 ## References
 

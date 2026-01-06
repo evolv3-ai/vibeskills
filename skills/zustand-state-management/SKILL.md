@@ -8,8 +8,8 @@ description: |
 
 # Zustand State Management
 
-**Last Updated**: 2025-11-28
-**Latest Version**: zustand@5.0.8 (current)
+**Last Updated**: 2026-01-06
+**Latest Version**: zustand@5.0.9 (current)
 **Dependencies**: React 18+, TypeScript 5+
 
 ---
@@ -86,7 +86,7 @@ const useStore = create<UserPreferences>()(
 ✅ Use `set` with updater functions for derived state: `set((state) => ({ count: state.count + 1 }))`
 ✅ Use unique names for persist middleware storage keys
 ✅ Handle Next.js hydration with `hasHydrated` flag pattern
-✅ Use `shallow` for selecting multiple values
+✅ Use `useShallow` hook for selecting multiple values
 ✅ Keep actions pure (no side effects except state updates)
 
 ### Never Do
@@ -198,11 +198,11 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 // Verify versions
-// zustand@5.0.8 includes createJSONStorage
+// zustand@5.0.9 includes createJSONStorage
 // zustand@4.x uses different API
 
 // Check your package.json
-// "zustand": "^5.0.8"
+// "zustand": "^5.0.9"
 ```
 
 ### Issue #4: Infinite Render Loop
@@ -216,7 +216,7 @@ Creating new object references in selectors causes Zustand to think state change
 
 **Prevention**:
 ```typescript
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/shallow'
 
 // ❌ WRONG - Creates new object every time
 const { bears, fishes } = useStore((state) => ({
@@ -228,10 +228,9 @@ const { bears, fishes } = useStore((state) => ({
 const bears = useStore((state) => state.bears)
 const fishes = useStore((state) => state.fishes)
 
-// ✅ CORRECT Option 2 - Use shallow for multiple values
+// ✅ CORRECT Option 2 - Use useShallow hook for multiple values
 const { bears, fishes } = useStore(
-  (state) => ({ bears: state.bears, fishes: state.fishes }),
-  shallow,
+  useShallow((state) => ({ bears: state.bears, fishes: state.fishes }))
 )
 ```
 

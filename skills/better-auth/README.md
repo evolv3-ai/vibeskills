@@ -40,6 +40,36 @@ This skill should be automatically invoked when you mention:
 - **"API key authentication"** - API-only auth
 - **"TanStack Query session"** - Session state with React Query
 - **"nanostores auth"** - Nanostore session invalidation
+- **"OAuth 2.1 provider"** - Build your own OAuth server
+- **"OAuth provider for MCP"** - MCP server authentication
+- **"better-auth MCP"** - MCP plugin (deprecated, use OAuth provider)
+- **"admin impersonation"** - Admin impersonate user feature
+- **"user impersonation"** - View as another user
+- **"admin ban user"** - User management
+- **"better-auth admin"** - Admin dashboard patterns
+- **"custom RBAC"** - Role-based access control
+- **"createAccessControl"** - Permission system
+- **"allowImpersonatingAdmins"** - Admin security setting
+- **"Hono better-auth"** - Hono integration
+- **"better-auth Hono"** - Hono framework setup
+- **"bearer token auth"** - API token authentication
+- **"better-auth bearer"** - Bearer plugin
+- **"Google One Tap"** - Frictionless Google sign-in
+- **"one tap sign-in"** - Single-tap authentication
+- **"SCIM provisioning"** - Enterprise user provisioning
+- **"anonymous auth"** - Guest user authentication
+- **"guest user auth"** - Anonymous access
+- **"username sign-in"** - Username-based login
+- **"generic OAuth"** - Custom OAuth providers
+- **"rate limiting auth"** - Rate limit configuration
+- **"session cookie cache"** - Cookie caching strategies
+- **"Patreon OAuth"** - Patreon sign-in
+- **"Kick OAuth"** - Kick streaming sign-in
+- **"Vercel OAuth"** - Vercel sign-in
+- **"database hooks auth"** - Lifecycle hooks
+- **"nodejs_compat"** - Cloudflare Workers requirement
+- **"Expo deep linking"** - React Native OAuth
+- **"expo-secure-store"** - Mobile secure storage
 
 ---
 
@@ -76,9 +106,10 @@ This skill should be automatically invoked when you mention:
 8. **Database Setup** - D1 and PostgreSQL schema patterns
 9. **API Reference** - Complete documentation for 80+ auto-generated endpoints
 
-### Errors Prevented (13 Common Issues)
+### Errors Prevented (14 Common Issues)
 
 - ✅ **D1 adapter misconfiguration** (no direct d1Adapter, must use Drizzle/Kysely)
+- ✅ **Cloudflare Workers context errors** (requires nodejs_compat flag)
 - ✅ **Schema generation failures** (using Drizzle Kit correctly)
 - ✅ **TanStack Start cookie issues** (reactStartCookies plugin required)
 - ✅ **Plugin ordering errors** (reactStartCookies must be last)
@@ -161,11 +192,11 @@ npm install better-auth drizzle-orm drizzle-kit @cloudflare/workers-types hono
 
 ## Performance
 
-- **Token Savings**: ~75% (28k → 7k tokens)
+- **Token Savings**: ~77% (35k → 8k tokens)
 - **Time Savings**: ~97% reduction (220 hours manual → 4-8 hours with better-auth)
-- **Error Prevention**: 16 documented issues with solutions
+- **Error Prevention**: 14 documented issues with solutions
 - **API Coverage**: Complete reference for 80+ auto-generated endpoints
-- **Plugin Documentation**: TanStack Start, multiSession, genericOAuth, apiKey + 5 more
+- **Plugin Documentation**: 15+ plugins (OAuth 2.1, Bearer, One Tap, SCIM, Anonymous, Username, Generic OAuth, Multi-Session, API Key, 2FA, Organization, Admin, Passkey, Magic Link, Stripe)
 
 ---
 
@@ -196,7 +227,10 @@ npm install better-auth drizzle-orm drizzle-kit @cloudflare/workers-types hono
 
 - **Docs**: https://better-auth.com
 - **GitHub**: https://github.com/better-auth/better-auth (22.4k ⭐)
-- **Package**: `better-auth@1.3.34`
+- **Package**: `better-auth@1.4.10`
+- **OAuth 2.1 Provider**: https://www.better-auth.com/docs/plugins/oauth-provider
+- **Admin Plugin**: https://www.better-auth.com/docs/plugins/admin
+- **Hono Example**: https://hono.dev/examples/better-auth-on-cloudflare
 - **Examples**: https://github.com/better-auth/better-auth/tree/main/examples
 
 ---
@@ -225,12 +259,12 @@ npm install pg drizzle-orm
 
 ## Version Info
 
-- **Skill Version**: 2.2.0 (Added TanStack Start, multiSession, genericOAuth, apiKey + 50+ documentation links)
-- **Package Version**: better-auth@1.3.34
-- **Drizzle ORM**: drizzle-orm@0.44.7, drizzle-kit@0.31.6
+- **Skill Version**: 5.0.0 (Major update: 8 new plugins, rate limiting, session caching, database hooks, Expo integration)
+- **Package Version**: better-auth@1.4.10
+- **Drizzle ORM**: drizzle-orm@0.45.1, drizzle-kit@0.31.8
 - **Kysely**: kysely@0.28.8, kysely-d1@0.4.0
-- **Last Verified**: 2025-11-18
-- **Compatibility**: Node.js 18+, Bun 1.0+, Cloudflare Workers
+- **Last Verified**: 2026-01-03
+- **Compatibility**: Node.js 18+, Bun 1.0+, Cloudflare Workers (requires nodejs_compat flag)
 
 ---
 

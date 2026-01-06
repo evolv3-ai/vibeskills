@@ -1,7 +1,7 @@
 # Google Chat API
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-29
+**Last Updated**: 2026-01-03
 
 ## Auto-Trigger Keywords
 - google chat, google chat api, google spaces
@@ -9,9 +9,11 @@
 - cards v2, chat cards, interactive cards
 - chat forms, google chat forms
 - bearer token, webhook handler
+- spaces api, members api, reactions api
+- chat rate limits, quota exceeded, 429 error
 
 ## What This Skill Does
-Build Google Chat bots and webhooks with Cards v2, interactive forms, and Cloudflare Workers integration.
+Build Google Chat bots and webhooks with Cards v2, interactive forms, Spaces/Members/Reactions APIs, and Cloudflare Workers integration.
 
 ## Core Capabilities
 ✅ Webhook handlers for notifications
@@ -19,7 +21,11 @@ Build Google Chat bots and webhooks with Cards v2, interactive forms, and Cloudf
 ✅ Form validation patterns
 ✅ Bearer token verification (Web Crypto API)
 ✅ Dialog/modal patterns
-✅ 5+ documented errors prevented
+✅ **Spaces API** - Create, list, search, manage spaces
+✅ **Members API** - Add/remove members, update roles
+✅ **Reactions API** - Add/list emoji reactions
+✅ **Rate Limits** - Quotas and exponential backoff
+✅ 6 documented errors prevented
 
 ## Quick Start
 ```bash

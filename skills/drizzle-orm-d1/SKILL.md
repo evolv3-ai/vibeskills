@@ -24,8 +24,8 @@ description: |
 # Drizzle ORM for Cloudflare D1
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-25
-**Latest Version**: drizzle-orm@0.44.7, drizzle-kit@0.31.7, better-sqlite3@12.4.6
+**Last Updated**: 2026-01-06
+**Latest Version**: drizzle-orm@0.45.1, drizzle-kit@0.31.8, better-sqlite3@12.5.0
 **Dependencies**: cloudflare-d1, cloudflare-worker-base
 
 ---
@@ -94,6 +94,124 @@ const allUsers = await db.select().from(users).all();
 ❌ **Never use SQL `BEGIN TRANSACTION`** - D1 requires batch API
 ❌ **Never use `drizzle-kit push` for production** - Use `generate` + `apply`
 ❌ **Never mix wrangler.toml and wrangler.jsonc** - Use wrangler.jsonc only
+
+---
+
+## Drizzle Kit Tools
+
+### Drizzle Studio (Visual Database Browser)
+
+```bash
+npx drizzle-kit studio
+# Opens http://local.drizzle.studio
+
+# For remote D1 database
+npx drizzle-kit studio --port 3001
+```
+
+**Features:**
+- Browse tables and data visually
+- Edit records inline
+- Run custom SQL queries
+- View schema relationships
+
+### Migration Commands
+
+| Command | Purpose |
+|---------|---------|
+| `drizzle-kit generate` | Generate SQL migrations from schema changes |
+| `drizzle-kit push` | Push schema directly (dev only, not for production) |
+| `drizzle-kit pull` | Introspect existing database → Drizzle schema |
+| `drizzle-kit check` | Validate migration integrity (race conditions) |
+| `drizzle-kit up` | Upgrade migration snapshots to latest format |
+
+```bash
+# Introspect existing D1 database
+npx drizzle-kit pull
+
+# Validate migrations haven't collided
+npx drizzle-kit check
+```
+
+---
+
+## Advanced Query Patterns
+
+### Dynamic Query Building
+
+Build queries conditionally with `.$dynamic()`:
+
+```typescript
+import { eq, and, or, like, sql } from 'drizzle-orm';
+
+// Base query
+function getUsers(filters: { name?: string; email?: string; active?: boolean }) {
+  let query = db.select().from(users).$dynamic();
+
+  if (filters.name) {
+    query = query.where(like(users.name, `%${filters.name}%`));
+  }
+  if (filters.email) {
+    query = query.where(eq(users.email, filters.email));
+  }
+  if (filters.active !== undefined) {
+    query = query.where(eq(users.active, filters.active));
+  }
+
+  return query;
+}
+
+// Usage
+const results = await getUsers({ name: 'John', active: true });
+```
+
+### Upsert (Insert or Update on Conflict)
+
+```typescript
+import { users } from './schema';
+
+// Insert or ignore if exists
+await db.insert(users)
+  .values({ id: 1, email: 'test@example.com', name: 'Test' })
+  .onConflictDoNothing();
+
+// Insert or update specific fields on conflict
+await db.insert(users)
+  .values({ id: 1, email: 'test@example.com', name: 'Test' })
+  .onConflictDoUpdate({
+    target: users.email,  // Conflict on unique email
+    set: {
+      name: sql`excluded.name`,  // Use value from INSERT
+      updatedAt: new Date(),
+    },
+  });
+```
+
+**⚠️ D1 Upsert Caveat:** Target must be a unique column or primary key.
+
+### Debugging with Logging
+
+```typescript
+import { drizzle } from 'drizzle-orm/d1';
+
+// Enable query logging
+const db = drizzle(env.DB, { logger: true });
+
+// Custom logger
+const db = drizzle(env.DB, {
+  logger: {
+    logQuery(query, params) {
+      console.log('SQL:', query);
+      console.log('Params:', params);
+    },
+  },
+});
+
+// Get SQL without executing (for debugging)
+const query = db.select().from(users).where(eq(users.id, 1));
+const sql = query.toSQL();
+console.log(sql.sql, sql.params);
+```
 
 ---
 
@@ -231,8 +349,8 @@ Claude should load these when you need specific deep-dive information:
 ## Dependencies
 
 **Required**:
-- `drizzle-orm@0.44.7` - ORM runtime
-- `drizzle-kit@0.31.7` - CLI tool for migrations
+- `drizzle-orm@0.45.1` - ORM runtime
+- `drizzle-kit@0.31.8` - CLI tool for migrations
 
 **Optional**:
 - `better-sqlite3@12.4.6` - For local SQLite development
@@ -257,17 +375,17 @@ Claude should load these when you need specific deep-dive information:
 
 ---
 
-## Package Versions (Verified 2025-11-25)
+## Package Versions (Verified 2026-01-06)
 
 ```json
 {
   "dependencies": {
-    "drizzle-orm": "^0.44.7"
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.7",
-    "@cloudflare/workers-types": "^4.20251125.0",
-    "better-sqlite3": "^12.4.6"
+    "drizzle-kit": "^0.31.8",
+    "@cloudflare/workers-types": "^4.20260103.0",
+    "better-sqlite3": "^12.5.0"
   }
 }
 ```

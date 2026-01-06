@@ -44,7 +44,7 @@ return new Response(result.textStream);  // Missing stream protocol
 
 // Check 2: Is your API route returning a Response?
 export async function POST(req: Request) {
-  const result = streamText({ model: openai('gpt-4'), messages });
+  const result = streamText({ model: openai('gpt-5'), messages });
   return result.toDataStreamResponse();  // Must return this!
 }
 
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 ```typescript
 // ✅ GOOD: SDK handles closing automatically
 export async function POST(req: Request) {
-  const result = streamText({ model: openai('gpt-4'), messages });
+  const result = streamText({ model: openai('gpt-5'), messages });
   return result.toDataStreamResponse();
 }
 

@@ -50,6 +50,7 @@ If a topic is provided, focus reflection on that area. Otherwise, reflect on the
 | **Tool patterns** | ??? | **YES** |
 | **Nuanced approaches** | ??? | **YES** |
 | **Corrections (what worked vs didn't)** | ??? | **YES** |
+| **Educational insights (★ Insight boxes)** | ??? | **YES** |
 
 ## Process
 
@@ -88,6 +89,13 @@ Review the current conversation and identify:
    - File-scoped behaviors (always do X in these file types)
    - "When editing [file pattern], always use [pattern]"
 
+7. **Educational Insights**
+   - Look for `★ Insight` boxes in the conversation
+   - Design pattern explanations
+   - Architecture reasoning ("why X works better than Y")
+   - UX/UI rationale
+   - Performance considerations explained
+
 ### Phase 2: Categorize by Destination
 
 **IMPORTANT**: Rules are the preferred destination for most technical learnings. CLAUDE.md files should only contain personal preferences and high-level workflow guidance - NOT technology-specific corrections.
@@ -106,6 +114,7 @@ Route each learning to the most appropriate destination:
 | Complex process | `docs/learnings.md` | Multi-step, worth documenting |
 | Session context | `SESSION.md` | Temporary, this session only |
 | **Repeatable process** | **Script or command** | **Will do this again, automate it** |
+| **Educational insight** | Skill docs, rules, or `~/.claude/insights/` | Tech-specific → skill; General → insights folder |
 
 **Rule Scope Decision**:
 
@@ -208,6 +217,11 @@ Show the user what was found in this format:
    - Paths: `[file patterns this applies to]`
    → Proposed: `.claude/rules/[name].md`
    → Also update skill? [Yes if technology-wide, otherwise No]
+
+### Educational Insights
+1. **[Topic]**: [Insight content]
+   - Category: [UX/Architecture/Performance/Pattern]
+   → Proposed destination: [path]
 
 ### Automation Opportunities
 1. **[Process name]**: [What we did manually]
@@ -410,6 +424,15 @@ paths: "**/*.tsx", "**/*.jsx", "src/components/**"
 - Applies across all React projects using Lucide
 - File-scoped (only triggers in TSX files)
 - Goes in `~/.claude/rules/` NOT `~/.claude/CLAUDE.md`
+
+### Example 11: Educational Insight (from ★ Insight box)
+**Discovered**: "The toolbar pattern (fixed position at bottom) is common for editing overlays because it doesn't obscure content, is always accessible, and provides clear separation"
+
+**Routing**:
+- If about specific tech (React patterns) → skill docs or rules
+- If general UX/architecture → `~/.claude/insights/ui-patterns.md` or `docs/learnings.md`
+
+**Detection method**: Scan conversation for the pattern `★ Insight` to extract these automatically.
 
 ## Important Guidelines
 

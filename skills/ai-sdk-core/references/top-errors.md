@@ -25,7 +25,7 @@ import { AI_APICallError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -85,7 +85,7 @@ import { AI_NoObjectGeneratedError } from 'ai';
 
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     schema: z.object({
       // Complex schema
       name: z.string(),
@@ -110,7 +110,7 @@ try {
 
     // 3. Try different model
     const result2 = await generateObject({
-      model: openai('gpt-4'), // GPT-4 better than 3.5 for complex objects
+      model: openai('gpt-5'), // GPT-4 better than 3.5 for complex objects
       schema: simpler,
       prompt: betterPrompt,
     });
@@ -226,7 +226,7 @@ Stream errors are swallowed by `createDataStreamResponse()` or framework respons
 ```typescript
 // ✅ GOOD: Add explicit error handling
 const stream = streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Hello',
 });
 
@@ -242,7 +242,7 @@ try {
 // ✅ BETTER: Always log on server side
 console.log('Starting stream...');
 const stream = streamText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Hello',
 });
 
@@ -289,7 +289,7 @@ import { AI_LoadAPIKeyError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: 'Hello',
   });
 } catch (error) {
@@ -360,7 +360,7 @@ import { AI_InvalidArgumentError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     maxOutputTokens: -1,  // ❌ Invalid!
     temperature: 3.0,      // ❌ Must be 0-2
     prompt: 'Hello',
@@ -408,7 +408,7 @@ import { AI_NoContentGeneratedError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: 'Some potentially problematic prompt',
   });
 } catch (error) {
@@ -459,7 +459,7 @@ import { AI_TypeValidationError } from 'ai';
 
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     schema: z.object({
       age: z.number().min(0).max(120),  // Strict validation
       email: z.string().email(),         // Strict format
@@ -479,7 +479,7 @@ try {
 
     // 2. Add guidance in prompt
     const better = await generateObject({
-      model: openai('gpt-4'),
+      model: openai('gpt-5'),
       schema: relaxed,
       prompt: 'Generate person with age 18-80 and valid email',
     });
@@ -522,7 +522,7 @@ import { AI_RetryError } from 'ai';
 
 try {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: 'Hello',
     maxRetries: 3,  // Default is 2
   });
@@ -576,7 +576,7 @@ async function generateWithBackoff(prompt: string, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
       return await generateText({
-        model: openai('gpt-4'),
+        model: openai('gpt-5'),
         prompt,
       });
     } catch (error: any) {
@@ -598,7 +598,7 @@ import PQueue from 'p-queue';
 const queue = new PQueue({ concurrency: 5, interval: 60000, intervalCap: 50 });
 
 async function generateQueued(prompt: string) {
-  return queue.add(() => generateText({ model: openai('gpt-4'), prompt }));
+  return queue.add(() => generateText({ model: openai('gpt-5'), prompt }));
 }
 ```
 
@@ -645,7 +645,7 @@ function generateData() {
     // Complex schema here
   });
 
-  return generateObject({ model: openai('gpt-4'), schema, prompt: '...' });
+  return generateObject({ model: openai('gpt-5'), schema, prompt: '...' });
 }
 
 // ✅ GOOD: Use z.lazy() for recursive
@@ -698,7 +698,7 @@ Some models occasionally return invalid JSON:
 // Use built-in retry and mode selection
 try {
   const result = await generateObject({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     schema: mySchema,
     prompt: 'Generate data',
     mode: 'json',  // Force JSON mode (GPT-4 supports this)

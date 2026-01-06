@@ -1,11 +1,11 @@
 ---
 name: better-auth
 description: |
-  Build authentication systems for TypeScript/Cloudflare Workers with social auth, 2FA, passkeys, organizations, and RBAC. Self-hosted alternative to Clerk/Auth.js.
+  Build authentication systems for TypeScript/Cloudflare Workers with social auth, 2FA, passkeys, organizations, RBAC, OAuth 2.1 provider, and 15+ plugins. Self-hosted alternative to Clerk/Auth.js.
 
-  IMPORTANT: Requires Drizzle ORM or Kysely for D1 - no direct D1 adapter. v1.4.0 (Nov 2025) adds stateless sessions, ESM-only (breaking), JWT key rotation, SCIM provisioning. v1.3 adds SSO/SAML, multi-team support.
+  IMPORTANT: Requires Drizzle ORM or Kysely for D1 - no direct D1 adapter. Workers require nodejs_compat flag. v1.4.10 adds OAuth 2.1 Provider (MCP deprecated), Bearer tokens, Google One Tap, SCIM, Anonymous auth, rate limiting, Patreon/Kick/Vercel providers.
 
-  Use when: self-hosting auth on Cloudflare D1, migrating from Clerk, implementing multi-tenant SaaS, or troubleshooting D1 adapter errors, session serialization, OAuth flows, TanStack Start cookie issues, nanostore session invalidation.
+  Use when: self-hosting auth on Cloudflare D1, building OAuth provider for MCP servers, multi-tenant SaaS, admin dashboards, API key auth, guest users, or troubleshooting D1 adapter errors, session caching, rate limits, database hooks.
 allowed-tools:
   - Read
   - Write
@@ -17,8 +17,8 @@ allowed-tools:
 
 # better-auth - D1 Adapter & Error Prevention Guide
 
-**Package**: better-auth@1.4.0 (Nov 22, 2025)
-**Breaking Changes**: ESM-only (v1.4.0), Multi-team table changes (v1.3), D1 requires Drizzle/Kysely (no direct adapter)
+**Package**: better-auth@1.4.10 (Dec 31, 2025)
+**Breaking Changes**: ESM-only (v1.4.0), Admin impersonation prevention default (v1.4.6), Multi-team table changes (v1.3), D1 requires Drizzle/Kysely (no direct adapter)
 
 ---
 
@@ -29,6 +29,33 @@ better-auth **DOES NOT** have `d1Adapter()`. You **MUST** use:
 - **Kysely**: `new Kysely({ dialect: new D1Dialect({ database: env.DB }) })`
 
 See Issue #1 below for details.
+
+---
+
+## What's New in v1.4.10 (Dec 31, 2025)
+
+**Major Features:**
+- **OAuth 2.1 Provider plugin** - Build your own OAuth provider (replaces MCP plugin)
+- **Patreon OAuth provider** - Social sign-in with Patreon
+- **Kick OAuth provider** - With refresh token support
+- **Vercel OAuth provider** - Sign in with Vercel
+- **Global `backgroundTasks` config** - Deferred actions for better performance
+- **Form data support** - Email authentication with fetch metadata fallback
+- **Stripe enhancements** - Flexible subscription lifecycle, `disableRedirect` option
+
+**Admin Plugin Updates:**
+- ⚠️ **Breaking**: Impersonation of admins disabled by default (v1.4.6)
+- Support role with permission-based user updates
+- Role type inference improvements
+
+**Security Fixes:**
+- SAML XML parser hardening with configurable size constraints
+- SAML assertion timestamp validation with per-provider clock skew
+- SSO domain-verified provider trust
+- Deprecated algorithm rejection
+- Line nonce enforcement
+
+📚 **Docs**: https://www.better-auth.com/changelogs
 
 ---
 
@@ -156,17 +183,511 @@ export const Route = createFileRoute('/api/auth/$')({
 
 ---
 
-## Available Plugins (v1.3+)
+## Available Plugins (v1.4+)
 
 Better Auth provides plugins for advanced authentication features:
 
 | Plugin | Import | Description | Docs |
 |--------|--------|-------------|------|
-| **OIDC Provider** | `better-auth/plugins` | Build your own OpenID Connect provider (become an OAuth provider for other apps) | [📚](https://www.better-auth.com/docs/plugins/oidc-provider) |
+| **OAuth 2.1 Provider** | `better-auth/plugins` | Build OAuth 2.1 provider with PKCE, JWT tokens, consent flows (replaces MCP & OIDC plugins) | [📚](https://www.better-auth.com/docs/plugins/oauth-provider) |
 | **SSO** | `better-auth/plugins` | Enterprise Single Sign-On with OIDC, OAuth2, and SAML 2.0 support | [📚](https://www.better-auth.com/docs/plugins/sso) |
-| **Stripe** | `better-auth/plugins` | Payment and subscription management (stable as of v1.3+) | [📚](https://www.better-auth.com/docs/plugins/stripe) |
-| **MCP** | `better-auth/plugins` | Act as OAuth provider for Model Context Protocol (MCP) clients | [📚](https://www.better-auth.com/docs/plugins/mcp) |
-| **Expo** | `better-auth/expo` | React Native/Expo integration with secure cookie management | [📚](https://www.better-auth.com/docs/integrations/expo) |
+| **Stripe** | `better-auth/plugins` | Payment and subscription management with flexible lifecycle handling | [📚](https://www.better-auth.com/docs/plugins/stripe) |
+| **MCP** | `better-auth/plugins` | ⚠️ **Deprecated** - Use OAuth 2.1 Provider instead | [📚](https://www.better-auth.com/docs/plugins/mcp) |
+| **Expo** | `better-auth/expo` | React Native/Expo with `webBrowserOptions` and last-login-method tracking | [📚](https://www.better-auth.com/docs/integrations/expo) |
+
+### OAuth 2.1 Provider Plugin (New in v1.4.9)
+
+Build your own OAuth provider for MCP servers, third-party apps, or API access:
+
+```typescript
+import { betterAuth } from "better-auth";
+import { oauthProvider } from "better-auth/plugins";
+import { jwt } from "better-auth/plugins";
+
+export const auth = betterAuth({
+  plugins: [
+    jwt(), // Required for token signing
+    oauthProvider({
+      // Token expiration (seconds)
+      accessTokenExpiresIn: 3600,      // 1 hour
+      refreshTokenExpiresIn: 2592000,  // 30 days
+      authorizationCodeExpiresIn: 600, // 10 minutes
+    }),
+  ],
+});
+```
+
+**Key Features:**
+- **OAuth 2.1 compliant** - PKCE mandatory, S256 only, no implicit flow
+- **Three grant types**: `authorization_code`, `refresh_token`, `client_credentials`
+- **JWT or opaque tokens** - Configurable token format
+- **Dynamic client registration** - RFC 7591 compliant
+- **Consent management** - Skip consent for trusted clients
+- **OIDC UserInfo endpoint** - `/oauth2/userinfo` with scope-based claims
+
+**Required Well-Known Endpoints:**
+
+```typescript
+// app/api/.well-known/oauth-authorization-server/route.ts
+export async function GET() {
+  return Response.json({
+    issuer: process.env.BETTER_AUTH_URL,
+    authorization_endpoint: `${process.env.BETTER_AUTH_URL}/api/auth/oauth2/authorize`,
+    token_endpoint: `${process.env.BETTER_AUTH_URL}/api/auth/oauth2/token`,
+    // ... other metadata
+  });
+}
+```
+
+**Create OAuth Client:**
+
+```typescript
+const client = await auth.api.createOAuthClient({
+  body: {
+    name: "My MCP Server",
+    redirectURLs: ["https://claude.ai/callback"],
+    type: "public", // or "confidential"
+  },
+});
+// Returns: { clientId, clientSecret (if confidential) }
+```
+
+📚 **Full Docs**: https://www.better-auth.com/docs/plugins/oauth-provider
+
+⚠️ **Note**: This plugin is in active development and may not be suitable for production use yet.
+
+---
+
+### Additional Plugins Reference
+
+| Plugin | Description | Docs |
+|--------|-------------|------|
+| **Bearer** | API token auth (alternative to cookies for APIs) | [📚](https://www.better-auth.com/docs/plugins/bearer) |
+| **One Tap** | Google One Tap frictionless sign-in | [📚](https://www.better-auth.com/docs/plugins/one-tap) |
+| **SCIM** | Enterprise user provisioning (SCIM 2.0) | [📚](https://www.better-auth.com/docs/plugins/scim) |
+| **Anonymous** | Guest user access without PII | [📚](https://www.better-auth.com/docs/plugins/anonymous) |
+| **Username** | Username-based sign-in (alternative to email) | [📚](https://www.better-auth.com/docs/plugins/username) |
+| **Generic OAuth** | Custom OAuth providers with PKCE | [📚](https://www.better-auth.com/docs/plugins/generic-oauth) |
+| **Multi-Session** | Multiple accounts in same browser | [📚](https://www.better-auth.com/docs/plugins/multi-session) |
+| **API Key** | Token-based auth with rate limits | [📚](https://www.better-auth.com/docs/plugins/api-key) |
+
+#### Bearer Token Plugin
+
+For API-only authentication (mobile apps, CLI tools, third-party integrations):
+
+```typescript
+import { bearer } from "better-auth/plugins";
+import { bearerClient } from "better-auth/client/plugins";
+
+// Server
+export const auth = betterAuth({
+  plugins: [bearer()],
+});
+
+// Client - Store token after sign-in
+const { token } = await authClient.signIn.email({ email, password });
+localStorage.setItem("auth_token", token);
+
+// Client - Configure fetch to include token
+const authClient = createAuthClient({
+  plugins: [bearerClient()],
+  fetchOptions: {
+    auth: { type: "Bearer", token: () => localStorage.getItem("auth_token") },
+  },
+});
+```
+
+#### Google One Tap Plugin
+
+Frictionless single-tap sign-in for users already signed into Google:
+
+```typescript
+import { oneTap } from "better-auth/plugins";
+import { oneTapClient } from "better-auth/client/plugins";
+
+// Server
+export const auth = betterAuth({
+  plugins: [oneTap()],
+});
+
+// Client
+authClient.oneTap({
+  onSuccess: (session) => {
+    window.location.href = "/dashboard";
+  },
+});
+```
+
+**Requirement**: Configure authorized JavaScript origins in Google Cloud Console.
+
+#### Anonymous Plugin
+
+Guest access without requiring email/password:
+
+```typescript
+import { anonymous } from "better-auth/plugins";
+
+// Server
+export const auth = betterAuth({
+  plugins: [
+    anonymous({
+      emailDomainName: "anon.example.com", // temp@{id}.anon.example.com
+      onLinkAccount: async ({ anonymousUser, newUser }) => {
+        // Migrate anonymous user data to linked account
+        await migrateUserData(anonymousUser.id, newUser.id);
+      },
+    }),
+  ],
+});
+
+// Client
+await authClient.signIn.anonymous();
+// Later: user can link to real account via signIn.social/email
+```
+
+#### Generic OAuth Plugin
+
+Add custom OAuth providers not in the built-in list:
+
+```typescript
+import { genericOAuth } from "better-auth/plugins";
+
+export const auth = betterAuth({
+  plugins: [
+    genericOAuth({
+      config: [
+        {
+          providerId: "linear",
+          clientId: env.LINEAR_CLIENT_ID,
+          clientSecret: env.LINEAR_CLIENT_SECRET,
+          discoveryUrl: "https://linear.app/.well-known/openid-configuration",
+          scopes: ["openid", "email", "profile"],
+          pkce: true, // Recommended
+        },
+      ],
+    }),
+  ],
+});
+```
+
+**Callback URL pattern**: `{baseURL}/api/auth/oauth2/callback/{providerId}`
+
+---
+
+## Rate Limiting
+
+Built-in rate limiting with customizable rules:
+
+```typescript
+export const auth = betterAuth({
+  rateLimit: {
+    window: 60,  // seconds (default: 60)
+    max: 100,    // requests per window (default: 100)
+
+    // Custom rules for sensitive endpoints
+    customRules: {
+      "/sign-in/email": { window: 10, max: 3 },
+      "/two-factor/*": { window: 10, max: 3 },
+      "/forget-password": { window: 60, max: 5 },
+    },
+
+    // Use Redis/KV for distributed systems
+    storage: "secondary-storage", // or "database"
+  },
+
+  // Secondary storage for rate limiting
+  secondaryStorage: {
+    get: async (key) => env.KV.get(key),
+    set: async (key, value, ttl) => env.KV.put(key, value, { expirationTtl: ttl }),
+    delete: async (key) => env.KV.delete(key),
+  },
+});
+```
+
+**Note**: Server-side calls via `auth.api.*` bypass rate limiting.
+
+---
+
+## Stateless Sessions (v1.4.0+)
+
+Store sessions entirely in signed cookies without database storage:
+
+```typescript
+export const auth = betterAuth({
+  session: {
+    // Stateless: No database storage, session lives in cookie only
+    storage: undefined, // or omit entirely
+
+    // Cookie configuration
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      encoding: "jwt", // Use JWT for stateless (not "compact")
+    },
+
+    // Session expiration
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+  },
+});
+```
+
+**When to Use:**
+
+| Storage Type | Use Case | Tradeoffs |
+|--------------|----------|-----------|
+| **Stateless (cookie-only)** | Read-heavy apps, edge/serverless, no revocation needed | Can't revoke sessions, limited payload size |
+| **D1 Database** | Full session management, audit trails, revocation | Eventual consistency issues |
+| **KV Storage** | Strong consistency, high read performance | Extra binding setup |
+
+**Key Points:**
+- Stateless sessions can't be revoked (user must wait for expiry)
+- Cookie size limit ~4KB (limits session data)
+- Use `encoding: "jwt"` for interoperability, `"jwe"` for encrypted
+- Server must have consistent `BETTER_AUTH_SECRET` across all instances
+
+---
+
+## JWT Key Rotation (v1.4.0+)
+
+Automatically rotate JWT signing keys for enhanced security:
+
+```typescript
+import { jwt } from "better-auth/plugins";
+
+export const auth = betterAuth({
+  plugins: [
+    jwt({
+      // Key rotation (optional, enterprise security)
+      keyRotation: {
+        enabled: true,
+        rotationInterval: 60 * 60 * 24 * 30, // Rotate every 30 days
+        keepPreviousKeys: 3, // Keep 3 old keys for validation
+      },
+
+      // Custom signing algorithm (default: HS256)
+      algorithm: "RS256", // Requires asymmetric keys
+
+      // JWKS endpoint (auto-generated at /api/auth/jwks)
+      exposeJWKS: true,
+    }),
+  ],
+});
+```
+
+**Key Points:**
+- Key rotation prevents compromised key from having indefinite validity
+- Old keys are kept temporarily to validate existing tokens
+- JWKS endpoint at `/api/auth/jwks` for external services
+- Use RS256 for public key verification (microservices)
+- HS256 (default) for single-service apps
+
+---
+
+## Provider Scopes Reference
+
+Common OAuth providers and the scopes needed for user data:
+
+| Provider | Scope | Returns |
+|----------|-------|---------|
+| **Google** | `openid` | User ID only |
+| | `email` | Email address, email_verified |
+| | `profile` | Name, avatar (picture), locale |
+| **GitHub** | `user:email` | Email address (may be private) |
+| | `read:user` | Name, avatar, profile URL, bio |
+| **Microsoft** | `openid` | User ID only |
+| | `email` | Email address |
+| | `profile` | Name, locale |
+| | `User.Read` | Full profile from Graph API |
+| **Discord** | `identify` | Username, avatar, discriminator |
+| | `email` | Email address |
+| **Apple** | `name` | First/last name (first auth only) |
+| | `email` | Email or relay address |
+| **Patreon** | `identity` | User ID, name |
+| | `identity[email]` | Email address |
+| **Vercel** | (auto) | Email, name, avatar |
+
+**Configuration Example:**
+
+```typescript
+socialProviders: {
+  google: {
+    clientId: env.GOOGLE_CLIENT_ID,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+    scope: ["openid", "email", "profile"], // All user data
+  },
+  github: {
+    clientId: env.GITHUB_CLIENT_ID,
+    clientSecret: env.GITHUB_CLIENT_SECRET,
+    scope: ["user:email", "read:user"], // Email + full profile
+  },
+  microsoft: {
+    clientId: env.MS_CLIENT_ID,
+    clientSecret: env.MS_CLIENT_SECRET,
+    scope: ["openid", "email", "profile", "User.Read"],
+  },
+}
+```
+
+---
+
+## Session Cookie Caching
+
+Three encoding strategies for session cookies:
+
+| Strategy | Format | Use Case |
+|----------|--------|----------|
+| **Compact** (default) | Base64url + HMAC-SHA256 | Smallest, fastest |
+| **JWT** | Standard JWT | Interoperable |
+| **JWE** | A256CBC-HS512 encrypted | Most secure |
+
+```typescript
+export const auth = betterAuth({
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 300, // 5 minutes
+      encoding: "compact", // or "jwt" or "jwe"
+    },
+    freshAge: 60 * 60 * 24, // 1 day - operations requiring fresh session
+  },
+});
+```
+
+**Fresh sessions**: Some sensitive operations require recently created sessions. Configure `freshAge` to control this window.
+
+---
+
+## New Social Providers (v1.4.9+)
+
+```typescript
+socialProviders: {
+  // Patreon - Creator economy
+  patreon: {
+    clientId: env.PATREON_CLIENT_ID,
+    clientSecret: env.PATREON_CLIENT_SECRET,
+    scope: ["identity", "identity[email]"],
+  },
+
+  // Kick - Streaming platform (with refresh tokens)
+  kick: {
+    clientId: env.KICK_CLIENT_ID,
+    clientSecret: env.KICK_CLIENT_SECRET,
+  },
+
+  // Vercel - Developer platform
+  vercel: {
+    clientId: env.VERCEL_CLIENT_ID,
+    clientSecret: env.VERCEL_CLIENT_SECRET,
+  },
+}
+```
+
+---
+
+## Cloudflare Workers Requirements
+
+**⚠️ CRITICAL**: Cloudflare Workers require AsyncLocalStorage support:
+
+```toml
+# wrangler.toml
+compatibility_flags = ["nodejs_compat"]
+# or for older Workers:
+# compatibility_flags = ["nodejs_als"]
+```
+
+Without this flag, better-auth will fail with context-related errors.
+
+---
+
+## Database Hooks
+
+Execute custom logic during database operations:
+
+```typescript
+export const auth = betterAuth({
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          // Validate or modify before creation
+          if (user.email?.endsWith("@blocked.com")) {
+            throw new APIError("BAD_REQUEST", { message: "Email domain not allowed" });
+          }
+          return { data: { ...user, role: "member" } };
+        },
+        after: async (user, ctx) => {
+          // Send welcome email, create related records, etc.
+          await sendWelcomeEmail(user.email);
+          await createDefaultWorkspace(user.id);
+        },
+      },
+    },
+    session: {
+      create: {
+        after: async (session, ctx) => {
+          // Audit logging
+          await auditLog.create({ action: "session_created", userId: session.userId });
+        },
+      },
+    },
+  },
+});
+```
+
+**Available hooks**: `create`, `update` for `user`, `session`, `account`, `verification` tables.
+
+---
+
+## Expo/React Native Integration
+
+Complete mobile integration pattern:
+
+```typescript
+// Client setup with secure storage
+import { expoClient } from "@better-auth/expo";
+import * as SecureStore from "expo-secure-store";
+
+const authClient = createAuthClient({
+  baseURL: "https://api.example.com",
+  plugins: [expoClient({ storage: SecureStore })],
+});
+
+// OAuth with deep linking
+await authClient.signIn.social({
+  provider: "google",
+  callbackURL: "myapp://auth/callback", // Deep link
+});
+
+// Or use ID token verification (no redirect)
+await authClient.signIn.social({
+  provider: "google",
+  idToken: {
+    token: googleIdToken,
+    nonce: generatedNonce,
+  },
+});
+
+// Authenticated requests
+const cookie = await authClient.getCookie();
+await fetch("https://api.example.com/data", {
+  headers: { Cookie: cookie },
+  credentials: "omit",
+});
+```
+
+**app.json deep link setup**:
+```json
+{
+  "expo": {
+    "scheme": "myapp"
+  }
+}
+```
+
+**Server trustedOrigins** (development):
+```typescript
+trustedOrigins: ["exp://**", "myapp://"]
+```
 
 ---
 
@@ -330,6 +851,17 @@ import { organization } from "better-auth/plugins";
 
 ```typescript
 import { admin } from "better-auth/plugins";
+
+// v1.4.10 configuration options
+admin({
+  defaultRole: "user",
+  adminRoles: ["admin"],
+  adminUserIds: ["user_abc123"], // Always grant admin to specific users
+  impersonationSessionDuration: 3600, // 1 hour (seconds)
+  allowImpersonatingAdmins: false, // ⚠️ Default changed in v1.4.6
+  defaultBanReason: "Violation of Terms of Service",
+  bannedUserMessage: "Your account has been suspended",
+})
 ```
 
 | Endpoint | Method | Description |
@@ -340,13 +872,47 @@ import { admin } from "better-auth/plugins";
 | `/admin/set-user-password` | POST | Change user password |
 | `/admin/update-user` | PUT | Modify user details |
 | `/admin/remove-user` | DELETE | Delete user account |
-| `/admin/ban-user` | POST | Ban user account |
+| `/admin/ban-user` | POST | Ban user account (with optional expiry) |
 | `/admin/unban-user` | POST | Unban user |
 | `/admin/list-user-sessions` | GET | Get user's active sessions |
 | `/admin/revoke-user-session` | DELETE | End specific user session |
 | `/admin/revoke-user-sessions` | DELETE | End all user sessions |
 | `/admin/impersonate-user` | POST | Start impersonating user |
 | `/admin/stop-impersonating` | POST | End impersonation session |
+
+**⚠️ Breaking Change (v1.4.6)**: `allowImpersonatingAdmins` now defaults to `false`. Set to `true` explicitly if you need admin-on-admin impersonation.
+
+**Custom Roles with Permissions (v1.4.10):**
+
+```typescript
+import { createAccessControl } from "better-auth/plugins/access";
+
+// Define resources and permissions
+const ac = createAccessControl({
+  user: ["create", "read", "update", "delete", "ban", "impersonate"],
+  project: ["create", "read", "update", "delete", "share"],
+} as const);
+
+// Create custom roles
+const supportRole = ac.newRole({
+  user: ["read", "ban"],      // Can view and ban users
+  project: ["read"],          // Can view projects
+});
+
+const managerRole = ac.newRole({
+  user: ["read", "update"],
+  project: ["create", "read", "update", "delete"],
+});
+
+// Use in plugin
+admin({
+  ac,
+  roles: {
+    support: supportRole,
+    manager: managerRole,
+  },
+})
+```
 
 📚 **Docs**: https://www.better-auth.com/docs/plugins/admin
 
@@ -1004,6 +1570,165 @@ await refetch()
 
 ---
 
+### Issue 14: apiKey Table Schema Mismatch with D1
+
+**Problem**: better-auth CLI (`npx @better-auth/cli generate`) fails with "Failed to initialize database adapter" when using D1.
+
+**Symptoms**: CLI cannot connect to D1 to introspect schema. Running migrations through CLI doesn't work.
+
+**Root Cause**: The CLI expects a direct SQLite connection, but D1 requires Cloudflare's binding API.
+
+**Solution**: Skip the CLI and create migrations manually using the documented apiKey schema:
+
+```sql
+CREATE TABLE api_key (
+  id TEXT PRIMARY KEY NOT NULL,
+  user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+  name TEXT,
+  start TEXT,
+  prefix TEXT,
+  key TEXT NOT NULL,
+  enabled INTEGER DEFAULT 1,
+  rate_limit_enabled INTEGER,
+  rate_limit_time_window INTEGER,
+  rate_limit_max INTEGER,
+  request_count INTEGER DEFAULT 0,
+  last_request INTEGER,
+  remaining INTEGER,
+  refill_interval INTEGER,
+  refill_amount INTEGER,
+  last_refill_at INTEGER,
+  expires_at INTEGER,
+  permissions TEXT,
+  metadata TEXT,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+```
+
+**Key Points**:
+- The table has exactly **21 columns** (as of better-auth v1.4+)
+- Column names use `snake_case` (e.g., `rate_limit_time_window`, not `rateLimitTimeWindow`)
+- D1 doesn't support `ALTER TABLE DROP COLUMN` - if schema drifts, use fresh migration pattern (drop and recreate tables)
+- In Drizzle adapter config, use `apikey` (lowercase) as the table name mapping
+
+**Fresh Migration Pattern for D1**:
+```sql
+-- Drop in reverse dependency order
+DROP TABLE IF EXISTS api_key;
+DROP TABLE IF EXISTS session;
+-- ... other tables
+
+-- Recreate with clean schema
+CREATE TABLE api_key (...);
+```
+
+**Source**: Production debugging with D1 + better-auth apiKey plugin
+
+---
+
+### Issue 15: Admin Plugin Requires DB Role (Dual-Auth)
+
+**Problem**: Admin plugin methods like `listUsers` fail with "You are not allowed to list users" even though your middleware passes.
+
+**Symptoms**: Custom `requireAdmin` middleware (checking ADMIN_EMAILS env var) passes, but `auth.api.listUsers()` returns 403.
+
+**Root Cause**: better-auth admin plugin has **two** authorization layers:
+1. **Your middleware** - Custom check (e.g., ADMIN_EMAILS)
+2. **better-auth internal** - Checks `user.role === 'admin'` in database
+
+Both must pass for admin plugin methods to work.
+
+**Solution**: Set user role to 'admin' in the database:
+
+```sql
+-- Fix for existing users
+UPDATE user SET role = 'admin' WHERE email = 'admin@example.com';
+```
+
+Or use the admin UI/API to set roles after initial setup.
+
+**Why**: The admin plugin's `listUsers`, `banUser`, `impersonateUser`, etc. all check `user.role` in the database, not your custom middleware logic.
+
+**Source**: Production debugging - misleading error message led to root cause discovery via `wrangler tail`
+
+---
+
+### Issue 16: Organization/Team updated_at Must Be Nullable
+
+**Problem**: Organization creation fails with SQL constraint error even though API returns "slug already exists".
+
+**Symptoms**:
+- Error message says "An organization with this slug already exists"
+- Database table is actually empty
+- `wrangler tail` shows: `Failed query: insert into "organization" ... values (?, ?, ?, null, null, ?, null)`
+
+**Root Cause**: better-auth inserts `null` for `updated_at` on creation (only sets it on updates). If your schema has `NOT NULL` constraint, insert fails.
+
+**Solution**: Make `updated_at` nullable in both schema and migrations:
+
+```typescript
+// Drizzle schema - CORRECT
+export const organization = sqliteTable('organization', {
+  // ...
+  updatedAt: integer('updated_at', { mode: 'timestamp' }), // No .notNull()
+});
+
+export const team = sqliteTable('team', {
+  // ...
+  updatedAt: integer('updated_at', { mode: 'timestamp' }), // No .notNull()
+});
+```
+
+```sql
+-- Migration - CORRECT
+CREATE TABLE organization (
+  -- ...
+  updated_at INTEGER  -- No NOT NULL
+);
+```
+
+**Applies to**: `organization` and `team` tables (possibly other plugin tables)
+
+**Source**: Production debugging - `wrangler tail` revealed actual SQL error behind misleading "slug exists" message
+
+---
+
+### Issue 17: API Response Double-Nesting (listMembers, etc.)
+
+**Problem**: Custom API endpoints return double-nested data like `{ members: { members: [...], total: N } }`.
+
+**Symptoms**: UI shows "undefined" for counts, empty lists despite data existing.
+
+**Root Cause**: better-auth methods like `listMembers` return `{ members: [...], total: N }`. Wrapping with `c.json({ members: result })` creates double nesting.
+
+**Solution**: Extract the array from better-auth response:
+
+```typescript
+// ❌ WRONG - Double nesting
+const result = await auth.api.listMembers({ ... });
+return c.json({ members: result });
+// Returns: { members: { members: [...], total: N } }
+
+// ✅ CORRECT - Extract array
+const result = await auth.api.listMembers({ ... });
+const members = result?.members || [];
+return c.json({ members });
+// Returns: { members: [...] }
+```
+
+**Affected methods** (return objects, not arrays):
+- `listMembers` → `{ members: [...], total: N }`
+- `listUsers` → `{ users: [...], total: N, limit: N }`
+- `listOrganizations` → `{ organizations: [...] }` (check structure)
+- `listInvitations` → `{ invitations: [...] }`
+
+**Pattern**: Always check better-auth method return types before wrapping in your API response.
+
+**Source**: Production debugging - UI showed "undefined" count, API inspection revealed nesting issue
+
+---
+
 ## Migration Guides
 
 ### From Clerk
@@ -1170,27 +1895,42 @@ await refetch()
 ## Version Compatibility
 
 **Tested with**:
-- `better-auth@1.3.34`
-- `drizzle-orm@0.44.7`
-- `drizzle-kit@0.31.6`
-- `kysely@0.28.8`
+- `better-auth@1.4.10`
+- `drizzle-orm@0.45.1`
+- `drizzle-kit@0.31.8`
+- `kysely@0.28.9`
 - `kysely-d1@0.4.0`
 - `@cloudflare/workers-types@latest`
-- `hono@4.0.0`
+- `hono@4.11.3`
 - Node.js 18+, Bun 1.0+
 
-**Breaking changes**: Check changelog when upgrading: https://github.com/better-auth/better-auth/releases
+**Breaking changes**:
+- v1.4.6: `allowImpersonatingAdmins` defaults to `false`
+- v1.4.0: ESM-only (no CommonJS)
+- v1.3.0: Multi-team table structure change
+
+Check changelog: https://github.com/better-auth/better-auth/releases
+
+---
+
+## Community Resources
+
+**Cloudflare-specific guides:**
+- [zpg6/better-auth-cloudflare](https://github.com/zpg6/better-auth-cloudflare) - Drizzle + D1 reference
+- [Hono + better-auth on Cloudflare](https://hono.dev/examples/better-auth-on-cloudflare) - Official Hono example
+- [React Router + Cloudflare D1](https://dev.to/atman33/setup-better-auth-with-react-router-cloudflare-d1-2ad4) - React Router v7 guide
+- [SvelteKit + Cloudflare D1](https://medium.com/@dasfacc/sveltekit-better-auth-using-cloudflare-d1-and-drizzle-91d9d9a6d0b4) - SvelteKit guide
 
 ---
 
 **Token Efficiency**:
-- **Without skill**: ~28,000 tokens (D1 adapter errors, TanStack Start cookies, nanostore invalidation, OAuth flows, API discovery)
-- **With skill**: ~5,600 tokens (focused on errors + breaking changes + API reference)
-- **Savings**: ~80% (~22,400 tokens)
+- **Without skill**: ~35,000 tokens (D1 adapter errors, 15+ plugins, rate limiting, session caching, database hooks, mobile integration)
+- **With skill**: ~8,000 tokens (focused on errors + patterns + all plugins + API reference)
+- **Savings**: ~77% (~27,000 tokens)
 
-**Errors prevented**: 13 documented issues with exact solutions
-**Key value**: D1 adapter requirement, v1.4.0/v1.3 breaking changes, TanStack Start fix, nanostore pattern, 80+ endpoint reference
+**Errors prevented**: 14 documented issues with exact solutions
+**Key value**: D1 adapter requirement, nodejs_compat flag, OAuth 2.1 Provider, Bearer/OneTap/SCIM/Anonymous plugins, rate limiting, session caching, database hooks, Expo integration, 80+ endpoint reference
 
 ---
 
-**Last verified**: 2025-11-22 | **Skill version**: 3.0.0 | **Changes**: Added v1.4.0 (ESM-only, stateless sessions, SCIM) and v1.3 (SSO/SAML, multi-team) knowledge gaps. Removed tutorial/setup (~700 lines). Focused on error prevention + breaking changes + API reference.
+**Last verified**: 2026-01-03 | **Skill version**: 5.0.0 | **Changes**: Added 8 additional plugins (Bearer, One Tap, SCIM, Anonymous, Username, Generic OAuth, Multi-Session, API Key). Added rate limiting configuration. Added session cookie caching (Compact/JWT/JWE). Added new social providers (Patreon, Kick, Vercel). Added Cloudflare Workers nodejs_compat requirement. Added database hooks. Added complete Expo/React Native integration.

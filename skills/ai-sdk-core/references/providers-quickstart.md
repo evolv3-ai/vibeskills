@@ -39,7 +39,7 @@ const result = await generateText({
 |-------|----------|------|-------|
 | gpt-5 | Latest (if available) | High | Medium |
 | gpt-4-turbo | Complex reasoning | High | Medium |
-| gpt-4 | High quality | High | Slow |
+| gpt-5 | Flagship model | High | Slow |
 | gpt-3.5-turbo | Simple tasks | Low | Fast |
 
 ### Common Errors
@@ -267,7 +267,7 @@ import { generateText } from 'ai';
 
 // Use different providers for different tasks
 const complexTask = await generateText({
-  model: openai('gpt-4'),  // Best reasoning
+  model: openai('gpt-5'),  // Best reasoning
   prompt: 'Complex analysis...',
 });
 
@@ -289,7 +289,7 @@ const fastTask = await generateText({
 ```typescript
 async function generateWithFallback(prompt: string) {
   try {
-    return await generateText({ model: openai('gpt-4'), prompt });
+    return await generateText({ model: openai('gpt-5'), prompt });
   } catch (error) {
     console.error('OpenAI failed, trying Anthropic...');
     try {

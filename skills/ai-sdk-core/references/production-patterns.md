@@ -14,7 +14,7 @@ Best practices for deploying AI SDK Core in production environments.
 // ✅ GOOD: User-facing (better perceived performance)
 app.post('/chat', async (req, res) => {
   const stream = streamText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: req.body.message,
   });
 
@@ -24,7 +24,7 @@ app.post('/chat', async (req, res) => {
 // ❌ BAD: User waits for entire response
 app.post('/chat', async (req, res) => {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: req.body.message,
   });
 
@@ -34,7 +34,7 @@ app.post('/chat', async (req, res) => {
 // ✅ GOOD: Background tasks (no user waiting)
 async function processDocument(doc: string) {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: `Analyze: ${doc}`,
   });
 
@@ -47,20 +47,20 @@ async function processDocument(doc: string) {
 ```typescript
 // ✅ GOOD: Limit token usage based on use case
 const shortSummary = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Summarize in 2 sentences',
   maxOutputTokens: 100,  // Prevents over-generation
 });
 
 const article = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Write article',
   maxOutputTokens: 2000,  // Appropriate for long-form
 });
 
 // ❌ BAD: No limit (can waste tokens/money)
 const unlimited = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Write something',
   // No maxOutputTokens
 });
@@ -104,7 +104,7 @@ function generateStructuredData() {
     // Schema definition here
   });
 
-  return generateObject({ model: openai('gpt-4'), schema, prompt: '...' });
+  return generateObject({ model: openai('gpt-5'), schema, prompt: '...' });
 }
 
 // ✅ GOOD: Split into smaller reusable schemas
@@ -122,7 +122,7 @@ const PersonSchema = z.object({ name: z.string(), address: AddressSchema });
 async function generateSafely(prompt: string) {
   try {
     const result = await generateText({
-      model: openai('gpt-4'),
+      model: openai('gpt-5'),
       prompt,
     });
 
@@ -154,7 +154,7 @@ import {
 
 async function robustGeneration(prompt: string) {
   try {
-    return await generateText({ model: openai('gpt-4'), prompt });
+    return await generateText({ model: openai('gpt-5'), prompt });
   } catch (error) {
     switch (error.constructor) {
       case AI_APICallError:
@@ -190,7 +190,7 @@ async function generateWithRetry(prompt: string, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await generateText({
-        model: openai('gpt-4'),
+        model: openai('gpt-5'),
         prompt,
         maxRetries: 2,  // Built-in retry
       });
@@ -231,9 +231,9 @@ function logAIError(error: any, context: Record<string, any>) {
 }
 
 try {
-  const result = await generateText({ model: openai('gpt-4'), prompt });
+  const result = await generateText({ model: openai('gpt-5'), prompt });
 } catch (error) {
-  logAIError(error, { prompt, model: 'gpt-4' });
+  logAIError(error, { prompt, model: 'gpt-5' });
   throw error;
 }
 ```
@@ -250,7 +250,7 @@ async function generateWithCostOptimization(prompt: string, complexity: 'simple'
   const models = {
     simple: openai('gpt-3.5-turbo'),     // $0.50 / 1M tokens
     medium: openai('gpt-4-turbo'),       // $10 / 1M tokens
-    complex: openai('gpt-4'),            // $30 / 1M tokens
+    complex: openai('gpt-5'),            // $30 / 1M tokens
   };
 
   return generateText({
@@ -270,7 +270,7 @@ await generateWithCostOptimization('Complex reasoning task', 'complex');
 ```typescript
 // Prevent runaway costs
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: 'Write essay',
   maxOutputTokens: 500,  // Hard limit
 });
@@ -306,7 +306,7 @@ async function generateWithCache(prompt: string) {
 
   // Generate
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt,
   });
 
@@ -326,7 +326,7 @@ let totalCost = 0;
 
 async function generateWithTracking(prompt: string) {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt,
   });
 
@@ -416,7 +416,7 @@ app.post('/chat/stream', async (c) => {
 
 export async function generateContent(input: string) {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: input,
     maxOutputTokens: 500,
   });
@@ -449,7 +449,7 @@ export default function Page() {
 export default async function Page() {
   // Generate on server
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt: 'Welcome message',
   });
 
@@ -491,7 +491,7 @@ metrics.gauge('ai.tokens.completion', result.usage.completionTokens);
 
 // Response time
 const startTime = Date.now();
-const result = await generateText({ model: openai('gpt-4'), prompt });
+const result = await generateText({ model: openai('gpt-5'), prompt });
 metrics.timing('ai.response_time', Date.now() - startTime);
 
 // Error rate
@@ -509,15 +509,15 @@ const logger = winston.createLogger({
 });
 
 logger.info('AI generation started', {
-  model: 'gpt-4',
+  model: 'gpt-5',
   promptLength: prompt.length,
   userId: user.id,
 });
 
-const result = await generateText({ model: openai('gpt-4'), prompt });
+const result = await generateText({ model: openai('gpt-5'), prompt });
 
 logger.info('AI generation completed', {
-  model: 'gpt-4',
+  model: 'gpt-5',
   tokensUsed: result.usage.totalTokens,
   responseLength: result.text.length,
   duration: Date.now() - startTime,
@@ -542,7 +542,7 @@ const queue = new PQueue({
 
 async function generateQueued(prompt: string) {
   return queue.add(() =>
-    generateText({ model: openai('gpt-4'), prompt })
+    generateText({ model: openai('gpt-5'), prompt })
   );
 }
 ```
@@ -552,7 +552,7 @@ async function generateQueued(prompt: string) {
 ```typescript
 async function generateWithRateCheck(prompt: string) {
   const result = await generateText({
-    model: openai('gpt-4'),
+    model: openai('gpt-5'),
     prompt,
   });
 
@@ -580,7 +580,7 @@ function sanitizePrompt(userInput: string): string {
 }
 
 const result = await generateText({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   prompt: sanitizePrompt(req.body.message),
 });
 ```

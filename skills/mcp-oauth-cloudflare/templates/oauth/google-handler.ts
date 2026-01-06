@@ -118,19 +118,35 @@ app.post('/authorize', async (c) => {
 
 /**
  * Redirect to Google OAuth
+ *
+ * TEMPLATE: Customize scopes for your use case
+ * Default scopes provide basic user info (id, email, name, picture)
+ *
+ * Common scopes:
+ * - 'openid email profile' (default) - Basic user info
+ * - 'openid email profile https://www.googleapis.com/auth/drive' - Google Drive
+ * - 'openid email profile https://www.googleapis.com/auth/documents' - Google Docs
+ * - 'openid email profile https://www.googleapis.com/auth/gmail.modify' - Gmail
+ * - 'openid email profile https://www.googleapis.com/auth/calendar' - Calendar
+ * - 'openid email profile https://www.googleapis.com/auth/spreadsheets' - Sheets
+ *
+ * Set via environment variable GOOGLE_SCOPES or modify the default below
  */
 async function redirectToGoogle(
   request: Request,
   stateToken: string,
   headers: Record<string, string> = {}
 ) {
+  // TODO: Customize scopes for your use case (or set GOOGLE_SCOPES env var)
+  const scopes = env.GOOGLE_SCOPES || 'openid email profile';
+
   return new Response(null, {
     headers: {
       ...headers,
       location: getUpstreamAuthorizeUrl({
         client_id: env.GOOGLE_CLIENT_ID,
         redirect_uri: new URL('/callback', request.url).href,
-        scope: 'openid email profile',
+        scope: scopes,
         state: stateToken,
         upstream_url: 'https://accounts.google.com/o/oauth2/v2/auth',
       }),
@@ -161,8 +177,8 @@ app.get('/callback', async (c) => {
     return c.text('Invalid OAuth request data', 400);
   }
 
-  // Exchange code for access token
-  const [accessToken, errResponse] = await fetchUpstreamAuthToken({
+  // Exchange code for access token (and optional refresh token)
+  const [tokens, errResponse] = await fetchUpstreamAuthToken({
     client_id: c.env.GOOGLE_CLIENT_ID,
     client_secret: c.env.GOOGLE_CLIENT_SECRET,
     code: c.req.query('code'),
@@ -173,7 +189,7 @@ app.get('/callback', async (c) => {
   if (errResponse) return errResponse;
 
   // Fetch user info from Google
-  const user = await fetchGoogleUserInfo(accessToken);
+  const user = await fetchGoogleUserInfo(tokens.accessToken);
   if (!user) {
     return c.text('Failed to fetch user info', 500);
   }
@@ -186,7 +202,8 @@ app.get('/callback', async (c) => {
       label: name || email,
     },
     props: {
-      accessToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken, // Available on first auth with access_type=offline
       email,
       id,
       name,

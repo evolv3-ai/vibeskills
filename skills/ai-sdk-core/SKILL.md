@@ -1,32 +1,104 @@
 ---
 name: ai-sdk-core
 description: |
-  Build backend AI with Vercel AI SDK v5/v6. Covers v6 beta (Agent abstraction, tool approval, reranking),
-  v4→v5 migration (breaking changes), latest models (GPT-5/5.1, Claude 4.x, Gemini 2.5), Workers startup
-  fix, and 12 error solutions (AI_APICallError, AI_NoObjectGeneratedError, streamText silent errors).
+  Build backend AI with Vercel AI SDK v5/v6. v6 stable introduces Output API (Output.object/array/choice
+  replace deprecated generateObject/streamObject), plus speech synthesis, transcription, image generation,
+  embeddings, reranking, MCP tools, and middleware. Covers v4→v5 migration, latest models (GPT-5.2,
+  Claude 4.x, Gemini 2.5), Workers startup fix, and 12 error solutions.
 
-  Use when: implementing AI SDK v5/v6, migrating v4→v5, troubleshooting errors, fixing Workers startup
-  issues, or updating to latest models.
+  Use when: implementing AI SDK v5/v6, using Output API, speech/transcription/image features, embeddings,
+  MCP tools, migrating v4→v5, troubleshooting errors, or fixing Workers startup issues.
 ---
 
 # AI SDK Core
 
-Backend AI with Vercel AI SDK v5 and v6 Beta.
+Backend AI with Vercel AI SDK v5 and v6.
 
 **Installation:**
 ```bash
 npm install ai @ai-sdk/openai @ai-sdk/anthropic @ai-sdk/google zod
-# Beta: npm install ai@beta @ai-sdk/openai@beta
 ```
 
 ---
 
-## AI SDK 6 Beta (November 2025)
+## AI SDK 6 (Stable - January 2026)
 
-**Status:** Beta (stable release planned end of 2025)
-**Latest:** ai@6.0.0-beta.107 (Nov 22, 2025)
+**Status:** Stable
+**Latest:** ai@6.0.9 (Jan 2026)
 
-### New Features
+### BREAKING: Output API Replaces generateObject/streamObject
+
+⚠️ **CRITICAL**: `generateObject()` and `streamObject()` are **DEPRECATED** and will be removed in a future version. Use the new Output API instead.
+
+**Before (v5 - DEPRECATED):**
+```typescript
+// ❌ DEPRECATED - will be removed
+import { generateObject } from 'ai';
+
+const result = await generateObject({
+  model: openai('gpt-5'),
+  schema: z.object({ name: z.string(), age: z.number() }),
+  prompt: 'Generate a person',
+});
+```
+
+**After (v6 - USE THIS):**
+```typescript
+// ✅ NEW OUTPUT API
+import { generateText, Output } from 'ai';
+
+const result = await generateText({
+  model: openai('gpt-5'),
+  output: Output.object({ schema: z.object({ name: z.string(), age: z.number() }) }),
+  prompt: 'Generate a person',
+});
+
+// Access the typed object
+console.log(result.object); // { name: "Alice", age: 30 }
+```
+
+### Output Types
+
+```typescript
+import { generateText, Output } from 'ai';
+
+// Object with Zod schema
+output: Output.object({ schema: myZodSchema })
+
+// Array of typed objects
+output: Output.array({ schema: personSchema })
+
+// Enum/choice from options
+output: Output.choice({ choices: ['positive', 'negative', 'neutral'] })
+
+// Plain text (explicit)
+output: Output.text()
+
+// Unstructured JSON (no schema validation)
+output: Output.json()
+```
+
+### Streaming with Output API
+
+```typescript
+import { streamText, Output } from 'ai';
+
+const result = streamText({
+  model: openai('gpt-5'),
+  output: Output.object({ schema: personSchema }),
+  prompt: 'Generate a person',
+});
+
+// Stream partial objects
+for await (const partialObject of result.objectStream) {
+  console.log(partialObject); // { name: "Ali..." } -> { name: "Alice", age: ... }
+}
+
+// Get final object
+const finalObject = await result.object;
+```
+
+### v6 New Features
 
 **1. Agent Abstraction**
 Unified interface for building agents with `ToolLoopAgent` class:
@@ -34,63 +106,106 @@ Unified interface for building agents with `ToolLoopAgent` class:
 - Replaces manual tool calling orchestration
 
 **2. Tool Execution Approval (Human-in-the-Loop)**
-Request user confirmation before executing tools:
-- Static approval: Always ask for specific tools
-- Dynamic approval: Conditional based on tool inputs
-- Native human-in-the-loop pattern
-
-**3. Reranking Support**
-Improve search relevance by reordering documents:
-- Supported providers: Cohere, Amazon Bedrock, Together.ai
-- Specialized reranking models for RAG workflows
-
-**4. Structured Output (Stable)**
-Combine multi-step tool calling with structured data generation:
-- Multiple output strategies: objects, arrays, choices, text formats
-- Now stable and production-ready in v6
-
-**5. Call Options**
-Dynamic runtime configuration:
-- Type-safe parameter passing
-- RAG integration, model selection, tool customization
-- Provider-specific settings adjustments
-
-**6. Image Editing (Coming Soon)**
-Native support for image transformation workflows.
-
-### Migration from v5
-
-**Unlike v4→v5, v6 has minimal breaking changes:**
-- Powered by v3 Language Model Specification
-- Most users require no code changes
-- Agent abstraction is additive (opt-in)
-
-**Install Beta:**
-```bash
-npm install ai@beta @ai-sdk/openai@beta @ai-sdk/react@beta
+```typescript
+tools: {
+  payment: tool({
+    needsApproval: true,  // Always ask
+    // OR dynamic:
+    needsApproval: async ({ amount }) => amount > 1000,
+    inputSchema: z.object({ amount: z.number() }),
+    execute: async ({ amount }) => { /* process payment */ },
+  }),
+}
 ```
 
-**Official Docs:** https://ai-sdk.dev/docs/announcing-ai-sdk-6-beta
+**3. Reranking for RAG**
+```typescript
+import { rerank } from 'ai';
+
+const result = await rerank({
+  model: cohere.reranker('rerank-v3.5'),
+  query: 'user question',
+  documents: searchResults,
+  topK: 5,
+});
+```
+
+**4. MCP Tools (Model Context Protocol)**
+```typescript
+import { experimental_createMCPClient } from 'ai';
+
+const mcpClient = await experimental_createMCPClient({
+  transport: { type: 'stdio', command: 'npx', args: ['-y', '@modelcontextprotocol/server-filesystem'] },
+});
+
+const tools = await mcpClient.tools();
+
+const result = await generateText({
+  model: openai('gpt-5'),
+  tools,
+  prompt: 'List files in the current directory',
+});
+```
+
+**5. Language Model Middleware**
+```typescript
+import { wrapLanguageModel, extractReasoningMiddleware } from 'ai';
+
+const wrappedModel = wrapLanguageModel({
+  model: anthropic('claude-sonnet-4-5-20250929'),
+  middleware: extractReasoningMiddleware({ tagName: 'think' }),
+});
+
+// Reasoning extracted automatically from <think>...</think> tags
+```
+
+**6. Telemetry (OpenTelemetry)**
+```typescript
+const result = await generateText({
+  model: openai('gpt-5'),
+  prompt: 'Hello',
+  experimental_telemetry: {
+    isEnabled: true,
+    functionId: 'my-chat-function',
+    metadata: { userId: '123' },
+    recordInputs: true,
+    recordOutputs: true,
+  },
+});
+```
+
+**Official Docs:** https://ai-sdk.dev/docs
 
 ---
 
-## Latest AI Models (2025)
+## Latest AI Models (2025-2026)
 
 ### OpenAI
 
-**GPT-5** (Aug 7, 2025):
-- 45% less hallucination than GPT-4o
-- State-of-the-art in math, coding, visual perception, health
-- Available in ChatGPT, API, GitHub Models, Microsoft Copilot
-
-**GPT-5.1** (Nov 13, 2025):
-- Improved speed and efficiency over GPT-5
+**GPT-5.2** (Dec 2025):
+- 400k context window, 128k output tokens
+- Enhanced reasoning capabilities
 - Available in API platform
+
+**GPT-5.1** (Nov 2025):
+- Improved speed and efficiency over GPT-5
+- "Warmer" and more intelligent responses
+
+**GPT-5** (Aug 2025):
+- 45% less hallucination than GPT-4o
+- State-of-the-art in math, coding, visual perception
+
+**o3 Reasoning Models** (Dec 2025):
+- o3, o3-pro, o3-mini - Advanced reasoning
+- o4-mini - Fast reasoning
 
 ```typescript
 import { openai } from '@ai-sdk/openai';
-const gpt5 = openai('gpt-5');
+const gpt52 = openai('gpt-5.2');
 const gpt51 = openai('gpt-5.1');
+const gpt5 = openai('gpt-5');
+const o3 = openai('o3');
+const o3mini = openai('o3-mini');
 ```
 
 ### Anthropic
@@ -126,14 +241,151 @@ const lite = google('gemini-2.5-flash-lite');
 
 ---
 
-## v5 Core Functions (Basics)
+## Core Functions
+
+### Text Generation
 
 **generateText()** - Text completion with tools
 **streamText()** - Real-time streaming
-**generateObject()** - Structured output (Zod schemas)
-**streamObject()** - Streaming structured data
 
-See official docs for usage: https://ai-sdk.dev/docs/ai-sdk-core
+### Structured Output (v6 Output API)
+
+**Output.object()** - Typed objects with Zod schema (replaces generateObject)
+**Output.array()** - Typed arrays
+**Output.choice()** - Enum selection
+**Output.json()** - Unstructured JSON
+
+See "AI SDK 6" section above for usage examples.
+
+### Multi-Modal Capabilities
+
+#### Speech Synthesis (Text-to-Speech)
+
+```typescript
+import { experimental_generateSpeech as generateSpeech } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const result = await generateSpeech({
+  model: openai.speech('tts-1-hd'),
+  voice: 'alloy',
+  text: 'Hello, how can I help you today?',
+});
+
+// result.audio is an ArrayBuffer containing the audio
+const audioBuffer = result.audio;
+```
+
+**Supported Providers:**
+- OpenAI: tts-1, tts-1-hd, gpt-4o-mini-tts
+- ElevenLabs: eleven_multilingual_v2, eleven_turbo_v2
+- LMNT, Hume
+
+#### Transcription (Speech-to-Text)
+
+```typescript
+import { experimental_transcribe as transcribe } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const result = await transcribe({
+  model: openai.transcription('whisper-1'),
+  audio: audioFile, // File, Blob, ArrayBuffer, or URL
+});
+
+console.log(result.text); // Transcribed text
+console.log(result.segments); // Timestamped segments
+```
+
+**Supported Providers:**
+- OpenAI: whisper-1
+- ElevenLabs, Deepgram, AssemblyAI, Groq, Rev.ai
+
+#### Image Generation
+
+```typescript
+import { generateImage } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const result = await generateImage({
+  model: openai.image('dall-e-3'),
+  prompt: 'A futuristic city at sunset',
+  size: '1024x1024',
+  n: 1,
+});
+
+// result.images is an array of generated images
+const imageUrl = result.images[0].url;
+const imageBase64 = result.images[0].base64;
+```
+
+**Supported Providers:**
+- OpenAI: dall-e-2, dall-e-3
+- Google: imagen-3.0
+- Fal AI, Black Forest Labs (Flux), Luma AI, Replicate
+
+#### Embeddings
+
+```typescript
+import { embed, embedMany, cosineSimilarity } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+// Single embedding
+const result = await embed({
+  model: openai.embedding('text-embedding-3-small'),
+  value: 'Hello world',
+});
+console.log(result.embedding); // number[]
+
+// Multiple embeddings (parallel processing)
+const results = await embedMany({
+  model: openai.embedding('text-embedding-3-small'),
+  values: ['Hello', 'World', 'AI'],
+  maxParallelCalls: 5, // Parallel processing
+});
+
+// Compare similarity
+const similarity = cosineSimilarity(
+  results.embeddings[0],
+  results.embeddings[1]
+);
+console.log(`Similarity: ${similarity}`); // 0.0 to 1.0
+```
+
+**Supported Providers:**
+- OpenAI: text-embedding-3-small, text-embedding-3-large
+- Google: text-embedding-004
+- Cohere, Voyage AI, Mistral, Amazon Bedrock
+
+#### Multi-Modal Prompts (Files, Images, PDFs)
+
+```typescript
+import { generateText } from 'ai';
+import { google } from '@ai-sdk/google';
+
+const result = await generateText({
+  model: google('gemini-2.5-pro'),
+  messages: [{
+    role: 'user',
+    content: [
+      { type: 'text', text: 'Summarize this document' },
+      { type: 'file', data: pdfBuffer, mimeType: 'application/pdf' },
+    ],
+  }],
+});
+
+// Or with images
+const result = await generateText({
+  model: openai('gpt-5'),
+  messages: [{
+    role: 'user',
+    content: [
+      { type: 'text', text: 'What is in this image?' },
+      { type: 'image', image: imageBuffer },
+    ],
+  }],
+});
+```
+
+See official docs for full API: https://ai-sdk.dev/docs/ai-sdk-core
 
 ---
 
@@ -400,7 +652,7 @@ try {
     // 1. Simplify schema
     // 2. Add more context to prompt
     // 3. Provide examples in prompt
-    // 4. Try different model (gpt-4 better than gpt-3.5 for complex objects)
+    // 4. Try different model (gpt-5 or claude-sonnet-4-5 for complex objects)
   }
 }
 ```
@@ -813,19 +1065,19 @@ try {
 ## Versions
 
 **AI SDK:**
-- Stable: ai@5.0.98 (Nov 20, 2025)
-- Beta: ai@6.0.0-beta.107 (Nov 22, 2025)
-- Zod 3.x/4.x both supported (3.23.8 recommended)
+- Stable: ai@6.0.9 (Jan 2026)
+- Legacy v5: ai@5.0.117 (ai-v5 tag)
+- Zod 3.x/4.x both supported
 
-**Latest Models (2025):**
-- OpenAI: GPT-5.1, GPT-5, o3
+**Latest Models (2026):**
+- OpenAI: GPT-5.2, GPT-5.1, GPT-5, o3, o3-mini, o4-mini
 - Anthropic: Claude Sonnet 4.5, Opus 4.1, Haiku 4.5
 - Google: Gemini 2.5 Pro/Flash/Lite
 
 **Check Latest:**
 ```bash
 npm view ai version
-npm view ai dist-tags  # See beta versions
+npm view ai dist-tags
 ```
 
 ---
@@ -833,11 +1085,18 @@ npm view ai dist-tags  # See beta versions
 ## Official Docs
 
 **Core:**
-- AI SDK 6 Beta: https://ai-sdk.dev/docs/announcing-ai-sdk-6-beta
+- AI SDK v6: https://ai-sdk.dev/docs
 - AI SDK Core: https://ai-sdk.dev/docs/ai-sdk-core/overview
+- Output API: https://ai-sdk.dev/docs/ai-sdk-core/generating-structured-data
 - v4→v5 Migration: https://ai-sdk.dev/docs/migration-guides/migration-guide-5-0
-- All Errors (28): https://ai-sdk.dev/docs/reference/ai-sdk-errors
-- Providers (25+): https://ai-sdk.dev/providers/overview
+- All Errors (31): https://ai-sdk.dev/docs/reference/ai-sdk-errors
+- Providers (69+): https://ai-sdk.dev/providers/overview
+
+**Multi-Modal:**
+- Speech: https://ai-sdk.dev/docs/ai-sdk-core/speech
+- Transcription: https://ai-sdk.dev/docs/ai-sdk-core/transcription
+- Image Generation: https://ai-sdk.dev/docs/ai-sdk-core/image-generation
+- Embeddings: https://ai-sdk.dev/docs/ai-sdk-core/embeddings
 
 **GitHub:**
 - Repository: https://github.com/vercel/ai
@@ -845,6 +1104,6 @@ npm view ai dist-tags  # See beta versions
 
 ---
 
-**Last Updated:** 2025-11-22
-**Skill Version:** 1.2.0
-**AI SDK:** 5.0.98 stable / 6.0.0-beta.107
+**Last Updated:** 2026-01-06
+**Skill Version:** 2.0.1
+**AI SDK:** 6.0.9 stable

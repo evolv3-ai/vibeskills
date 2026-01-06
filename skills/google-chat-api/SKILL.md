@@ -1,17 +1,17 @@
 ---
 name: google-chat-api
 description: |
-  Build Google Chat bots and webhooks with Cards v2, interactive forms, and Cloudflare Workers integration. Includes webhook handlers, card builders, form validation, bearer token verification, and dialog patterns.
+  Build Google Chat bots and webhooks with Cards v2, interactive forms, Spaces/Members/Reactions APIs, and Cloudflare Workers integration. Includes webhook handlers, card builders, form validation, bearer token verification, rate limit handling, and dialog patterns.
 
-  Use when creating Chat bots, notification systems, workflow automation, or interactive forms, or troubleshooting bearer token errors, card schema validation, widget limits, or webhook verification failures.
+  Use when creating Chat bots, managing spaces/members programmatically, workflow automation, or interactive forms, or troubleshooting bearer token errors, rate limit 429 errors, card schema validation, or webhook verification failures.
 ---
 
 # Google Chat API
 
 **Status**: Production Ready
-**Last Updated**: 2025-11-29 (Research verified: Markdown support, Material Design updates)
+**Last Updated**: 2026-01-03 (Added: Spaces API, Members API, Reactions API, Rate Limits)
 **Dependencies**: Cloudflare Workers (recommended), Web Crypto API for token verification
-**Latest Versions**: Google Chat API v1 (stable), Cards v2 (Cards v1 deprecated)
+**Latest Versions**: Google Chat API v1 (stable), Cards v2 (Cards v1 deprecated), wrangler@4.54.0
 
 ---
 
@@ -274,7 +274,7 @@ export default {
 
 ## Known Issues Prevention
 
-This skill prevents **5** documented issues:
+This skill prevents **6** documented issues:
 
 ### Issue #1: Bearer Token Verification Fails (401)
 **Error**: "Unauthorized" or "Invalid credentials"
@@ -319,6 +319,12 @@ This skill prevents **5** documented issues:
 **Why It Happens**: URL not publicly accessible, timeout, or wrong response format
 **Prevention**: Skill includes timeout handling + response format validation
 
+### Issue #6: Rate Limit Exceeded (429)
+**Error**: "RESOURCE_EXHAUSTED" or 429 status code
+**Source**: Google Chat API Quotas
+**Why It Happens**: Exceeding per-project, per-space, or per-user request limits
+**Prevention**: Skill documents rate limits + exponential backoff pattern
+
 ---
 
 ## Configuration Files Reference
@@ -329,7 +335,7 @@ This skill prevents **5** documented issues:
 {
   "name": "google-chat-bot",
   "main": "src/index.ts",
-  "compatibility_date": "2025-11-29",
+  "compatibility_date": "2026-01-03",
   "compatibility_flags": ["nodejs_compat"],
 
   // Secrets (set with: wrangler secret put CHAT_BOT_TOKEN)
@@ -551,6 +557,293 @@ return Response.json({
 
 ---
 
+## Spaces API
+
+Programmatically manage Google Chat spaces (rooms). Requires [Chat Admin or App permissions](https://developers.google.com/workspace/chat/authenticate-authorize).
+
+### Available Methods
+
+| Method | Description | Scope Required |
+|--------|-------------|----------------|
+| `spaces.create` | Create new space | `chat.spaces.create` |
+| `spaces.delete` | Delete a space | `chat.delete` |
+| `spaces.get` | Get space details | `chat.spaces.readonly` |
+| `spaces.list` | List spaces bot is in | `chat.spaces.readonly` |
+| `spaces.patch` | Update space settings | `chat.spaces` |
+| `spaces.search` | Search spaces by criteria | `chat.spaces.readonly` |
+| `spaces.setup` | Create space and add members | `chat.spaces.create` |
+| `spaces.findDirectMessage` | Find DM with specific user | `chat.spaces.readonly` |
+
+### Create a Space
+
+```typescript
+async function createSpace(accessToken: string) {
+  const response = await fetch('https://chat.googleapis.com/v1/spaces', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      spaceType: 'SPACE',          // or 'GROUP_CHAT', 'DIRECT_MESSAGE'
+      displayName: 'Project Team',
+      singleUserBotDm: false,
+      spaceDetails: {
+        description: 'Team collaboration space',
+        guidelines: 'Be respectful and on-topic'
+      }
+    })
+  })
+  return response.json()
+}
+```
+
+### List Spaces (Bot's Accessible Spaces)
+
+```typescript
+async function listSpaces(accessToken: string) {
+  const response = await fetch(
+    'https://chat.googleapis.com/v1/spaces?pageSize=100',
+    {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    }
+  )
+  const data = await response.json()
+  // Returns: { spaces: [...], nextPageToken: '...' }
+  return data.spaces
+}
+```
+
+### Search Spaces
+
+```typescript
+async function searchSpaces(accessToken: string, query: string) {
+  const params = new URLSearchParams({
+    query: query,  // e.g., 'displayName:Project'
+    pageSize: '50'
+  })
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/spaces:search?${params}`,
+    {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    }
+  )
+  return response.json()
+}
+```
+
+**Search Query Syntax**:
+- `displayName:Project` - Name contains "Project"
+- `spaceType:SPACE` - Only spaces (not DMs)
+- `createTime>2025-01-01` - Created after date
+- Combine with `AND`/`OR` operators
+
+---
+
+## Members API
+
+Manage space membership programmatically. Requires [User or App authorization](https://developers.google.com/workspace/chat/authenticate-authorize).
+
+### Available Methods
+
+| Method | Description | Scope Required |
+|--------|-------------|----------------|
+| `spaces.members.create` | Add member to space | `chat.memberships` |
+| `spaces.members.delete` | Remove member | `chat.memberships` |
+| `spaces.members.get` | Get member details | `chat.memberships.readonly` |
+| `spaces.members.list` | List all members | `chat.memberships.readonly` |
+| `spaces.members.patch` | Update member role | `chat.memberships` |
+
+### Add Member to Space
+
+```typescript
+async function addMember(accessToken: string, spaceName: string, userEmail: string) {
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/${spaceName}/members`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        member: {
+          name: `users/${userEmail}`,
+          type: 'HUMAN'  // or 'BOT'
+        },
+        role: 'ROLE_MEMBER'  // or 'ROLE_MANAGER'
+      })
+    }
+  )
+  return response.json()
+}
+```
+
+### List Space Members
+
+```typescript
+async function listMembers(accessToken: string, spaceName: string) {
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/${spaceName}/members?pageSize=100`,
+    {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    }
+  )
+  return response.json()
+  // Returns: { memberships: [...], nextPageToken: '...' }
+}
+```
+
+### Update Member Role
+
+```typescript
+async function updateMemberRole(
+  accessToken: string,
+  memberName: string,  // e.g., 'spaces/ABC/members/DEF'
+  newRole: 'ROLE_MEMBER' | 'ROLE_MANAGER'
+) {
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/${memberName}?updateMask=role`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ role: newRole })
+    }
+  )
+  return response.json()
+}
+```
+
+**Member Roles**:
+- `ROLE_MEMBER` - Standard member (read/write messages)
+- `ROLE_MANAGER` - Can manage space settings and members
+
+---
+
+## Reactions API
+
+Add emoji reactions to messages. Added in 2025, supports custom workspace emojis.
+
+### Available Methods
+
+| Method | Description |
+|--------|-------------|
+| `spaces.messages.reactions.create` | Add reaction to message |
+| `spaces.messages.reactions.delete` | Remove reaction |
+| `spaces.messages.reactions.list` | List reactions on message |
+
+### Add Reaction
+
+```typescript
+async function addReaction(
+  accessToken: string,
+  messageName: string,  // e.g., 'spaces/ABC/messages/XYZ'
+  emoji: string
+) {
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/${messageName}/reactions`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        emoji: {
+          unicode: emoji  // e.g., '👍' or custom emoji code
+        }
+      })
+    }
+  )
+  return response.json()
+}
+```
+
+### List Reactions
+
+```typescript
+async function listReactions(accessToken: string, messageName: string) {
+  const response = await fetch(
+    `https://chat.googleapis.com/v1/${messageName}/reactions?pageSize=100`,
+    {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    }
+  )
+  return response.json()
+  // Returns: { reactions: [...], nextPageToken: '...' }
+}
+```
+
+**Custom Emoji**: Workspace administrators can upload custom emoji. Use the emoji's `customEmoji.uid` instead of `unicode`.
+
+---
+
+## Rate Limits
+
+Google Chat API enforces strict quotas to prevent abuse. Understanding these limits is critical for production apps.
+
+### Per-Project Quotas (Per Minute)
+
+| Operation | Limit | Notes |
+|-----------|-------|-------|
+| **Read operations** | 3,000/min | spaces.get, members.list, messages.list |
+| **Membership writes** | 300/min | members.create, members.delete |
+| **Space writes** | 60/min | spaces.create, spaces.patch |
+| **Message operations** | 600/min | messages.create, reactions.create |
+| **Reactions** | 600/min | Shared with message operations |
+
+### Per-Space Quotas (Per Second)
+
+| Operation | Limit |
+|-----------|-------|
+| **Read operations** | 15/sec |
+| **Write operations** | 1/sec |
+
+### Per-User Quotas
+
+User-authenticated requests are also throttled per user:
+- **60 requests/minute** per user for most operations
+- **10 requests/minute** for space creation
+
+### Handling Rate Limit Errors
+
+```typescript
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3
+): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn()
+    } catch (error: any) {
+      if (error.status === 429) {
+        // Rate limited - wait with exponential backoff
+        const waitMs = Math.pow(2, i) * 1000 + Math.random() * 1000
+        await new Promise(r => setTimeout(r, waitMs))
+        continue
+      }
+      throw error
+    }
+  }
+  throw new Error('Max retries exceeded')
+}
+
+// Usage
+const spaces = await withRetry(() => listSpaces(accessToken))
+```
+
+**Best Practices**:
+- Cache read operations where possible
+- Batch membership operations
+- Use pagination efficiently (request larger pages, fewer requests)
+- Implement exponential backoff for 429 errors
+- Monitor quota usage in Google Cloud Console
+
+---
+
 ## Dependencies
 
 **Required**:
@@ -574,7 +867,7 @@ return Response.json({
 
 ---
 
-## Package Versions (Verified 2025-11-29)
+## Package Versions (Verified 2026-01-03)
 
 ```json
 {
@@ -582,8 +875,8 @@ return Response.json({
     "google-chat-cards": "^1.0.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250104.0",
-    "wrangler": "^3.95.0"
+    "@cloudflare/workers-types": "^4.20260103.0",
+    "wrangler": "^4.54.0"
   }
 }
 ```
@@ -599,8 +892,8 @@ This skill is based on real-world implementations:
 - **Official Samples**: Multiple working examples in Google's documentation
 
 **Token Savings**: ~65-70% (8k → 2.5k tokens)
-**Errors Prevented**: 5/5 critical setup errors
-**Validation**: ✅ Webhook handlers, ✅ Card builders, ✅ Token verification, ✅ Form validation
+**Errors Prevented**: 6/6 documented issues
+**Validation**: ✅ Webhook handlers, ✅ Card builders, ✅ Token verification, ✅ Form validation, ✅ Rate limit handling
 
 ---
 
