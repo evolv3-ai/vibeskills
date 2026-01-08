@@ -10,7 +10,7 @@ description: |
 
 **Version**: Production Ready ✅
 **Package**: openai@6.15.0
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 
 ---
 
@@ -55,7 +55,7 @@ description: |
 ### Installation
 
 ```bash
-npm install openai@6.9.1
+npm install openai@6.15.0
 ```
 
 ### Environment Setup
@@ -954,7 +954,7 @@ response.headers.get('x-ratelimit-reset-requests');
 ## Dependencies
 
 ```bash
-npm install openai@6.9.1
+npm install openai@6.15.0
 ```
 
 **Environment**: `OPENAI_API_KEY=sk-...`
