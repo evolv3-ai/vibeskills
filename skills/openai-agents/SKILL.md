@@ -352,7 +352,7 @@ console.log(result.usage.totalTokens, result.history.length, result.currentAgent
 
 ---
 
-**Version**: SDK v0.2.1
-**Last Verified**: 2025-10-26
+**Version**: SDK v0.3.7
+**Last Verified**: 2026-01-09
 **Skill Author**: Jeremy Dawes (Jezweb)
 **Production Tested**: Yes
