@@ -5,54 +5,15 @@
     "email": "hello@evolv3.ai"
   },
   "metadata": {
-    "description": "18 production-tested skills for system administration and infrastructure management",
-    "version": "3.0.0",
-    "updated": "2025-12-18"
+    "description": "16 production-tested skills for system administration and infrastructure management",
+    "version": "3.1.0",
+    "updated": "2026-01-08"
   },
   "plugins": [
     {
-      "name": "admin-skills",
-      "description": "System administration skills - Unix, Windows, WSL, DevOps, and MCP server management. 6 profile-aware skills.",
-      "source": "./",
-      "skills": [
-        "./skills/admin",
-        "./skills/admin-unix",
-        "./skills/admin-windows",
-        "./skills/admin-wsl",
-        "./skills/admin-devops",
-        "./skills/admin-mcp"
-      ]
-    },
-    {
-      "name": "infra-skills",
-      "description": "Cloud infrastructure skills - DigitalOcean, Vultr, Linode, Hetzner, Contabo, and Oracle Cloud. 6 skills for multi-cloud deployments.",
-      "source": "./",
-      "skills": [
-        "./skills/admin-infra-digitalocean",
-        "./skills/admin-infra-vultr",
-        "./skills/admin-infra-linode",
-        "./skills/admin-infra-hetzner",
-        "./skills/admin-infra-contabo",
-        "./skills/admin-infra-oci"
-      ]
-    },
-    {
-      "name": "app-skills",
-      "description": "Application deployment skills - Coolify self-hosted PaaS and Kasm Workspaces VDI platform.",
-      "source": "./",
-      "skills": [
-        "./skills/admin-app-coolify",
-        "./skills/admin-app-kasm"
-      ]
-    },
-    {
-      "name": "tools-skills",
-      "description": "Specialized tools - Stream Deck integration, ImageMagick processing, Cloudflare Python Workers, and MCP OAuth.",
-      "source": "./",
-      "skills": [
-        "./skills/deckmate",
-        "./skills/imagemagick"
-      ]
+      "name": "vibe-skills",
+      "description": "Complete collection: System administration (Unix, Windows, WSL, DevOps, MCP), cloud infrastructure (DigitalOcean, Vultr, Linode, Hetzner, Contabo, OCI), application deployment (Coolify, Kasm), and specialized tools (Stream Deck, ImageMagick). 16 production-tested skills.",
+      "source": "./"
     }
   ]
 }
