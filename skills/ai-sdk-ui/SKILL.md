@@ -13,16 +13,16 @@ description: |
 
 Frontend React hooks for AI-powered user interfaces with Vercel AI SDK v6.
 
-**Version**: AI SDK v6.0.6 (Stable)
+**Version**: AI SDK v6.0.23 (Stable)
 **Framework**: React 18+/19, Next.js 14+/15+
-**Last Updated**: 2026-01-06
+**Last Updated**: 2026-01-09
 
 ---
 
 ## AI SDK v6 Stable (January 2026)
 
 **Status:** Stable Release
-**Latest:** ai@6.0.6, @ai-sdk/react@3.0.6, @ai-sdk/openai@3.0.2
+**Latest:** ai@6.0.23, @ai-sdk/react@3.0.23, @ai-sdk/openai@3.0.7
 **Migration:** Minimal breaking changes from v5 → v6
 
 ### New UI Features in v6
