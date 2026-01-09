@@ -9,7 +9,7 @@ description: |
 # Google Workspace APIs
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 **Dependencies**: Cloudflare Workers (recommended), Google Cloud Project
 **Skill Version**: 1.0.0
 

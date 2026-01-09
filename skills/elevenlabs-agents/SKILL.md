@@ -862,5 +862,5 @@ This skill composes well with:
 ---
 
 **Production Tested**: WordPress Auditor, Customer Support Agents, AgentFlow (webhook integration)
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 **Package Versions**: elevenlabs@1.59.0, @elevenlabs/elevenlabs-js@2.28.0, @elevenlabs/agents-cli@0.6.1, @elevenlabs/react@0.12.3, @elevenlabs/client@0.12.2, @elevenlabs/react-native@0.5.7

@@ -15,7 +15,7 @@ description: |
 # Google Spaces Updates
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 
 Post updates to a team Google Chat Space via webhook.
 

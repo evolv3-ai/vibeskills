@@ -10,9 +10,9 @@ description: |
 
 # Azure Auth - Microsoft Entra ID for React + Cloudflare Workers
 
-**Package Versions**: @azure/msal-react@3.0.23, @azure/msal-browser@4.27.0, jose@5.9.6
+**Package Versions**: @azure/msal-react@3.0.23, @azure/msal-browser@4.27.0, jose@6.1.3
 **Breaking Changes**: Azure AD B2C sunset (May 2025 - complete), ADAL retirement (Sept 2025 - complete), MSAL v2→v3 migration
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 
 ---
 

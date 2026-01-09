@@ -10,9 +10,9 @@ allowed-tools: [Read, Write, Edit, Bash, Glob, Grep]
 # Building OpenAI Apps with Stateless MCP Servers
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 **Dependencies**: `cloudflare-worker-base`, `hono-routing` (optional)
-**Latest Versions**: @modelcontextprotocol/sdk@1.25.1, hono@4.11.3, zod@4.1.13, wrangler@4.54.0
+**Latest Versions**: @modelcontextprotocol/sdk@1.25.2, hono@4.11.3, zod@4.1.13, wrangler@4.58.0
 
 ---
 

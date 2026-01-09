@@ -984,7 +984,7 @@ npm run dev
 ---
 
 **Skill Version:** 1.0.0
-**Last Verified:** 2025-11-26
-**Package Version:** @google/genai ^1.30.0 (minimum 1.29.0 required)
+**Last Verified:** 2026-01-09
+**Package Version:** @google/genai ^1.35.0 (minimum 1.29.0 required)
 **Token Savings:** ~65%
 **Errors Prevented:** 8

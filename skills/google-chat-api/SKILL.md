@@ -9,7 +9,7 @@ description: |
 # Google Chat API
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03 (Added: Spaces API, Members API, Reactions API, Rate Limits)
+**Last Updated**: 2026-01-09 (Added: Spaces API, Members API, Reactions API, Rate Limits)
 **Dependencies**: Cloudflare Workers (recommended), Web Crypto API for token verification
 **Latest Versions**: Google Chat API v1 (stable), Cards v2 (Cards v1 deprecated), wrangler@4.54.0
 
