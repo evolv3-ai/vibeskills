@@ -5,21 +5,6 @@ description: |
 
   Use when building MCP servers that need user authentication, implementing Dynamic Client Registration (DCR) for Claude.ai, or replacing static auth tokens with OAuth flows. Prevents CSRF vulnerabilities, state validation errors, and OAuth misconfiguration.
 license: MIT
-metadata:
-  version: "1.1.0"
-  last_verified: "2026-01-09"
-  keywords:
-    - mcp oauth
-    - mcp authentication
-    - cloudflare workers oauth
-    - dynamic client registration
-    - dcr
-    - claude.ai mcp
-    - google oauth mcp
-    - workers-oauth-provider
-    - mcp server auth
-    - oauth2 mcp
-    - durable objects mcp
 ---
 
 # MCP OAuth Cloudflare

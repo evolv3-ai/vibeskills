@@ -4,18 +4,6 @@ description: |
   Set up Tailwind v4 with shadcn/ui using @theme inline pattern and CSS variable architecture. Four-step pattern: CSS variables, Tailwind mapping, base styles, automatic dark mode.
 
   Use when initializing React projects with Tailwind v4, or fixing colors not working, tw-animate-css errors, v3 migration.
-metadata:
-  keywords:
-    - tailwind v4
-    - shadcn/ui
-    - @theme inline
-    - css variables
-    - dark mode
-    - tw-animate-css
-    - tailwindcss-animate
-    - vite tailwind
-    - components.json
-    - v3 migration
 ---
 
 # Tailwind v4 + shadcn/ui Production Stack

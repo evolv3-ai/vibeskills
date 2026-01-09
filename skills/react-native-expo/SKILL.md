@@ -4,19 +4,6 @@ description: |
   Build React Native 0.76+ apps with Expo SDK 52+. Covers mandatory New Architecture (0.82+), React 19 changes, new CSS properties, and Swift iOS template.
 
   Use when building Expo apps, migrating to New Architecture, or fixing Fabric, TurboModule, propTypes, or Swift AppDelegate errors.
-metadata:
-  keywords:
-    - react native
-    - expo sdk 52
-    - new architecture
-    - fabric
-    - turbomodule
-    - react 19
-    - propTypes
-    - forwardRef
-    - swift appdelegate
-    - hermes
-    - expo go
 ---
 
 # React Native Expo (0.76-0.82+ / SDK 52+)

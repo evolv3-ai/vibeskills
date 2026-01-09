@@ -4,8 +4,6 @@ description: |
   Self-hosted auth for TypeScript/Cloudflare Workers with social auth, 2FA, passkeys, organizations, RBAC, and 15+ plugins. Requires Drizzle ORM or Kysely for D1 (no direct adapter). Self-hosted alternative to Clerk/Auth.js.
 
   Use when: self-hosting auth on D1, building OAuth provider, multi-tenant SaaS, or troubleshooting D1 adapter errors, session caching, rate limits.
-metadata:
-  keywords: [better-auth, Drizzle ORM, Kysely, D1, Cloudflare Workers, social auth, 2FA, passkeys, organizations, RBAC, OAuth 2.1, Bearer tokens, Google One Tap, SCIM, Anonymous auth, rate limiting, Patreon, Kick, Vercel, nodejs_compat, session caching, database hooks, API key auth]
 allowed-tools:
   - Read
   - Write

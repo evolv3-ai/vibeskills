@@ -4,8 +4,6 @@ description: |
   Generate typed TypeScript SDKs for AI agents to interact with MCP servers. Converts JSON-RPC curl commands to clean function calls. Auto-generates types, client methods, and example scripts from MCP tool definitions.
 
   Use when building MCP-enabled applications, need typed programmatic access to MCP tools, or creating reusable agent automation scripts.
-metadata:
-  keywords: [TypeScript SDK, MCP, Model Context Protocol, AI agents, JSON-RPC, code generation, Claude Code, tool calling, automation, typed API client, Zod schemas]
 ---
 
 # ts-agent-sdk

@@ -4,18 +4,6 @@ description: |
   Build CLI scripts alongside MCP servers for terminal environments. File I/O, batch processing, caching, richer output formats. Templates for TypeScript scripts and SCRIPTS.md.
 
   Use when: MCP companion scripts, batch processing, saving results to files, CLI API wrappers. Troubleshoot: context too large, no file access, batch input.
-metadata:
-  keywords:
-    - mcp cli
-    - mcp scripts
-    - terminal mcp
-    - batch processing
-    - cli companion
-    - typescript cli
-    - mcp file io
-    - mcp caching
-    - claude code scripts
-    - SCRIPTS.md
 ---
 
 # MCP CLI Scripts Pattern

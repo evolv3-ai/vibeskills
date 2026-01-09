@@ -5,34 +5,6 @@ description: |
 
   Use when: Snowflake apps, Cortex AI SQL, Native App publishing. Troubleshoot: JWT auth failures, account locator confusion, release channel errors.
 license: MIT
-metadata:
-  version: "1.0.0"
-  last_verified: "2026-01-09"
-  snowflake_cli: ">=3.14.0"
-  python: ">=3.10"
-  doc_sources:
-    primary: "https://docs.snowflake.com/en/developer-guide/snowflake-cli/index"
-    cortex: "https://docs.snowflake.com/en/user-guide/snowflake-cortex/llm-functions"
-    native_apps: "https://docs.snowflake.com/en/developer-guide/native-apps/native-apps-about"
-  ecosystem: pip
-  package_name: snowflake-cli
-  keywords:
-    - snowflake
-    - snow cli
-    - cortex ai
-    - snowflake cortex
-    - native app
-    - snowflake marketplace
-    - snowpark
-    - jwt authentication
-    - account locator
-    - release channels
-    - AI_COMPLETE
-    - AI_SUMMARIZE
-    - AI_TRANSLATE
-    - AI_FILTER
-    - external access integration
-    - provider studio
 ---
 
 # Snowflake Platform Skill

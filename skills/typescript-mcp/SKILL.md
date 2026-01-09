@@ -5,8 +5,6 @@ description: |
 
   Use when exposing APIs to LLMs or troubleshooting export syntax errors, transport leaks, or CORS misconfigurations.
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
-metadata:
-  keywords: [MCP, Model Context Protocol, TypeScript, Cloudflare Workers, Hono, D1, KV, R2, Vectorize, LLM tools, API gateway, authentication, OAuth, Zero Trust, JSON-RPC]
 ---
 
 # TypeScript MCP on Cloudflare Workers

@@ -5,22 +5,6 @@ description: |
 
   Use when building data apps on Snowflake, deploying SiS, or fixing package channel errors, authentication issues.
 license: MIT
-metadata:
-  version: "1.0.0"
-  last_verified: "2026-01-09"
-  snowflake_cli: ">=3.14.0"
-  streamlit: "1.35.0"
-  python: "3.11"
-  keywords:
-    - streamlit snowflake
-    - streamlit in snowflake
-    - SiS
-    - snowflake native app
-    - snowflake marketplace
-    - snowpark streamlit
-    - snow streamlit deploy
-    - environment.yml snowflake
-    - snowflake anaconda channel
 ---
 
 # Streamlit in Snowflake Skill

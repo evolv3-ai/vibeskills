@@ -4,8 +4,6 @@ description: |
   Build MCP servers on Cloudflare Workers - the only platform with official remote MCP support. TypeScript-based with OAuth, Durable Objects, and WebSocket hibernation. Prevents 22 documented errors.
 
   Use when: deploying remote MCP servers, implementing OAuth, or troubleshooting URL path mismatches, McpAgent exports, CORS issues.
-metadata:
-  keywords: [MCP, Model Context Protocol, Cloudflare Workers, remote MCP, OAuth, GitHub OAuth, Google OAuth, Durable Objects, WebSocket hibernation, SSE, HTTP transport, McpAgent, URL path mismatch, CORS, claude_desktop_config, MCP Inspector, OAuthProvider]
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 

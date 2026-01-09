@@ -4,8 +4,6 @@ description: |
   Track progress across sessions using SESSION.md with git checkpoints and concrete next actions. Converts IMPLEMENTATION_PHASES.md into trackable session state.
 
   Use when: resuming work after context clears, managing multi-phase implementations, or troubleshooting lost context.
-metadata:
-  keywords: [session-management, SESSION.md, git-checkpoints, progress-tracking, context-management, phase-status, wrap-session, continue-session]
 ---
 
 # Project Session Management Skill

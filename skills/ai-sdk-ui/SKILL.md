@@ -4,8 +4,6 @@ description: |
   Build React chat interfaces with Vercel AI SDK v6. Covers useChat/useCompletion/useObject hooks, message parts structure, tool approval workflows, and 12 UI error solutions.
 
   Use when: implementing AI chat UIs, migrating v5→v6, troubleshooting "useChat failed to parse stream", "stale body values", or React update depth errors.
-metadata:
-  keywords: [Vercel AI SDK, useChat, useCompletion, useObject, useAssistant, React hooks, chat interface, streaming, SSE, message parts, tool approval, auto-submit, agent integration, v5 migration, stream parsing, stale body, React update depth]
 ---
 
 # AI SDK UI - Frontend React Hooks

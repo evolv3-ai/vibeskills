@@ -4,8 +4,6 @@ description: |
   Comprehensive guide to sub-agents in Claude Code: built-in agents (Explore, Plan, general-purpose), custom agent creation, configuration, and delegation patterns.
 
   Use when: creating custom sub-agents, delegating bulk operations, parallel research, understanding built-in agents, or configuring agent tools/models.
-metadata:
-  keywords: [sub-agent, Task tool, parallel agents, delegation, batch processing, swarm, multi-agent, bulk operations, .claude/agents, Explore agent, Plan agent, general-purpose agent, resumable agents]
 ---
 
 # Sub-Agents in Claude Code

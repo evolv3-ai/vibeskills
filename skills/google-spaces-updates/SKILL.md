@@ -4,19 +4,6 @@ description: |
   Post team updates to Google Chat Spaces via webhook. Deployment notifications, bug fixes, feature announcements, questions. Reads config from .claude/settings.json, includes git context.
 
   Use when: "post to team", "notify team", after deployments, completing features, fixing bugs, asking team questions.
-metadata:
-  keywords:
-    - google spaces
-    - google chat
-    - team notifications
-    - webhook
-    - deployment updates
-    - team chat
-    - chat spaces api
-    - notify team
-    - post update
-    - team collaboration
-    - slack alternative
 ---
 
 # Google Spaces Updates

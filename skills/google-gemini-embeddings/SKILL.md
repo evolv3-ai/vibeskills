@@ -4,23 +4,6 @@ description: |
   Build RAG systems and semantic search with Gemini embeddings (gemini-embedding-001). 768-3072 dimension vectors, 8 task types, Cloudflare Vectorize integration.
 
   Use when: vector search, RAG systems, semantic search, document clustering. Troubleshoot: dimension mismatch, wrong task type, rate limits (100 RPM), text truncation (2048 tokens).
-metadata:
-  keywords:
-    - gemini embeddings
-    - gemini-embedding-001
-    - text embeddings
-    - vector search
-    - rag systems
-    - semantic search
-    - document clustering
-    - cloudflare vectorize
-    - RETRIEVAL_QUERY
-    - RETRIEVAL_DOCUMENT
-    - SEMANTIC_SIMILARITY
-    - dimension mismatch
-    - embedding dimensions
-    - 768 dimensions
-    - 3072 dimensions
 ---
 
 # Google Gemini Embeddings

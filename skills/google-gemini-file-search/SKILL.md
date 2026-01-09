@@ -11,23 +11,6 @@ allowed-tools:
   - Glob
   - Grep
   - WebFetch
-metadata:
-  keywords:
-    - gemini file search
-    - document qa
-    - knowledge base
-    - managed rag
-    - automatic chunking
-    - semantic search
-    - pdf indexing
-    - document immutability
-    - storage quota
-    - chunking configuration
-    - metadata limits
-    - indexing cost
-    - operation polling
-    - gemini 2.5 pro
-    - gemini 2.5 flash
 ---
 
 # Google Gemini File Search Setup

@@ -4,8 +4,6 @@ description: |
   Generate structured planning docs for web projects with context-safe phases, verification criteria, and exit conditions. Creates IMPLEMENTATION_PHASES.md plus conditional docs.
 
   Use when: starting new projects, adding major features, or breaking large work into manageable phases.
-metadata:
-  keywords: [project-planning, implementation-phases, database-schema, api-endpoints, ui-components, critical-workflows, cloudflare-workers, react, verification-criteria]
 ---
 
 # Project Planning Skill

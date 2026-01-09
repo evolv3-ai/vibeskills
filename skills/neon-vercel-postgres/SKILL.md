@@ -4,8 +4,6 @@ description: |
   Set up serverless Postgres with Neon or Vercel Postgres for Cloudflare Workers/Edge. Includes connection pooling, git-like branching, and Drizzle ORM integration.
 
   Use when: setting up edge Postgres, troubleshooting "TCP not supported", connection pool exhausted, or SSL config errors.
-metadata:
-  keywords: [neon, vercel-postgres, serverless-postgres, edge-database, connection-pooling, database-branching, drizzle-orm, prisma, sslmode, cloudflare-workers]
 ---
 
 # Neon & Vercel Serverless Postgres

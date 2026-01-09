@@ -4,23 +4,6 @@ description: |
   Build React animations with Motion (Framer Motion) - gestures (drag, hover, tap), scroll effects, spring physics, layout animations, SVG. Bundle: 2.3 KB (mini) to 34 KB (full).
 
   Use when: drag-and-drop, scroll animations, modals, carousels, parallax. Troubleshoot: AnimatePresence exit, list performance, Tailwind conflicts, Next.js "use client".
-metadata:
-  keywords:
-    - motion
-    - framer motion
-    - react animations
-    - gestures
-    - drag and drop
-    - scroll animations
-    - spring physics
-    - layout animations
-    - AnimatePresence
-    - LazyMotion
-    - useAnimate
-    - svg animation
-    - parallax
-    - modal transitions
-    - whileInView
 ---
 
 # Motion Animation Library

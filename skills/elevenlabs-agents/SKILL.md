@@ -4,32 +4,6 @@ description: |
   Build conversational AI voice agents with ElevenLabs Platform. Configure agents, tools, RAG knowledge bases, multi-voice, and Scribe STT across React, React Native, or Swift. Prevents 27 documented errors.
 
   Use when: building voice agents, AI phone systems, or troubleshooting @11labs deprecated, webhook errors, CSP violations.
-metadata:
-  keywords:
-    - elevenlabs agents
-    - voice agents
-    - conversational ai
-    - "@elevenlabs/react"
-    - "@elevenlabs/client"
-    - "@elevenlabs/react-native"
-    - "@elevenlabs/agents-cli"
-    - voice ai
-    - tts
-    - text-to-speech
-    - asr
-    - speech recognition
-    - webrtc voice
-    - agent tools
-    - rag voice agents
-    - multi-voice
-    - elevenlabs scribe
-    - "@11labs deprecated"
-    - android audio cutoff
-    - csp violation
-    - dynamic variables
-    - webhook authentication
-    - ElevenLabs-Signature
-    - post-call webhook
 ---
 
 # ElevenLabs Agents Platform

@@ -4,19 +4,6 @@ description: |
   Seven integrated slash commands for complete project lifecycle: /explore-idea, /plan-project, /plan-feature, /wrap-session, /continue-session, /workflow, /release.
 
   Use when starting projects, managing sessions across context windows, or preparing releases. Saves 35-55 minutes per lifecycle.
-metadata:
-  keywords:
-    - slash commands
-    - project lifecycle
-    - session management
-    - context windows
-    - explore-idea
-    - plan-project
-    - plan-feature
-    - wrap-session
-    - continue-session
-    - release workflow
-    - planning docs
 ---
 
 # Project Workflow Skill

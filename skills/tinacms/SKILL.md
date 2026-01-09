@@ -5,8 +5,6 @@ description: |
 
   Use when setting up CMS with non-technical editors or troubleshooting ESbuild compilation, module resolution, or Docker binding issues.
 allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
-metadata:
-  keywords: [TinaCMS, Git-backed CMS, visual editing, headless CMS, Next.js, Vite, Astro, Cloudflare Workers, content management, blog, documentation, Forestry.io migration, ESbuild errors, module resolution, Docker]
 ---
 
 # TinaCMS
