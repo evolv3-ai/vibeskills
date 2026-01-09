@@ -12,8 +12,8 @@ description: |
 
 **Status**: Beta (requires `python_workers` compatibility flag)
 **Runtime**: Pyodide (Python 3.12+ compiled to WebAssembly)
-**Package Versions**: workers-py@1.7.0, workers-runtime-sdk@0.3.1, wrangler@4.54.0
-**Last Verified**: 2026-01-03
+**Package Versions**: workers-py@1.7.0, workers-runtime-sdk@0.3.1, wrangler@4.58.0
+**Last Verified**: 2026-01-09
 
 ## Quick Start (5 Minutes)
 
@@ -546,7 +546,7 @@ See [Cloudflare FastAPI example](https://developers.cloudflare.com/workers/langu
 {
   "workers-py": "1.7.0",
   "workers-runtime-sdk": "0.3.1",
-  "wrangler": "4.54.0"
+  "wrangler": "4.58.0"
 }
 ```
 
