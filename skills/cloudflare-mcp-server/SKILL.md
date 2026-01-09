@@ -15,7 +15,7 @@ Build and deploy **Model Context Protocol (MCP) servers** on Cloudflare Workers 
 
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
-**Latest Versions**: @modelcontextprotocol/sdk@1.22.0, @cloudflare/workers-oauth-provider@0.1.0, agents@0.2.23
+**Latest Versions**: @modelcontextprotocol/sdk@1.25.2, @cloudflare/workers-oauth-provider@0.2.2, agents@0.3.3
 
 **Recent Updates (2025)**:
 - **September 2025**: Code Mode (agents write code vs calling tools, auto-generated TypeScript API from schema)
@@ -988,6 +988,6 @@ npx wrangler tail
 
 ---
 
-**Package Versions**: @modelcontextprotocol/sdk@1.22.0, @cloudflare/workers-oauth-provider@0.1.0, agents@0.2.23
-**Last Verified**: 2025-11-24
+**Package Versions**: @modelcontextprotocol/sdk@1.25.2, @cloudflare/workers-oauth-provider@0.2.2, agents@0.3.3
+**Last Verified**: 2026-01-09
 **Errors Prevented**: 22 documented issues (100% prevention rate)

@@ -37,13 +37,13 @@ metadata:
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260108.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0, workers-ai-provider@3.0.2
 
 **Recent Updates (2025)**:
 - **April 2025 - Performance**: Llama 3.3 70B 2-4x faster (speculative decoding, prefix caching), BGE embeddings 2x faster
 - **April 2025 - Breaking Changes**: max_tokens now correctly defaults to 256 (was not respected), BGE pooling parameter (cls NOT backwards compatible with mean)
 - **2025 - New Models (14)**: Mistral 3.1 24B (vision+tools), Gemma 3 12B (128K context), EmbeddingGemma 300M, Llama 4 Scout, GPT-OSS 120B/20B, Qwen models (QwQ 32B, Coder 32B), Leonardo image gen, Deepgram Aura 2, Whisper v3 Turbo, IBM Granite, Nova 3
-- **2025 - Platform**: Context windows API change (tokens not chars), unit-based pricing with per-model granularity, workers-ai-provider v2.0.0 (AI SDK v5), LoRA rank up to 32 (was 8), 100 adapters per account
+- **2025 - Platform**: Context windows API change (tokens not chars), unit-based pricing with per-model granularity, workers-ai-provider v3.0.2 (AI SDK v5), LoRA rank up to 32 (was 8), 100 adapters per account
 - **October 2025**: Model deprecations (use Llama 4, GPT-OSS instead)
 
 ---
@@ -326,10 +326,10 @@ await openai.chat.completions.create({
 
 ---
 
-## Vercel AI SDK Integration (workers-ai-provider v2.0.0)
+## Vercel AI SDK Integration (workers-ai-provider v3.0.2)
 
 ```typescript
-import { createWorkersAI } from 'workers-ai-provider'; // v2.0.0 with AI SDK v5
+import { createWorkersAI } from 'workers-ai-provider'; // v3.0.2 with AI SDK v5
 import { generateText, streamText } from 'ai';
 
 const workersai = createWorkersAI({ binding: env.AI });

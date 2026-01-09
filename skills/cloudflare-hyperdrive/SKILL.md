@@ -9,7 +9,7 @@ description: |
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (recommended for Worker setup)
-**Latest Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.7, mysql2@3.15.3
+**Latest Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.8, mysql2@3.16.0
 
 **Recent Updates (2025)**:
 - **July 2025**: Configurable connection counts (min 5, max ~20 Free/~100 Paid)
@@ -488,5 +488,5 @@ wrangler hyperdrive update <id> --connection-string="postgres://new-creds..."
 ---
 
 **Last Updated**: 2026-01-09
-**Package Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.7, mysql2@3.15.3
+**Package Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.8, mysql2@3.16.0
 **Production Tested**: Based on official Cloudflare documentation and community examples

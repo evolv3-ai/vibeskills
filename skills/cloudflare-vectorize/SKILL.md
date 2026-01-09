@@ -30,7 +30,7 @@ Complete implementation guide for Cloudflare Vectorize - a globally distributed 
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup), cloudflare-workers-ai (for embeddings)
-**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260108.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 **Token Savings**: ~65%
 **Errors Prevented**: 8
 **Dev Time Saved**: ~3 hours
@@ -379,6 +379,6 @@ Solution: V2 changed returnMetadata from boolean to string enum:
 ---
 
 **Status**: Production Ready ✅ (Vectorize V2 GA - September 2024)
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-01-09
 **Token Savings**: ~70%
 **Errors Prevented**: 10 (includes V2 breaking changes)

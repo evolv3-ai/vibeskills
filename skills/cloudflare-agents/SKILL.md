@@ -13,11 +13,13 @@ metadata:
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (recommended)
-**Latest Versions**: agents@0.2.23, @modelcontextprotocol/sdk@latest
+**Latest Versions**: agents@0.3.3, @modelcontextprotocol/sdk@latest
 **Production Tested**: Cloudflare's own MCP servers (https://github.com/cloudflare/mcp-server-cloudflare)
 
 **Recent Updates (2025)**:
+- **Nov 2025**: Agents SDK v0.2.24+ with resumable streaming, MCP client improvements, schedule fixes
 - **Sept 2025**: AI SDK v5 compatibility, automatic message migration
+- **Aug 2025**: MCP Elicitation support, http-streamable transport, task queues, email integration
 - **April 2025**: MCP support (MCPAgent class), `import { context }` from agents
 - **March 2025**: Package rename (agents-sdk → agents)
 
@@ -1369,6 +1371,6 @@ const result = streamText({
 
 ---
 
-**Last Verified**: 2025-10-21
-**Package Versions**: agents@latest
+**Last Verified**: 2026-01-09
+**Package Versions**: agents@0.3.3
 **Compliance**: Cloudflare Agents SDK official documentation

@@ -9,7 +9,7 @@ description: |
 **Status**: Production Ready ✅
 **Last Updated**: 2026-01-09
 **Dependencies**: None (optional: @marsidev/react-turnstile for React)
-**Latest Versions**: @marsidev/react-turnstile@1.3.1, turnstile-types@1.2.3
+**Latest Versions**: @marsidev/react-turnstile@1.4.1, turnstile-types@1.2.3
 
 **Recent Updates (2025)**:
 - **March 2025**: Upgraded Turnstile Analytics with TopN statistics (7 dimensions: hostnames, browsers, countries, user agents, ASNs, OS, source IPs), anomaly detection, enhanced bot behavior monitoring
@@ -378,7 +378,7 @@ turnstile.render('#container', {
 ## Dependencies
 
 **Required:** None (loads from CDN)
-**React:** @marsidev/react-turnstile@1.3.1 (Cloudflare-recommended), turnstile-types@1.2.3
+**React:** @marsidev/react-turnstile@1.4.1 (Cloudflare-recommended), turnstile-types@1.2.3
 **Other:** vue-turnstile, ngx-turnstile, svelte-turnstile, @nuxtjs/turnstile
 
 ---
