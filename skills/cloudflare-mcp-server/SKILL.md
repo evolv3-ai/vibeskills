@@ -12,7 +12,7 @@ allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 Build and deploy **Model Context Protocol (MCP) servers** on Cloudflare Workers with TypeScript.
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-24
+**Last Updated**: 2026-01-09
 **Latest Versions**: @modelcontextprotocol/sdk@1.22.0, @cloudflare/workers-oauth-provider@0.1.0, agents@0.2.23
 
 **Recent Updates (2025)**:
