@@ -11,9 +11,9 @@ description: |
 # MCP CLI Scripts Pattern
 
 **Status**: Production Ready
-**Last Updated**: 2025-12-27
+**Last Updated**: 2026-01-09
 **Dependencies**: tsx (dev dependency)
-**Latest Versions**: tsx@4.19.2
+**Latest Versions**: tsx@4.21.0
 
 ---
 

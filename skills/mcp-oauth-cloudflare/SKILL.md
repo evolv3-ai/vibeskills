@@ -7,7 +7,7 @@ description: |
 license: MIT
 metadata:
   version: "1.1.0"
-  last_verified: "2026-01-03"
+  last_verified: "2026-01-09"
   keywords:
     - mcp oauth
     - mcp authentication
