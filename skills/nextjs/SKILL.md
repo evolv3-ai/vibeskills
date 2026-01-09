@@ -12,9 +12,9 @@ allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 # Next.js App Router - Production Patterns
 
 **Version**: Next.js 16.1.1
-**React Version**: 19.2.0
+**React Version**: 19.2.3
 **Node.js**: 20.9+
-**Last Verified**: 2026-01-03
+**Last Verified**: 2026-01-09
 
 ---
 
@@ -1349,8 +1349,8 @@ export async function createPost(formData: FormData) {
 
 | Package | Minimum Version | Recommended |
 |---------|----------------|-------------|
-| Next.js | 16.0.0 | 16.0.0+ |
-| React | 19.2.0 | 19.2.0+ |
+| Next.js | 16.0.0 | 16.1.1+ |
+| React | 19.2.0 | 19.2.3+ |
 | Node.js | 20.9.0 | 20.9.0+ |
 | TypeScript | 5.1.0 | 5.7.0+ |
 | Turbopack | (built-in) | Stable |
@@ -1386,8 +1386,8 @@ export async function createPost(formData: FormData) {
 
 ## Maintenance
 
-**Last Verified**: 2025-10-24
-**Next Review**: 2026-01-24 (Quarterly)
+**Last Verified**: 2026-01-09
+**Next Review**: 2026-04-09 (Quarterly)
 **Maintainer**: Jezweb | jeremy@jezweb.net
 **Repository**: https://github.com/jezweb/claude-skills
 

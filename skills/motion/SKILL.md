@@ -38,7 +38,7 @@ Motion (package: `motion`, formerly `framer-motion`) is the industry-standard Re
 - **Exit Animations**: AnimatePresence for unmounting transitions
 - **Performance**: Hardware-accelerated, ScrollTimeline API, bundle optimization (2.3 KB - 34 KB)
 
-**Production Tested**: React 19, Next.js 16, Vite 7, Tailwind v4
+**Production Tested**: React 19.2, Next.js 16.1, Vite 7.3, Tailwind v4
 
 ---
 
@@ -723,9 +723,9 @@ See `references/motion-vs-auto-animate.md` for detailed comparison.
 |---------|---------|--------|
 | motion | 12.24.12 | ✅ Latest stable |
 | framer-motion | 12.24.12 | ✅ Same version as motion |
-| react | 19.2.0 | ✅ Latest stable |
-| next | 16.0.1 | ✅ Latest stable |
-| vite | 7.2.2 | ✅ Latest stable |
+| react | 19.2.3 | ✅ Latest stable |
+| next | 16.1.1 | ✅ Latest stable |
+| vite | 7.3.1 | ✅ Latest stable |
 
 ---
 
@@ -737,7 +737,7 @@ Found an issue or have a suggestion?
 
 ---
 
-**Production Tested**: ✅ React 19 + Next.js 16 + Vite 7 + Tailwind v4
+**Production Tested**: ✅ React 19.2 + Next.js 16.1 + Vite 7.3 + Tailwind v4
 **Token Savings**: ~83%
 **Error Prevention**: 100% (29+ documented errors prevented)
 **Bundle Size**: 2.3 KB (mini) - 34 KB (full), optimizable to 4.6 KB with LazyMotion

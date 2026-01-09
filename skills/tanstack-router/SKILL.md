@@ -283,10 +283,10 @@ function App() {
 - **Error**: Loader function not called on navigation
 - **Fix**: Ensure route exports `Route` constant: `export const Route = createFileRoute('/path')({ loader: ... })`
 
-**Issue #5: Memory Leak with TanStack Form**
+**Issue #5: Memory Leak with TanStack Form** (FIXED)
 - **Error**: Production crashes when using TanStack Form + Router
-- **Source**: GitHub Issue #5734 (known issue, still open as of v1.144)
-- **Workaround**: Use React Hook Form or Formik instead
+- **Source**: GitHub Issue #5734 (closed Jan 5, 2026)
+- **Resolution**: Fixed in latest versions of @tanstack/form and @tanstack/react-start. Update both packages to resolve.
 
 **Issue #6: Virtual Routes Index/Layout Conflict**
 - **Error**: route.tsx and index.tsx conflict when using `physical()` in virtual routing

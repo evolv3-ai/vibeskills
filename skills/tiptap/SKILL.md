@@ -13,7 +13,7 @@ metadata:
 **Status**: Production Ready
 **Last Updated**: 2026-01-09
 **Dependencies**: React 19+, Tailwind v4, shadcn/ui (recommended)
-**Latest Versions**: @tiptap/react@3.15.3, @tiptap/starter-kit@3.15.3, @tiptap/pm@3.15.3
+**Latest Versions**: @tiptap/react@3.15.3, @tiptap/starter-kit@3.15.3, @tiptap/pm@3.15.3 (verified 2026-01-09)
 
 ---
 
@@ -360,7 +360,7 @@ editor.commands.insertContent('**Bold** text', { contentType: 'markdown' })
 ```
 
 **When to use**: Storing content as markdown, displaying/editing rich text
-**Install**: `npm install @tiptap/markdown@3.11.1`
+**Install**: `npm install @tiptap/markdown@3.15.3`
 **Status**: Beta (released Oct 2025, API stable but may change)
 **CRITICAL**: Always specify `contentType: 'markdown'` when setting markdown content
 
@@ -508,18 +508,18 @@ const SlashCommands = Extension.create({
 ## Dependencies
 
 **Required**:
-- `@tiptap/react@^3.11.1` - React integration
-- `@tiptap/starter-kit@^3.11.1` - Essential extensions bundle
-- `@tiptap/pm@^3.11.1` - ProseMirror peer dependency
+- `@tiptap/react@^3.15.3` - React integration
+- `@tiptap/starter-kit@^3.15.3` - Essential extensions bundle
+- `@tiptap/pm@^3.15.3` - ProseMirror peer dependency
 - `react@^19.0.0` - React framework
 
 **Optional**:
-- `@tiptap/extension-image@^3.11.1` - Image support
-- `@tiptap/extension-link@^3.11.1` - Link support (NEW in v3, included in StarterKit)
-- `@tiptap/extension-color@^3.11.1` - Text color
-- `@tiptap/extension-typography@^3.11.1` - Smart typography
-- `@tiptap/extension-collaboration@^3.11.1` - Real-time collaboration
-- `@tailwindcss/typography@^0.5.15` - Prose styling
+- `@tiptap/extension-image@^3.15.3` - Image support
+- `@tiptap/extension-link@^3.15.3` - Link support (NEW in v3, included in StarterKit)
+- `@tiptap/extension-color@^3.15.3` - Text color
+- `@tiptap/extension-typography@^3.15.3` - Smart typography
+- `@tiptap/extension-collaboration@^3.15.3` - Real-time collaboration
+- `@tailwindcss/typography@^0.5.19` - Prose styling
 - `yjs@^13.6.0` - Collaborative editing backend
 - `react-medium-image-zoom@^5.2.0` - Image zoom functionality
 
@@ -536,24 +536,24 @@ const SlashCommands = Extension.create({
 
 ---
 
-## Package Versions (Verified 2025-11-29)
+## Package Versions (Verified 2026-01-09)
 
 ```json
 {
   "dependencies": {
-    "@tiptap/react": "^3.11.1",
-    "@tiptap/starter-kit": "^3.11.1",
-    "@tiptap/pm": "^3.11.1",
-    "@tiptap/extension-image": "^3.11.1",
-    "@tiptap/extension-color": "^3.11.1",
-    "@tiptap/extension-text-style": "^3.11.1",
-    "@tiptap/extension-typography": "^3.11.1",
-    "@tiptap/extension-link": "^3.11.1"
+    "@tiptap/react": "^3.15.3",
+    "@tiptap/starter-kit": "^3.15.3",
+    "@tiptap/pm": "^3.15.3",
+    "@tiptap/extension-image": "^3.15.3",
+    "@tiptap/extension-color": "^3.15.3",
+    "@tiptap/extension-text-style": "^3.15.3",
+    "@tiptap/extension-typography": "^3.15.3",
+    "@tiptap/extension-link": "^3.15.3"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.15",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@tailwindcss/typography": "^0.5.19",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }
 ```

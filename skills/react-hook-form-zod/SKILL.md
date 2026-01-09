@@ -22,15 +22,15 @@ metadata:
 # React Hook Form + Zod Validation
 
 **Status**: Production Ready ✅
-**Last Verified**: 2025-11-28
-**Latest Versions**: react-hook-form@7.66.1, zod@4.1.13, @hookform/resolvers@5.2.2
+**Last Verified**: 2026-01-09
+**Latest Versions**: react-hook-form@7.70.0, zod@4.3.5, @hookform/resolvers@5.2.2
 
 ---
 
 ## Quick Start
 
 ```bash
-npm install react-hook-form@7.66.1 zod@4.1.13 @hookform/resolvers@5.2.2
+npm install react-hook-form@7.70.0 zod@4.3.5 @hookform/resolvers@5.2.2
 ```
 
 **Basic Form Pattern**:
@@ -256,4 +256,4 @@ z.discriminatedUnion('accountType', [
 
 ---
 
-**License**: MIT | **Last Verified**: 2025-11-28
+**License**: MIT | **Last Verified**: 2026-01-09
