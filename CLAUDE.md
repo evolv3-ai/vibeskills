@@ -393,7 +393,7 @@ After optimizing 20+ skills, these patterns work best:
 - Include technology names explicitly
 - Preserve unique selling points
 - Add 2-3 distinctive error keywords
-- Move comprehensive keywords to metadata.keywords
+- Keep comprehensive keywords in README.md (not frontmatter)
 
 **Avoid:**
 - Dense comma-separated lists
