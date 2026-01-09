@@ -81,8 +81,14 @@ claude-skills/
 │   ├── release.md                # /release - Pre-release safety checks
 │   └── README.md                 # Commands documentation
 │
-├── .claude/                      # Claude Code local settings
-│   └── settings.local.json       # Local preferences (not committed)
+├── .claude/                      # Claude Code configuration
+│   ├── settings.local.json       # Local preferences (not committed)
+│   └── agents/                   # Project-level custom agents
+│       ├── skill-auditor.md      # Deep audit skills vs official docs
+│       ├── version-checker.md    # Check/update package versions
+│       ├── skill-creator.md      # Scaffold new skills from templates
+│       ├── bulk-updater.md       # Batch operations across skills
+│       └── doc-validator.md      # Documentation quality checks
 │
 ├── .claude-plugin/               # Marketplace metadata
 │   └── marketplace.json          # Auto-generated plugin manifest
