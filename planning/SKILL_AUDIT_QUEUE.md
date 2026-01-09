@@ -90,60 +90,60 @@ MCP is new - high likelihood of issues.
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| typescript-mcp | 2026-01-06 | ✓ | ⬜ |
-| fastmcp | 2025-11-25 | ✓ | ⬜ |
-| mcp-oauth-cloudflare | 2025-11-26 | ✓ | ⬜ |
-| ts-agent-sdk | 2025-11-28 | ⬜ | ⬜ |
-| mcp-cli-scripts | 2025-11-28 | ⬜ | ⬜ |
+| typescript-mcp | 2026-01-09 | ✓ | ✅ |
+| fastmcp | 2026-01-09 | ✓ | ✅ |
+| mcp-oauth-cloudflare | 2026-01-09 | ✓ | ✅ |
+| ts-agent-sdk | 2026-01-09 | ⬜ | ✅ |
+| mcp-cli-scripts | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 6: Vercel/Database Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| vercel-blob | 2025-11-28 | ⬜ | ⬜ |
-| vercel-kv | 2025-11-28 | ⬜ | ⬜ |
-| neon-vercel-postgres | 2025-11-24 | ⬜ | ⬜ |
+| vercel-blob | 2026-01-09 | ⬜ | ✅ |
+| vercel-kv | 2026-01-09 | ⬜ | ✅ |
+| neon-vercel-postgres | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 7: Content/CMS Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| tinacms | 2025-11-28 | ⬜ | ⬜ |
-| sveltia-cms | 2025-11-28 | ⬜ | ⬜ |
+| tinacms | 2026-01-09 | ⬜ | ✅ |
+| sveltia-cms | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 8: Google Workspace Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| google-workspace | 2026-01-03 | ✓ | ⬜ |
-| google-chat-api | 2025-11-27 | ⬜ | ⬜ |
-| google-spaces-updates | 2025-11-27 | ⬜ | ⬜ |
-| google-gemini-file-search | 2025-11-28 | ⬜ | ⬜ |
+| google-workspace | 2026-01-09 | ✓ | ✅ |
+| google-chat-api | 2026-01-09 | ⬜ | ✅ |
+| google-spaces-updates | 2026-01-09 | ⬜ | ✅ |
+| google-gemini-file-search | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 9: Other/Utility Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| azure-auth | 2025-11-25 | ✓ | ⬜ |
-| elevenlabs-agents | 2025-11-24 | ⬜ | ⬜ |
-| wordpress-plugin-core | 2025-11-28 | ⬜ | ⬜ |
-| fastapi | 2025-11-23 | ⬜ | ⬜ |
-| flask | 2025-11-23 | ⬜ | ⬜ |
-| react-native-expo | 2025-11-28 | ⬜ | ⬜ |
-| streamlit-snowflake | 2025-11-28 | ⬜ | ⬜ |
-| openai-apps-mcp | 2025-11-26 | ⬜ | ⬜ |
-| thesys-generative-ui | 2025-11-28 | ✓ | ⬜ |
+| azure-auth | 2026-01-09 | ✓ | ✅ |
+| elevenlabs-agents | 2026-01-09 | ⬜ | ✅ |
+| wordpress-plugin-core | 2026-01-09 | ⬜ | ✅ |
+| fastapi | 2026-01-09 | ⬜ | ✅ |
+| flask | 2026-01-09 | ⬜ | ✅ |
+| react-native-expo | 2026-01-09 | ⬜ | ✅ |
+| streamlit-snowflake | 2026-01-09 | ⬜ | ✅ |
+| openai-apps-mcp | 2026-01-09 | ⬜ | ✅ |
+| thesys-generative-ui | 2026-01-09 | ✓ | ⏭️ |
 
 ### Tier 10: Internal/Meta Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| skill-review | 2026-01-06 | ⬜ | ⬜ |
-| skill-creator | 2025-11-24 | ⬜ | ⬜ |
-| project-planning | 2025-11-24 | ⬜ | ⬜ |
-| project-workflow | 2025-11-24 | ⬜ | ⬜ |
-| project-session-management | 2025-11-24 | ⬜ | ⬜ |
-| open-source-contributions | 2025-11-28 | ⬜ | ⬜ |
+| skill-review | 2026-01-09 | ⬜ | ✅ |
+| skill-creator | 2026-01-09 | ⬜ | ✅ |
+| project-planning | 2026-01-09 | ⬜ | ✅ |
+| project-workflow | 2026-01-09 | ⬜ | ✅ |
+| project-session-management | 2026-01-09 | ⬜ | ✅ |
+| open-source-contributions | 2026-01-09 | ⬜ | ✅ |
 
 ---
 
