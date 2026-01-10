@@ -4,7 +4,7 @@
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: Jeremy Dawes (Jez) | Jezweb
 **Status**: Active Development | 72 Skills Complete (13 archived)
-**Last Updated**: 2026-01-09
+**Last Updated**: 2026-01-10
 
 ---
 
@@ -78,6 +78,7 @@ claude-skills/
 │
 ├── archive/                      # Archived content
 │   ├── low-priority-skills/      # 13 skills archived 2025-11-17 (in git branch)
+│   ├── deprecated-scripts/       # Old symlink scripts (replaced by plugin system)
 │   └── session-logs/             # Working audit logs (gitignored, archived when needed)
 │
 ├── templates/                    # ← Templates for new skills
@@ -100,9 +101,6 @@ claude-skills/
 │   └── research-logs/            # Per-skill research
 │
 ├── scripts/                      # Automation scripts
-│   ├── install-skill.sh          # Symlink skill to ~/.claude/skills/
-│   ├── install-all.sh            # Install all skills
-│   ├── check-symlinks.sh         # Verify/repair skill symlinks
 │   ├── check-npm-versions.sh     # NPM package version checker
 │   ├── check-github-releases.sh  # GitHub release tracker
 │   ├── check-metadata.sh         # YAML metadata validator
@@ -118,36 +116,40 @@ claude-skills/
     └── cloudflare-worker-base-test/
 ```
 
-### Symlink Workflow
+### Plugin Installation
 
-**Skills**: Symlinked from `skills/` → `~/.claude/skills/`
-**Commands**: Symlinked from `commands/` → `~/.claude/commands/`
+**Skills are installed via the Claude Code plugin system** (no symlinks needed).
 
-**Installing Skills:**
+**For End Users:**
 ```bash
-./scripts/install-skill.sh <skill-name>      # Symlink single skill
-./scripts/install-all.sh                     # Symlink all skills
-./scripts/check-symlinks.sh                  # Verify symlinks
-./scripts/check-symlinks.sh --fix            # Repair broken symlinks
+# Add the marketplace (one-time)
+/plugin marketplace add jezweb/claude-skills
+
+# Install plugin bundles
+/plugin install cloudflare-skills
+/plugin install ai-skills
+/plugin install frontend-skills
+# etc.
+
+# Update to get latest changes
+/plugin marketplace update claude-skills
 ```
 
-**Installing Commands:**
+**For Development (this repo):**
 ```bash
-# Commands must be manually symlinked:
-ln -s /home/jez/Documents/claude-skills/commands/<command>.md ~/.claude/commands/<command>.md
+# Install local skill for testing
+/plugin install ./skills/cloudflare-worker-base
 
-# Example:
-ln -s /home/jez/Documents/claude-skills/commands/brief.md ~/.claude/commands/brief.md
+# Or add local repo as marketplace
+/plugin marketplace add ./
+/plugin install cloudflare-skills
 ```
 
-**Adding New Commands:**
+**Agents**: Plugins can include agents in their `agents/` directory. The cloudflare-worker-base skill includes 4 agents (cloudflare-deploy, d1-migration, cloudflare-debug, worker-scaffold) that are auto-discovered when the plugin is installed.
 
-1. Create command in `/commands/<command-name>.md`
-2. Symlink to `~/.claude/commands/<command-name>.md`
-3. Command is immediately available in Claude Code
-4. Commit to git for version control
+**After Updates**: Restart Claude Code to load new skills/agents.
 
-**Note**: Commands in `skills/project-workflow/commands/` are the canonical source for workflow commands, but `/commands/` directory mirrors them for manual installation and development.
+**Legacy Scripts**: Old symlink scripts are archived in `archive/deprecated-scripts/`.
 
 ---
 
@@ -206,13 +208,13 @@ This repository has three types of files:
 
 ```
 1. Create skill → skills/new-skill/SKILL.md (version controlled)
-2. Install skill → ./scripts/install-skill.sh new-skill (creates symlink)
+2. Test locally → /plugin install ./skills/new-skill
 3. Generate manifest → ./scripts/generate-plugin-manifests.sh (auto-generated)
 4. Verify versions → ./scripts/check-all-versions.sh (creates VERSIONS_REPORT.md)
 5. Audit skill → ./scripts/review-skill.sh new-skill (updates SKILL.md)
 6. Track work → Update SESSION.md (working file, not committed)
-7. Archive session → mv SESSION.md archive/session-logs/phase-X.md (manual)
-8. Commit → git add skills/new-skill && git commit (version controlled only)
+7. Commit & push → git add skills/new-skill && git commit && git push
+8. Update marketplace → /plugin marketplace update claude-skills
 ```
 
 ---
@@ -281,7 +283,7 @@ All 63 skills are production-ready and organized by domain:
    • Add resources (scripts/, references/, assets/)
 
 3. TEST
-   • Install: ./scripts/install-skill.sh new-skill
+   • Install locally: /plugin install ./skills/new-skill
    • Test discovery: Ask Claude Code to use skill
    • Build example project to verify templates work
 
@@ -313,15 +315,18 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 # 2. Edit SKILL.md and README.md (fill TODOs)
 # 3. Add resources
 
-# 4. Test
-./scripts/install-skill.sh my-skill
+# 4. Test locally
+/plugin install ./skills/my-skill
 
 # 5. Verify & Commit
 git add skills/my-skill && git commit -m "Add my-skill" && git push
 
-# 6. Generate marketplace manifest
+# 6. Generate marketplace manifest & push
 ./scripts/generate-plugin-manifests.sh
-git add skills/my-skill/.claude-plugin/ && git commit -m "Add marketplace manifest for my-skill" && git push
+git add skills/my-skill/.claude-plugin/ && git commit -m "Add marketplace manifest" && git push
+
+# 7. Update marketplace (after push)
+/plugin marketplace update claude-skills
 ```
 
 ---
@@ -438,21 +443,25 @@ cp ~/.claude/skills/tailwind-v4-shadcn/rules/tailwind-v4-shadcn.md .claude/rules
 
 ## Commands & Scripts
 
-### Installing Skills
+### Installing Skills (Plugin System)
 
 ```bash
-# Install single skill (creates symlink to ~/.claude/skills/)
-./scripts/install-skill.sh cloudflare-worker-base
+# Add the marketplace (one-time)
+/plugin marketplace add jezweb/claude-skills
 
-# Install all skills
-./scripts/install-all.sh
+# Install plugin bundles
+/plugin install cloudflare-skills       # All Cloudflare skills + agents
+/plugin install ai-skills               # AI/LLM integration skills
+/plugin install frontend-skills         # UI/frontend skills
 
-# Verify and maintain symlinks
-./scripts/check-symlinks.sh          # Check for issues
-./scripts/check-symlinks.sh --fix    # Auto-repair symlinks
+# Install individual skill (for local development)
+/plugin install ./skills/cloudflare-worker-base
+
+# Update to get latest changes
+/plugin marketplace update claude-skills
 
 # Verify installation
-ls -la ~/.claude/skills/
+ls ~/.claude/plugins/cache/claude-skills/
 ```
 
 ### Development
