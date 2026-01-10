@@ -4,6 +4,7 @@ description: |
   Audit claude-skills with systematic 9-phase review: standards compliance, official docs verification, code accuracy, cross-file consistency, and version drift detection.
 
   Use when investigating skill issues, major updates detected, skill not verified >90 days, or before marketplace submission.
+user-invocable: true
 allowed-tools:
   - Read
   - Bash

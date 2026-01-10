@@ -4,6 +4,7 @@ description: |
   Build agentic AI with OpenAI Responses API - stateful conversations with preserved reasoning, built-in tools (Code Interpreter, File Search, Web Search), and MCP integration.
 
   Use when: building agents with persistent reasoning, using server-side tools, or migrating from Chat Completions for better multi-turn performance.
+user-invocable: true
 ---
 
 # OpenAI Responses API

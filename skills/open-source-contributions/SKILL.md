@@ -4,6 +4,7 @@ description: |
   Create maintainer-friendly pull requests with clean code and professional communication. Prevents 16 common mistakes that cause PR rejection.
 
   Use when: contributing to open source, submitting PRs, or troubleshooting PR rejection, CI failures, or personal artifacts in commits.
+user-invocable: true
 ---
 
 # Open Source Contributions Skill

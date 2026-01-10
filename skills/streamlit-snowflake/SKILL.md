@@ -4,6 +4,7 @@ description: |
   Build and deploy Streamlit apps natively in Snowflake. Covers snowflake.yml scaffolding, Snowpark sessions, multi-page structure, and Marketplace publishing as Native Apps.
 
   Use when building data apps on Snowflake, deploying SiS, or fixing package channel errors, authentication issues.
+user-invocable: true
 license: MIT
 ---
 

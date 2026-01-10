@@ -4,6 +4,7 @@ description: |
   Integrate Redis-compatible Vercel KV for caching, session management, and rate limiting in Next.js. Powered by Upstash with strong consistency and TTL support.
 
   Use when implementing cache strategies, rate limiters, or troubleshooting environment variables, serialization errors, or rate limit issues.
+user-invocable: true
 ---
 
 # Vercel KV

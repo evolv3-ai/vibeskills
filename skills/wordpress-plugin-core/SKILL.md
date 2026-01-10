@@ -4,6 +4,7 @@ description: |
   Build secure WordPress plugins with hooks, database interactions, Settings API, custom post types, and REST API. Covers Simple, OOP, and PSR-4 architecture patterns plus the Security Trinity.
 
   Use when creating plugins or troubleshooting SQL injection, XSS, CSRF vulnerabilities, or plugin activation errors.
+user-invocable: true
 ---
 
 # WordPress Plugin Development (Core)

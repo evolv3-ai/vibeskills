@@ -4,6 +4,7 @@ description: |
   Build stateful chatbots with OpenAI Assistants API v2 - Code Interpreter, File Search (10k files), Function Calling. Deprecated (sunset August 2026); use openai-responses for new projects.
 
   Use when: maintaining legacy chatbots, implementing RAG with vector stores, or troubleshooting thread errors, vector store delays.
+user-invocable: true
 ---
 
 # OpenAI Assistants API v2
