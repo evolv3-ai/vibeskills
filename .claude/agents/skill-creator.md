@@ -29,30 +29,32 @@ cp -r templates/skill-skeleton/ skills/[new-skill-name]/
 ### 2. Research Phase
 
 Before writing content:
-- Fetch official documentation via WebFetch
 - Check npm/PyPI for current versions
 - Identify common errors (GitHub issues, Stack Overflow)
 - Note breaking changes from recent releases
 
-**Research Fallbacks (when WebFetch isn't enough):**
+**Research Delegation:**
 
-If WebFetch returns incomplete content, blocks, or JavaScript-rendered pages:
+For fetching documentation and web content, delegate to the `web-researcher` agent:
 
-1. **Firecrawl** (stealth mode, anti-bot bypass):
-   - Use `firecrawl-scraper` skill for sites that block scrapers
-   - Handles JavaScript rendering and CAPTCHA bypass
-   - Best for: Documentation behind bot protection, SPAs
+```
+Use web-researcher agent to fetch:
+- Official documentation pages
+- API references
+- GitHub issues for common errors
+- Changelog/release notes
+```
 
-2. **Cloudflare Browser Rendering** (Puppeteer/Playwright):
-   - Use `cloudflare-browser-rendering` skill for full browser automation
-   - Can screenshot, execute JS, navigate complex flows
-   - Best for: Interactive docs, authenticated content
+The web-researcher automatically handles:
+- Method selection (WebFetch → Firecrawl → Browser Rendering → Local Playwright)
+- Anti-bot bypass when needed
+- Cloud IP block workarounds
+- Structured data extraction if schema provided
 
-**Decision tree:**
-- WebFetch works? → Use it (fastest)
-- Page needs JS? → Try Firecrawl first
-- Site blocks scrapers? → Firecrawl with stealth mode
-- Need to interact (click, scroll)? → Browser Rendering
+**Only research directly** if:
+- Simple `npm view` or CLI commands
+- Reading local files
+- Quick version checks
 
 ### 3. SKILL.md Structure
 

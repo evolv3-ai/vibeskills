@@ -69,18 +69,25 @@ grep -rn "TODO\|FIXME\|XXX" skills/[skill]/
 npm view [package] version
 ```
 
-## Research Fallbacks
+## Research Delegation
 
-When verifying external links or fetching documentation for comparison:
+When verifying external links or fetching documentation for comparison, delegate to the `web-researcher` agent:
 
-1. **WebFetch** - Try first (fastest)
-2. **Firecrawl** - Use `firecrawl-scraper` skill if WebFetch returns blocks or incomplete content
-3. **Browser Rendering** - Use `cloudflare-browser-rendering` skill for JavaScript-heavy pages
+```
+Use web-researcher agent to:
+- Verify external documentation links
+- Fetch reference pages for comparison
+- Check if linked resources are accessible
+```
 
-**Decision tree:**
-- Simple doc page? → WebFetch
-- Returns block/incomplete? → Firecrawl with stealth mode
-- Needs JS interaction? → Browser Rendering
+The web-researcher automatically handles:
+- Method selection (WebFetch → Firecrawl → Browser Rendering → Local Playwright)
+- Anti-bot bypass when needed
+- Cloud IP block workarounds
+
+**Only verify directly** if:
+- Checking local file paths
+- Simple HTTP HEAD requests for link validation
 
 ## Severity Levels
 

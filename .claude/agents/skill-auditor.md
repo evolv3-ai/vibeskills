@@ -36,29 +36,30 @@ If the prompt says "deep", "thorough", or "comprehensive", do a deep audit with 
 6. **Apply fixes** - Update skill with missing information
 7. **Report** - Full audit report with gaps and fixes
 
-## Research Fallbacks
+## Research Delegation
 
-When WebFetch returns incomplete content, blocks, or JavaScript-rendered pages:
+For fetching official documentation and web content during deep audits, delegate to the `web-researcher` agent:
 
-1. **Firecrawl** (stealth mode, anti-bot bypass):
-   - Use `firecrawl-scraper` skill for sites that block scrapers
-   - Handles JavaScript rendering and CAPTCHA bypass
-   - Best for: Documentation behind bot protection, SPAs
+```
+Use web-researcher agent to fetch:
+- Official documentation pages
+- API references and changelogs
+- GitHub issues for error patterns
+- Release notes and migration guides
+```
 
-2. **Cloudflare Browser Rendering** (Puppeteer/Playwright):
-   - Use `cloudflare-browser-rendering` skill for full browser automation
-   - Can screenshot, execute JS, navigate complex flows
-   - Best for: Interactive docs, authenticated content
+The web-researcher automatically handles:
+- Method selection (WebFetch → Firecrawl → Browser Rendering → Local Playwright)
+- Anti-bot bypass when needed
+- Cloud IP block workarounds
+- Structured data extraction if schema provided
 
-**Decision tree:**
-- WebFetch works? → Use it (fastest)
-- Page needs JS? → Try Firecrawl first
-- Site blocks scrapers? → Firecrawl with stealth mode
-- Need to interact (click, scroll)? → Browser Rendering
+**Only research directly** if:
+- Simple `npm view` or CLI commands
+- Reading local skill files
+- Quick version checks
 
 ## Official Documentation Sources
-
-**Start with WebFetch, escalate to Firecrawl/Browser Rendering if needed:**
 
 | Technology | Documentation URL |
 |------------|-------------------|
