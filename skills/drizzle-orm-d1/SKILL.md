@@ -4,6 +4,7 @@ description: |
   Build type-safe D1 databases with Drizzle ORM. Includes schema definition, migrations with Drizzle Kit, relations, and D1 batch API patterns. Prevents 12 errors including SQL BEGIN failures and foreign key issues.
 
   Use when: defining D1 schemas, managing migrations, or troubleshooting D1_ERROR, BEGIN TRANSACTION, foreign keys.
+user-invocable: true
 ---
 
 # Drizzle ORM for Cloudflare D1

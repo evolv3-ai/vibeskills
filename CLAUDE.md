@@ -70,7 +70,8 @@ claude-skills/
 ├── docs/                         # Extended documentation
 │   ├── SKILLS_CATALOG.md         # Full skill details
 │   ├── MARKETPLACE.md            # Marketplace installation
-│   └── GEMINI_GUIDE.md           # AI agent onboarding
+│   ├── GEMINI_GUIDE.md           # AI agent onboarding
+│   └── SKILLS_COMMANDS_ARCHITECTURE.md  # v2.1.3+ unified architecture
 │
 ├── tools/                        # Utility scripts
 │   ├── statusline/               # Custom statusline scripts

@@ -2,6 +2,7 @@
 name: cloudflare-d1
 description: |
   Build with D1 serverless SQLite database on Cloudflare's edge. Use when: creating databases, writing SQL migrations, querying D1 from Workers, handling relational data, or troubleshooting D1_ERROR, statement too long, migration failures, or query performance issues.
+user-invocable: true
 ---
 
 # Cloudflare D1 Database

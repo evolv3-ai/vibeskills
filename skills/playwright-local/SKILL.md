@@ -4,6 +4,7 @@ description: |
   Build browser automation and web scraping with Playwright on your local machine. Includes stealth mode for anti-bot bypass, authenticated sessions, infinite scroll handling, screenshot/PDF generation, and residential IP advantages.
 
   Use when: automating browsers, scraping protected sites, testing with real IPs, bypassing bot detection, generating screenshots/PDFs, or troubleshooting "target closed", "element not found", or "navigation timeout" errors.
+user-invocable: true
 ---
 
 # Playwright Local Browser Automation

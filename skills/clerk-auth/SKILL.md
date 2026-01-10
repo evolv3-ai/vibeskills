@@ -2,6 +2,7 @@
 name: clerk-auth
 description: |
   Clerk auth with API Keys beta (Dec 2025), Next.js 16 proxy.ts, API version 2025-11-10 breaking changes, clerkMiddleware() options, webhooks, and component reference. Use when: API keys for users/orgs, Next.js 16 middleware filename, troubleshooting JWKS/CSRF/JWT errors, webhook verification, or testing with 424242 OTP.
+user-invocable: true
 ---
 
 # Clerk Auth - Breaking Changes & Error Prevention Guide

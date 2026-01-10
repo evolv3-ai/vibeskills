@@ -4,6 +4,7 @@ description: |
   Build MCP servers with TypeScript on Cloudflare Workers. Covers tools, resources, prompts, tasks, authentication (API keys, OAuth, Zero Trust), and Cloudflare service integrations.
 
   Use when exposing APIs to LLMs or troubleshooting export syntax errors, transport leaks, or CORS misconfigurations.
+user-invocable: true
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
 ---
 
