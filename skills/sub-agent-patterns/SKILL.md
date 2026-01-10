@@ -133,6 +133,47 @@ Include specific instructions, best practices, and constraints.
 | `skills` | No | Comma-separated skills to auto-load (sub-agents don't inherit parent skills) |
 | `hooks` | No | `PreToolUse`, `PostToolUse`, `Stop` event handlers |
 
+### Available Tools Reference
+
+Complete list of tools that can be assigned to sub-agents:
+
+| Tool | Purpose | Type |
+|------|---------|------|
+| **Read** | Read files (text, images, PDFs, notebooks) | Read-only |
+| **Write** | Create or overwrite files | Write |
+| **Edit** | Exact string replacements in files | Write |
+| **MultiEdit** | Batch edits to single file | Write |
+| **Glob** | File pattern matching (`**/*.ts`) | Read-only |
+| **Grep** | Content search with regex (ripgrep) | Read-only |
+| **LS** | List directory contents | Read-only |
+| **Bash** | Execute shell commands | Execute |
+| **BashOutput** | Get output from background shells | Execute |
+| **KillShell** | Terminate background shell | Execute |
+| **Task** | Spawn sub-agents | Orchestration |
+| **WebFetch** | Fetch and analyze web content | Web |
+| **WebSearch** | Search the web | Web |
+| **TodoWrite** | Create/manage task lists | Organization |
+| **TodoRead** | Read current task list | Organization |
+| **NotebookRead** | Read Jupyter notebooks | Notebook |
+| **NotebookEdit** | Edit Jupyter notebook cells | Notebook |
+| **AskUserQuestion** | Interactive user questions | UI |
+| **EnterPlanMode** | Enter planning mode | Planning |
+| **ExitPlanMode** | Exit planning mode with plan | Planning |
+| **Skill** | Execute skills in conversation | Skills |
+| **LSP** | Language Server Protocol integration | Advanced |
+| **MCPSearch** | MCP tool discovery | Advanced |
+
+**Tool Access Patterns by Agent Type:**
+
+| Agent Type | Recommended Tools |
+|------------|-------------------|
+| Read-only reviewers | `Read, Grep, Glob, LS` |
+| Code writers | `Read, Write, Edit, Bash, Glob, Grep` |
+| Research agents | `Read, Grep, Glob, WebFetch, WebSearch` |
+| Documentation | `Read, Write, Edit, Glob, Grep, WebFetch` |
+| Orchestrators | `Read, Grep, Glob, Task` |
+| Full access | Omit `tools` field (inherits all) |
+
 ### Using /agents Command (Recommended)
 
 ```
@@ -335,6 +376,166 @@ Claude: [Invokes release-orchestrator]
 2. **Model inheritance**: Spawned agents use their configured model (or inherit if set to `inherit`)
 3. **Context isolation**: Each spawned agent has its own context window
 4. **Results bubble up**: Orchestrator receives agent results and can synthesize them
+
+---
+
+## Advanced Patterns
+
+### Background Agents (Async Delegation)
+
+Send agents to the background while continuing work in your main session:
+
+**Ctrl+B** during agent execution moves it to background.
+
+```
+> Use the research-agent to analyze these 10 frameworks
+[Agent starts working...]
+[Press Ctrl+B]
+→ Agent continues in background
+→ Main session free for other work
+→ Check results later with: "What did the research agent find?"
+```
+
+**Use cases**:
+- Long-running research tasks
+- Parallel documentation fetching
+- Non-blocking code reviews
+
+### Model Selection Strategy
+
+Match model to task requirements for cost and speed optimization:
+
+| Model | Best For | Speed | Cost |
+|-------|----------|-------|------|
+| `haiku` | Simple lookups, format checks, fast reads | 2x faster | 3x cheaper |
+| `sonnet` | Complex reasoning, code generation | Balanced | Standard |
+| `opus` | Deep analysis, architectural decisions | Slower | Premium |
+| `inherit` | Match main conversation | Varies | Varies |
+
+**Pattern**: Use Haiku for high-volume simple tasks, Sonnet for judgment-heavy work:
+
+```yaml
+---
+name: format-checker
+model: haiku  # Fast, cheap - just checking patterns
+tools: Read, Grep, Glob
+---
+
+---
+name: architecture-reviewer
+model: opus  # Deep reasoning needed
+tools: Read, Grep, Glob, Bash
+---
+```
+
+### Agent Chainability Considerations
+
+Agent startup time and token usage affect orchestration performance:
+
+| Agent Weight | Tokens | Startup | Chainability |
+|--------------|--------|---------|--------------|
+| Lightweight (<3k) | Fast | <2s | Excellent - fluid orchestration |
+| Medium (3k-10k) | Moderate | 2-5s | Good - most use cases |
+| Heavy (10k-25k) | Slow | 5-10s | Fair - use sparingly |
+| Very heavy (>25k) | Very slow | 10s+ | Poor - bottleneck risk |
+
+**Best practice**: Keep custom agent prompts under 3k tokens for smooth chaining.
+
+### Persona-Based Routing
+
+Prevent agents from drifting into adjacent domains with explicit constraints:
+
+```yaml
+---
+name: frontend-specialist
+description: Frontend code expert. NEVER writes backend logic.
+tools: Read, Write, Edit, Glob, Grep
+---
+
+You are a frontend specialist.
+
+BOUNDARIES:
+- NEVER write backend logic, API routes, or database queries
+- ALWAYS use React patterns consistent with the codebase
+- If task requires backend work, STOP and report "Requires backend specialist"
+
+FOCUS:
+- React components, hooks, state management
+- CSS/Tailwind styling
+- Client-side routing
+- Browser APIs
+```
+
+This prevents hallucination when agents encounter unfamiliar domains.
+
+### Hooks Patterns
+
+Hooks enable automated validation and feedback:
+
+**Block-at-commit** (enforce quality gates):
+```yaml
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: |
+            if [[ "$BASH_COMMAND" == *"git commit"* ]]; then
+              npm test || exit 1
+            fi
+```
+
+**Hint hooks** (non-blocking feedback):
+```yaml
+hooks:
+  PostToolUse:
+    - matcher: "Edit|Write"
+      hooks:
+        - type: command
+          command: "./scripts/lint-check.sh"
+          # Exits 0 to continue, non-zero to warn
+```
+
+**Best practice**: Validate at commit stage, not mid-plan. Let agents work freely, catch issues before permanent changes.
+
+### Nested CLAUDE.md Context
+
+Claude automatically loads `CLAUDE.md` files from subdirectories when accessing those paths:
+
+```
+project/
+├── CLAUDE.md              # Root context (always loaded)
+├── src/
+│   └── CLAUDE.md          # Loaded when editing src/**
+├── tests/
+│   └── CLAUDE.md          # Loaded when editing tests/**
+└── docs/
+    └── CLAUDE.md          # Loaded when editing docs/**
+```
+
+**Use for**: Directory-specific coding standards, local patterns, module documentation.
+
+This is lazy-loaded context - sub-agents get relevant context without bloating main prompt.
+
+### Master-Clone vs Custom Subagent
+
+Two philosophies for delegation:
+
+**Custom Subagents** (explicit specialists):
+```
+Main Claude → task-runner agent → result
+```
+- Pros: Isolated context, specialized prompts, reusable
+- Cons: Gatekeeper effect (main agent loses visibility)
+
+**Master-Clone** (dynamic delegation):
+```
+Main Claude → Task(general-purpose) → result
+```
+- Pros: Main agent stays informed, flexible routing
+- Cons: Less specialized, may need more guidance
+
+**Recommendation**: Use custom agents for well-defined, repeated tasks. Use Task(general-purpose) for ad-hoc delegation where main context matters.
 
 ---
 
@@ -687,6 +888,13 @@ Config fields:
   name, description (required)
   tools, model, permissionMode, skills, hooks (optional)
 
+Core tools:
+  Read-only: Read, Grep, Glob, LS, TodoRead
+  Write:     Write, Edit, MultiEdit, NotebookEdit
+  Execute:   Bash, BashOutput, KillShell
+  Web:       WebFetch, WebSearch
+  Advanced:  Task, Skill, LSP, MCPSearch
+
 Delegation:
   Batch size: 5-8 items per agent
   Parallel: 2-4 agents simultaneously
@@ -697,6 +905,12 @@ Orchestration:
   Depth: Keep to 2 levels max
   Use: Multi-phase workflows, parallel specialists
 
+Advanced:
+  Background: Ctrl+B during agent execution
+  Models: haiku (fast), sonnet (balanced), opus (deep)
+  Weight: Keep agents <3k tokens for smooth chaining
+  Hooks: PreToolUse, PostToolUse, Stop events
+
 Resume agents:
   > Resume agent [agentId] and continue...
 ```
@@ -705,10 +919,18 @@ Resume agents:
 
 ## References
 
-- [Official Sub-Agents Documentation](https://code.claude.com/docs/en/sub-agents)
+### Official Documentation
+- [Sub-Agents Documentation](https://code.claude.com/docs/en/sub-agents)
 - [Plugins Documentation](https://code.claude.com/docs/en/plugins)
 - [Tools Documentation](https://code.claude.com/docs/en/tools)
 - [Hooks Documentation](https://code.claude.com/docs/en/hooks)
+- [CLI Reference](https://code.claude.com/docs/en/cli-reference)
+
+### Community Resources
+- [Awesome Claude Code Subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) - 100+ specialized agents
+- [Claude Code System Prompts](https://github.com/Piebald-AI/claude-code-system-prompts) - Internal prompt analysis
+- [Claude Code Built-in Tools Reference](https://www.vtrivedy.com/posts/claudecode-tools-reference/) - Comprehensive tool guide
+- [Claude Code Frameworks Guide (Dec 2025)](https://www.medianeth.dev/blog/claude-code-frameworks-subagents-2025) - Advanced patterns
 
 ---
 
