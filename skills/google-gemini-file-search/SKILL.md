@@ -4,6 +4,7 @@ description: |
   Build document Q&A with Gemini File Search - fully managed RAG with automatic chunking, embeddings, and citations. Upload 100+ file formats, query with natural language.
 
   Use when: document Q&A, searchable knowledge bases, semantic search. Troubleshoot: document immutability, storage quota (3x), chunking config, metadata limits (20 max), polling timeouts.
+user-invocable: true
 allowed-tools:
   - Bash
   - Read

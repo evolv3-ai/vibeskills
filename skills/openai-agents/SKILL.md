@@ -4,6 +4,7 @@ description: |
   Build AI applications with OpenAI Agents SDK - text agents, voice agents, multi-agent handoffs, tools with Zod schemas, guardrails, and streaming.
 
   Use when: building agents with tools, voice agents with WebRTC, multi-agent workflows, or troubleshooting MaxTurnsExceededError, tool call failures.
+user-invocable: true
 ---
 
 # OpenAI Agents SDK

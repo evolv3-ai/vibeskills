@@ -4,6 +4,7 @@ description: |
   Convert websites into LLM-ready markdown with Firecrawl v4 API. Handles JavaScript rendering, anti-bot bypass, and structured data extraction for RAG and AI applications.
 
   Use when: scraping websites, crawling sites, or troubleshooting content not loading, JavaScript rendering, or bot detection.
+user-invocable: true
 ---
 
 # Firecrawl Web Scraper Skill

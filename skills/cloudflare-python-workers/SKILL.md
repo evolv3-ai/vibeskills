@@ -4,6 +4,7 @@ description: |
   Build Python APIs on Cloudflare Workers using pywrangler CLI and WorkerEntrypoint class pattern. Includes Python Workflows for multi-step DAG automation. Prevents 8 documented errors.
 
   Use when: building Python serverless APIs, migrating Python to edge, or troubleshooting async errors, package compatibility, handler pattern mistakes.
+user-invocable: true
 ---
 
 # Cloudflare Python Workers

@@ -4,6 +4,7 @@ description: |
   Build Python web apps with Flask using application factory pattern, Blueprints, and Flask-SQLAlchemy. Covers project structure, authentication, and configuration management.
 
   Use when: creating Flask projects, organizing blueprints, or troubleshooting circular imports, context errors, or registration.
+user-invocable: true
 ---
 
 # Flask Skill

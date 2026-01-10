@@ -2,6 +2,7 @@
 name: cloudflare-browser-rendering
 description: |
   Add headless Chrome automation with Puppeteer/Playwright on Cloudflare Workers. Use when: taking screenshots, generating PDFs, web scraping, crawling sites, browser automation, or troubleshooting XPath errors, browser timeouts, binding not passed errors, or session limits.
+user-invocable: true
 ---
 
 # Cloudflare Browser Rendering - Complete Reference

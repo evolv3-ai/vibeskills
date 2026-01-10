@@ -4,6 +4,7 @@ description: |
   Build conversational AI voice agents with ElevenLabs Platform. Configure agents, tools, RAG knowledge bases, multi-voice, and Scribe STT across React, React Native, or Swift. Prevents 27 documented errors.
 
   Use when: building voice agents, AI phone systems, or troubleshooting @11labs deprecated, webhook errors, CSP violations.
+user-invocable: true
 ---
 
 # ElevenLabs Agents Platform

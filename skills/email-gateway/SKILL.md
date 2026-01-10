@@ -7,6 +7,7 @@ description: |
   Mailgun (developer webhooks), or SMTP2Go (reliable relay). Includes template patterns, webhook
   verification, attachment handling, and error recovery. Use when sending emails via API, handling
   bounces/complaints, or migrating between providers.
+user-invocable: true
 
 metadata:
   keywords:
