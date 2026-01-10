@@ -4,6 +4,7 @@ description: |
   Build autonomous AI agents with Claude Agent SDK. Structured outputs guarantee JSON schema validation, with plugins system and hooks for event-driven workflows. Prevents 12 documented errors.
 
   Use when: building coding agents, SRE systems, security auditors, or troubleshooting CLI not found, structured output validation, session forking errors.
+user-invocable: true
 ---
 
 # Claude Agent SDK - Structured Outputs & Error Prevention Guide

@@ -4,6 +4,7 @@ description: |
   Run LLMs and AI models on Cloudflare's GPU network with Workers AI. Includes Llama 4, Gemma 3, Mistral 3.1, Flux images, BGE embeddings, streaming, and AI Gateway. Handles 2025 breaking changes.
 
   Use when: implementing LLM inference, images, RAG, or troubleshooting AI_ERROR, rate limits, max_tokens, BGE pooling.
+user-invocable: true
 ---
 
 # Cloudflare Workers AI

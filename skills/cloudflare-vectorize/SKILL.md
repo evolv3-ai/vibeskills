@@ -4,6 +4,7 @@ description: |
   Build semantic search with Cloudflare Vectorize V2. Covers async mutations, 5M vectors/index, 31ms latency, returnMetadata enum changes, and V1 deprecation. Prevents 8 errors including dimension mismatches.
 
   Use when: building RAG or semantic search, troubleshooting returnMetadata, V2 timing, metadata index, or dimension errors.
+user-invocable: true
 ---
 
 # Cloudflare Vectorize

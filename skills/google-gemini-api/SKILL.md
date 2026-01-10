@@ -4,6 +4,7 @@ description: |
   Integrate Gemini API with @google/genai SDK (NOT deprecated @google/generative-ai). Text generation, multimodal (images/video/audio/PDFs), function calling, thinking mode, streaming. 1M input tokens.
 
   Use when: Gemini integration, multimodal AI, reasoning with thinking mode. Troubleshoot: SDK deprecation, model not found, context window, function calling errors.
+user-invocable: true
 ---
 
 # Google Gemini API - Complete Guide
