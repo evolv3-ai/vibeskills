@@ -563,10 +563,9 @@ Before committing, verify you DIDN'T make these mistakes:
 
 ## Learn More
 
-- [START_HERE.md](../START_HERE.md) - Workflow overview
+- [CONTRIBUTING.md](../CONTRIBUTING.md) - How to contribute
 - [ONE_PAGE_CHECKLIST.md](../ONE_PAGE_CHECKLIST.md) - Verification checklist
-- [planning/STANDARDS_COMPARISON.md](STANDARDS_COMPARISON.md) - Official standards
-- [CLOUDFLARE_SKILLS_AUDIT.md](../CLOUDFLARE_SKILLS_AUDIT.md) - Example audit
+- [STANDARDS_COMPARISON.md](STANDARDS_COMPARISON.md) - Official standards
 
 ---
 

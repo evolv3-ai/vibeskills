@@ -1,8 +1,8 @@
 # Claude Code Skills
 
-**60 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
+**63 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
 
-~50% token savings | 400+ errors prevented | Auto-discovered by Claude
+~60% token savings | 400+ errors prevented | Auto-discovered by Claude
 
 ---
 
@@ -65,10 +65,7 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 ./scripts/install-skill.sh my-skill
 ```
 
-**Guides**:
-- [CONTRIBUTING.md](CONTRIBUTING.md) — Full contribution guide
-- [templates/](templates/) — Starter templates
-- [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md) — Quality checklist
+**Guides**: [CONTRIBUTING.md](CONTRIBUTING.md) | [templates/](templates/) | [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
 
 ---
 
@@ -84,11 +81,10 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 
 ## Documentation
 
-- [START_HERE.md](START_HERE.md) — Navigation guide
-- [SKILLS_CATALOG.md](SKILLS_CATALOG.md) — All 60 skills with details
 - [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
-- [MARKETPLACE.md](MARKETPLACE.md) — Marketplace installation
-- [CLAUDE.md](CLAUDE.md) — Project standards
+- [CLAUDE.md](CLAUDE.md) — Project context
+- [docs/SKILLS_CATALOG.md](docs/SKILLS_CATALOG.md) — Full skill details
+- [docs/MARKETPLACE.md](docs/MARKETPLACE.md) — Marketplace installation
 
 ---
 

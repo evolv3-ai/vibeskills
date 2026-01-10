@@ -26,7 +26,7 @@
 
 ### Read These Files First
 
-1. **START_HERE.md** - Repository overview and orientation
+1. **README.md** - Repository overview
 2. **CLAUDE.md** - Project standards, tech stack preferences, global context
 3. **ONE_PAGE_CHECKLIST.md** - Quality standards reference
 4. **skills/[skill-name]/SKILL.md** - The actual implementation knowledge
@@ -36,13 +36,12 @@
 
 ```
 claude-skills/
-├── START_HERE.md              # ← Read first
+├── README.md                  # ← Repository overview
 ├── CLAUDE.md                  # ← Project context
-├── GEMINI_GUIDE.md            # ← You are here
+├── CONTRIBUTING.md            # How to contribute
 ├── ONE_PAGE_CHECKLIST.md      # Quality standards
-├── README.md                  # Public overview
 │
-├── skills/                    # ← 59 production skills
+├── skills/                    # ← 63 production skills
 │   ├── cloudflare-worker-base/
 │   ├── tailwind-v4-shadcn/
 │   ├── ai-sdk-core/
@@ -427,16 +426,13 @@ cp -r /home/jez/Documents/claude-skills/skills/cloudflare-worker-base/templates/
 
 ```bash
 # Get repository overview
-cat /home/jez/Documents/claude-skills/START_HERE.md
+cat /home/jez/Documents/claude-skills/README.md
 
 # Read project context
 cat /home/jez/Documents/claude-skills/CLAUDE.md
 
 # Check quality standards
 cat /home/jez/Documents/claude-skills/ONE_PAGE_CHECKLIST.md
-
-# View changelog
-cat /home/jez/Documents/claude-skills/CHANGELOG.md
 ```
 
 ### Version Checking (If You Can Run Bash)
@@ -882,8 +878,8 @@ ls /home/jez/Documents/claude-skills/skills/
 # Search skill names
 ls /home/jez/Documents/claude-skills/skills/ | grep -i "keyword"
 
-# Read START_HERE.md for overview
-cat /home/jez/Documents/claude-skills/START_HERE.md
+# Read README.md for overview
+cat /home/jez/Documents/claude-skills/README.md
 ```
 
 **Skill seems outdated?**
@@ -904,10 +900,10 @@ cat /home/jez/Documents/claude-skills/START_HERE.md
 ### Resources
 
 **Documentation**:
-- START_HERE.md - Orientation
+- README.md - Repository overview
 - CLAUDE.md - Project context
+- CONTRIBUTING.md - How to contribute
 - ONE_PAGE_CHECKLIST.md - Quality standards
-- QUICK_WORKFLOW.md - Skill creation guide
 
 **External**:
 - Official Skills: https://github.com/anthropics/skills
@@ -936,7 +932,7 @@ After reading this guide, you should be able to:
 - [ ] Recognize quality markers (versions, sources, metrics)
 - [ ] Combine multiple skills for complex requests
 - [ ] Follow "Common Errors Prevented" sections
-- [ ] Navigate repository structure (START_HERE, CLAUDE, etc.)
+- [ ] Navigate repository structure (README, CLAUDE, etc.)
 - [ ] Use current package versions
 - [ ] Apply production-tested patterns
 - [ ] Reference global context from CLAUDE.md
@@ -985,10 +981,15 @@ Multiple categories matched?
 
 ```
 # Core Documentation
-/home/jez/Documents/claude-skills/START_HERE.md
+/home/jez/Documents/claude-skills/README.md
 /home/jez/Documents/claude-skills/CLAUDE.md
-/home/jez/Documents/claude-skills/GEMINI_GUIDE.md (this file)
+/home/jez/Documents/claude-skills/CONTRIBUTING.md
 /home/jez/Documents/claude-skills/ONE_PAGE_CHECKLIST.md
+
+# Extended Docs (in docs/)
+/home/jez/Documents/claude-skills/docs/GEMINI_GUIDE.md (this file)
+/home/jez/Documents/claude-skills/docs/SKILLS_CATALOG.md
+/home/jez/Documents/claude-skills/docs/MARKETPLACE.md
 
 # Skills
 /home/jez/Documents/claude-skills/skills/[skill-name]/SKILL.md

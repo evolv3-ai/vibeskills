@@ -20,9 +20,9 @@ This is a curated collection of **production-tested Claude Code skills** for bui
 
 ## Quick Navigation
 
-**👋 First Time Here?** → Read [START_HERE.md](START_HERE.md)
-**🔨 Building a Skill?** → See [QUICK_WORKFLOW.md](QUICK_WORKFLOW.md)
+**🔨 Building a Skill?** → See [CONTRIBUTING.md](CONTRIBUTING.md)
 **✅ Verifying Work?** → Check [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
+**📚 All Skills** → See [docs/SKILLS_CATALOG.md](docs/SKILLS_CATALOG.md)
 
 ---
 
@@ -44,57 +44,33 @@ This repo aligns with **official Anthropic standards**:
 
 ```
 claude-skills/
-├── START_HERE.md                 # ← Read this first!
-├── CLAUDE.md                     # ← You are here
-├── GEMINI_GUIDE.md               # AI agent onboarding guide
-├── ONE_PAGE_CHECKLIST.md         # Quick verification
-├── QUICK_WORKFLOW.md             # 5-minute skill creation
 ├── README.md                     # Public-facing overview
-├── CONTRIBUTING.md               # Contribution guidelines
-├── MARKETPLACE.md                # Marketplace installation guide
-├── ATOMIC-SKILLS-SUMMARY.md      # Skill philosophy
+├── CLAUDE.md                     # ← You are here (project context)
+├── CONTRIBUTING.md               # How to contribute
+├── ONE_PAGE_CHECKLIST.md         # Quality verification
 ├── CHANGELOG.md                  # Version history
-├── SESSION.md                    # Working session state (gitignored)
-├── *_REPORT.md                   # Auto-generated reports (gitignored)
 ├── LICENSE                       # MIT License
-├── .gitignore                    # Git ignore patterns
 │
-├── skills/                       # ← All production skills (58 total)
+├── skills/                       # ← All 63 production skills
 │   ├── tailwind-v4-shadcn/       # Gold standard example
 │   ├── cloudflare-worker-base/   # Foundation skill
-│   ├── ai-sdk-core/              # AI integration
-│   ├── openai-agents/            # OpenAI Agents SDK
-│   ├── project-planning/         # Planning automation
-│   ├── project-session-management/ # Session handoff protocol
-│   ├── project-workflow/         # Slash commands (canonical source)
-│   │   └── commands/             # /explore-idea, /plan-project, etc.
-│   └── [52 more skills...]       # Run ls skills/ for full list
+│   └── [61 more skills...]       # Run ls skills/ for full list
 │
-├── commands/                     # ← Slash commands (symlinked to ~/.claude/commands/)
-│   ├── brief.md                  # /brief - Context preservation
-│   ├── explore-idea.md           # /explore-idea - Pre-planning exploration
-│   ├── plan-project.md           # /plan-project - Initial planning
-│   ├── plan-feature.md           # /plan-feature - Feature addition
-│   ├── wrap-session.md           # /wrap-session - End-of-session workflow
-│   ├── continue-session.md       # /continue-session - Resume session
-│   ├── workflow.md               # /workflow - Interactive guide
-│   ├── release.md                # /release - Pre-release safety checks
-│   └── README.md                 # Commands documentation
+├── commands/                     # Slash commands (symlinked to ~/.claude/commands/)
+│   ├── brief.md, explore-idea.md, plan-project.md, etc.
+│   └── README.md
 │
-├── .claude/                      # Claude Code configuration
-│   ├── settings.local.json       # Local preferences (not committed)
-│   └── agents/                   # Project-level custom agents
-│       ├── skill-auditor.md      # Deep audit skills vs official docs
-│       ├── version-checker.md    # Check/update package versions
-│       ├── skill-creator.md      # Scaffold new skills from templates
-│       ├── bulk-updater.md       # Batch operations across skills
-│       └── doc-validator.md      # Documentation quality checks
+├── .claude/agents/               # Custom agents for managing this repo
+│   ├── skill-auditor.md          # Deep audit vs official docs
+│   ├── version-checker.md        # Check/update package versions
+│   ├── skill-creator.md          # Scaffold new skills
+│   ├── bulk-updater.md           # Batch operations
+│   └── doc-validator.md          # Documentation quality
 │
-├── .claude-plugin/               # Marketplace metadata
-│   └── marketplace.json          # Auto-generated plugin manifest
-│
-├── docs/                         # Documentation
-│   └── JEZWEB_WORKFLOW.md        # Comprehensive workflow guide
+├── docs/                         # Extended documentation
+│   ├── SKILLS_CATALOG.md         # Full skill details
+│   ├── MARKETPLACE.md            # Marketplace installation
+│   └── GEMINI_GUIDE.md           # AI agent onboarding
 │
 ├── tools/                        # Utility scripts
 │   ├── statusline/               # Custom statusline scripts
@@ -195,7 +171,7 @@ This repository has three types of files:
 - `skills/project-workflow/commands/*.md` - Canonical workflow commands
 
 **Documentation**:
-- `*.md` files in root (README, CLAUDE, START_HERE, etc.)
+- `*.md` files in root (README, CLAUDE, CONTRIBUTING, etc.)
 - `planning/*.md` - Standards, research, roadmaps
 - `templates/` - Skill creation templates
 
@@ -669,7 +645,7 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 ## Getting Help
 
 **Documentation Issues?**
-- Check [START_HERE.md](START_HERE.md) for navigation
+- Check [README.md](README.md) for overview
 - Read [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md)
 - Review working examples in `skills/` directory
 
@@ -681,7 +657,6 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 **Want to Contribute?**
 - Read [CONTRIBUTING.md](CONTRIBUTING.md)
 - Use templates in `templates/`
-- Follow [QUICK_WORKFLOW.md](QUICK_WORKFLOW.md)
 - Verify with [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
 
 ---

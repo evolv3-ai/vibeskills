@@ -8,7 +8,7 @@
 
 Before starting a new skill, verify:
 
-- [ ] Read [START_HERE.md](START_HERE.md) for workflow overview
+- [ ] Read [CONTRIBUTING.md](CONTRIBUTING.md) for workflow overview
 - [ ] Read [planning/research-protocol.md](planning/research-protocol.md)
 - [ ] Copied template: `cp -r templates/skill-skeleton/ skills/my-skill/`
 - [ ] Checked skill doesn't already exist in this repo
@@ -315,7 +315,5 @@ I certify that:
 ---
 
 **Quick Links**:
-- [START_HERE.md](START_HERE.md) - Navigation
-- [QUICK_WORKFLOW.md](QUICK_WORKFLOW.md) - Step-by-step process
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 - [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) - What to avoid
-- [CLOUDFLARE_SKILLS_AUDIT.md](CLOUDFLARE_SKILLS_AUDIT.md) - Example audit
