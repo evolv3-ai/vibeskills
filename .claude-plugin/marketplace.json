@@ -6,8 +6,8 @@
   },
   "metadata": {
     "description": "Production-tested skills for Claude Code - Cloudflare, AI, React, Tailwind v4, and modern web development",
-    "version": "2.1.0",
-    "updated": "2025-12-15"
+    "version": "2.2.0",
+    "updated": "2026-01-11"
   },
   "plugins": [
     {
@@ -115,7 +115,7 @@
     },
     {
       "name": "tooling-skills",
-      "description": "Development tooling skills - MCP servers, project planning, session management, workflow automation, and skill development.",
+      "description": "Development tooling skills - MCP servers, project planning, session management, workflow automation, documentation, and skill development.",
       "source": "./",
       "skills": [
         "./skills/typescript-mcp",
@@ -124,6 +124,7 @@
         "./skills/project-planning",
         "./skills/project-session-management",
         "./skills/project-workflow",
+        "./skills/docs-workflow",
         "./skills/skill-creator",
         "./skills/skill-review",
         "./skills/open-source-contributions"
