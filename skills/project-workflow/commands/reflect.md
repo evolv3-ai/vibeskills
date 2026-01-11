@@ -169,6 +169,25 @@ Beyond documentation, look for processes worth **operationalizing**:
 3. **npm script** (`package.json`) - For project-specific dev tasks
 4. **Makefile target** - For build/deploy sequences
 5. **Skill template** - If it's a reusable pattern across projects
+6. **Custom agent** (`.claude/agents/thing.md`) - For autonomous workflows requiring reasoning
+
+**When to suggest a custom agent vs script/command:**
+
+| Characteristic | Script/Command | Custom Agent |
+|----------------|----------------|--------------|
+| Sequential steps only | ✅ | Overkill |
+| Requires reasoning/decisions | Use command | ✅ |
+| Needs parallel execution | ❌ | ✅ |
+| Research/exploration task | Use command | ✅ |
+| Benefits from fresh context | ❌ | ✅ |
+| Variable inputs, same pattern | Either | ✅ |
+
+**Agent indicators** (suggest custom agent when):
+- Process requires reasoning, not just execution
+- Multiple tool calls with conditional logic
+- Would benefit from parallel agent swarm
+- Research/exploration that accumulates knowledge
+- Task would benefit from isolated context (no baggage from main conversation)
 
 **When suggesting automation:**
 ```markdown
@@ -227,7 +246,8 @@ Show the user what was found in this format:
 1. **[Process name]**: [What we did manually]
    - Steps: ~[N] steps
    - Frequency: [How often we'd do this]
-   → Suggestion: Create [script/command/npm script] at [location]
+   - Reasoning required: [Yes/No]
+   → Suggestion: Create [script/command/agent] at [location]
 
 ---
 
@@ -240,6 +260,7 @@ Show the user what was found in this format:
 - [ ] Create [scripts/thing.sh]: [Brief description]
 - [ ] Add npm script "[name]": [Brief description]
 - [ ] Create slash command [/name]: [Brief description]
+- [ ] Create custom agent [.claude/agents/name.md]: [Brief description]
 
 Proceed? [Y/n/edit]
 ```
@@ -433,6 +454,34 @@ paths: "**/*.tsx", "**/*.jsx", "src/components/**"
 - If general UX/architecture → `~/.claude/insights/ui-patterns.md` or `docs/learnings.md`
 
 **Detection method**: Scan conversation for the pattern `★ Insight` to extract these automatically.
+
+### Example 12: Custom Agent Opportunity
+**Discovered**: "When auditing skills, we: check official docs, compare patterns, verify versions, check for deprecations, update content. This requires reasoning about accuracy and completeness."
+
+**Routing**: Suggest creating `.claude/agents/skill-auditor.md`
+- Requires reasoning (is this pattern still accurate?)
+- Benefits from fresh context (no baggage from main conversation)
+- Multiple tool calls with conditional logic (read docs → compare → decide)
+- Could run in parallel (audit multiple skills at once)
+
+**Agent template:**
+```yaml
+---
+name: skill-auditor
+description: "Skill content auditor. MUST BE USED when auditing skills. Use PROACTIVELY for knowledge validation."
+tools: [Read, Grep, Glob, Bash, WebFetch, Write, Edit]
+model: sonnet
+---
+
+## Goal
+Validate skill content against official documentation.
+
+## Process
+1. Read skill's SKILL.md
+2. Fetch official documentation
+3. Compare patterns and versions
+4. Report gaps and inaccuracies
+```
 
 ## Important Guidelines
 

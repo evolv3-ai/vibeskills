@@ -1,8 +1,8 @@
 # Claude Code Skills
 
-**60 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
+**63 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
 
-~50% token savings | 400+ errors prevented | Auto-discovered by Claude
+~60% token savings | 400+ errors prevented | Auto-discovered by Claude
 
 ---
 
@@ -56,6 +56,26 @@ You: "Yes"
 
 ---
 
+## Request a Skill
+
+**Want a skill we don't have?** [Open an issue](https://github.com/jezweb/claude-skills/issues/new?template=skill_request.md&title=Skill+Request:+) with the technology/framework and we'll build it.
+
+Popular requests get prioritized. No need to build it yourself unless you want to.
+
+---
+
+## Your Own Skills Repo
+
+Want your own skills ecosystem with your own authorship? **Fork this repo** or use it as a template:
+
+1. Fork → customize skills with your preferences
+2. Use our agents (`skill-auditor`, `version-checker`) to maintain currency
+3. Pull upstream updates when useful
+
+This works well if you maintain skills across multiple machines or want to publish your own collection.
+
+---
+
 ## Creating Skills
 
 **Quick start**:
@@ -65,10 +85,7 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 ./scripts/install-skill.sh my-skill
 ```
 
-**Guides**:
-- [CONTRIBUTING.md](CONTRIBUTING.md) — Full contribution guide
-- [templates/](templates/) — Starter templates
-- [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md) — Quality checklist
+**Guides**: [CONTRIBUTING.md](CONTRIBUTING.md) | [templates/](templates/) | [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
 
 ---
 
@@ -84,11 +101,10 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 
 ## Documentation
 
-- [START_HERE.md](START_HERE.md) — Navigation guide
-- [SKILLS_CATALOG.md](SKILLS_CATALOG.md) — All 60 skills with details
 - [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
-- [MARKETPLACE.md](MARKETPLACE.md) — Marketplace installation
-- [CLAUDE.md](CLAUDE.md) — Project standards
+- [CLAUDE.md](CLAUDE.md) — Project context
+- [docs/SKILLS_CATALOG.md](docs/SKILLS_CATALOG.md) — Full skill details
+- [docs/MARKETPLACE.md](docs/MARKETPLACE.md) — Marketplace installation
 
 ---
 

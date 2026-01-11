@@ -1,11 +1,10 @@
 ---
 name: cloudflare-vectorize
 description: |
-  Build semantic search with Cloudflare Vectorize V2 (Sept 2024 GA). Covers V2 breaking changes: async mutations,
-  5M vectors/index (was 200K), 31ms latency (was 549ms), returnMetadata enum, and V1 deprecation (Dec 2024).
+  Build semantic search with Cloudflare Vectorize V2. Covers async mutations, 5M vectors/index, 31ms latency, returnMetadata enum changes, and V1 deprecation. Prevents 8 errors including dimension mismatches.
 
-  Use when: migrating V1→V2, handling async mutations with mutationId, creating metadata indexes before insert,
-  or troubleshooting "returnMetadata must be 'all'", V2 timing issues, metadata index errors, dimension mismatches.
+  Use when: building RAG or semantic search, troubleshooting returnMetadata, V2 timing, metadata index, or dimension errors.
+user-invocable: true
 ---
 
 # Cloudflare Vectorize
@@ -13,9 +12,9 @@ description: |
 Complete implementation guide for Cloudflare Vectorize - a globally distributed vector database for building semantic search, RAG (Retrieval Augmented Generation), and AI-powered applications with Cloudflare Workers.
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-06
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup), cloudflare-workers-ai (for embeddings)
-**Latest Versions**: wrangler@4.54.0, @cloudflare/workers-types@4.20260103.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 **Token Savings**: ~65%
 **Errors Prevented**: 8
 **Dev Time Saved**: ~3 hours
@@ -364,6 +363,6 @@ Solution: V2 changed returnMetadata from boolean to string enum:
 ---
 
 **Status**: Production Ready ✅ (Vectorize V2 GA - September 2024)
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-01-09
 **Token Savings**: ~70%
 **Errors Prevented**: 10 (includes V2 breaking changes)

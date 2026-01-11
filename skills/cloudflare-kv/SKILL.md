@@ -2,17 +2,19 @@
 name: cloudflare-kv
 description: |
   Store key-value data globally with Cloudflare KV's edge network. Use when: caching API responses, storing configuration, managing user preferences, handling TTL expiration, or troubleshooting KV_ERROR, 429 rate limits, eventual consistency, or cacheTtl errors.
+user-invocable: true
 ---
 
 # Cloudflare Workers KV
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-24
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 
 **Recent Updates (2025)**:
 - **August 2025**: Architecture redesign (40x performance gain, <5ms p99 latency, hybrid storage with R2)
+- **April 2025**: Bulk reads API (retrieve up to 100 keys in single request, counts as 1 operation)
 - **January 2025**: Namespace limit increased (200 → 1,000 namespaces per account for Free and Paid plans)
 
 ---
@@ -424,5 +426,5 @@ do {
 
 ---
 
-**Last Updated**: 2025-11-24
-**Package Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+**Last Updated**: 2026-01-09
+**Package Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0

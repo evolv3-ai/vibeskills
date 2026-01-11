@@ -2,14 +2,15 @@
 name: cloudflare-durable-objects
 description: |
   Build stateful Durable Objects for real-time apps, WebSocket servers, coordination, and persistent state. Use when: implementing chat rooms, multiplayer games, rate limiting, session management, WebSocket hibernation, or troubleshooting class export, migration, WebSocket state loss, or binding errors.
+user-invocable: true
 ---
 
 # Cloudflare Durable Objects
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-23
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (recommended)
-**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 **Official Docs**: https://developers.cloudflare.com/durable-objects/
 
 **Recent Updates (2025)**:

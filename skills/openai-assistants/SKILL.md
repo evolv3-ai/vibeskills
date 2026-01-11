@@ -1,16 +1,17 @@
 ---
 name: openai-assistants
 description: |
-  Build stateful chatbots with OpenAI Assistants API v2 - Code Interpreter, File Search (10k files), Function Calling. ⚠️ Deprecated (sunset August 26, 2026); use openai-responses for new projects.
+  Build stateful chatbots with OpenAI Assistants API v2 - Code Interpreter, File Search (10k files), Function Calling. Deprecated (sunset August 2026); use openai-responses for new projects.
 
-  Use when: maintaining legacy chatbots, implementing RAG with vector stores, or troubleshooting "thread has active run", vector store delays, polling timeouts, or file upload errors.
+  Use when: maintaining legacy chatbots, implementing RAG with vector stores, or troubleshooting thread errors, vector store delays.
+user-invocable: true
 ---
 
 # OpenAI Assistants API v2
 
 **Status**: Production Ready (⚠️ Deprecated - Sunset August 26, 2026)
 **Package**: openai@6.15.0
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 **v1 Deprecated**: December 18, 2024
 **v2 Sunset**: August 26, 2026 (migrate to Responses API)
 
@@ -280,6 +281,6 @@ See `references/migration-from-v1.md`
 
 ---
 
-**Last Updated**: 2025-11-27
-**Package**: openai@6.9.1
-**Status**: Production Ready (⚠️ Deprecated - Sunset H1 2026)
+**Last Updated**: 2026-01-09
+**Package**: openai@6.15.0
+**Status**: Production Ready (⚠️ Deprecated - Sunset August 26, 2026)

@@ -305,6 +305,18 @@ Example prompts:
   - `pydantic` (validation)
   - `docket` (background task scheduling, optional)
 
+## Included Agents
+
+This skill includes **1 companion agent** for common workflows:
+
+| Agent | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| **mcp-scaffold** | Create MCP server projects | "create mcp server", "scaffold fastmcp project" |
+
+**Why use the agent?** Context hygiene. Project scaffolding generates many files - the agent runs in isolated context and returns a clean summary of what was created.
+
+---
+
 ## Related Skills
 
 - `openai-api` - OpenAI API integration

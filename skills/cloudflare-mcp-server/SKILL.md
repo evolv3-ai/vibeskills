@@ -1,9 +1,10 @@
 ---
 name: cloudflare-mcp-server
 description: |
-  Build Model Context Protocol (MCP) servers on Cloudflare Workers - the only platform with official remote MCP support. TypeScript-based with OAuth, Durable Objects, and WebSocket hibernation.
+  Build MCP servers on Cloudflare Workers - the only platform with official remote MCP support. TypeScript-based with OAuth, Durable Objects, and WebSocket hibernation. Prevents 22 documented errors.
 
-  Use when: deploying remote MCP servers, implementing OAuth (GitHub/Google), using dual transports (SSE/HTTP), or troubleshooting URL path mismatches, McpAgent exports, OAuth redirects, CORS issues.
+  Use when: deploying remote MCP servers, implementing OAuth, or troubleshooting URL path mismatches, McpAgent exports, CORS issues.
+user-invocable: true
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 
@@ -12,8 +13,8 @@ allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 Build and deploy **Model Context Protocol (MCP) servers** on Cloudflare Workers with TypeScript.
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-24
-**Latest Versions**: @modelcontextprotocol/sdk@1.22.0, @cloudflare/workers-oauth-provider@0.1.0, agents@0.2.23
+**Last Updated**: 2026-01-09
+**Latest Versions**: @modelcontextprotocol/sdk@1.25.2, @cloudflare/workers-oauth-provider@0.2.2, agents@0.3.3
 
 **Recent Updates (2025)**:
 - **September 2025**: Code Mode (agents write code vs calling tools, auto-generated TypeScript API from schema)
@@ -986,6 +987,6 @@ npx wrangler tail
 
 ---
 
-**Package Versions**: @modelcontextprotocol/sdk@1.22.0, @cloudflare/workers-oauth-provider@0.1.0, agents@0.2.23
-**Last Verified**: 2025-11-24
+**Package Versions**: @modelcontextprotocol/sdk@1.25.2, @cloudflare/workers-oauth-provider@0.2.2, agents@0.3.3
+**Last Verified**: 2026-01-09
 **Errors Prevented**: 22 documented issues (100% prevention rate)

@@ -1,19 +1,18 @@
 ---
 name: fastapi
 description: |
-  Build Python APIs with FastAPI, Pydantic v2, and SQLAlchemy 2.0. Covers project structure,
-  async patterns, JWT authentication, validation, and database integration with uv package manager.
+  Build Python APIs with FastAPI, Pydantic v2, and SQLAlchemy 2.0 async. Covers project structure, JWT auth, validation, and database integration with uv package manager.
 
-  Use when: creating Python APIs, setting up FastAPI projects, implementing JWT auth, configuring
-  SQLAlchemy async, or troubleshooting 422 validation errors, CORS issues, or async blocking.
+  Use when: creating Python APIs, implementing JWT auth, or troubleshooting 422 validation, CORS, or async blocking errors.
+user-invocable: true
 ---
 
 # FastAPI Skill
 
 Production-tested patterns for FastAPI with Pydantic v2, SQLAlchemy 2.0 async, and JWT authentication.
 
-**Latest Versions** (verified December 2025):
-- FastAPI: 0.123.2
+**Latest Versions** (verified January 2026):
+- FastAPI: 0.128.0
 - Pydantic: 2.11.7
 - SQLAlchemy: 2.0.30
 - Uvicorn: 0.35.0

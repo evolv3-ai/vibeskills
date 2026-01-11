@@ -1,25 +1,18 @@
 ---
 name: cloudflare-workflows
 description: |
-  Build durable workflows with Cloudflare Workflows (GA April 2025). Features step.do, step.sleep, waitForEvent,
-  Vitest testing, and runs for hours to days with automatic retries and state persistence.
+  Build durable workflows with Cloudflare Workflows (GA April 2025). Features step.do, step.sleep, waitForEvent, Vitest testing, automatic retries, and state persistence for long-running tasks.
 
-  Use when: creating long-running workflows, implementing retry logic, building event-driven processes,
-  testing workflows with cloudflare:test, coordinating API calls, or troubleshooting NonRetryableError,
-  I/O context errors, serialization failures.
-
-  Keywords: cloudflare workflows, workflows workers, durable execution, workflow step,
-  WorkflowEntrypoint, step.do, step.sleep, workflow retries, NonRetryableError,
-  workflow state, wrangler workflows, workflow events, long-running tasks, step.sleepUntil,
-  step.waitForEvent, workflow bindings, vitest testing, cloudflare:test, introspectWorkflowInstance
+  Use when: creating workflows, implementing retries, or troubleshooting NonRetryableError, I/O context, serialization errors.
+user-invocable: true
 ---
 
 # Cloudflare Workflows
 
 **Status**: Production Ready ✅ (GA since April 2025)
-**Last Updated**: 2025-11-25
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 
 **Recent Updates (2025)**:
 - **April 2025**: Workflows GA release - waitForEvent API, Vitest testing, CPU time metrics, 4,500 concurrent instances

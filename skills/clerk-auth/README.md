@@ -157,6 +157,18 @@ This skill includes **comprehensive testing documentation**:
 
 ---
 
+## Included Agents
+
+This skill includes **1 companion agent** for common workflows:
+
+| Agent | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| **clerk-setup** | Configure webhooks, test auth | "setup clerk", "configure clerk webhooks" |
+
+**Why use the agent?** Context hygiene. Clerk setup involves environment variables, webhook configuration, and provider setup - the agent handles the multi-step workflow and returns a clean checklist.
+
+---
+
 ## Package Versions (Verified 2025-10-22)
 
 - @clerk/nextjs@6.33.3

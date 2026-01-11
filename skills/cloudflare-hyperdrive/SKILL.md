@@ -1,15 +1,16 @@
 ---
 name: cloudflare-hyperdrive
 description: |
-  Connect Workers to PostgreSQL/MySQL with Hyperdrive's global pooling and caching. Use when: connecting to existing databases, setting up connection pools, using node-postgres/mysql2, integrating Drizzle/Prisma, or troubleshooting pool acquisition failures, TLS errors, nodejs_compat missing, or eval() disallowed.
+  Connect Workers to PostgreSQL/MySQL with Hyperdrive's global pooling and caching. Use when: connecting to existing databases, setting up connection pools, using node-postgres/mysql2, integrating Drizzle/Prisma, or troubleshooting pool acquisition failures, TLS errors, or nodejs_compat missing.
+user-invocable: true
 ---
 
 # Cloudflare Hyperdrive
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-23
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (recommended for Worker setup)
-**Latest Versions**: wrangler@4.50.0, pg@8.16.3+ (minimum), postgres@3.4.7, mysql2@3.15.3
+**Latest Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.8, mysql2@3.16.0
 
 **Recent Updates (2025)**:
 - **July 2025**: Configurable connection counts (min 5, max ~20 Free/~100 Paid)
@@ -487,6 +488,6 @@ wrangler hyperdrive update <id> --connection-string="postgres://new-creds..."
 
 ---
 
-**Last Updated**: 2025-11-23
-**Package Versions**: wrangler@4.50.0, pg@8.16.3+ (minimum), postgres@3.4.7, mysql2@3.15.3
+**Last Updated**: 2026-01-09
+**Package Versions**: wrangler@4.58.0, pg@8.16.3+ (minimum), postgres@3.4.8, mysql2@3.16.0
 **Production Tested**: Based on official Cloudflare documentation and community examples

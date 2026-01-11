@@ -1,14 +1,15 @@
 ---
 name: open-source-contributions
 description: |
-  Create maintainer-friendly pull requests for open source projects with clean code submissions and professional communication. Prevents 16 common mistakes that cause PR rejection.
+  Create maintainer-friendly pull requests with clean code and professional communication. Prevents 16 common mistakes that cause PR rejection.
 
-  Use when: contributing to public repositories, submitting PRs to community projects, migrating from contributor to maintainer workflows, or troubleshooting PR rejection, working on main branch errors, failing CI checks, or personal artifacts in commits.
+  Use when: contributing to open source, submitting PRs, or troubleshooting PR rejection, CI failures, or personal artifacts in commits.
+user-invocable: true
 ---
 
 # Open Source Contributions Skill
 
-**Version**: 1.2.0 | **Last Verified**: 2025-11-28 | **Production Tested**: ✅
+**Version**: 1.2.0 | **Last Verified**: 2026-01-09 | **Production Tested**: ✅
 
 ---
 
@@ -447,10 +448,10 @@ See bundled examples and scripts:
 
 ---
 
-**Production Tested**: ✅ Real-world open source contributions and maintainer feedback
+**Production Tested**: Real-world open source contributions and maintainer feedback
 
 **Token Efficiency**: ~70% savings vs trial-and-error
 
 **Errors Prevented**: 16 common mistakes
 
-**Last Verified**: 2025-11-28
+**Last Verified**: 2026-01-09

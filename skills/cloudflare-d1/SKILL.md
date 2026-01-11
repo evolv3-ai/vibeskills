@@ -2,14 +2,15 @@
 name: cloudflare-d1
 description: |
   Build with D1 serverless SQLite database on Cloudflare's edge. Use when: creating databases, writing SQL migrations, querying D1 from Workers, handling relational data, or troubleshooting D1_ERROR, statement too long, migration failures, or query performance issues.
+user-invocable: true
 ---
 
 # Cloudflare D1 Database
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-23
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251121.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0
 
 **Recent Updates (2025)**:
 - **Nov 2025**: Jurisdiction support (data localization compliance), remote bindings GA (wrangler@4.37.0+), automatic resource provisioning

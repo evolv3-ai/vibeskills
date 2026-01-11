@@ -4,6 +4,7 @@ description: |
   Build type-safe, file-based React routing with TanStack Router. Supports client-side navigation, route loaders, and TanStack Query integration.
 
   Use when implementing file-based routing patterns, building SPAs with TypeScript routing, or troubleshooting devtools dependency errors, type safety issues, or Vite bundling problems.
+user-invocable: true
 ---
 
 # TanStack Router
@@ -14,8 +15,8 @@ Type-safe, file-based routing for React SPAs with route-level data loading and T
 
 ## Quick Start
 
-**Last Updated**: 2026-01-06
-**Version**: @tanstack/react-router@1.144.0
+**Last Updated**: 2026-01-09
+**Version**: @tanstack/react-router@1.146.2
 
 ```bash
 npm install @tanstack/react-router @tanstack/router-devtools
@@ -283,10 +284,10 @@ function App() {
 - **Error**: Loader function not called on navigation
 - **Fix**: Ensure route exports `Route` constant: `export const Route = createFileRoute('/path')({ loader: ... })`
 
-**Issue #5: Memory Leak with TanStack Form**
+**Issue #5: Memory Leak with TanStack Form** (FIXED)
 - **Error**: Production crashes when using TanStack Form + Router
-- **Source**: GitHub Issue #5734 (known issue, still open as of v1.144)
-- **Workaround**: Use React Hook Form or Formik instead
+- **Source**: GitHub Issue #5734 (closed Jan 5, 2026)
+- **Resolution**: Fixed in latest versions of @tanstack/form and @tanstack/react-start. Update both packages to resolve.
 
 **Issue #6: Virtual Routes Index/Layout Conflict**
 - **Error**: route.tsx and index.tsx conflict when using `physical()` in virtual routing

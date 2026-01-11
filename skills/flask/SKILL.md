@@ -1,23 +1,22 @@
 ---
 name: flask
 description: |
-  Build Python web applications with Flask, using the application factory pattern, Blueprints,
-  and Flask-SQLAlchemy. Covers project structure, authentication, and configuration management.
+  Build Python web apps with Flask using application factory pattern, Blueprints, and Flask-SQLAlchemy. Covers project structure, authentication, and configuration management.
 
-  Use when: creating Flask projects, organizing with blueprints, implementing authentication,
-  or troubleshooting circular imports, application context errors, or blueprint registration.
+  Use when: creating Flask projects, organizing blueprints, or troubleshooting circular imports, context errors, or registration.
+user-invocable: true
 ---
 
 # Flask Skill
 
 Production-tested patterns for Flask with the application factory pattern, Blueprints, and Flask-SQLAlchemy.
 
-**Latest Versions** (verified December 2025):
+**Latest Versions** (verified January 2026):
 - Flask: 3.1.2
 - Flask-SQLAlchemy: 3.1.1
 - Flask-Login: 0.6.3
 - Flask-WTF: 1.2.2
-- Werkzeug: 3.1.3
+- Werkzeug: 3.1.5
 
 ---
 

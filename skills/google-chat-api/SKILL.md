@@ -1,15 +1,16 @@
 ---
 name: google-chat-api
 description: |
-  Build Google Chat bots and webhooks with Cards v2, interactive forms, Spaces/Members/Reactions APIs, and Cloudflare Workers integration. Includes webhook handlers, card builders, form validation, bearer token verification, rate limit handling, and dialog patterns.
+  Build Google Chat bots and webhooks with Cards v2, interactive forms, and Cloudflare Workers. Covers Spaces/Members/Reactions APIs, bearer token verification, and dialog patterns.
 
-  Use when creating Chat bots, managing spaces/members programmatically, workflow automation, or interactive forms, or troubleshooting bearer token errors, rate limit 429 errors, card schema validation, or webhook verification failures.
+  Use when: creating Chat bots, workflow automation, interactive forms. Troubleshoot: bearer token 401, rate limit 429, card schema validation, webhook failures.
+user-invocable: true
 ---
 
 # Google Chat API
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03 (Added: Spaces API, Members API, Reactions API, Rate Limits)
+**Last Updated**: 2026-01-09 (Added: Spaces API, Members API, Reactions API, Rate Limits)
 **Dependencies**: Cloudflare Workers (recommended), Web Crypto API for token verification
 **Latest Versions**: Google Chat API v1 (stable), Cards v2 (Cards v1 deprecated), wrangler@4.54.0
 
@@ -867,7 +868,7 @@ const spaces = await withRetry(() => listSpaces(accessToken))
 
 ---
 
-## Package Versions (Verified 2026-01-03)
+## Package Versions (Verified 2026-01-09)
 
 ```json
 {
@@ -875,8 +876,8 @@ const spaces = await withRetry(() => listSpaces(accessToken))
     "google-chat-cards": "^1.0.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260103.0",
-    "wrangler": "^4.54.0"
+    "@cloudflare/workers-types": "^4.20260109.0",
+    "wrangler": "^4.58.0"
   }
 }
 ```

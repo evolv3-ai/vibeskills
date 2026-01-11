@@ -1,30 +1,16 @@
 ---
 name: drizzle-orm-d1
 description: |
-  Build type-safe D1 databases with Drizzle ORM for Cloudflare Workers. Includes schema definition, migrations
-  with Drizzle Kit, relations, and D1 batch API patterns. Prevents 12 errors including SQL BEGIN failures.
+  Build type-safe D1 databases with Drizzle ORM. Includes schema definition, migrations with Drizzle Kit, relations, and D1 batch API patterns. Prevents 12 errors including SQL BEGIN failures and foreign key issues.
 
-  Use when: defining D1 schemas, managing migrations, writing type-safe queries, implementing relations or
-  prepared statements, using batch API for transactions, or troubleshooting D1_ERROR, BEGIN TRANSACTION,
-  foreign keys, migration apply, or schema inference errors.
-
-  Prevents 12 documented issues: D1 transaction errors (SQL BEGIN not supported), foreign key
-  constraint failures during migrations, module import errors with Wrangler, D1 binding not found,
-  migration apply failures, schema TypeScript inference errors, prepared statement caching issues,
-  transaction rollback patterns, TypeScript strict mode errors, drizzle.config.ts not found,
-  remote vs local database confusion, and wrangler.toml vs wrangler.jsonc mixing.
-
-  Keywords: drizzle orm, drizzle d1, type-safe sql, drizzle schema, drizzle migrations,
-  drizzle kit, orm cloudflare, d1 orm, drizzle typescript, drizzle relations, drizzle transactions,
-  drizzle query builder, schema definition, prepared statements, drizzle batch, migration management,
-  relational queries, drizzle joins, D1_ERROR, BEGIN TRANSACTION d1, foreign key constraint,
-  migration failed, schema not found, d1 binding error
+  Use when: defining D1 schemas, managing migrations, or troubleshooting D1_ERROR, BEGIN TRANSACTION, foreign keys.
+user-invocable: true
 ---
 
 # Drizzle ORM for Cloudflare D1
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-06
+**Last Updated**: 2026-01-09
 **Latest Version**: drizzle-orm@0.45.1, drizzle-kit@0.31.8, better-sqlite3@12.5.0
 **Dependencies**: cloudflare-d1, cloudflare-worker-base
 

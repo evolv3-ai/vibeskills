@@ -1,9 +1,10 @@
 ---
 name: tinacms
 description: |
-  Build content-heavy sites with Git-backed TinaCMS. Provides visual editing and content management for blogs, documentation, and marketing sites with non-technical editors.
+  Build content-heavy sites with Git-backed TinaCMS. Provides visual editing for blogs, documentation, and marketing sites. Supports Next.js, Vite+React, and Astro with self-hosting options.
 
-  Use when implementing Next.js, Vite+React, or Astro CMS setups, self-hosting on Cloudflare Workers, or troubleshooting ESbuild compilation errors, module resolution issues, or Docker binding problems.
+  Use when setting up CMS with non-technical editors or troubleshooting ESbuild compilation, module resolution, or Docker binding issues.
+user-invocable: true
 allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
 ---
 
@@ -11,8 +12,8 @@ allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
 
 Git-backed headless CMS with visual editing for content-heavy sites.
 
-**Last Updated**: 2025-11-28
-**Versions**: tinacms@2.10.0, @tinacms/cli@1.12.5
+**Last Updated**: 2026-01-09
+**Versions**: tinacms@3.2.0, @tinacms/cli@2.0.7
 
 ---
 

@@ -265,6 +265,18 @@ drizzle-orm-d1/
 
 ---
 
+## Included Agents
+
+This skill includes **1 companion agent** for common workflows:
+
+| Agent | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| **drizzle-migrate** | Generate → push → verify migrations | "run drizzle migrations", "push schema changes" |
+
+**Why use the agent?** Context hygiene. Migration outputs and schema diffs can be verbose - the agent runs in isolated context and returns a clean summary.
+
+---
+
 ## Related Skills
 
 - **cloudflare-d1** - Raw D1 SQL queries and setup

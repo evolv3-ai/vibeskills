@@ -1,17 +1,18 @@
 ---
 name: openai-responses
 description: |
-  Build agentic AI applications with OpenAI's Responses API - the stateful successor to Chat Completions. Preserves reasoning across turns for 5% better multi-turn performance and 40-80% improved cache utilization.
+  Build agentic AI with OpenAI Responses API - stateful conversations with preserved reasoning, built-in tools (Code Interpreter, File Search, Web Search), and MCP integration.
 
-  Use when: building AI agents with persistent reasoning, integrating MCP servers for external tools, using built-in Code Interpreter/File Search/Web Search, managing stateful conversations, implementing background processing for long tasks, or migrating from Chat Completions to gain polymorphic outputs and server-side tools.
+  Use when: building agents with persistent reasoning, using server-side tools, or migrating from Chat Completions for better multi-turn performance.
+user-invocable: true
 ---
 
 # OpenAI Responses API
 
 **Status**: Production Ready
-**Last Updated**: 2025-11-27
+**Last Updated**: 2026-01-09
 **API Launch**: March 2025
-**Dependencies**: openai@6.9.1 (Node.js) or fetch API (Cloudflare Workers)
+**Dependencies**: openai@6.15.0 (Node.js) or fetch API (Cloudflare Workers)
 
 ---
 
@@ -37,7 +38,7 @@ OpenAI's unified interface for agentic applications, launched **March 2025**. Pr
 ## Quick Start
 
 ```bash
-npm install openai@6.9.1
+npm install openai@6.15.0
 ```
 
 ```typescript

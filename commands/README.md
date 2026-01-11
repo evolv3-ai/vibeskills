@@ -1,231 +1,55 @@
 # Claude Code Slash Commands
 
-Ten slash commands for automating project exploration, planning, session workflow, knowledge capture, skill creation, deployment, and release safety with Claude Code.
+This directory contains **orphan commands** - specialized commands for managing the claude-skills repository itself. These are niche tools not needed by most users.
 
-## ⚠️ New Installation Method
+## Plugin System (2026-01-11)
 
-These commands are now bundled as the **project-workflow** skill!
+Commands are accessed via the plugin system with namespaced format:
 
-### Recommended: Install via Marketplace
-
-```bash
-# Add the marketplace
-/plugin marketplace add https://github.com/jezweb/claude-skills
-
-# Install project-workflow skill (includes all 7 commands)
-/plugin install project-workflow@claude-skills
+```
+/bundle-name:command-name
 ```
 
-All commands will be automatically available in Claude Code.
+### Bundle → Command Examples
 
-### Alternative: Manual Installation
+| Bundle | Command | Access |
+|--------|---------|--------|
+| `project` | plan-feature | `/project:plan-feature` |
+| `project` | docs-init | `/project:docs-init` |
+| `cloudflare` | deploy | `/cloudflare:deploy` |
+| `frontend` | setup | `/frontend:setup` |
+| `auth` | setup | `/auth:setup` |
+| `database` | init | `/database:init` |
+| `mcp` | init | `/mcp:init` |
 
-If you prefer manual installation, copy commands to your `.claude/commands/` directory:
+### Installing Bundles
 
 ```bash
-# From the claude-skills repo
-cp skills/project-workflow/commands/explore-idea.md ~/.claude/commands/
-cp skills/project-workflow/commands/plan-project.md ~/.claude/commands/
-cp skills/project-workflow/commands/plan-feature.md ~/.claude/commands/
-cp skills/project-workflow/commands/wrap-session.md ~/.claude/commands/
-cp skills/project-workflow/commands/continue-session.md ~/.claude/commands/
-cp skills/project-workflow/commands/workflow.md ~/.claude/commands/
-cp skills/project-workflow/commands/release.md ~/.claude/commands/
-cp commands/reflect.md ~/.claude/commands/
+# Add marketplace (one-time)
+/plugin marketplace add jezweb/claude-skills
+
+# Install bundles you need
+/plugin install project      # Most-used: plan-feature, docs-init, etc.
+/plugin install cloudflare   # Cloudflare Workers development
+/plugin install ai           # AI/LLM integration
+/plugin install frontend     # UI development
+/plugin install auth         # Authentication
+/plugin install database     # Database/storage
+/plugin install mcp          # MCP server development
+/plugin install cms          # Content management
+/plugin install backend      # Python backends
+/plugin install contrib      # Skill/open-source development
 ```
 
-Commands are immediately available in Claude Code after copying.
+## Orphan Commands (This Directory)
 
-**Note:** This directory (`/commands/`) is maintained for reference and manual installation. The canonical source is now `skills/project-workflow/commands/`.
+These commands are specific to the claude-skills repository and not bundled with any plugin:
 
-## Commands
-
-### Exploration Command
-
-#### `/explore-idea`
-
-**Purpose**: Collaborative exploration and brainstorming for new project ideas (PRE-planning phase)
-
-**Usage**: Type `/explore-idea` when you have a rough idea and want to validate approach, research options, and create decision-ready brief
-
-**What it does**:
-1. Engages in free-flowing conversation to understand your vision
-2. Conducts heavy research (Explore agents, Context7 MCP, WebSearch)
-3. Validates tech stack and approach
-4. Challenges assumptions and prevents scope creep
-5. Creates PROJECT_BRIEF.md with validated decisions
-6. Recommends: Proceed/Pause/Pivot
-7. Seamlessly hands off to /plan-project if proceeding
-
-**Time savings**: 10-15 minutes per project idea (research + validation + scope management)
-
-**When to use**:
-- You have rough idea but not validated approach
-- Multiple tech options and unsure which fits
-- Want research/validation before committing to build
-- Need scope management before detailed planning
-
-**When to skip**:
-- You have crystal-clear requirements and validated stack (use /plan-project directly)
-
----
-
-### Planning Commands
-
-#### `/plan-project`
-
-**Purpose**: Automate initial project planning for NEW projects (POST-exploration phase)
-
-**Usage**: Type `/plan-project` after you've decided on project requirements (or after `/explore-idea`)
-
-**What it does**:
-1. Checks for PROJECT_BRIEF.md (from /explore-idea) and uses it as context
-2. Invokes project-planning skill to generate IMPLEMENTATION_PHASES.md
-3. Creates SESSION.md automatically
-4. Creates initial git commit with planning docs
-5. Shows formatted planning summary
-6. Asks permission to start Phase 1
-7. Optionally pushes to remote
-
-**Time savings**: 5-7 minutes per new project (15-20 manual steps → 1 command)
-
----
-
-#### `/plan-feature`
-
-**Purpose**: Add feature to existing project by generating and integrating new phases
-
-**Usage**: Type `/plan-feature` when you want to add a new feature to an existing project
-
-**What it does**:
-1. Verifies prerequisites (SESSION.md + IMPLEMENTATION_PHASES.md exist)
-2. Checks current phase status (warns if in progress)
-3. Gathers feature requirements (5 questions)
-4. Generates new phases via project-planning skill
-5. Integrates into IMPLEMENTATION_PHASES.md (handles phase renumbering)
-6. Updates SESSION.md with new pending phases
-7. Updates related docs (DATABASE_SCHEMA.md, API_ENDPOINTS.md if needed)
-8. Creates git commit for feature planning
-9. Shows formatted summary
-
-**Time savings**: 7-10 minutes per feature addition (25-30 manual steps → 1 command)
-
----
-
-### Session Management Commands
-
-#### `/wrap-session`
-
-**Purpose**: Automate end-of-session workflow
-
-**Usage**: Type `/wrap-session` in Claude Code
-
-**What it does**:
-1. Uses Task agent to analyze current session state
-2. Updates SESSION.md with progress
-3. Detects and updates relevant docs (CHANGELOG.md, ARCHITECTURE.md, etc.)
-4. Creates structured git checkpoint commit
-5. Outputs formatted handoff summary
-6. Optionally pushes to remote
-
-**Time savings**: 2-3 minutes per wrap-up (10-15 manual steps → 1 command)
-
----
-
-### `/continue-session`
-
-**Purpose**: Automate start-of-session context loading
-
-**Usage**: Type `/continue-session` in Claude Code
-
-**What it does**:
-1. Uses Explore agent to load session context (SESSION.md + planning docs)
-2. Shows recent git history (last 5 commits)
-3. Displays formatted session summary (phase, progress, Next Action)
-4. Shows verification criteria if in "Verification" stage
-5. Optionally opens "Next Action" file
-6. Asks permission to continue or adjust direction
-
-**Time savings**: 1-2 minutes per resume (5-8 manual reads → 1 command)
-
----
-
-### Knowledge Capture Commands
-
-#### `/reflect`
-
-**Purpose**: Self-reflection to capture operational knowledge before it's lost to context clearing
-
-**Usage**: Type `/reflect` before compacting context, after completing significant work, or when valuable learnings have accumulated
-
-**What it does**:
-1. Self-analyzes current conversation for operational knowledge
-2. Identifies workflows, patterns, tool sequences, corrections, discoveries
-3. Identifies **automation opportunities** - recurring processes worth scripting
-4. Categorizes each learning by appropriate destination
-5. Routes to: ~/.claude/CLAUDE.md (universal), ./CLAUDE.md (project), skills, docs/learnings.md, or SESSION.md
-6. Suggests creating scripts/commands for repeatable processes
-7. Presents findings with proposed destinations
-8. Applies updates and creates automation after user confirmation
-
-**Knowledge types captured**:
-- **Workflows**: Multi-step processes that achieved outcomes
-- **Patterns**: Reusable approaches to common problems
-- **Tool Sequences**: Effective tool combinations and order of operations
-- **Corrections**: What didn't work → what did work
-- **Discoveries**: New capabilities or undocumented behaviors
-- **Automation Opportunities**: Recurring processes worth scripting (suggests shell scripts, npm scripts, slash commands)
-
-**Time savings**: Preserves 5-15 minutes of operational learning per session (otherwise lost on context clear)
-
-**When to use**:
-- Before `/compact` or context clearing
-- After completing a significant task successfully
-- When you've discovered an effective workflow
-- Anytime important process knowledge has accumulated
-
-**When to skip**:
-- Session was purely routine (no new learnings)
-- All knowledge is already in commits/docs
-- Quick Q&A session with no process insights
-
-**Output**: Categorized learnings with routing suggestions, optional file updates
-
----
-
-### Helper Commands
-
-#### `/workflow`
-
-**Purpose**: Interactive guide to the workflow system
-
-**Usage**: Type `/workflow` when you want to understand or navigate the workflow commands
-
-**What it does**:
-1. Shows overview of all 7 commands
-2. Asks what you're trying to do
-3. Provides context-aware guidance
-4. Shows decision trees (when to use which command)
-5. Offers to execute the appropriate command
-6. Points to comprehensive documentation
-
-**When to use**:
-- First time using the workflow system
-- Unsure which command to use
-- Want to see workflow examples
-- Need quick reference
-
-**Output**: Interactive guidance, optional command execution, reference to docs/JEZWEB_WORKFLOW.md
-
-**Time savings**: Instant navigation to correct command (vs reading docs)
-
----
-
-#### `/create-skill`
+### `/create-skill`
 
 **Purpose**: Scaffold a new Claude Code skill from template
 
-**Usage**: Type `/create-skill my-skill-name` when you want to create a new skill
+**Usage**: `/create-skill my-skill-name`
 
 **What it does**:
 1. Validates skill name (lowercase-hyphen-case, max 40 chars)
@@ -235,267 +59,84 @@ Commands are immediately available in Claude Code after copying.
 5. Applies type-specific customizations
 6. Creates README.md with auto-trigger keywords
 7. Runs metadata check
-8. Installs skill (symlinks to ~/.claude/skills/)
+8. Installs skill
 
-**Time savings**: 5-10 minutes per skill (manual setup + remembering structure → 1 command)
-
-**When to use**:
-- Creating a new skill from scratch
-- Want proper directory structure
-- Need type-specific template guidance
-
-**When to skip**:
-- Copying/adapting an existing skill
-- Just need quick edit to existing skill
-
-**Related**: Use `skill-creator` skill for deeper guidance on designing effective skills (descriptions, token efficiency, freedom levels)
-
-**Output**: Complete skill directory structure, installed and ready to fill with content
+**When to use**: Creating a new skill from scratch
 
 ---
 
-#### `/release`
+### `/review-skill`
 
-**Purpose**: Pre-release safety checks for GitHub publishing
+**Purpose**: Quality review and audit of an existing skill
 
-**Usage**: Type `/release` when ready to publish project to GitHub or create public release
+**Usage**: `/review-skill skill-name`
 
 **What it does**:
+1. Checks SKILL.md structure and metadata
+2. Validates package versions against latest
+3. Reviews error documentation
+4. Checks template completeness
+5. Suggests improvements
 
-**Phase 1: Critical Safety (BLOCKERS)**
-1. Scans for secrets (API keys, tokens, passwords)
-2. Checks for personal artifacts (SESSION.md, planning/, screenshots/)
-3. Verifies git remote URL (pushing to correct repo)
-
-**Phase 2: Documentation Validation (REQUIRED)**
-4. Checks LICENSE file exists (creates if missing)
-5. Validates README completeness (>100 words, key sections)
-6. Checks CONTRIBUTING.md (recommended for >500 LOC)
-7. Checks CODE_OF_CONDUCT (recommended for >1000 LOC)
-
-**Phase 3: Configuration Validation**
-8. Validates .gitignore (essential patterns present)
-9. Checks package.json completeness (name, version, license, etc.)
-10. Verifies git branch (warns if on main/master)
-
-**Phase 4: Quality Checks (NON-BLOCKING)**
-11. Tests build (if build script exists)
-12. Checks dependency vulnerabilities (npm audit)
-13. Warns about large files (>1MB)
-
-**Phase 5: Release Readiness Report**
-- Comprehensive report with blockers/warnings/recommendations
-- Safe to release verdict
-
-**Phase 6-8: Auto-Fix & Publish**
-- Offers to fix issues (create LICENSE, update README, etc.)
-- Creates release preparation commit
-- Optional: Creates git tag and GitHub release
-
-**Time savings**: 10-15 minutes per release (comprehensive checks + automation)
-
-**When to use**:
-- Ready to push project to public GitHub
-- Before creating GitHub release
-- Want to ensure no secrets leaked
-- Need to validate documentation
-
-**When to skip**:
-- Private repository (some checks less critical)
-- Already manually verified everything
-
-**Output**: Release readiness report, optional auto-fixes, git commit, GitHub release
+**When to use**: Before publishing a skill update
 
 ---
 
-### Deployment Commands
+### `/audit`
 
-#### `/deploy`
+**Purpose**: Multi-agent audit swarm for parallel skill verification
 
-**Purpose**: Automated commit, push, and deploy for Cloudflare Workers projects
-
-**Usage**: Type `/deploy` in a Cloudflare Workers project when ready to ship changes
+**Usage**: `/audit` or `/audit skill-name`
 
 **What it does**:
+1. Launches parallel agents to audit multiple skills
+2. Checks versions, metadata, content quality
+3. Generates consolidated report
 
-**Phase 1: Pre-flight Checks**
-1. Verifies wrangler.jsonc/toml exists (Cloudflare project)
-2. Runs `npm run build` (fails fast if build broken)
-3. Runs `npx tsc --noEmit` if TypeScript project
-
-**Phase 2: Commit & Push**
-4. Stages all changes
-5. Generates conventional commit message from diff
-6. Commits with Claude Code signature
-7. Pushes to remote
-
-**Phase 3: Deploy**
-8. Runs `npx wrangler deploy`
-9. Captures Worker URL from output
-
-**Phase 4: Report**
-10. Shows summary: commit hash, push destination, Worker URL
-11. Reports any warnings from wrangler
-
-**Time savings**: 2-3 minutes per deploy (manual steps → single command)
-
-**When to use**:
-- Ready to deploy Cloudflare Worker changes
-- Want automated commit message generation
-- Need consistent deploy workflow
-
-**When to skip**:
-- Non-Cloudflare projects (Vercel, Firebase, etc.)
-- Need manual control over commit message
-- Want to review changes before committing
-
-**Output**: Deploy summary with commit, push, and Worker URL
+**When to use**: Quarterly maintenance, bulk skill auditing
 
 ---
 
-## Requirements
+### `/deep-audit`
 
-**Planning Commands**:
-- Project description (discussed with Claude)
-- Git repository initialized (recommended)
-- For `/plan-feature`: Existing SESSION.md and IMPLEMENTATION_PHASES.md
+**Purpose**: Deep content validation against official documentation
 
-**Session Management Commands**:
-- `SESSION.md` file in project root (created by `/plan-project` or `project-session-management` skill)
-- `IMPLEMENTATION_PHASES.md` in project (optional but recommended)
-- Git repository initialized
+**Usage**: `/deep-audit skill-name`
 
-## Integration
+**What it does**:
+1. Fetches official documentation for the skill's technology
+2. Compares patterns and versions
+3. Identifies knowledge gaps or outdated content
+4. Suggests corrections and updates
 
-These commands work together and integrate with planning/session skills:
-- **Planning**: `project-planning` skill generates IMPLEMENTATION_PHASES.md
-- **Session**: `project-session-management` skill provides SESSION.md protocol
-- **Agents**: Commands use Claude Code's built-in Task, Explore, and Plan agents
-- Manual workflow still available if preferred
-
-## Complete Workflow
-
-**Full workflow** (with exploration):
-```
-1. Rough idea → /explore-idea → [Creates PROJECT_BRIEF.md] → Decision
-2. If proceeding → /plan-project → [Reads brief, creates IMPLEMENTATION_PHASES.md + SESSION.md]
-3. Start Phase 1 → Work on phases
-4. Context full → /reflect → [Captures learnings] → /wrap-session → [git checkpoint]
-5. New session → /continue-session → [Loads context, continues from "Next Action"]
-6. Need feature → /plan-feature → [Adds phases to existing plan]
-7. Repeat wrap → resume cycle
-8. Ready to publish → /release → [Safety checks, sanitize, docs] → GitHub release
-```
-
-**Quick workflow** (clear requirements):
-```
-Clear requirements → /plan-project → Work → /wrap-session → /continue-session → /release
-```
-
-**Helper workflows**:
-```
-Need guidance? → /workflow → [Interactive guide to commands]
-Capture learnings? → /reflect → [Extracts operational knowledge → routes to docs]
-Release project? → /release → [Safety checks + GitHub release]
-```
-
-**Complete Documentation**: See `docs/JEZWEB_WORKFLOW.md` for comprehensive guide with examples, decision trees, troubleshooting, and real-world workflows.
-
-## Features
-
-**`/explore-idea`**:
-- ✅ Free-flowing conversational exploration (not rigid questionnaire)
-- ✅ Heavy automated research (Explore agents, Context7 MCP, WebSearch)
-- ✅ Tech stack validation
-- ✅ Scope management and assumption challenges
-- ✅ Creates PROJECT_BRIEF.md with validated decisions
-- ✅ Recommends proceed/pause/pivot
-- ✅ Seamless handoff to /plan-project
-
-**`/plan-project`**:
-- ✅ Checks for PROJECT_BRIEF.md (from /explore-idea)
-- ✅ Invokes project-planning skill automatically
-- ✅ Creates SESSION.md from generated phases
-- ✅ Structured git commit format
-- ✅ Formatted planning summary
-- ✅ Asks permission before starting Phase 1
-
-**`/plan-feature`**:
-- ✅ Checks current phase status
-- ✅ Gathers requirements (5 questions)
-- ✅ Generates new phases via skill
-- ✅ Handles phase renumbering automatically
-- ✅ Updates all relevant docs
-- ✅ Smart integration into existing plan
-
-**`/wrap-session`**:
-- ✅ Auto-updates SESSION.md
-- ✅ Smart doc detection
-- ✅ Structured git checkpoint format
-- ✅ Comprehensive error handling
-
-**`/continue-session`**:
-- ✅ Multi-file context loading
-- ✅ Stage-aware (shows verification checklist when needed)
-- ✅ Detects uncommitted changes
-- ✅ Optional "Next Action" file opening
-
-**`/reflect`**:
-- ✅ Self-analyzes conversation for operational knowledge
-- ✅ Categorizes: workflows, patterns, tool sequences, corrections, discoveries
-- ✅ Identifies automation opportunities (recurring processes)
-- ✅ Smart routing to appropriate destinations
-- ✅ Routes to: CLAUDE.md (global/project), skills, docs/learnings.md, SESSION.md
-- ✅ Suggests scripts/commands for repeatable processes
-- ✅ Shows proposed changes before applying
-- ✅ Matches existing file styles when inserting
-- ✅ Prevents duplicate knowledge entries
-
-**`/workflow`**:
-- ✅ Interactive guidance based on user context
-- ✅ Shows decision trees (which command to use)
-- ✅ Offers to execute appropriate command
-- ✅ Quick reference card
-- ✅ Points to comprehensive documentation
-
-**`/release`**:
-- ✅ Comprehensive secrets scanning (gitleaks integration)
-- ✅ Personal artifacts detection and cleanup
-- ✅ Remote URL verification (prevent wrong repo push)
-- ✅ LICENSE file validation (creates if missing)
-- ✅ README completeness checks
-- ✅ .gitignore validation
-- ✅ package.json completeness
-- ✅ Build testing
-- ✅ Dependency vulnerability scanning
-- ✅ Large file warnings
-- ✅ Release readiness report
-- ✅ Auto-fix capabilities
-- ✅ GitHub release creation (optional)
-
-**`/deploy`**:
-- ✅ Cloudflare Workers project detection
-- ✅ Pre-flight build and TypeScript checks
-- ✅ Automatic conventional commit message generation
-- ✅ Git stage, commit, and push
-- ✅ Wrangler deploy execution
-- ✅ Worker URL extraction and reporting
-- ✅ Comprehensive error handling
-
-## Total Time Savings
-
-**45-75 minutes per project lifecycle**:
-- Exploration: 10-15 minutes (explore-idea)
-- Planning: 5-7 minutes (plan-project)
-- Feature additions: 7-10 minutes each (plan-feature)
-- Session cycles: 3-5 minutes each (wrap + resume)
-- Knowledge capture: 5-15 minutes per session (reflect)
-- Deployments: 2-3 minutes each (deploy)
-- Release safety: 10-15 minutes (release)
-- Workflow navigation: Instant (workflow)
+**When to use**: Major version updates, accuracy verification
 
 ---
 
-**Version**: 5.1.0
-**Last Updated**: 2025-12-12
+## Installation (Orphan Commands Only)
+
+For orphan commands, copy to your `.claude/commands/` directory:
+
+```bash
+cp commands/create-skill.md ~/.claude/commands/
+cp commands/review-skill.md ~/.claude/commands/
+cp commands/audit.md ~/.claude/commands/
+cp commands/deep-audit.md ~/.claude/commands/
+```
+
+## Related Bundles
+
+| Bundle | Description | Commands |
+|--------|-------------|----------|
+| `project` | Project lifecycle management | 13 commands (plan-feature, docs-init, etc.) |
+| `cloudflare` | Cloudflare platform | 3 commands (deploy, init, mcp-init) |
+| `frontend` | UI development | 2 commands (setup, init) |
+| `auth` | Authentication | 2 commands (setup) |
+| `database` | Database/storage | 1 command (init) |
+| `mcp` | MCP server development | 1 command (init) |
+
+---
+
+**Version**: 7.0.0
+**Last Updated**: 2026-01-11
 **Author**: Jeremy Dawes | Jezweb

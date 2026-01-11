@@ -1,17 +1,10 @@
 ---
 name: cloudflare-worker-base
 description: |
-  Set up Cloudflare Workers with Hono routing, Vite plugin, and Static Assets using production-tested patterns.
-  Prevents 8 errors: export syntax, routing conflicts, HMR crashes, gradual rollout asset mismatches, and free tier 429s.
+  Set up Cloudflare Workers with Hono routing, Vite plugin, and Static Assets. Prevents 8 errors including export syntax, routing conflicts, HMR crashes, and free tier 429s.
 
-  Use when: creating Workers projects, configuring Hono or Vite for Workers, deploying with Wrangler,
-  adding Static Assets with SPA fallback, or troubleshooting export syntax, API route conflicts, scheduled
-  handlers, or HMR race conditions.
-
-  Keywords: Cloudflare Workers, CF Workers, Hono, wrangler, Vite, Static Assets, @cloudflare/vite-plugin,
-  wrangler.jsonc, ES Module, run_worker_first, SPA fallback, API routes, serverless, edge computing,
-  "Cannot read properties of undefined", "Static Assets 404", "A hanging Promise was canceled",
-  "Handler does not export", deployment fails, routing not working, HMR crashes
+  Use when: creating Workers projects, configuring Hono/Vite, or troubleshooting export syntax, API route conflicts, or HMR issues.
+user-invocable: true
 ---
 
 # Cloudflare Worker Base Stack
@@ -19,7 +12,7 @@ description: |
 **Production-tested**: cloudflare-worker-base-test (https://cloudflare-worker-base-test.webfonts.workers.dev)
 **Last Updated**: 2026-01-03
 **Status**: Production Ready ✅
-**Latest Versions**: hono@4.11.3, @cloudflare/vite-plugin@1.17.1, vite@7.3.0, wrangler@4.54.0
+**Latest Versions**: hono@4.11.3, @cloudflare/vite-plugin@1.17.1, vite@7.3.1, wrangler@4.54.0
 
 **Recent Updates (2025-2026)**:
 - **Wrangler 4.55+**: Auto-config for frameworks (`wrangler deploy --x-autoconfig`)
@@ -42,7 +35,7 @@ npm create cloudflare@latest my-worker -- --type hello-world --ts --git --deploy
 # 2. Install dependencies
 cd my-worker
 npm install hono@4.11.3
-npm install -D @cloudflare/vite-plugin@1.17.1 vite@7.3.0
+npm install -D @cloudflare/vite-plugin@1.17.1 vite@7.3.1
 
 # 3. Create wrangler.jsonc
 {
@@ -232,6 +225,28 @@ const { valid, userId } = await env.AUTH.verifyToken(authHeader)
 - **Self-bindings**: In `wrangler dev`, shows as `[connected]` for same-Worker calls
 
 
+## Commands
+
+### `/deploy` - One-Command Deploy Pipeline
+
+**Use when**: Ready to commit, push, and deploy your Cloudflare Worker in one step.
+
+**Does**:
+1. **Pre-flight**: Verifies wrangler config, checks for changes, builds, runs TypeScript check
+2. **Commit & Push**: Stages changes, generates conventional commit message, pushes to remote
+3. **Deploy**: Runs `wrangler deploy`, captures Worker URL
+4. **Report**: Shows commit hash, branch, deployed URL, any warnings
+
+**Time savings**: 2-3 min per deploy cycle
+
+**Edge Cases Handled**:
+- No changes to commit → skips to deploy
+- Build script missing → warns and continues
+- No remote configured → reports error with suggestion
+- TypeScript errors → stops and reports
+
+---
+
 ## Bundled Resources
 
 **Templates**: Complete setup files in `templates/` directory (wrangler.jsonc, vite.config.ts, package.json, tsconfig.json, src/index.ts, public/index.html, styles.css, script.js)
@@ -258,7 +273,7 @@ const { valid, userId } = await env.AUTH.verifyToken(authHeader)
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.17.1",
     "@cloudflare/workers-types": "^4.20260103.0",
-    "vite": "^7.2.4",
+    "vite": "^7.3.1",
     "wrangler": "^4.54.0",
     "typescript": "^5.9.3"
   }

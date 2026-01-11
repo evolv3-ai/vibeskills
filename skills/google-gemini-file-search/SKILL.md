@@ -1,9 +1,10 @@
 ---
 name: google-gemini-file-search
 description: |
-  Build document Q&A and searchable knowledge bases with Google Gemini File Search - fully managed RAG with automatic chunking, embeddings, and citations. Upload 100+ file formats (PDF, Word, Excel, code), configure semantic search, and query with natural language.
+  Build document Q&A with Gemini File Search - fully managed RAG with automatic chunking, embeddings, and citations. Upload 100+ file formats, query with natural language.
 
-  Use when: building document Q&A systems, creating searchable knowledge bases, implementing semantic search without managing embeddings, indexing large document collections (100+ formats), or troubleshooting document immutability errors (delete+re-upload required), storage quota issues (3x input size for embeddings), chunking configuration (500 tokens/chunk recommended), metadata limits (20 key-value pairs max), indexing cost surprises ($0.15/1M tokens one-time), operation polling timeouts (wait for done: true), force delete errors, or model compatibility (Gemini 2.5 Pro/Flash only).
+  Use when: document Q&A, searchable knowledge bases, semantic search. Troubleshoot: document immutability, storage quota (3x), chunking config, metadata limits (20 max), polling timeouts.
+user-invocable: true
 allowed-tools:
   - Bash
   - Read
@@ -984,7 +985,7 @@ npm run dev
 ---
 
 **Skill Version:** 1.0.0
-**Last Verified:** 2025-11-26
-**Package Version:** @google/genai ^1.30.0 (minimum 1.29.0 required)
+**Last Verified:** 2026-01-09
+**Package Version:** @google/genai ^1.35.0 (minimum 1.29.0 required)
 **Token Savings:** ~65%
 **Errors Prevented:** 8

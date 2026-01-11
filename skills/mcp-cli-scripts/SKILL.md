@@ -1,19 +1,18 @@
 ---
 name: mcp-cli-scripts
 description: |
-  Build CLI scripts alongside MCP servers for terminal environments. Scripts provide file I/O, batch processing, caching,
-  and richer output formats that remote MCP servers cannot offer. Includes templates for TypeScript scripts and SCRIPTS.md.
+  Build CLI scripts alongside MCP servers for terminal environments. File I/O, batch processing, caching, richer output formats. Templates for TypeScript scripts and SCRIPTS.md.
 
-  Use when: creating MCP server companion scripts, adding batch processing to MCP tools, saving MCP results to files,
-  building CLI wrappers for APIs, or troubleshooting "context too large", "no file access", or batch input handling.
+  Use when: MCP companion scripts, batch processing, saving results to files, CLI API wrappers. Troubleshoot: context too large, no file access, batch input.
+user-invocable: true
 ---
 
 # MCP CLI Scripts Pattern
 
 **Status**: Production Ready
-**Last Updated**: 2025-12-27
+**Last Updated**: 2026-01-09
 **Dependencies**: tsx (dev dependency)
-**Latest Versions**: tsx@4.19.2
+**Current Versions**: tsx@4.21.0
 
 ---
 
@@ -214,13 +213,13 @@ cp ~/.claude/skills/mcp-cli-scripts/rules/mcp-cli-scripts.md .claude/rules/
 ## Dependencies
 
 **Required**:
-- tsx@4.19.2 - TypeScript execution without compilation
+- tsx@4.21.0 - TypeScript execution without compilation
 
 Add to package.json:
 ```json
 {
   "devDependencies": {
-    "tsx": "^4.19.2"
+    "tsx": "^4.21.0"
   }
 }
 ```
@@ -234,12 +233,12 @@ Add to package.json:
 
 ---
 
-## Package Versions (Verified 2025-12-27)
+## Package Versions (Verified 2026-01-09)
 
 ```json
 {
   "devDependencies": {
-    "tsx": "^4.19.2"
+    "tsx": "^4.21.0"
   }
 }
 ```

@@ -1,16 +1,17 @@
 ---
 name: openai-api
 description: |
-  Build with OpenAI's stateless APIs - Chat Completions (GPT-5.2, GPT-5.1, o3, o4-mini), Realtime API (voice), Batch API (50% savings), Embeddings, Images (DALL-E 3), Audio (Whisper + TTS), and Moderation. Node.js SDK and fetch for Cloudflare Workers.
+  Build with OpenAI stateless APIs - Chat Completions (GPT-5.2, o3), Realtime voice, Batch API (50% savings), Embeddings, DALL-E 3, Whisper, and TTS.
 
-  Use when: implementing chat with GPT-5.2/5.1/o3/o4-mini, Realtime voice API (WebSocket), Batch API for cost savings, xhigh reasoning (GPT-5.2), streaming responses, function calling/tools, structured outputs, embeddings for RAG, DALL-E 3 images, Whisper transcription, TTS (13 voices), or troubleshooting rate limits (429), API keys (401), streaming errors.
+  Use when: implementing GPT-5 chat, streaming, function calling, embeddings for RAG, or troubleshooting rate limits (429), API errors.
+user-invocable: true
 ---
 
 # OpenAI API - Complete Guide
 
 **Version**: Production Ready ✅
 **Package**: openai@6.15.0
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 
 ---
 
@@ -55,7 +56,7 @@ description: |
 ### Installation
 
 ```bash
-npm install openai@6.9.1
+npm install openai@6.15.0
 ```
 
 ### Environment Setup
@@ -954,7 +955,7 @@ response.headers.get('x-ratelimit-reset-requests');
 ## Dependencies
 
 ```bash
-npm install openai@6.9.1
+npm install openai@6.15.0
 ```
 
 **Environment**: `OPENAI_API_KEY=sk-...`

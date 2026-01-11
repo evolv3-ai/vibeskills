@@ -2,6 +2,7 @@
 name: cloudflare-browser-rendering
 description: |
   Add headless Chrome automation with Puppeteer/Playwright on Cloudflare Workers. Use when: taking screenshots, generating PDFs, web scraping, crawling sites, browser automation, or troubleshooting XPath errors, browser timeouts, binding not passed errors, or session limits.
+user-invocable: true
 ---
 
 # Cloudflare Browser Rendering - Complete Reference
@@ -9,9 +10,9 @@ description: |
 Production-ready knowledge domain for building browser automation workflows with Cloudflare Browser Rendering.
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-06
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: @cloudflare/puppeteer@1.0.4 (July 2025), @cloudflare/playwright@1.0.0 (Playwright v1.55 GA Sept 2025), wrangler@4.50.0
+**Latest Versions**: @cloudflare/puppeteer@1.0.4, @cloudflare/playwright@1.1.0, wrangler@4.58.0
 
 **Recent Updates (2025)**:
 - **Sept 2025**: Playwright v1.55 GA, Stagehand framework support (Workers AI), /links excludeExternalLinks param
@@ -404,7 +405,7 @@ export default {
 **Billing GA**: August 20, 2025
 
 **Free Tier**: 10 min/day, 3 concurrent, 3 launches/min, 60s timeout
-**Paid Tier**: 10 hrs/month included ($0.09/hr after), 10 concurrent avg ($2.00/browser after), 30 launches/min, 60s-10min timeout
+**Paid Tier**: 10 hrs/month included ($0.09/hr after), 30 concurrent ($2.00/browser after), 30 launches/min, 60s-10min timeout
 
 **Concurrency Calculation**: Monthly average of daily peak usage (e.g., 15 browsers avg = (15 - 10 included) × $2.00 = $10.00/mo)
 
@@ -735,7 +736,7 @@ Deep-dive documentation:
 ```json
 {
   "dependencies": {
-    "@cloudflare/playwright": "^1.0.0"
+    "@cloudflare/playwright": "^1.1.0"
   }
 }
 ```

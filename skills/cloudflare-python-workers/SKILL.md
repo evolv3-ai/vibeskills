@@ -1,19 +1,18 @@
 ---
 name: cloudflare-python-workers
 description: |
-  Build Python APIs on Cloudflare Workers using pywrangler CLI and WorkerEntrypoint class pattern.
-  Includes Python Workflows for multi-step DAG automation with @step.do decorators.
+  Build Python APIs on Cloudflare Workers using pywrangler CLI and WorkerEntrypoint class pattern. Includes Python Workflows for multi-step DAG automation. Prevents 8 documented errors.
 
-  Use when: building Python serverless APIs, migrating Python code to edge, using Python ML libraries,
-  or creating durable workflows. Prevents async errors, package compatibility issues, handler pattern mistakes.
+  Use when: building Python serverless APIs, migrating Python to edge, or troubleshooting async errors, package compatibility, handler pattern mistakes.
+user-invocable: true
 ---
 
 # Cloudflare Python Workers
 
 **Status**: Beta (requires `python_workers` compatibility flag)
 **Runtime**: Pyodide (Python 3.12+ compiled to WebAssembly)
-**Package Versions**: workers-py@1.7.0, workers-runtime-sdk@0.3.1, wrangler@4.54.0
-**Last Verified**: 2026-01-03
+**Package Versions**: workers-py@1.7.0, workers-runtime-sdk@0.3.1, wrangler@4.58.0
+**Last Verified**: 2026-01-09
 
 ## Quick Start (5 Minutes)
 
@@ -546,7 +545,7 @@ See [Cloudflare FastAPI example](https://developers.cloudflare.com/workers/langu
 {
   "workers-py": "1.7.0",
   "workers-runtime-sdk": "0.3.1",
-  "wrangler": "4.54.0"
+  "wrangler": "4.58.0"
 }
 ```
 

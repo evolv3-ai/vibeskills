@@ -1,14 +1,15 @@
 ---
 name: project-workflow
 description: |
-  Seven integrated slash commands for complete project lifecycle: /explore-idea (validation), /plan-project (planning docs), /plan-feature (add features), /wrap-session (checkpoint), /continue-session (resume), /workflow (guidance), /release (safety checks).
+  Nine integrated slash commands for complete project lifecycle: /explore-idea, /plan-project, /plan-feature, /wrap-session, /continue-session, /workflow, /release, /brief, /reflect.
 
-  Use when: starting new projects, managing sessions across context windows, adding features to existing projects, or preparing releases with safety checks. Saves 35-55 minutes per project lifecycle.
+  Use when starting projects, managing sessions across context windows, capturing learnings, or preparing releases. Saves 35-55 minutes per lifecycle.
+user-invocable: true
 ---
 
 # Project Workflow Skill
 
-7 integrated slash commands for complete project lifecycle automation: idea validation → planning → execution → session management → release.
+9 integrated slash commands for complete project lifecycle automation: idea validation → planning → execution → session management → context preservation → release.
 
 **Time savings**: 35-55 minutes per project lifecycle
 
@@ -96,11 +97,37 @@ description: |
 
 ---
 
+### 8. `/brief` - Context Preservation Document
+
+**Use when**: Before clearing context, to preserve key decisions and requirements for future sessions.
+
+**Creates**: `docs/brief-[slug].md` with extracted information from current conversation.
+
+**Does**: Analyzes conversation → extracts what's being built, decisions made, technical details → creates organized markdown file → optionally creates GitHub issue for tracking.
+
+**Time savings**: 3-5 min
+
+---
+
+### 9. `/reflect` - Capture Operational Knowledge
+
+**Use when**: Before context compaction, after completing significant work, or when valuable learnings accumulated.
+
+**Does**: Reviews conversation → identifies workflows discovered, patterns learned, tool sequences, corrections made → routes each learning to appropriate destination (rules, CLAUDE.md, skills, docs) → optionally suggests automation (scripts, commands, custom agents).
+
+**Key Feature**: Considers whether processes should become custom agents when they require reasoning/decisions, benefit from parallel execution, or involve research/exploration.
+
+**Time savings**: 5-10 min
+
+---
+
 ## Workflow Examples
 
-**Full**: /explore-idea → /plan-project → work → /wrap-session → /continue-session → /plan-feature (if needed) → repeat → /release
+**Full**: /explore-idea → /plan-project → work → /wrap-session → /continue-session → /plan-feature (if needed) → repeat → /reflect → /release
 
 **Quick** (clear requirements): /plan-project → work → /wrap-session → /continue-session → /release
+
+**Context Preservation**: /brief (before clearing context), /reflect (capture learnings)
 
 **Helpers**: /workflow (guidance), /plan-feature (add feature), /release (publish)
 
@@ -146,6 +173,15 @@ Work on phases
     ↓
 Continue wrap → resume cycle
     ↓
+CONTEXT PRESERVATION
+/brief (before clearing context)
+    ↓
+    Creates docs/brief-[slug].md
+    ↓
+/reflect (capture learnings)
+    ↓
+    Routes knowledge to rules, docs, CLAUDE.md
+    ↓
 RELEASE PHASE
 /release (when ready to publish)
     ↓
@@ -170,8 +206,10 @@ HELPER
 | `/continue-session` | 1-2 min | Context loading, git history review, next action display |
 | `/workflow` | Instant | Navigation, decision trees, command selection |
 | `/release` | 10-15 min | Secret scanning, doc validation, build testing, release creation |
+| `/brief` | 3-5 min | Context extraction, decisions capture, markdown generation |
+| `/reflect` | 5-10 min | Learning extraction, knowledge routing, automation suggestions |
 
-**Total per project lifecycle:** 35-55 minutes
+**Total per project lifecycle:** 45-70 minutes
 
 ---
 
@@ -202,6 +240,12 @@ HELPER
 ---
 
 ## Version History
+
+**1.1.0** (2026-01-11)
+- Added `/brief` command for context preservation
+- Added `/reflect` command for capturing operational knowledge
+- `/reflect` now suggests custom agents for processes requiring reasoning
+- Total commands: 9
 
 **1.0.0** (2025-11-12)
 - Initial release

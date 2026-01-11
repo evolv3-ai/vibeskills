@@ -1,18 +1,17 @@
 ---
 name: azure-auth
 description: |
-  Microsoft Entra ID (Azure AD) authentication for React SPAs with MSAL.js and Cloudflare Workers backend JWT validation. Full-stack pattern: MSAL React for frontend auth flows, jose library for Workers token validation (MSAL.js doesn't work in Workers).
+  Microsoft Entra ID (Azure AD) authentication for React SPAs with MSAL.js and Cloudflare Workers JWT validation using jose library. Full-stack pattern with Authorization Code Flow + PKCE.
 
-  CRITICAL: Azure AD JWKS endpoint is NOT at standard .well-known/jwks.json - must fetch from openid-configuration first. MSAL v3.0.23 + msal-browser v4.27.0 use Authorization Code Flow with PKCE (no implicit flow).
-
-  Use when: implementing Microsoft/Azure AD SSO, troubleshooting AADSTS50058 infinite loops, AADSTS700084 refresh token expired, React Router v6 redirect loops, NextJS no_cached_authority_error, or validating Entra ID tokens in Cloudflare Workers.
+  Use when: implementing Microsoft SSO, troubleshooting AADSTS50058 loops, AADSTS700084 refresh token errors, React Router redirects, or validating Entra ID tokens in Workers.
+user-invocable: true
 ---
 
 # Azure Auth - Microsoft Entra ID for React + Cloudflare Workers
 
-**Package Versions**: @azure/msal-react@3.0.23, @azure/msal-browser@4.27.0, jose@5.9.6
+**Package Versions**: @azure/msal-react@3.0.23, @azure/msal-browser@4.27.0, jose@6.1.3
 **Breaking Changes**: Azure AD B2C sunset (May 2025 - complete), ADAL retirement (Sept 2025 - complete), MSAL v2→v3 migration
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 
 ---
 

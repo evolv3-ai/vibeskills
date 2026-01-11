@@ -1,13 +1,10 @@
 ---
 name: fastmcp
 description: |
-  Build MCP servers in Python with FastMCP framework to expose tools, resources, and prompts to LLMs. Supports
-  storage backends (memory/disk/Redis), middleware, OAuth Proxy, OpenAPI integration, and FastMCP Cloud deployment.
+  Build MCP servers in Python with FastMCP to expose tools, resources, and prompts to LLMs. Supports storage backends, middleware, OAuth Proxy, OpenAPI integration, and FastMCP Cloud deployment. Prevents 25+ errors.
 
-  Use when: creating MCP servers, defining tools or resources, implementing OAuth authentication, configuring
-  storage backends for tokens/cache, adding middleware for logging/rate limiting, deploying to FastMCP Cloud,
-  or troubleshooting module-level server, storage, lifespan, middleware order, circular imports, or OAuth errors.
-
+  Use when: creating MCP servers, or troubleshooting module-level server, storage, lifespan, middleware, or OAuth errors.
+user-invocable: true
 ---
 
 # FastMCP - Build MCP Servers in Python
@@ -677,7 +674,8 @@ FASTMCP_LOG_LEVEL=DEBUG fastmcp dev  # Debug logging
 
 **Official:** https://github.com/jlowin/fastmcp, https://fastmcp.cloud, https://modelcontextprotocol.io, Context7: `/jlowin/fastmcp`
 **Related Skills:** openai-api, claude-api, cloudflare-worker-base, typescript-mcp
-**Package Versions:** fastmcp>=2.14.2, Python>=3.10, httpx, pydantic, py-key-value-aio, cryptography
+**Package Versions:** fastmcp>=2.14.2 (PyPI), Python>=3.10, httpx, pydantic, py-key-value-aio, cryptography
+**Last Updated**: 2026-01-09
 
 **17 Key Takeaways:**
 1. Module-level server export (FastMCP Cloud)

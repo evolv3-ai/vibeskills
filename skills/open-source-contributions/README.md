@@ -310,6 +310,18 @@ Don't use for:
 
 ---
 
+## Included Agents
+
+This skill includes **1 companion agent** for common workflows:
+
+| Agent | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| **pr-prepare** | Lint → test → format → prepare PR | "prepare pull request", "ready for PR" |
+
+**Why use the agent?** Context hygiene. Pre-PR checks generate verbose lint/test output - the agent runs all checks and returns a clean pass/fail summary with actionable items.
+
+---
+
 ## Related Skills
 
 **Complementary Skills:**

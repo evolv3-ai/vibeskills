@@ -241,6 +241,18 @@ react-native-expo/
 
 ---
 
+## Included Agents
+
+This skill includes **1 companion agent** for common workflows:
+
+| Agent | Purpose | Trigger Phrases |
+|-------|---------|-----------------|
+| **expo-build** | Build → test → submit to stores | "build expo app", "submit to app store", "eas build" |
+
+**Why use the agent?** Context hygiene. EAS build logs are extremely verbose (500+ lines) - the agent runs in isolated context and returns a clean summary with build IDs and download links.
+
+---
+
 ## Related Skills
 
 - **react-hook-form-zod** - Form validation with React Hook Form and Zod (works in React Native)

@@ -1,9 +1,10 @@
 ---
 name: TanStack Table
 description: |
-  Build headless data tables with TanStack Table v8. Provides server-side pagination, filtering, sorting, and virtualization patterns for Cloudflare Workers + D1 databases.
+  Build headless data tables with TanStack Table v8. Server-side pagination, filtering, sorting, and virtualization for Cloudflare Workers + D1.
 
-  Use when building tables with large datasets, coordinating with TanStack Query, or troubleshooting state management issues, pagination coordination errors, or performance bottlenecks.
+  Use when building tables with large datasets, coordinating with TanStack Query, or fixing state management or performance issues.
+user-invocable: true
 ---
 
 # TanStack Table
@@ -14,8 +15,8 @@ Headless data tables with server-side pagination, filtering, sorting, and virtua
 
 ## Quick Start
 
-**Last Updated**: 2026-01-06
-**Versions**: @tanstack/react-table@8.21.3, @tanstack/react-virtual@3.13.12
+**Last Updated**: 2026-01-09
+**Versions**: @tanstack/react-table@8.21.3, @tanstack/react-virtual@3.13.18
 
 ```bash
 npm install @tanstack/react-table@latest

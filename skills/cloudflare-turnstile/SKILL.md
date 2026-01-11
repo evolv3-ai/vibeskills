@@ -2,14 +2,15 @@
 name: cloudflare-turnstile
 description: |
   Add bot protection with Turnstile (CAPTCHA alternative). Use when: protecting forms, securing login/signup, preventing spam, migrating from reCAPTCHA, integrating with React/Next.js/Hono, implementing E2E tests, or debugging CSP errors, token validation failures, or error codes 100*/300*/600*.
+user-invocable: true
 ---
 
 # Cloudflare Turnstile
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-24
+**Last Updated**: 2026-01-09
 **Dependencies**: None (optional: @marsidev/react-turnstile for React)
-**Latest Versions**: @marsidev/react-turnstile@1.3.1, turnstile-types@1.2.3
+**Latest Versions**: @marsidev/react-turnstile@1.4.1, turnstile-types@1.2.3
 
 **Recent Updates (2025)**:
 - **March 2025**: Upgraded Turnstile Analytics with TopN statistics (7 dimensions: hostnames, browsers, countries, user agents, ASNs, OS, source IPs), anomaly detection, enhanced bot behavior monitoring
@@ -378,7 +379,7 @@ turnstile.render('#container', {
 ## Dependencies
 
 **Required:** None (loads from CDN)
-**React:** @marsidev/react-turnstile@1.3.1 (Cloudflare-recommended), turnstile-types@1.2.3
+**React:** @marsidev/react-turnstile@1.4.1 (Cloudflare-recommended), turnstile-types@1.2.3
 **Other:** vue-turnstile, ngx-turnstile, svelte-turnstile, @nuxtjs/turnstile
 
 ---

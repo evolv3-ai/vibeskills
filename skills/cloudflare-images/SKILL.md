@@ -2,14 +2,15 @@
 name: cloudflare-images
 description: |
   Store and transform images with Cloudflare Images API and transformations. Use when: uploading images, implementing direct creator uploads, creating variants, generating signed URLs, optimizing formats (WebP/AVIF), transforming via Workers, or debugging CORS, multipart, or error codes 9401-9413.
+user-invocable: true
 ---
 
 # Cloudflare Images
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-23
+**Last Updated**: 2026-01-09
 **Dependencies**: Cloudflare account with Images enabled
-**Latest Versions**: Cloudflare Images API v2, @cloudflare/workers-types@4.20251121.0
+**Latest Versions**: Cloudflare Images API v2, @cloudflare/workers-types@4.20260108.0
 
 **Recent Updates (2025)**:
 - **August 2025**: AI Face Cropping GA (`gravity=face` with `zoom` control, GPU-based RetinaFace, 99.4% precision)
@@ -557,6 +558,6 @@ In-depth documentation Claude can load as needed:
 
 ## Package Versions
 
-**Last Verified**: 2025-11-23
+**Last Verified**: 2026-01-09
 **API Version**: v2 (direct uploads), v1 (standard uploads)
-**Optional**: @cloudflare/workers-types@4.20251121.0
+**Optional**: @cloudflare/workers-types@4.20260108.0

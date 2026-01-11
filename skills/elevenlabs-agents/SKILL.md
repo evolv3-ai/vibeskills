@@ -1,14 +1,10 @@
 ---
 name: elevenlabs-agents
 description: |
-  Build conversational AI voice agents with ElevenLabs Platform using React, JavaScript, React Native, or Swift SDKs.
-  Configure agents, tools (client/server/MCP), RAG knowledge bases, multi-voice, and Scribe real-time STT.
+  Build conversational AI voice agents with ElevenLabs Platform. Configure agents, tools, RAG knowledge bases, multi-voice, and Scribe STT across React, React Native, or Swift. Prevents 27 documented errors.
 
-  Use when: building voice chat interfaces, implementing AI phone agents with Twilio, configuring agent workflows
-  or tools, adding RAG knowledge bases, testing with CLI "agents as code", or troubleshooting deprecated @11labs
-  packages, Android audio cutoff, CSP violations, dynamic variables, or WebRTC config.
-
-  Keywords: ElevenLabs Agents, ElevenLabs voice agents, AI voice agents, conversational AI, @elevenlabs/react, @elevenlabs/client, @elevenlabs/react-native, @elevenlabs/elevenlabs-js, @elevenlabs/agents-cli, elevenlabs SDK, voice AI, TTS, text-to-speech, ASR, speech recognition, turn-taking model, WebRTC voice, WebSocket voice, ElevenLabs conversation, agent system prompt, agent tools, agent knowledge base, RAG voice agents, multi-voice agents, pronunciation dictionary, voice speed control, elevenlabs scribe, @11labs deprecated, Android audio cutoff, CSP violation elevenlabs, dynamic variables elevenlabs, case-sensitive tool names, webhook authentication, post-call webhook, webhook payload schema, ElevenLabs-Signature header, transcript null message, call_successful string, webhook cost credits USD, charging llm_price, user context extraction, llm_usage tokens, data_collection_results, evaluation_criteria_results, feedback thumb_rating, interrupted turn, source_medium, rag_retrieval_info, has_audio has_user_audio has_response_audio
+  Use when: building voice agents, AI phone systems, or troubleshooting @11labs deprecated, webhook errors, CSP violations.
+user-invocable: true
 ---
 
 # ElevenLabs Agents Platform
@@ -30,7 +26,7 @@ ElevenLabs migrated to new scoped packages in August 2025. **Current packages:**
 npm install @elevenlabs/react@0.12.3           # React SDK (Dec 2025: localization, Scribe fixes)
 npm install @elevenlabs/client@0.12.2          # JavaScript SDK (Dec 2025: localization)
 npm install @elevenlabs/react-native@0.5.7     # React Native SDK (Dec 2025: mic fixes, speed param)
-npm install @elevenlabs/elevenlabs-js@2.28.0   # Base SDK (Dec 2025: Scribe audio format fix)
+npm install @elevenlabs/elevenlabs-js@2.30.0   # Base SDK (Jan 2026: latest)
 npm install -g @elevenlabs/agents-cli@0.6.1    # CLI
 ```
 
@@ -862,5 +858,5 @@ This skill composes well with:
 ---
 
 **Production Tested**: WordPress Auditor, Customer Support Agents, AgentFlow (webhook integration)
-**Last Updated**: 2026-01-03
-**Package Versions**: elevenlabs@1.59.0, @elevenlabs/elevenlabs-js@2.28.0, @elevenlabs/agents-cli@0.6.1, @elevenlabs/react@0.12.3, @elevenlabs/client@0.12.2, @elevenlabs/react-native@0.5.7
+**Last Updated**: 2026-01-09
+**Package Versions**: elevenlabs@1.59.0, @elevenlabs/elevenlabs-js@2.30.0, @elevenlabs/agents-cli@0.6.1, @elevenlabs/react@0.12.3, @elevenlabs/client@0.12.2, @elevenlabs/react-native@0.5.7

@@ -1,26 +1,11 @@
 ---
 name: streamlit-snowflake
 description: |
-  Build and deploy Streamlit apps natively in Snowflake with production-ready templates. Covers project scaffolding (snowflake.yml, environment.yml), Snowpark session patterns, multi-page structure, and Marketplace publishing as Native Apps.
+  Build and deploy Streamlit apps natively in Snowflake. Covers snowflake.yml scaffolding, Snowpark sessions, multi-page structure, and Marketplace publishing as Native Apps.
 
-  Use when building data apps on Snowflake, deploying Streamlit in Snowflake (SiS), or publishing to Snowflake Marketplace. Prevents package channel errors, outdated Streamlit versions, and authentication issues.
+  Use when building data apps on Snowflake, deploying SiS, or fixing package channel errors, authentication issues.
+user-invocable: true
 license: MIT
-metadata:
-  version: "1.0.0"
-  last_verified: "2025-12-24"
-  snowflake_cli: ">=3.14.0"
-  streamlit: "1.35.0"
-  python: "3.11"
-  keywords:
-    - streamlit snowflake
-    - streamlit in snowflake
-    - SiS
-    - snowflake native app
-    - snowflake marketplace
-    - snowpark streamlit
-    - snow streamlit deploy
-    - environment.yml snowflake
-    - snowflake anaconda channel
 ---
 
 # Streamlit in Snowflake Skill

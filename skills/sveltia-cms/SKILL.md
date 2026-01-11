@@ -1,9 +1,10 @@
 ---
 name: sveltia-cms
 description: |
-  Set up Sveltia CMS - the lightweight Git-backed CMS successor to Decap/Netlify CMS with 5x smaller bundle (300 KB), GraphQL performance, and 270+ fixed predecessor issues. Framework-agnostic for Hugo, Jekyll, 11ty, Gatsby, Astro.
+  Set up Sveltia CMS - lightweight Git-backed CMS successor to Decap/Netlify CMS (300KB bundle, 270+ fixes). Framework-agnostic for Hugo, Jekyll, 11ty, Astro.
 
-  Use when: adding CMS to static sites, migrating from Decap/Netlify CMS, enabling non-technical editors, or troubleshooting OAuth authentication failures, YAML parse errors, CORS/COOP policy problems, content not listing issues.
+  Use when adding CMS to static sites, migrating from Decap CMS, or fixing OAuth, YAML parse, CORS/COOP errors.
+user-invocable: true
 allowed-tools: ['Read', 'Write', 'Edit', 'Bash', 'Glob', 'Grep']
 ---
 
@@ -15,7 +16,7 @@ Complete skill for integrating Sveltia CMS into static site projects.
 
 ## Current Versions
 
-- **@sveltia/cms**: 0.120.1 (November 2025)
+- **@sveltia/cms**: 0.127.0 (verified January 2026)
 - **Status**: Public Beta (v1.0 expected early 2026)
 - **Maturity**: Production-ready (270+ issues solved from predecessor)
 
@@ -200,7 +201,7 @@ collections:
        <title>Content Manager</title>
      </head>
      <body>
-       <script src="https://unpkg.com/@sveltia/cms@0.120.1/dist/sveltia-cms.js" type="module"></script>
+       <script src="https://unpkg.com/@sveltia/cms@0.127.0/dist/sveltia-cms.js" type="module"></script>
      </body>
    </html>
    ```
@@ -457,7 +458,7 @@ collections:
 
 **Use version pinning (recommended):**
 ```html
-<script src="https://unpkg.com/@sveltia/cms@0.120.1/dist/sveltia-cms.js" type="module"></script>
+<script src="https://unpkg.com/@sveltia/cms@0.127.0/dist/sveltia-cms.js" type="module"></script>
 ```
 
 ---
@@ -584,7 +585,7 @@ Sveltia CMS is a **drop-in replacement** for Decap CMS.
 <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
 <!-- NEW: Sveltia CMS -->
-<script src="https://unpkg.com/@sveltia/cms@0.120.1/dist/sveltia-cms.js" type="module"></script>
+<script src="https://unpkg.com/@sveltia/cms@0.127.0/dist/sveltia-cms.js" type="module"></script>
 ```
 
 **Step 2: Keep existing config.yml** (no changes needed)
@@ -666,7 +667,7 @@ This skill prevents **8 common errors** (100% prevention rate):
 
 ---
 
-**Last Updated**: 2025-11-28
-**Skill Version**: 2.0.0
-**Sveltia CMS Version**: 0.120.1 (Beta)
+**Last Updated**: 2026-01-09
+**Skill Version**: 2.0.1
+**Sveltia CMS Version**: 0.127.0 (Beta)
 **Status**: Production-ready, v1.0 GA expected early 2026

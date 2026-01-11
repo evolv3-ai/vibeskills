@@ -1,9 +1,10 @@
 ---
 name: google-gemini-embeddings
 description: |
-  Build RAG systems, semantic search, and document clustering with Gemini embeddings API (gemini-embedding-001). Generate 768-3072 dimension embeddings for vector search, integrate with Cloudflare Vectorize, and use 8 task types (RETRIEVAL_QUERY, RETRIEVAL_DOCUMENT, SEMANTIC_SIMILARITY) for optimized retrieval.
+  Build RAG systems and semantic search with Gemini embeddings (gemini-embedding-001). 768-3072 dimension vectors, 8 task types, Cloudflare Vectorize integration.
 
-  Use when: implementing vector search with Google embeddings, building retrieval-augmented generation systems, creating semantic search features, clustering documents by meaning, integrating embeddings with Cloudflare Vectorize, optimizing dimension sizes (128-3072), or troubleshooting dimension mismatch errors, incorrect task type selections, rate limit issues (100 RPM free tier), vector normalization mistakes, or text truncation errors (2,048 token limit).
+  Use when: vector search, RAG systems, semantic search, document clustering. Troubleshoot: dimension mismatch, wrong task type, rate limits (100 RPM), text truncation (2048 tokens).
+user-invocable: true
 ---
 
 # Google Gemini Embeddings
@@ -747,8 +748,8 @@ const queryEmbedding = await ai.models.embedContent({
 **Token Savings**: ~60% compared to manual implementation
 **Errors Prevented**: 8 documented errors with solutions
 **Production Tested**: ✅ Verified in RAG applications
-**Package Version**: @google/genai@1.30.0
-**Last Updated**: 2025-11-26
+**Package Version**: @google/genai@1.35.0
+**Last Updated**: 2026-01-09
 
 ---
 

@@ -1,10 +1,10 @@
 # Update Documentation
 
-Audit and maintain documentation files in the current project. This command checks for stale content, outdated references, redundancy, and suggests improvements.
+Audit and maintain documentation files in the current project. Checks for stale content, outdated references, redundancy, and suggests improvements.
 
 ## Command Usage
 
-`/update-docs [scope]`
+`/docs/update [scope]`
 
 **Scope options:**
 - `all` (default) - Full audit of all documentation
@@ -87,7 +87,17 @@ Healthy patterns (don't flag these):
 - Files in docs/ not referenced anywhere
 - Archive files that may be safe to delete
 
-### 4. Generate Report
+### 4. Check CLAUDE.md Against Project State
+
+**Enhanced from original update-docs:**
+
+Additional checks specific to CLAUDE.md:
+- Does tech stack section match package.json dependencies?
+- Are referenced file paths still valid?
+- Are environment variables listed that don't exist in .env.example?
+- Are scripts mentioned that don't exist in package.json?
+
+### 5. Generate Report
 
 Present findings organized by severity:
 
@@ -107,9 +117,13 @@ Present findings organized by severity:
 ### Suggestions
 - [ ] planning/research-log.md: Contains 3 TODO items
 - [ ] docs/DATABASE.md and docs/SCHEMA.md have 60% overlap
+
+### CLAUDE.md Sync Issues
+- [ ] package.json has `drizzle-orm` but CLAUDE.md doesn't mention it
+- [ ] CLAUDE.md references `src/lib/auth.ts` but file is at `src/auth/index.ts`
 ```
 
-### 5. Interactive Fixes
+### 6. Interactive Fixes
 
 For each category, offer to fix:
 
@@ -128,7 +142,7 @@ For each category, offer to fix:
 - Remove archive/ files permanently
 - Major restructuring
 
-### 6. Archive Workflow
+### 7. Archive Workflow
 
 When archiving content:
 
@@ -221,4 +235,3 @@ After completing audit:
 - Version checks require network access (npm view)
 - Git history is used for date comparisons (requires git repo)
 - Large projects may take time to audit fully
-

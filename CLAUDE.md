@@ -3,8 +3,8 @@
 **Repository**: https://github.com/jezweb/claude-skills
 **Purpose**: Production-ready skills for Claude Code CLI
 **Owner**: Jeremy Dawes (Jez) | Jezweb
-**Status**: Active Development | 63 Skills Complete (13 archived)
-**Last Updated**: 2025-12-15
+**Status**: Active Development | 72 Skills Complete (13 archived)
+**Last Updated**: 2026-01-10
 
 ---
 
@@ -20,9 +20,9 @@ This is a curated collection of **production-tested Claude Code skills** for bui
 
 ## Quick Navigation
 
-**👋 First Time Here?** → Read [START_HERE.md](START_HERE.md)
-**🔨 Building a Skill?** → See [QUICK_WORKFLOW.md](QUICK_WORKFLOW.md)
+**🔨 Building a Skill?** → See [CONTRIBUTING.md](CONTRIBUTING.md)
 **✅ Verifying Work?** → Check [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
+**📚 All Skills** → See [docs/SKILLS_CATALOG.md](docs/SKILLS_CATALOG.md)
 
 ---
 
@@ -44,51 +44,34 @@ This repo aligns with **official Anthropic standards**:
 
 ```
 claude-skills/
-├── START_HERE.md                 # ← Read this first!
-├── CLAUDE.md                     # ← You are here
-├── GEMINI_GUIDE.md               # AI agent onboarding guide
-├── ONE_PAGE_CHECKLIST.md         # Quick verification
-├── QUICK_WORKFLOW.md             # 5-minute skill creation
 ├── README.md                     # Public-facing overview
-├── CONTRIBUTING.md               # Contribution guidelines
-├── MARKETPLACE.md                # Marketplace installation guide
-├── ATOMIC-SKILLS-SUMMARY.md      # Skill philosophy
+├── CLAUDE.md                     # ← You are here (project context)
+├── CONTRIBUTING.md               # How to contribute
+├── ONE_PAGE_CHECKLIST.md         # Quality verification
 ├── CHANGELOG.md                  # Version history
-├── SESSION.md                    # Working session state (gitignored)
-├── *_REPORT.md                   # Auto-generated reports (gitignored)
 ├── LICENSE                       # MIT License
-├── .gitignore                    # Git ignore patterns
 │
-├── skills/                       # ← All production skills (58 total)
+├── skills/                       # ← All 63 production skills
 │   ├── tailwind-v4-shadcn/       # Gold standard example
 │   ├── cloudflare-worker-base/   # Foundation skill
-│   ├── ai-sdk-core/              # AI integration
-│   ├── openai-agents/            # OpenAI Agents SDK
-│   ├── project-planning/         # Planning automation
-│   ├── project-session-management/ # Session handoff protocol
-│   ├── project-workflow/         # Slash commands (canonical source)
-│   │   └── commands/             # /explore-idea, /plan-project, etc.
-│   └── [52 more skills...]       # Run ls skills/ for full list
+│   └── [61 more skills...]       # Run ls skills/ for full list
 │
-├── commands/                     # ← Slash commands (symlinked to ~/.claude/commands/)
-│   ├── brief.md                  # /brief - Context preservation
-│   ├── explore-idea.md           # /explore-idea - Pre-planning exploration
-│   ├── plan-project.md           # /plan-project - Initial planning
-│   ├── plan-feature.md           # /plan-feature - Feature addition
-│   ├── wrap-session.md           # /wrap-session - End-of-session workflow
-│   ├── continue-session.md       # /continue-session - Resume session
-│   ├── workflow.md               # /workflow - Interactive guide
-│   ├── release.md                # /release - Pre-release safety checks
-│   └── README.md                 # Commands documentation
+├── commands/                     # Slash commands (symlinked to ~/.claude/commands/)
+│   ├── brief.md, explore-idea.md, plan-project.md, etc.
+│   └── README.md
 │
-├── .claude/                      # Claude Code local settings
-│   └── settings.local.json       # Local preferences (not committed)
+├── .claude/agents/               # Custom agents for managing this repo
+│   ├── skill-auditor.md          # Deep audit vs official docs
+│   ├── version-checker.md        # Check/update package versions
+│   ├── skill-creator.md          # Scaffold new skills
+│   ├── bulk-updater.md           # Batch operations
+│   └── doc-validator.md          # Documentation quality
 │
-├── .claude-plugin/               # Marketplace metadata
-│   └── marketplace.json          # Auto-generated plugin manifest
-│
-├── docs/                         # Documentation
-│   └── JEZWEB_WORKFLOW.md        # Comprehensive workflow guide
+├── docs/                         # Extended documentation
+│   ├── SKILLS_CATALOG.md         # Full skill details
+│   ├── MARKETPLACE.md            # Marketplace installation
+│   ├── GEMINI_GUIDE.md           # AI agent onboarding
+│   └── SKILLS_COMMANDS_ARCHITECTURE.md  # v2.1.3+ unified architecture
 │
 ├── tools/                        # Utility scripts
 │   ├── statusline/               # Custom statusline scripts
@@ -96,6 +79,7 @@ claude-skills/
 │
 ├── archive/                      # Archived content
 │   ├── low-priority-skills/      # 13 skills archived 2025-11-17 (in git branch)
+│   ├── deprecated-scripts/       # Old symlink scripts (replaced by plugin system)
 │   └── session-logs/             # Working audit logs (gitignored, archived when needed)
 │
 ├── templates/                    # ← Templates for new skills
@@ -118,9 +102,6 @@ claude-skills/
 │   └── research-logs/            # Per-skill research
 │
 ├── scripts/                      # Automation scripts
-│   ├── install-skill.sh          # Symlink skill to ~/.claude/skills/
-│   ├── install-all.sh            # Install all skills
-│   ├── check-symlinks.sh         # Verify/repair skill symlinks
 │   ├── check-npm-versions.sh     # NPM package version checker
 │   ├── check-github-releases.sh  # GitHub release tracker
 │   ├── check-metadata.sh         # YAML metadata validator
@@ -136,36 +117,41 @@ claude-skills/
     └── cloudflare-worker-base-test/
 ```
 
-### Symlink Workflow
+### Plugin Installation
 
-**Skills**: Symlinked from `skills/` → `~/.claude/skills/`
-**Commands**: Symlinked from `commands/` → `~/.claude/commands/`
+**Skills are installed via the Claude Code plugin system** (no symlinks needed).
 
-**Installing Skills:**
+**For End Users:**
 ```bash
-./scripts/install-skill.sh <skill-name>      # Symlink single skill
-./scripts/install-all.sh                     # Symlink all skills
-./scripts/check-symlinks.sh                  # Verify symlinks
-./scripts/check-symlinks.sh --fix            # Repair broken symlinks
+# Add the marketplace (one-time)
+/plugin marketplace add jezweb/claude-skills
+
+# Install plugin bundles
+/plugin install project         # Most-used: plan-feature, docs-init, etc.
+/plugin install cloudflare      # Cloudflare platform skills
+/plugin install ai              # AI/LLM integration
+/plugin install frontend        # UI/frontend skills
+# etc.
+
+# Update to get latest changes
+/plugin marketplace update claude-skills
 ```
 
-**Installing Commands:**
+**For Development (this repo):**
 ```bash
-# Commands must be manually symlinked:
-ln -s /home/jez/Documents/claude-skills/commands/<command>.md ~/.claude/commands/<command>.md
+# Install local skill for testing
+/plugin install ./skills/cloudflare-worker-base
 
-# Example:
-ln -s /home/jez/Documents/claude-skills/commands/brief.md ~/.claude/commands/brief.md
+# Or add local repo as marketplace
+/plugin marketplace add ./
+/plugin install cloudflare
 ```
 
-**Adding New Commands:**
+**Agents**: Plugins can include agents in their `agents/` directory. The cloudflare-worker-base skill includes 4 agents (cloudflare-deploy, d1-migration, cloudflare-debug, worker-scaffold) that are auto-discovered when the plugin is installed.
 
-1. Create command in `/commands/<command-name>.md`
-2. Symlink to `~/.claude/commands/<command-name>.md`
-3. Command is immediately available in Claude Code
-4. Commit to git for version control
+**After Updates**: Restart Claude Code to load new skills/agents.
 
-**Note**: Commands in `skills/project-workflow/commands/` are the canonical source for workflow commands, but `/commands/` directory mirrors them for manual installation and development.
+**Legacy Scripts**: Old symlink scripts are archived in `archive/deprecated-scripts/`.
 
 ---
 
@@ -189,7 +175,7 @@ This repository has three types of files:
 - `skills/project-workflow/commands/*.md` - Canonical workflow commands
 
 **Documentation**:
-- `*.md` files in root (README, CLAUDE, START_HERE, etc.)
+- `*.md` files in root (README, CLAUDE, CONTRIBUTING, etc.)
 - `planning/*.md` - Standards, research, roadmaps
 - `templates/` - Skill creation templates
 
@@ -224,13 +210,13 @@ This repository has three types of files:
 
 ```
 1. Create skill → skills/new-skill/SKILL.md (version controlled)
-2. Install skill → ./scripts/install-skill.sh new-skill (creates symlink)
+2. Test locally → /plugin install ./skills/new-skill
 3. Generate manifest → ./scripts/generate-plugin-manifests.sh (auto-generated)
 4. Verify versions → ./scripts/check-all-versions.sh (creates VERSIONS_REPORT.md)
 5. Audit skill → ./scripts/review-skill.sh new-skill (updates SKILL.md)
 6. Track work → Update SESSION.md (working file, not committed)
-7. Archive session → mv SESSION.md archive/session-logs/phase-X.md (manual)
-8. Commit → git add skills/new-skill && git commit (version controlled only)
+7. Commit & push → git add skills/new-skill && git commit && git push
+8. Update marketplace → /plugin marketplace update claude-skills
 ```
 
 ---
@@ -299,7 +285,7 @@ All 63 skills are production-ready and organized by domain:
    • Add resources (scripts/, references/, assets/)
 
 3. TEST
-   • Install: ./scripts/install-skill.sh new-skill
+   • Install locally: /plugin install ./skills/new-skill
    • Test discovery: Ask Claude Code to use skill
    • Build example project to verify templates work
 
@@ -331,15 +317,18 @@ cp -r templates/skill-skeleton/ skills/my-skill/
 # 2. Edit SKILL.md and README.md (fill TODOs)
 # 3. Add resources
 
-# 4. Test
-./scripts/install-skill.sh my-skill
+# 4. Test locally
+/plugin install ./skills/my-skill
 
 # 5. Verify & Commit
 git add skills/my-skill && git commit -m "Add my-skill" && git push
 
-# 6. Generate marketplace manifest
+# 6. Generate marketplace manifest & push
 ./scripts/generate-plugin-manifests.sh
-git add skills/my-skill/.claude-plugin/ && git commit -m "Add marketplace manifest for my-skill" && git push
+git add skills/my-skill/.claude-plugin/ && git commit -m "Add marketplace manifest" && git push
+
+# 7. Update marketplace (after push)
+/plugin marketplace update claude-skills
 ```
 
 ---
@@ -387,7 +376,7 @@ After optimizing 20+ skills, these patterns work best:
 - Include technology names explicitly
 - Preserve unique selling points
 - Add 2-3 distinctive error keywords
-- Move comprehensive keywords to metadata.keywords
+- Keep comprehensive keywords in README.md (not frontmatter)
 
 **Avoid:**
 - Dense comma-separated lists
@@ -456,21 +445,26 @@ cp ~/.claude/skills/tailwind-v4-shadcn/rules/tailwind-v4-shadcn.md .claude/rules
 
 ## Commands & Scripts
 
-### Installing Skills
+### Installing Skills (Plugin System)
 
 ```bash
-# Install single skill (creates symlink to ~/.claude/skills/)
-./scripts/install-skill.sh cloudflare-worker-base
+# Add the marketplace (one-time)
+/plugin marketplace add jezweb/claude-skills
 
-# Install all skills
-./scripts/install-all.sh
+# Install plugin bundles
+/plugin install project                 # Project lifecycle commands
+/plugin install cloudflare              # All Cloudflare skills + agents
+/plugin install ai                      # AI/LLM integration skills
+/plugin install frontend                # UI/frontend skills
 
-# Verify and maintain symlinks
-./scripts/check-symlinks.sh          # Check for issues
-./scripts/check-symlinks.sh --fix    # Auto-repair symlinks
+# Install individual skill (for local development)
+/plugin install ./skills/cloudflare-worker-base
+
+# Update to get latest changes
+/plugin marketplace update claude-skills
 
 # Verify installation
-ls -la ~/.claude/skills/
+ls ~/.claude/plugins/cache/claude-skills/
 ```
 
 ### Development
@@ -663,7 +657,7 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 ## Getting Help
 
 **Documentation Issues?**
-- Check [START_HERE.md](START_HERE.md) for navigation
+- Check [README.md](README.md) for overview
 - Read [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md)
 - Review working examples in `skills/` directory
 
@@ -675,7 +669,6 @@ See [planning/COMMON_MISTAKES.md](planning/COMMON_MISTAKES.md) for detailed exam
 **Want to Contribute?**
 - Read [CONTRIBUTING.md](CONTRIBUTING.md)
 - Use templates in `templates/`
-- Follow [QUICK_WORKFLOW.md](QUICK_WORKFLOW.md)
 - Verify with [ONE_PAGE_CHECKLIST.md](ONE_PAGE_CHECKLIST.md)
 
 ---

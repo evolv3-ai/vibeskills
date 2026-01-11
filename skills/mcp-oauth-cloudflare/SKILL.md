@@ -4,22 +4,8 @@ description: |
   Add OAuth authentication to MCP servers on Cloudflare Workers. Uses @cloudflare/workers-oauth-provider with Google OAuth for Claude.ai-compatible authentication.
 
   Use when building MCP servers that need user authentication, implementing Dynamic Client Registration (DCR) for Claude.ai, or replacing static auth tokens with OAuth flows. Prevents CSRF vulnerabilities, state validation errors, and OAuth misconfiguration.
+user-invocable: true
 license: MIT
-metadata:
-  version: "1.1.0"
-  last_verified: "2026-01-03"
-  keywords:
-    - mcp oauth
-    - mcp authentication
-    - cloudflare workers oauth
-    - dynamic client registration
-    - dcr
-    - claude.ai mcp
-    - google oauth mcp
-    - workers-oauth-provider
-    - mcp server auth
-    - oauth2 mcp
-    - durable objects mcp
 ---
 
 # MCP OAuth Cloudflare

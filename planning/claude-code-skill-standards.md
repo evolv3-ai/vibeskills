@@ -256,7 +256,7 @@ description: |
 ### What to Remove
 
 - Passive voice ("This skill provides...", "Should be used when...")
-- Inline keywords (move to metadata.keywords)
+- Inline keyword lists (keep in README.md, not description)
 - Exhaustive feature lists (keep 3-5 key ones)
 - Error count enumerations ("Prevents 13 errors including...")
 - Meta-commentary ("INCLUDES CRITICAL GUIDANCE:")

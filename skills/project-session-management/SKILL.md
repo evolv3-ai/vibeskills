@@ -1,9 +1,10 @@
 ---
 name: project-session-management
 description: |
-  Track progress across work sessions using SESSION.md with git checkpoints and concrete next actions. Converts IMPLEMENTATION_PHASES.md into trackable session state with phase status, progress markers, and recovery points.
+  Track progress across sessions using SESSION.md with git checkpoints and concrete next actions. Converts IMPLEMENTATION_PHASES.md into trackable session state.
 
-  Use when: starting projects after planning phase, resuming work after context clears, managing multi-phase implementations, or troubleshooting lost context, missing progress tracking, or unclear next steps.
+  Use when: resuming work after context clears, managing multi-phase implementations, or troubleshooting lost context.
+user-invocable: true
 ---
 
 # Project Session Management Skill

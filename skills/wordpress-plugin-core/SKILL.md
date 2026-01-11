@@ -1,14 +1,15 @@
 ---
 name: wordpress-plugin-core
 description: |
-  Build secure WordPress plugins with core patterns for hooks, database interactions, Settings API, custom post types, REST API, and AJAX. Covers three architecture patterns (Simple, OOP, PSR-4) and the Security Trinity.
+  Build secure WordPress plugins with hooks, database interactions, Settings API, custom post types, and REST API. Covers Simple, OOP, and PSR-4 architecture patterns plus the Security Trinity.
 
-  Use when creating plugins, implementing nonces/sanitization/escaping, working with $wpdb prepared statements, or troubleshooting SQL injection, XSS, CSRF vulnerabilities, or plugin activation errors.
+  Use when creating plugins or troubleshooting SQL injection, XSS, CSRF vulnerabilities, or plugin activation errors.
+user-invocable: true
 ---
 
 # WordPress Plugin Development (Core)
 
-**Last Updated**: 2025-11-28
+**Last Updated**: 2026-01-09
 **Latest Versions**: WordPress 6.8+, PHP 8.0+ recommended
 **Dependencies**: None (WordPress 5.9+, PHP 7.4+ minimum)
 

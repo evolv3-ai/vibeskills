@@ -1,35 +1,24 @@
 ---
 name: cloudflare-workers-ai
 description: |
-  Run LLMs and AI models on Cloudflare's global GPU network with Workers AI. Includes Llama 4, Gemma 3, Mistral 3.1,
-  Flux image generation, BGE embeddings (2x faster, 2025), streaming support, and AI Gateway for cost tracking.
+  Run LLMs and AI models on Cloudflare's GPU network with Workers AI. Includes Llama 4, Gemma 3, Mistral 3.1, Flux images, BGE embeddings, streaming, and AI Gateway. Handles 2025 breaking changes.
 
-  Use when: implementing LLM inference, generating images, building RAG with embeddings, streaming AI responses,
-  using AI Gateway, troubleshooting max_tokens defaults (breaking change 2025), BGE pooling parameter (not backwards
-  compatible), or handling AI_ERROR, rate limits, model deprecations, token limits.
-
-  Keywords: workers ai, cloudflare ai, ai bindings, llm workers, @cf/meta/llama-4-scout, @cf/google/gemma-3-12b-it,
-  @cf/mistralai/mistral-small-3.1-24b-instruct, @cf/openai/gpt-oss-120b, workers ai models, ai inference,
-  cloudflare llm, ai streaming, text generation ai, ai embeddings, bge pooling cls mean, image generation ai,
-  workers ai rag, ai gateway, llama workers, flux image generation, deepgram aura, leonardo image generation,
-  vision models ai, ai chat completion, AI_ERROR, rate limit ai, model not found, max_tokens breaking change,
-  bge pooling backwards compatibility, model deprecations october 2025, token limit exceeded, neurons exceeded,
-  workers ai hono, ai gateway workers, vercel ai sdk workers, openai compatible workers, workers ai vectorize,
-  workers-ai-provider v2, ai sdk v5, lora adapters rank 32
+  Use when: implementing LLM inference, images, RAG, or troubleshooting AI_ERROR, rate limits, max_tokens, BGE pooling.
+user-invocable: true
 ---
 
 # Cloudflare Workers AI
 
 **Status**: Production Ready ✅
-**Last Updated**: 2025-11-25
+**Last Updated**: 2026-01-09
 **Dependencies**: cloudflare-worker-base (for Worker setup)
-**Latest Versions**: wrangler@4.50.0, @cloudflare/workers-types@4.20251125.0
+**Latest Versions**: wrangler@4.58.0, @cloudflare/workers-types@4.20260109.0, workers-ai-provider@3.0.2
 
 **Recent Updates (2025)**:
 - **April 2025 - Performance**: Llama 3.3 70B 2-4x faster (speculative decoding, prefix caching), BGE embeddings 2x faster
 - **April 2025 - Breaking Changes**: max_tokens now correctly defaults to 256 (was not respected), BGE pooling parameter (cls NOT backwards compatible with mean)
 - **2025 - New Models (14)**: Mistral 3.1 24B (vision+tools), Gemma 3 12B (128K context), EmbeddingGemma 300M, Llama 4 Scout, GPT-OSS 120B/20B, Qwen models (QwQ 32B, Coder 32B), Leonardo image gen, Deepgram Aura 2, Whisper v3 Turbo, IBM Granite, Nova 3
-- **2025 - Platform**: Context windows API change (tokens not chars), unit-based pricing with per-model granularity, workers-ai-provider v2.0.0 (AI SDK v5), LoRA rank up to 32 (was 8), 100 adapters per account
+- **2025 - Platform**: Context windows API change (tokens not chars), unit-based pricing with per-model granularity, workers-ai-provider v3.0.2 (AI SDK v5), LoRA rank up to 32 (was 8), 100 adapters per account
 - **October 2025**: Model deprecations (use Llama 4, GPT-OSS instead)
 
 ---
@@ -312,10 +301,10 @@ await openai.chat.completions.create({
 
 ---
 
-## Vercel AI SDK Integration (workers-ai-provider v2.0.0)
+## Vercel AI SDK Integration (workers-ai-provider v3.0.2)
 
 ```typescript
-import { createWorkersAI } from 'workers-ai-provider'; // v2.0.0 with AI SDK v5
+import { createWorkersAI } from 'workers-ai-provider'; // v3.0.2 with AI SDK v5
 import { generateText, streamText } from 'ai';
 
 const workersai = createWorkersAI({ binding: env.AI });

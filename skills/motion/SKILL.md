@@ -1,11 +1,10 @@
 ---
 name: motion
 description: |
-  Build sophisticated React animations with Motion (formerly Framer Motion) - declarative animations, gestures (drag, hover, tap), scroll effects, spring physics, layout animations, and SVG manipulation. Optimize bundle size with LazyMotion (4.6 KB) or useAnimate mini (2.3 KB).
+  Build React animations with Motion (Framer Motion) - gestures (drag, hover, tap), scroll effects, spring physics, layout animations, SVG. Bundle: 2.3 KB (mini) to 34 KB (full).
 
-  Use when: adding drag-and-drop interactions, creating scroll-triggered animations, implementing modal dialogs with transitions, building carousels with momentum, animating page/route transitions, creating parallax hero sections, implementing accordions with smooth expand/collapse, or optimizing animation bundle sizes. For simple list animations, use auto-animate skill instead (3.28 KB vs 34 KB).
-
-  Troubleshoot: AnimatePresence exit not working, large list performance issues, Tailwind transition conflicts, Next.js "use client" errors, scrollable container layout issues, or Cloudflare Workers build errors (resolved Dec 2024).
+  Use when: drag-and-drop, scroll animations, modals, carousels, parallax. Troubleshoot: AnimatePresence exit, list performance, Tailwind conflicts, Next.js "use client".
+user-invocable: true
 ---
 
 # Motion Animation Library
@@ -23,7 +22,7 @@ Motion (package: `motion`, formerly `framer-motion`) is the industry-standard Re
 - **Exit Animations**: AnimatePresence for unmounting transitions
 - **Performance**: Hardware-accelerated, ScrollTimeline API, bundle optimization (2.3 KB - 34 KB)
 
-**Production Tested**: React 19, Next.js 16, Vite 7, Tailwind v4
+**Production Tested**: React 19.2, Next.js 16.1, Vite 7.3, Tailwind v4
 
 ---
 
@@ -99,7 +98,7 @@ npm install motion
 yarn add motion
 ```
 
-**Current Version**: 12.23.24 (verified 2025-11-09)
+**Current Version**: 12.24.12 (verified 2026-01-09)
 
 **Note for Cloudflare Workers**:
 ```bash
@@ -702,15 +701,15 @@ See `references/motion-vs-auto-animate.md` for detailed comparison.
 
 ---
 
-## Package Versions (Verified 2025-11-09)
+## Package Versions (Verified 2026-01-09)
 
 | Package | Version | Status |
 |---------|---------|--------|
-| motion | 12.23.24 | ✅ Latest stable |
-| framer-motion | 12.23.24 | ✅ Same version as motion |
-| react | 19.2.0 | ✅ Latest stable |
-| next | 16.0.1 | ✅ Latest stable |
-| vite | 7.2.2 | ✅ Latest stable |
+| motion | 12.24.12 | ✅ Latest stable |
+| framer-motion | 12.24.12 | ✅ Same version as motion |
+| react | 19.2.3 | ✅ Latest stable |
+| next | 16.1.1 | ✅ Latest stable |
+| vite | 7.3.1 | ✅ Latest stable |
 
 ---
 
@@ -722,7 +721,7 @@ Found an issue or have a suggestion?
 
 ---
 
-**Production Tested**: ✅ React 19 + Next.js 16 + Vite 7 + Tailwind v4
+**Production Tested**: ✅ React 19.2 + Next.js 16.1 + Vite 7.3 + Tailwind v4
 **Token Savings**: ~83%
 **Error Prevention**: 100% (29+ documented errors prevented)
 **Bundle Size**: 2.3 KB (mini) - 34 KB (full), optimizable to 4.6 KB with LazyMotion

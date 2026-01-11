@@ -1,18 +1,19 @@
 ---
 name: nextjs
 description: |
-  Build Next.js 16 apps with App Router, Server Components/Actions, Cache Components ("use cache"), and async route params. Includes proxy.ts (replaces middleware.ts) and React 19.2.
+  Build Next.js 16 apps with App Router, Server Components/Actions, Cache Components ("use cache"), and async route params. Includes proxy.ts and React 19.2.
 
-  Use when: building Next.js 16 projects, or troubleshooting async params (Promise types), "use cache" directives, parallel route 404s (missing default.js), or proxy.ts CORS.
+  Use when: building Next.js 16 projects, or troubleshooting async params (Promise types), "use cache" directives, parallel route 404s.
+user-invocable: true
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 
 # Next.js App Router - Production Patterns
 
 **Version**: Next.js 16.1.1
-**React Version**: 19.2.0
+**React Version**: 19.2.3
 **Node.js**: 20.9+
-**Last Verified**: 2026-01-03
+**Last Verified**: 2026-01-09
 
 ---
 
@@ -1347,8 +1348,8 @@ export async function createPost(formData: FormData) {
 
 | Package | Minimum Version | Recommended |
 |---------|----------------|-------------|
-| Next.js | 16.0.0 | 16.0.0+ |
-| React | 19.2.0 | 19.2.0+ |
+| Next.js | 16.0.0 | 16.1.1+ |
+| React | 19.2.0 | 19.2.3+ |
 | Node.js | 20.9.0 | 20.9.0+ |
 | TypeScript | 5.1.0 | 5.7.0+ |
 | Turbopack | (built-in) | Stable |
@@ -1384,8 +1385,8 @@ export async function createPost(formData: FormData) {
 
 ## Maintenance
 
-**Last Verified**: 2025-10-24
-**Next Review**: 2026-01-24 (Quarterly)
+**Last Verified**: 2026-01-09
+**Next Review**: 2026-04-09 (Quarterly)
 **Maintainer**: Jezweb | jeremy@jezweb.net
 **Repository**: https://github.com/jezweb/claude-skills
 

@@ -4,12 +4,13 @@ description: |
   Build integrations with Google Workspace APIs (Gmail, Calendar, Drive, Sheets, Docs, Chat, Meet, Forms, Tasks, Admin SDK). Covers OAuth 2.0, service accounts, rate limits, batch operations, and Cloudflare Workers patterns.
 
   Use when building MCP servers, automation tools, or integrations with any Google Workspace API, or troubleshooting OAuth errors, rate limit 429 errors, scope issues, or API-specific gotchas.
+user-invocable: true
 ---
 
 # Google Workspace APIs
 
 **Status**: Production Ready
-**Last Updated**: 2026-01-03
+**Last Updated**: 2026-01-09
 **Dependencies**: Cloudflare Workers (recommended), Google Cloud Project
 **Skill Version**: 1.0.0
 
@@ -343,14 +344,14 @@ See [references/chat-api.md](references/chat-api.md)
 
 ---
 
-## Package Versions (Verified 2026-01-03)
+## Package Versions (Verified 2026-01-09)
 
 ```json
 {
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260103.0",
-    "wrangler": "^4.54.0",
-    "jose": "^5.9.6"
+    "@cloudflare/workers-types": "^4.20260109.0",
+    "wrangler": "^4.58.0",
+    "jose": "^6.1.3"
   }
 }
 ```

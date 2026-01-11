@@ -1,13 +1,10 @@
 ---
 name: ai-sdk-core
 description: |
-  Build backend AI with Vercel AI SDK v5/v6. v6 stable introduces Output API (Output.object/array/choice
-  replace deprecated generateObject/streamObject), plus speech synthesis, transcription, image generation,
-  embeddings, reranking, MCP tools, and middleware. Covers v4→v5 migration, latest models (GPT-5.2,
-  Claude 4.x, Gemini 2.5), Workers startup fix, and 12 error solutions.
+  Build backend AI with Vercel AI SDK v6 stable. Covers Output API (replaces generateObject/streamObject), speech synthesis, transcription, embeddings, MCP tools. Includes v4→v5 migration and 12 error solutions.
 
-  Use when: implementing AI SDK v5/v6, using Output API, speech/transcription/image features, embeddings,
-  MCP tools, migrating v4→v5, troubleshooting errors, or fixing Workers startup issues.
+  Use when: implementing AI SDK v5/v6, migrating versions, troubleshooting AI_APICallError, Workers startup issues, or Output API validation errors.
+user-invocable: true
 ---
 
 # AI SDK Core
@@ -24,7 +21,7 @@ npm install ai @ai-sdk/openai @ai-sdk/anthropic @ai-sdk/google zod
 ## AI SDK 6 (Stable - January 2026)
 
 **Status:** Stable
-**Latest:** ai@6.0.9 (Jan 2026)
+**Latest:** ai@6.0.26 (Jan 2026)
 
 ### BREAKING: Output API Replaces generateObject/streamObject
 
@@ -1065,7 +1062,7 @@ try {
 ## Versions
 
 **AI SDK:**
-- Stable: ai@6.0.9 (Jan 2026)
+- Stable: ai@6.0.26 (Jan 2026)
 - Legacy v5: ai@5.0.117 (ai-v5 tag)
 - Zod 3.x/4.x both supported
 
@@ -1106,4 +1103,4 @@ npm view ai dist-tags
 
 **Last Updated:** 2026-01-06
 **Skill Version:** 2.0.1
-**AI SDK:** 6.0.9 stable
+**AI SDK:** 6.0.26 stable

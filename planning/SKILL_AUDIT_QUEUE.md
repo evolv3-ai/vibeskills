@@ -38,112 +38,112 @@ AI SDKs change frequently - prone to training cutoff issues.
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| openai-api | 2026-01-03 | ✓ | ⬜ |
-| openai-agents | 2025-10-26 | ✓ | ⬜ |
-| openai-assistants | 2026-01-03 | ✓ | ⬜ |
-| openai-responses | 2026-01-03 | ✓ | ⬜ |
-| claude-api | 2026-01-06 | ✓ | ⬜ |
-| claude-agent-sdk | 2026-01-03 | ✓ | ⬜ |
-| google-gemini-api | 2026-01-03 | ✓ | ⬜ |
-| google-gemini-embeddings | 2026-01-03 | ✓ | ⬜ |
-| ai-sdk-ui | 2026-01-06 | ✓ | ⬜ |
+| openai-api | 2026-01-09 | ✓ | ✅ |
+| openai-agents | 2026-01-09 | ✓ | ✅ |
+| openai-assistants | 2026-01-09 | ✓ | ✅ |
+| openai-responses | 2026-01-09 | ✓ | ✅ |
+| claude-api | 2026-01-09 | ✓ | ✅ |
+| claude-agent-sdk | 2026-01-09 | ✓ | ✅ |
+| google-gemini-api | 2026-01-09 | ✓ | ✅ |
+| google-gemini-embeddings | 2026-01-09 | ✓ | ✅ |
+| ai-sdk-ui | 2026-01-09 | ✓ | ✅ |
 
 ### Tier 3: Cloudflare Platform (Stable but Complex)
 Cloudflare products - generally stable but intricate.
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| cloudflare-d1 | 2026-01-03 | ✓ | ⬜ |
-| cloudflare-r2 | 2026-01-03 | ✓ | ⬜ |
-| cloudflare-kv | 2026-01-03 | ✓ | ⬜ |
-| cloudflare-workers-ai | 2026-01-03 | ✓ | ⬜ |
-| cloudflare-vectorize | 2026-01-06 | ✓ | ⬜ |
-| cloudflare-durable-objects | 2026-01-03 | ✓ | ⬜ |
-| cloudflare-queues | 2025-11-23 | ✓ | ⬜ |
-| cloudflare-workflows | 2025-11-23 | ✓ | ⬜ |
-| cloudflare-agents | 2025-11-24 | ✓ | ⬜ |
-| cloudflare-browser-rendering | 2026-01-06 | ✓ | ⬜ |
-| cloudflare-mcp-server | 2025-11-26 | ✓ | ⬜ |
-| cloudflare-turnstile | 2025-11-22 | ✓ | ⬜ |
-| cloudflare-hyperdrive | 2025-11-22 | ✓ | ⬜ |
-| cloudflare-images | 2025-11-22 | ✓ | ⬜ |
-| cloudflare-python-workers | 2025-11-28 | ✓ | ⬜ |
+| cloudflare-d1 | 2026-01-09 | ✓ | ✅ |
+| cloudflare-r2 | 2026-01-09 | ✓ | ✅ |
+| cloudflare-kv | 2026-01-09 | ✓ | ✅ |
+| cloudflare-workers-ai | 2026-01-09 | ✓ | ✅ |
+| cloudflare-vectorize | 2026-01-09 | ✓ | ✅ |
+| cloudflare-durable-objects | 2026-01-09 | ✓ | ✅ |
+| cloudflare-queues | 2026-01-09 | ✓ | ✅ |
+| cloudflare-workflows | 2026-01-09 | ✓ | ✅ |
+| cloudflare-agents | 2026-01-09 | ✓ | ✅ |
+| cloudflare-browser-rendering | 2026-01-09 | ✓ | ✅ |
+| cloudflare-mcp-server | 2026-01-09 | ✓ | ✅ |
+| cloudflare-turnstile | 2026-01-09 | ✓ | ✅ |
+| cloudflare-hyperdrive | 2026-01-09 | ✓ | ✅ |
+| cloudflare-images | 2026-01-09 | ✓ | ✅ |
+| cloudflare-python-workers | 2026-01-09 | ✓ | ✅ |
 
 ### Tier 4: Frontend/UI Skills
 React ecosystem - moderate churn.
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| tanstack-query | 2026-01-03 | ✓ | ⬜ |
-| tanstack-router | 2026-01-06 | ✓ | ⬜ |
-| tanstack-table | 2026-01-06 | ✓ | ⬜ |
-| tanstack-start | 2025-11-28 | ⬜ | ⬜ |
-| zustand-state-management | 2026-01-06 | ✓ | ⬜ |
-| react-hook-form-zod | 2026-01-03 | ✓ | ⬜ |
-| tiptap | 2026-01-06 | ✓ | ⬜ |
-| motion | 2025-11-28 | ✓ | ⬜ |
-| auto-animate | 2025-11-28 | ⬜ | ⬜ |
-| nextjs | 2025-11-24 | ✓ | ⬜ |
+| tanstack-query | 2026-01-09 | ✓ | ✅ |
+| tanstack-router | 2026-01-09 | ✓ | ✅ |
+| tanstack-table | 2026-01-09 | ✓ | ✅ |
+| tanstack-start | 2026-01-09 | ✓ | ✅ |
+| zustand-state-management | 2026-01-09 | ✓ | ✅ |
+| react-hook-form-zod | 2026-01-09 | ✓ | ✅ |
+| tiptap | 2026-01-09 | ✓ | ✅ |
+| motion | 2026-01-09 | ✓ | ✅ |
+| auto-animate | 2026-01-09 | ✓ | ✅ |
+| nextjs | 2026-01-09 | ✓ | ✅ |
 
 ### Tier 5: MCP/Tooling Skills
 MCP is new - high likelihood of issues.
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| typescript-mcp | 2026-01-06 | ✓ | ⬜ |
-| fastmcp | 2025-11-25 | ✓ | ⬜ |
-| mcp-oauth-cloudflare | 2025-11-26 | ✓ | ⬜ |
-| ts-agent-sdk | 2025-11-28 | ⬜ | ⬜ |
-| mcp-cli-scripts | 2025-11-28 | ⬜ | ⬜ |
+| typescript-mcp | 2026-01-09 | ✓ | ✅ |
+| fastmcp | 2026-01-09 | ✓ | ✅ |
+| mcp-oauth-cloudflare | 2026-01-09 | ✓ | ✅ |
+| ts-agent-sdk | 2026-01-09 | ⬜ | ✅ |
+| mcp-cli-scripts | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 6: Vercel/Database Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| vercel-blob | 2025-11-28 | ⬜ | ⬜ |
-| vercel-kv | 2025-11-28 | ⬜ | ⬜ |
-| neon-vercel-postgres | 2025-11-24 | ⬜ | ⬜ |
+| vercel-blob | 2026-01-09 | ⬜ | ✅ |
+| vercel-kv | 2026-01-09 | ⬜ | ✅ |
+| neon-vercel-postgres | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 7: Content/CMS Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| tinacms | 2025-11-28 | ⬜ | ⬜ |
-| sveltia-cms | 2025-11-28 | ⬜ | ⬜ |
+| tinacms | 2026-01-09 | ⬜ | ✅ |
+| sveltia-cms | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 8: Google Workspace Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| google-workspace | 2026-01-03 | ✓ | ⬜ |
-| google-chat-api | 2025-11-27 | ⬜ | ⬜ |
-| google-spaces-updates | 2025-11-27 | ⬜ | ⬜ |
-| google-gemini-file-search | 2025-11-28 | ⬜ | ⬜ |
+| google-workspace | 2026-01-09 | ✓ | ✅ |
+| google-chat-api | 2026-01-09 | ⬜ | ✅ |
+| google-spaces-updates | 2026-01-09 | ⬜ | ✅ |
+| google-gemini-file-search | 2026-01-09 | ⬜ | ✅ |
 
 ### Tier 9: Other/Utility Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| azure-auth | 2025-11-25 | ✓ | ⬜ |
-| elevenlabs-agents | 2025-11-24 | ⬜ | ⬜ |
-| wordpress-plugin-core | 2025-11-28 | ⬜ | ⬜ |
-| fastapi | 2025-11-23 | ⬜ | ⬜ |
-| flask | 2025-11-23 | ⬜ | ⬜ |
-| react-native-expo | 2025-11-28 | ⬜ | ⬜ |
-| streamlit-snowflake | 2025-11-28 | ⬜ | ⬜ |
-| openai-apps-mcp | 2025-11-26 | ⬜ | ⬜ |
-| thesys-generative-ui | 2025-11-28 | ✓ | ⬜ |
+| azure-auth | 2026-01-09 | ✓ | ✅ |
+| elevenlabs-agents | 2026-01-09 | ⬜ | ✅ |
+| wordpress-plugin-core | 2026-01-09 | ⬜ | ✅ |
+| fastapi | 2026-01-09 | ⬜ | ✅ |
+| flask | 2026-01-09 | ⬜ | ✅ |
+| react-native-expo | 2026-01-09 | ⬜ | ✅ |
+| streamlit-snowflake | 2026-01-09 | ⬜ | ✅ |
+| openai-apps-mcp | 2026-01-09 | ⬜ | ✅ |
+| thesys-generative-ui | 2026-01-09 | ✓ | ⏭️ |
 
 ### Tier 10: Internal/Meta Skills
 
 | Skill | Last Audit | Has Rules | Status |
 |-------|------------|-----------|--------|
-| skill-review | 2026-01-06 | ⬜ | ⬜ |
-| skill-creator | 2025-11-24 | ⬜ | ⬜ |
-| project-planning | 2025-11-24 | ⬜ | ⬜ |
-| project-workflow | 2025-11-24 | ⬜ | ⬜ |
-| project-session-management | 2025-11-24 | ⬜ | ⬜ |
-| open-source-contributions | 2025-11-28 | ⬜ | ⬜ |
+| skill-review | 2026-01-09 | ⬜ | ✅ |
+| skill-creator | 2026-01-09 | ⬜ | ✅ |
+| project-planning | 2026-01-09 | ⬜ | ✅ |
+| project-workflow | 2026-01-09 | ⬜ | ✅ |
+| project-session-management | 2026-01-09 | ⬜ | ✅ |
+| open-source-contributions | 2026-01-09 | ⬜ | ✅ |
 
 ---
 

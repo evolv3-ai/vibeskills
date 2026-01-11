@@ -1,17 +1,18 @@
 ---
 name: neon-vercel-postgres
 description: |
-  Set up serverless Postgres with Neon or Vercel Postgres for Cloudflare Workers/Edge. Includes connection pooling, git-like branching for preview environments, and Drizzle/Prisma integration.
+  Set up serverless Postgres with Neon or Vercel Postgres for Cloudflare Workers/Edge. Includes connection pooling, git-like branching, and Drizzle ORM integration.
 
-  Use when: setting up edge Postgres, configuring database branching, or troubleshooting "TCP not supported", connection pool exhausted, SSL config (sslmode=require), or Prisma edge compatibility.
+  Use when: setting up edge Postgres, troubleshooting "TCP not supported", connection pool exhausted, or SSL config errors.
+user-invocable: true
 ---
 
 # Neon & Vercel Serverless Postgres
 
 **Status**: Production Ready
-**Last Updated**: 2025-11-26
+**Last Updated**: 2026-01-09
 **Dependencies**: None
-**Latest Versions**: `@neondatabase/serverless@1.0.2`, `@vercel/postgres@0.10.0`, `drizzle-orm@0.44.7`, `drizzle-kit@0.31.7`, `neonctl@2.18.1`
+**Latest Versions**: `@neondatabase/serverless@1.0.2`, `@vercel/postgres@0.10.0`, `drizzle-orm@0.45.1`, `drizzle-kit@0.31.8`, `neonctl@2.19.0`
 
 ---
 
@@ -119,8 +120,8 @@ npm install @vercel/postgres
 **With ORM**:
 ```bash
 # Drizzle ORM (recommended for edge compatibility)
-npm install drizzle-orm@0.44.7 @neondatabase/serverless@1.0.2
-npm install -D drizzle-kit@0.31.7
+npm install drizzle-orm@0.45.1 @neondatabase/serverless@1.0.2
+npm install -D drizzle-kit@0.31.8
 
 # Prisma (Node.js only)
 npm install prisma @prisma/client @prisma/adapter-neon @neondatabase/serverless
@@ -147,10 +148,10 @@ npm install prisma @prisma/client @prisma/adapter-neon @neondatabase/serverless
 2. Vercel automatically creates a Neon database
 3. Run `vercel env pull` to get environment variables locally
 
-**Option C: Neon CLI** (neonctl@2.18.1)
+**Option C: Neon CLI** (neonctl@2.19.0)
 ```bash
 # Install CLI
-npm install -g neonctl@2.18.1
+npm install -g neonctl@2.19.0
 
 # Authenticate
 neonctl auth
@@ -788,7 +789,7 @@ neonctl branches delete feature
 - `drizzle-kit@^0.31.7` - Drizzle schema migrations and introspection
 - `@prisma/client@^6.10.0` - Prisma ORM (Node.js only, not edge-compatible)
 - `@prisma/adapter-neon@^6.10.0` - Prisma adapter for Neon serverless
-- `neonctl@^2.18.1` - Neon CLI for database management
+- `neonctl@^2.19.0` - Neon CLI for database management
 - `zod@^3.24.0` - Schema validation for input sanitization
 
 ---
@@ -807,18 +808,18 @@ neonctl branches delete feature
 
 ---
 
-## Package Versions (Verified 2025-11-26)
+## Package Versions (Verified 2026-01-09)
 
 ```json
 {
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/postgres": "^0.10.0",
-    "drizzle-orm": "^0.44.7"
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.7",
-    "neonctl": "^2.18.1"
+    "drizzle-kit": "^0.31.8",
+    "neonctl": "^2.19.0"
   }
 }
 ```

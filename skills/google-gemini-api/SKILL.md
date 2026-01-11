@@ -1,25 +1,17 @@
 ---
 name: google-gemini-api
 description: |
-  Integrate Gemini API with correct current SDK (@google/genai v1.27+, NOT deprecated @google/generative-ai).
-  Supports text generation, multimodal (images/video/audio/PDFs), function calling, and thinking mode. 1M input tokens.
+  Integrate Gemini API with @google/genai SDK (NOT deprecated @google/generative-ai). Text generation, multimodal (images/video/audio/PDFs), function calling, thinking mode, streaming. 1M input tokens.
 
-  Use when: integrating Gemini API, implementing multimodal AI, using thinking mode for reasoning, function calling
-  with parallel execution, streaming responses, deploying to Cloudflare Workers, building chat, or troubleshooting
-  SDK deprecation, context window, model not found, function calling, or multimodal format errors.
-
-  Keywords: gemini api, @google/genai, gemini-2.5-pro, gemini-2.5-flash, gemini-2.5-flash-lite,
-  gemini-3-pro-preview, multimodal gemini, thinking mode, google ai, genai sdk, function calling gemini,
-  streaming gemini, gemini vision, gemini video, gemini audio, gemini pdf, system instructions,
-  multi-turn chat, DEPRECATED @google/generative-ai, gemini context window, gemini models 2025,
-  gemini 1m tokens, gemini tool use, parallel function calling, compositional function calling, gemini 3
+  Use when: Gemini integration, multimodal AI, reasoning with thinking mode. Troubleshoot: SDK deprecation, model not found, context window, function calling errors.
+user-invocable: true
 ---
 
 # Google Gemini API - Complete Guide
 
 **Version**: Phase 2 Complete + Gemini 3 ✅
-**Package**: @google/genai@1.34.0 (⚠️ NOT @google/generative-ai)
-**Last Updated**: 2026-01-03 (v1.34.0 + Gemini 3 Flash)
+**Package**: @google/genai@1.35.0 (⚠️ NOT @google/generative-ai)
+**Last Updated**: 2026-01-09
 
 ---
 

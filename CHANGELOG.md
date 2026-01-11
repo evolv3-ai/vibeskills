@@ -9,6 +9,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - snowflake-platform Skill ❄️
+
+**Date**: 2026-01-09
+
+**Change**: New comprehensive Snowflake platform skill covering snow CLI, Cortex AI, Native Apps, and Snowpark
+
+**Features**:
+- Cortex AI functions (COMPLETE, SUMMARIZE, TRANSLATE, AI_FILTER, AI_CLASSIFY)
+- snow CLI 3.14.0+ command reference
+- JWT key-pair authentication with account identifier gotcha
+- Native App development workflow with release channels
+- Marketplace publishing workflow
+- Consolidated 6 scattered rules into skill
+
+**Keywords**: snowflake, cortex ai, snow cli, native app, jwt auth, snowpark
+
+---
+
+### Added - sub-agent-patterns Skill 🤖
+
+**Date**: 2026-01-09
+
+**Change**: New skill documenting multi-agent coordination patterns for Claude Code
+
+**Features**:
+- Parallel agent spawning patterns
+- Agent result aggregation
+- When to use sub-agents vs sequential processing
+- Error handling across agents
+
+---
+
+### Added - Deep Audit System (Phases 1-4) 🔍
+
+**Date**: 2026-01-09
+
+**Change**: Complete `/deep-audit` command for content accuracy verification
+
+**Phases Implemented**:
+1. **Foundation**: Firecrawl integration, doc_sources metadata
+2. **Sub-Agent Comparison**: 4 parallel agents (API, patterns, errors, ecosystem)
+3. **Change Tracking**: Content hashing, audit history
+4. **Bulk Operations**: Pattern matching, tier support
+
+**Audit Results**:
+- 68 skills audited across 10 tiers
+- All skills marked complete in SKILL_AUDIT_QUEUE.md
+- Version references updated to current
+
+---
+
 ### Added - Marketplace Sync Verification 🔄
 
 **Date**: 2025-12-15

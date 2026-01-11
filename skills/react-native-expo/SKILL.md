@@ -1,17 +1,18 @@
 ---
 name: react-native-expo
 description: |
-  Build React Native 0.76+ apps with Expo SDK 52. Covers mandatory New Architecture (0.82+), React 19 changes (propTypes/forwardRef removal), new CSS (display: contents, mixBlendMode, outline), Swift iOS template, and DevTools migration.
+  Build React Native 0.76+ apps with Expo SDK 52+. Covers mandatory New Architecture (0.82+), React 19 changes, new CSS properties, and Swift iOS template.
 
-  Use when: building Expo apps, migrating to New Architecture, or troubleshooting "Fabric component not found", "propTypes not a function", "TurboModule not registered", or Swift AppDelegate errors.
+  Use when building Expo apps, migrating to New Architecture, or fixing Fabric, TurboModule, propTypes, or Swift AppDelegate errors.
+user-invocable: true
 ---
 
 # React Native Expo (0.76-0.82+ / SDK 52+)
 
 **Status**: Production Ready
-**Last Updated**: 2025-11-22
+**Last Updated**: 2026-01-09
 **Dependencies**: Node.js 18+, Expo CLI
-**Latest Versions**: react-native@0.82, expo@~52.0.0, react@19.1
+**Latest Versions**: react-native@0.83.1, expo@~54.0.31, react@19.2.3
 
 ---
 
@@ -846,7 +847,7 @@ npm install @react-navigation/native@^7.0.0
 ```json
 {
   "dependencies": {
-    "react": "^19.1.0",
+    "react": "^19.2.3",
     "react-native": "^0.82.0",
     "expo": "~52.0.0",
     "@react-navigation/native": "^7.0.0",
