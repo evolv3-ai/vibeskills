@@ -1,0 +1,26 @@
+{
+  "name": "office",
+  "description": "Generate Office documents (DOCX, XLSX, PDF) with TypeScript. Pure JS libraries that work everywhere: Claude Code CLI, Cloudflare Workers, browsers. Uses docx (Word), xlsx/SheetJS (Excel), pdf-lib (PDF). Use when: creating invoices, reports, spreadsheets, form filling, exporting data to Office formats, or troubleshooting Packer.toBuffer, XLSX.utils, PDFDocument errors.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jezweb/claude-skills",
+  "keywords": [
+    "docx",
+    "xlsx",
+    "pdf",
+    "office",
+    "word",
+    "excel",
+    "spreadsheet",
+    "document",
+    "invoice",
+    "report",
+    "pdf-lib",
+    "sheetjs",
+    "cloudflare-workers"
+  ]
+}

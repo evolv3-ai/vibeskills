@@ -7,7 +7,7 @@
   "metadata": {
     "description": "Production-tested skills for Claude Code - Cloudflare, AI, React, Tailwind v4, and modern web development",
     "version": "3.0.0",
-    "updated": "2026-01-11"
+    "updated": "2026-01-12"
   },
   "plugins": [
     {
@@ -132,6 +132,14 @@
         "./skills/typescript-mcp",
         "./skills/fastmcp",
         "./skills/ts-agent-sdk"
+      ]
+    },
+    {
+      "name": "office",
+      "description": "Office document generation - create DOCX, XLSX, and PDF documents with TypeScript. Works in Claude Code CLI, Cloudflare Workers, and browsers.",
+      "source": "./",
+      "skills": [
+        "./skills/office"
       ]
     },
     {
