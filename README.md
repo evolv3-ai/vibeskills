@@ -56,6 +56,35 @@ You: "Yes"
 
 ---
 
+## Bundled Agents
+
+Some skills include **sub-agents** that can be invoked via the Task tool for specialized tasks:
+
+| Bundle | Agents | Purpose |
+|--------|--------|---------|
+| **design** | `a11y-auditor`, `favicon-crafter`, `image-prompter` | Accessibility audits, favicon generation, image prompts |
+| **cloudflare** | `cloudflare-deploy`, `cloudflare-debug`, `d1-migration`, `worker-scaffold` | Deployment, debugging, migrations |
+
+**Note**: Agents require manual installation to `~/.claude/agents/`:
+
+```bash
+# List available agents
+./scripts/install-skill-agents.sh list
+
+# Install agents from a bundle
+./scripts/install-skill-agents.sh design
+./scripts/install-skill-agents.sh cloudflare
+
+# Install all agents
+./scripts/install-skill-agents.sh all
+
+# Restart Claude Code to discover new agents
+```
+
+After installation, agents appear in the Task tool's available agents.
+
+---
+
 ## Request a Skill
 
 **Want a skill we don't have?** [Open an issue](https://github.com/jezweb/claude-skills/issues/new?template=skill_request.md&title=Skill+Request:+) with the technology/framework and we'll build it.
