@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.11.0] - 2026-01-14
+
+### Added - Design Bundle 🎨
+
+**Change**: New plugin bundle with 8 web design and accessibility skills
+
+**Skills** (8 total):
+- `accessibility` - WCAG 2.1 AA compliance, semantic HTML, ARIA patterns
+- `color-palette` - Generate 11-shade scales from single brand hex
+- `favicon-gen` - Custom favicons from logos, text, or brand colors
+- `icon-design` - Icon selection, library recommendations, migration guides
+- `image-gen` - Gemini image generation for website assets
+- `responsive-images` - srcset, lazy loading, modern formats
+- `seo-meta` - Title, description, Open Graph, Twitter Cards, JSON-LD
+- `tailwind-patterns` - Production-ready Tailwind CSS patterns
+
+**Bundled Agents** (6):
+- `a11y-auditor` - WCAG compliance audits with scoring
+- `favicon-crafter` - SVG favicon generation (9 shapes, gradients)
+- `icon-selector` - Icon library selection and migration
+- `image-prompter` - Gemini prompt crafting with negative prompts
+- `palette-generator` - Color palette generation with contrast checking
+- `seo-generator` - Complete SEO metadata generation
+
+**Installation**:
+```bash
+/plugin install design@claude-skills
+```
+
+**Sub-Agent Patterns Updated**:
+- Tool access principle: Don't give Bash unless needed
+- Model selection guidance: Sonnet default, Haiku only for scripts
+- Effective prompt templates for parallel agents
+
+---
+
 ## [Unreleased]
 
 ### Added - snowflake-platform Skill ❄️
