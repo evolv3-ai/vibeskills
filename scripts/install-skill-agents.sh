@@ -11,7 +11,7 @@ USER_AGENTS_DIR="$HOME/.claude/agents"
 
 # Define bundles and their skills
 declare -A BUNDLES
-BUNDLES[design]="accessibility color-palette favicon-gen image-gen responsive-images seo-meta tailwind-patterns"
+BUNDLES[design]="accessibility color-palette favicon-gen icon-design image-gen responsive-images seo-meta tailwind-patterns"
 BUNDLES[cloudflare]="cloudflare-worker-base cloudflare-d1 cloudflare-r2 cloudflare-kv cloudflare-workers-ai cloudflare-vectorize cloudflare-queues cloudflare-workflows cloudflare-durable-objects cloudflare-agents cloudflare-mcp-server cloudflare-turnstile cloudflare-hyperdrive cloudflare-images cloudflare-browser-rendering cloudflare-python-workers"
 BUNDLES[ai]="ai-sdk-core ai-sdk-ui openai-api openai-agents openai-assistants openai-responses google-gemini-api google-gemini-embeddings claude-api claude-agent-sdk elevenlabs-agents"
 

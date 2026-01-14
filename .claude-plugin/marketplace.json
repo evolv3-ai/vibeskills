@@ -87,12 +87,13 @@
     },
     {
       "name": "design",
-      "description": "Web design and accessibility skills - color palettes, SEO metadata, responsive images, WCAG 2.1 AA compliance, favicon generation, Gemini image generation, and reusable Tailwind patterns. 7 skills for modern, accessible websites.",
+      "description": "Web design and accessibility skills - color palettes, SEO metadata, responsive images, WCAG 2.1 AA compliance, favicon generation, Gemini image generation, icon selection, and reusable Tailwind patterns. 8 skills for modern, accessible websites.",
       "source": "./",
       "skills": [
         "./skills/accessibility",
         "./skills/color-palette",
         "./skills/favicon-gen",
+        "./skills/icon-design",
         "./skills/image-gen",
         "./skills/responsive-images",
         "./skills/seo-meta",
