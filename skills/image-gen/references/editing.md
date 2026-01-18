@@ -35,7 +35,7 @@ async function editImage(imagePath: string, editPrompt: string, aspectRatio?: st
   }
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-exp-image-generation",
+    model: "gemini-3-flash-image-generation",
     contents: [
       {
         role: "user",
@@ -92,7 +92,7 @@ For complex edits, use chat context to build on previous results:
 
 ```typescript
 const chat = await ai.chats.create({
-  model: "gemini-2.0-flash-exp-image-generation",
+  model: "gemini-3-flash-image-generation",
   config: { responseModalities: ['TEXT', 'IMAGE'] }
 });
 

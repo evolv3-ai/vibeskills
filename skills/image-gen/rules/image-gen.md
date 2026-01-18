@@ -6,10 +6,10 @@ Correction rules for Gemini Native Image Generation.
 
 | If Claude suggests... | Use instead... |
 |----------------------|----------------|
-| DALL-E for website images | Gemini Nano Banana (better text, editing) |
-| Midjourney | Gemini Nano Banana (API access, editing) |
-| `gemini-pro-vision` for generation | `gemini-2.0-flash-exp-image-generation` |
-| Generic model for 4K | `gemini-2.5-pro-preview-image-generation` |
+| DALL-E for website images | Gemini 3 Image Generation (better text, editing) |
+| Midjourney | Gemini 3 Image Generation (API access, editing) |
+| `gemini-pro-vision` for generation | `gemini-3-flash-image-generation` |
+| Generic model for 4K | `gemini-3-pro-image-generation` |
 
 ## API Configuration
 
@@ -24,7 +24,7 @@ Correct config structure:
 
 ```typescript
 const response = await ai.models.generateContent({
-  model: "gemini-2.0-flash-exp-image-generation",
+  model: "gemini-3-flash-image-generation",
   contents: prompt,
   config: {
     responseModalities: ["TEXT", "IMAGE"],
@@ -59,7 +59,7 @@ const response = await ai.models.generateContent({
 
 | If Claude suggests... | Use instead... |
 |----------------------|----------------|
-| Nano Banana for infographics | Nano Banana Pro (better text legibility) |
+| Gemini 3 Flash for infographics | Gemini 3 Pro (better text legibility) |
 | Long paragraphs in image | Short labels, headlines only |
 | Small text | Large, bold text (minimum 24pt equivalent) |
 | Decorative fonts | Clear sans-serif for legibility |

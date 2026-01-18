@@ -1,6 +1,6 @@
 ---
 name: image-gen
-description: Generate website images with Gemini Native Image Generation (Nano Banana). Covers hero banners, service cards, infographics with legible text, and multi-turn editing. Includes Australian-specific imagery patterns. Use when stock photos don't fit, need text in images, or require consistent style across assets.
+description: Generate website images with Gemini 3 Native Image Generation. Covers hero banners, service cards, infographics with legible text, and multi-turn editing. Includes Australian-specific imagery patterns. Use when stock photos don't fit, need text in images, or require consistent style across assets.
 license: MIT
 metadata:
   last_verified: "2026-01-14"
@@ -14,8 +14,8 @@ Generate and edit website images using Gemini Native Image Generation.
 
 | Model | ID | Best For |
 |-------|-----|----------|
-| **Nano Banana** | `gemini-2.0-flash-exp-image-generation` | Fast iteration, general use |
-| **Nano Banana Pro** | `gemini-2.5-pro-preview-image-generation` | 4K, complex prompts, text |
+| **Gemini 3 Flash** | `gemini-3-flash-image-generation` | Fast iteration, general use |
+| **Gemini 3 Pro** | `gemini-3-pro-image-generation` | 4K, complex prompts, text |
 
 ## Capabilities
 
@@ -56,7 +56,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // Generate new image
 const response = await ai.models.generateContent({
-  model: "gemini-2.0-flash-exp-image-generation",
+  model: "gemini-3-flash-image-generation",
   contents: "A professional plumber in hi-vis working in modern Australian home",
   config: {
     responseModalities: ["TEXT", "IMAGE"],
@@ -79,12 +79,12 @@ for (const part of response.candidates[0].content.parts) {
 
 | Requirement | Use |
 |-------------|-----|
-| Fast iteration | Nano Banana |
-| 4K resolution | Nano Banana Pro |
+| Fast iteration | Gemini 3 Flash |
+| 4K resolution | Gemini 3 Pro |
 | Text in images | Pro (better legibility) |
-| Simple edits | Nano Banana |
-| Complex compositions | Nano Banana Pro |
-| Infographics/diagrams | Nano Banana Pro |
+| Simple edits | Gemini 3 Flash |
+| Complex compositions | Gemini 3 Pro |
+| Infographics/diagrams | Gemini 3 Pro |
 
 ## When to Use
 

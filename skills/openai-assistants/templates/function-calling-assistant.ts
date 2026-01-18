@@ -92,7 +92,7 @@ async function main() {
         },
       },
     ],
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);

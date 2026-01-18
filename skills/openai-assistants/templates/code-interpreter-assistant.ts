@@ -23,7 +23,7 @@ async function main() {
     name: "Data Analyst",
     instructions: "You are a data analyst. Analyze data and create visualizations. Always explain your approach and findings.",
     tools: [{ type: "code_interpreter" }],
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);

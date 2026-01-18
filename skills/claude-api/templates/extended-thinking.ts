@@ -6,16 +6,17 @@ const anthropic = new Anthropic({
 
 /**
  * IMPORTANT: Extended thinking is ONLY available in:
- * - Claude 3.7 Sonnet (claude-3-7-sonnet-20250228)
- * - Claude 4 models (Opus 4, Sonnet 4)
+ * - Claude Opus 4.5 (claude-opus-4-5-20251101) - Flagship, best for complex reasoning
+ * - Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
+ * - Claude Opus 4 (claude-opus-4-20250514)
  *
- * NOT available in Claude 3.5 Sonnet
+ * NOT available in: Claude Haiku, deprecated Claude 3.x models
  */
 
 // Example 1: Basic extended thinking
 async function basicExtendedThinking() {
   const message = await anthropic.messages.create({
-    model: 'claude-3-7-sonnet-20250228', // Must use 3.7 or 4.x
+    model: 'claude-opus-4-5-20251101', // Must use Opus 4.5, Sonnet 4.5, or Opus 4
     max_tokens: 4096, // Higher token limit for thinking
     messages: [
       {
@@ -47,7 +48,7 @@ async function basicExtendedThinking() {
 // Example 2: Complex problem solving
 async function complexProblemSolving() {
   const message = await anthropic.messages.create({
-    model: 'claude-3-7-sonnet-20250228',
+    model: 'claude-opus-4-5-20251101',
     max_tokens: 8192, // Even higher for complex reasoning
     messages: [
       {
@@ -81,7 +82,7 @@ Why is it slow and what's the correct implementation?`,
 // Example 3: Multi-step reasoning
 async function multiStepReasoning() {
   const message = await anthropic.messages.create({
-    model: 'claude-3-7-sonnet-20250228',
+    model: 'claude-opus-4-5-20251101',
     max_tokens: 6144,
     messages: [
       {
@@ -108,8 +109,8 @@ async function multiStepReasoning() {
 async function compareThinkingModes() {
   const problem = 'What is the sum of all prime numbers less than 100?';
 
-  // Without extended thinking (Claude 3.5 Sonnet)
-  console.log('=== Without Extended Thinking (Claude 3.5 Sonnet) ===\n');
+  // Standard response (no extended thinking)
+  console.log('=== Standard Response (Sonnet 4.5 - no extended thinking) ===\n');
 
   const response1 = await anthropic.messages.create({
     model: 'claude-sonnet-4-5-20250929',
@@ -123,11 +124,11 @@ async function compareThinkingModes() {
   }
   console.log('\nTokens used:', response1.usage.input_tokens + response1.usage.output_tokens);
 
-  // With extended thinking (Claude 3.7 Sonnet)
-  console.log('\n\n=== With Extended Thinking (Claude 3.7 Sonnet) ===\n');
+  // With extended thinking (Claude Opus 4.5)
+  console.log('\n\n=== With Extended Thinking (Claude Opus 4.5) ===\n');
 
   const response2 = await anthropic.messages.create({
-    model: 'claude-3-7-sonnet-20250228',
+    model: 'claude-opus-4-5-20251101', // Flagship for best reasoning
     max_tokens: 4096,
     messages: [{ role: 'user', content: problem }],
   });
@@ -173,7 +174,7 @@ async function extendedThinkingWithTools() {
   ];
 
   const response = await anthropic.messages.create({
-    model: 'claude-3-7-sonnet-20250228',
+    model: 'claude-opus-4-5-20251101',
     max_tokens: 4096,
     tools,
     messages,
@@ -200,10 +201,10 @@ async function extendedThinkingWithTools() {
 // Example 6: Error when using wrong model
 async function demonstrateWrongModelError() {
   try {
-    console.log('=== Attempting extended thinking on Claude 3.5 Sonnet ===\n');
+    console.log('=== Attempting extended thinking on Claude Haiku ===\n');
 
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929', // Wrong model!
+      model: 'claude-haiku-4-5-20250929', // Haiku doesn't support extended thinking
       max_tokens: 4096,
       messages: [
         {
@@ -217,8 +218,8 @@ async function demonstrateWrongModelError() {
     const hasThinking = message.content.some(block => block.type === 'thinking');
 
     if (!hasThinking) {
-      console.log('⚠️ No thinking blocks found!');
-      console.log('Extended thinking is only available in Claude 3.7 Sonnet or Claude 4 models.');
+      console.log('Warning: No thinking blocks found!');
+      console.log('Extended thinking is only available in Opus 4.5, Sonnet 4.5, and Opus 4.');
     }
 
     for (const block of message.content) {
@@ -240,20 +241,20 @@ function getModelCapabilities(modelId: string): {
     string,
     { supportsExtendedThinking: boolean; contextWindow: number }
   > = {
-    'claude-sonnet-4-5-20250929': {
-      supportsExtendedThinking: false,
+    'claude-opus-4-5-20251101': {
+      supportsExtendedThinking: true, // Flagship - best for complex reasoning
       contextWindow: 200_000,
     },
-    'claude-3-7-sonnet-20250228': {
+    'claude-sonnet-4-5-20250929': {
       supportsExtendedThinking: true,
-      contextWindow: 2_000_000,
+      contextWindow: 200_000,
     },
     'claude-opus-4-20250514': {
       supportsExtendedThinking: true,
       contextWindow: 200_000,
     },
-    'claude-3-5-haiku-20241022': {
-      supportsExtendedThinking: false,
+    'claude-haiku-4-5-20250929': {
+      supportsExtendedThinking: false, // Haiku does not support
       contextWindow: 200_000,
     },
   };
@@ -272,7 +273,7 @@ function validateModelForExtendedThinking(modelId: string): void {
 
   if (!capabilities.supportsExtendedThinking) {
     throw new Error(
-      `Model ${modelId} does not support extended thinking. Use Claude 3.7 Sonnet or Claude 4 models.`
+      `Model ${modelId} does not support extended thinking. Use Claude Opus 4.5, Sonnet 4.5, or Opus 4.`
     );
   }
 
@@ -286,7 +287,7 @@ if (require.main === module) {
 
   // Validate model first
   try {
-    validateModelForExtendedThinking('claude-3-7-sonnet-20250228');
+    validateModelForExtendedThinking('claude-opus-4-5-20251101');
   } catch (error) {
     console.error(error.message);
     process.exit(1);

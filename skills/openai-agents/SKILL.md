@@ -30,7 +30,7 @@ export OPENAI_API_KEY="your-key"
 **Agents**: LLMs with instructions + tools
 ```typescript
 import { Agent } from '@openai/agents';
-const agent = new Agent({ name: 'Assistant', tools: [myTool], model: 'gpt-4o-mini' });
+const agent = new Agent({ name: 'Assistant', tools: [myTool], model: 'gpt-5-mini' });
 ```
 
 **Tools**: Functions with Zod schemas
@@ -119,7 +119,7 @@ while (result.interruption?.type === 'tool_approval') {
 import { RealtimeAgent } from '@openai/agents-realtime';
 const voiceAgent = new RealtimeAgent({
   voice: 'alloy', // alloy, echo, fable, onyx, nova, shimmer
-  model: 'gpt-4o-realtime-preview',
+  model: 'gpt-5-realtime',
   tools: [weatherTool],
 });
 ```
@@ -152,7 +152,7 @@ await session.connect();
 export default {
   async fetch(request: Request, env: Env) {
     process.env.OPENAI_API_KEY = env.OPENAI_API_KEY;
-    const agent = new Agent({ name: 'Assistant', model: 'gpt-4o-mini' });
+    const agent = new Agent({ name: 'Assistant', model: 'gpt-5-mini' });
     const result = await run(agent, (await request.json()).message);
     return Response.json({ response: result.finalOutput, tokens: result.usage.totalTokens });
   }
@@ -240,7 +240,7 @@ for (let attempt = 1; attempt <= 3; attempt++) {
 
 ```typescript
 const agent = new Agent({
-  model: 'gpt-4o', // More reliable than gpt-4o-mini
+  model: 'gpt-5', // More reliable than gpt-5-mini
   instructions: 'CRITICAL: Return JSON matching schema exactly',
   outputType: mySchema,
 });
@@ -282,7 +282,7 @@ console.log(result.usage.totalTokens, result.history.length, result.currentAgent
 - [ ] Add guardrails for safety-critical applications
 - [ ] Enable tracing for debugging
 - [ ] Set reasonable `maxTurns` to prevent runaway costs
-- [ ] Use `gpt-4o-mini` where possible for cost efficiency
+- [ ] Use `gpt-5-mini` where possible for cost efficiency
 - [ ] Implement rate limiting
 - [ ] Log token usage for cost monitoring
 - [ ] Test handoff flows thoroughly

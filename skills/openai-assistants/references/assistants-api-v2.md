@@ -28,7 +28,7 @@ Runs (execution on thread)
 
 Configured AI entities with:
 - **Instructions**: System prompt (max 256k characters)
-- **Model**: gpt-4o, gpt-5, etc.
+- **Model**: gpt-5, etc., etc.
 - **Tools**: code_interpreter, file_search, functions
 - **Tool Resources**: Vector stores, files
 - **Metadata**: Custom key-value pairs

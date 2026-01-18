@@ -46,7 +46,7 @@ const assistant = await openai.beta.assistants.create({
   name: "Math Tutor",
   instructions: "You are a math tutor. Use code interpreter for calculations.",
   tools: [{ type: "code_interpreter" }],
-  model: "gpt-4o",
+  model: "gpt-5",
 });
 
 // 2. Create thread
@@ -94,7 +94,7 @@ console.log(messages.data[0].content[0].text.value);
 
 ```typescript
 const assistant = await openai.beta.assistants.create({
-  model: "gpt-4o",
+  model: "gpt-5",
   instructions: "System prompt (max 256k chars in v2)",
   tools: [{ type: "code_interpreter" }, { type: "file_search" }],
   tool_resources: { file_search: { vector_store_ids: ["vs_123"] } },

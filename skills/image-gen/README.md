@@ -1,12 +1,12 @@
 # Image Generation Skill
 
-Generate website images with Gemini Native Image Generation (Nano Banana).
+Generate website images with Gemini 3 Native Image Generation.
 
 ## Auto-Trigger Keywords
 
 ### Technology
-- gemini image generation, nano banana, native image gen
-- gemini-2.0-flash-exp-image-generation, gemini-2.5-pro-preview
+- gemini image generation, gemini 3 image generation, native image gen
+- gemini-3-flash-image-generation, gemini-3-pro-image-generation
 - google genai, @google/genai
 
 ### Use Cases

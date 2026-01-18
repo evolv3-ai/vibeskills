@@ -11,14 +11,14 @@ Claude API uses **token bucket algorithm** for rate limiting:
 
 ## Rate Limit Tiers
 
-| Tier | Requirements | Example Limits (Sonnet 3.5) |
+| Tier | Requirements | Example Limits (Sonnet 4.5) |
 |------|--------------|------------------------------|
 | Tier 1 | New account | 50 RPM, 40k TPM |
 | Tier 2 | $10 spend | 1000 RPM, 100k TPM |
 | Tier 3 | $50 spend | 2000 RPM, 200k TPM |
 | Tier 4 | $500 spend | 4000 RPM, 400k TPM |
 
-**Note**: Limits vary by model. Check Console for exact limits.
+**Note**: Limits vary by model. Check Console for exact limits. Opus 4.5 may have different limits than Sonnet 4.5.
 
 ## Response Headers
 

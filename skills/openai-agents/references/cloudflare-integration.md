@@ -86,7 +86,7 @@ export default {
       const agent = new Agent({
         name: 'Assistant',
         instructions: 'You are helpful.',
-        model: 'gpt-4o-mini', // Use smaller models for faster response
+        model: 'gpt-5-mini', // Use smaller models for faster response
       });
 
       const result = await run(agent, message, {
@@ -196,7 +196,7 @@ Workers have CPU time limits (default 50ms, up to 30s with paid plans).
 ```typescript
 const result = await run(agent, message, {
   maxTurns: 3, // Limit turns
-  model: 'gpt-4o-mini', // Faster model
+  model: 'gpt-5-mini', // Faster model
 });
 ```
 
@@ -227,7 +227,7 @@ First request after inactivity may be slow.
 
 ### 1. Use Smaller Models
 ```typescript
-model: 'gpt-4o-mini' // Faster than gpt-4o
+model: 'gpt-5-mini' // Faster than gpt-5
 ```
 
 ### 2. Limit Turns
@@ -290,7 +290,7 @@ wrangler dev
 - GPT-4o-mini: ~$75
 - **Total**: ~$76.50
 
-**Use gpt-4o-mini for cost efficiency!**
+**Use gpt-5-mini for cost efficiency!**
 
 ---
 

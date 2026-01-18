@@ -182,7 +182,7 @@ async function main() {
   const assistant = await openai.beta.assistants.create({
     name: "Demo Assistant",
     instructions: "You are a helpful assistant.",
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);

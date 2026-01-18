@@ -34,8 +34,8 @@ async function generateImage(prompt: string, options: {
 
   const response = await ai.models.generateContent({
     model: imageSize
-      ? "gemini-2.5-pro-preview-image-generation"
-      : "gemini-2.0-flash-exp-image-generation",
+      ? "gemini-3-pro-image-generation"
+      : "gemini-3-flash-image-generation",
     contents: prompt,
     config,
   });
@@ -59,7 +59,7 @@ fs.writeFileSync("hero.png", hero);
 
 ```bash
 curl -s -X POST \
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent" \
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-image-generation:generateContent" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

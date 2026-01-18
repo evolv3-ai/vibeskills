@@ -4,22 +4,22 @@ paths: "**/*.ts", "**/*.tsx", "**/*claude*.ts", "**/*anthropic*.ts"
 
 # Claude API Corrections
 
-Claude's training may reference older patterns. This uses **@anthropic-ai/sdk v0.70+**.
+Claude's training may reference older patterns. This uses **@anthropic-ai/sdk v0.71+**.
 
-## Model Deprecations (Oct 2025)
+## Model IDs (Jan 2026)
 
 ```typescript
-/* ❌ RETIRED models */
-'claude-3.5-sonnet'          // All versions retired
-'claude-3-sonnet-20240229'   // Retired
-
-/* ❌ DEPRECATED */
+/* ❌ DEPRECATED - Claude 3.x models */
+'claude-3.5-sonnet'          // All versions deprecated
+'claude-3-sonnet-20240229'   // Deprecated
 'claude-3.7-sonnet'          // Deprecated Oct 28, 2025
+'claude-3-5-haiku-20241022'  // Use claude-haiku-4-5 instead
 
-/* ✅ Active models */
-'claude-sonnet-4-5-20250929' // Latest Sonnet
-'claude-opus-4-5-20251101'   // Latest Opus
-'claude-haiku-4-5-20250929'  // Latest Haiku
+/* ✅ Active models - Claude 4.x */
+'claude-opus-4-5-20251101'   // Flagship - best reasoning, coding, agents ($5/$25 MTok)
+'claude-sonnet-4-5-20250929' // Balanced performance ($3/$15 MTok)
+'claude-opus-4-20250514'     // High capability ($15/$75 MTok)
+'claude-haiku-4-5-20250929'  // Fast, near-frontier ($1/$5 MTok)
 ```
 
 ## Prompt Caching: cache_control on LAST Block
@@ -95,8 +95,9 @@ const response = await anthropic.messages.create({
 
 | If Claude suggests... | Use instead... |
 |----------------------|----------------|
-| `claude-3.5-sonnet` | `claude-sonnet-4-5-20250929` |
-| `claude-3.7-sonnet` | `claude-sonnet-4-5-20250929` |
+| `claude-3.5-sonnet` | `claude-opus-4-5-20251101` or `claude-sonnet-4-5-20250929` |
+| `claude-3.7-sonnet` | `claude-opus-4-5-20251101` or `claude-sonnet-4-5-20250929` |
+| `claude-3-5-haiku` | `claude-haiku-4-5-20250929` |
 | cache_control on first block | cache_control on LAST block |
 | No stream error handler | Add `stream.on('error', ...)` |
-| Extended thinking on Haiku | Only Sonnet 4.5 and Opus 4 support it |
+| Extended thinking on Haiku | Only Opus 4.5, Sonnet 4.5, and Opus 4 support it |

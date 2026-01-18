@@ -30,7 +30,7 @@ const weatherAgent = new Agent({
   name: 'Weather Assistant',
   instructions: 'You are a friendly weather assistant. When users ask about weather, use the get_weather tool to provide accurate information.',
   tools: [getWeatherTool],
-  model: 'gpt-4o-mini', // Default model
+  model: 'gpt-5-mini', // Default model
 });
 
 // Run the agent

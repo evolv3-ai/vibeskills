@@ -90,12 +90,12 @@ When Australian context is needed:
 
 | Image Type | Recommended Model |
 |------------|-------------------|
-| Quick hero draft | Nano Banana |
-| Final hero (4K) | Nano Banana Pro |
-| Infographic with text | Nano Banana Pro |
-| Simple card image | Nano Banana |
-| Style transfer edit | Nano Banana |
-| Complex composition | Nano Banana Pro |
+| Quick hero draft | Gemini 3 Flash |
+| Final hero (4K) | Gemini 3 Pro |
+| Infographic with text | Gemini 3 Pro |
+| Simple card image | Gemini 3 Flash |
+| Style transfer edit | Gemini 3 Flash |
+| Complex composition | Gemini 3 Pro |
 
 ## Output Format
 
@@ -116,7 +116,7 @@ Natural light from nearby window, warm and inviting atmosphere.
 Shot with 35mm lens, shallow depth of field.
 Professional, trustworthy, approachable mood.
 
-**Model:** gemini-2.0-flash-exp-image-generation
+**Model:** gemini-3-flash-image-generation
 **Config:** { aspectRatio: "16:9" }
 **Notes:** If the vest color isn't quite right, use multi-turn: "Change vest to brighter orange"
 ```
@@ -205,6 +205,6 @@ Warm, inviting atmosphere, shot at 35mm f/2.8, shallow depth of field.
 Do NOT include: people, visible brand logos on devices, cluttered desk,
 harsh shadows, corporate/generic stock photo feel.
 
-**Model:** gemini-2.5-pro-preview-image-generation
+**Model:** gemini-3-pro-image-generation
 **Config:** { aspectRatio: "16:9" }
 ```

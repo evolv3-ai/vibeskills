@@ -65,8 +65,8 @@ npm install @openai/agents-realtime  # For voice agents
 
 ### Pricing
 - **Pricing Page**: https://openai.com/api/pricing/
-- **GPT-4o**: $2.50 / 1M input tokens, $10.00 / 1M output tokens
-- **GPT-4o-mini**: $0.15 / 1M input tokens, $0.60 / 1M output tokens
+- **GPT-5**: $2.50 / 1M input tokens, $10.00 / 1M output tokens
+- **GPT-5-mini**: $0.15 / 1M input tokens, $0.60 / 1M output tokens
 
 ### Account
 - **API Keys**: https://platform.openai.com/api-keys

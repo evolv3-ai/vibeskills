@@ -22,7 +22,7 @@ const assistant = await openai.beta.assistants.create({
   name: "Data Analyst",
   instructions: "You analyze data and create visualizations.",
   tools: [{ type: "code_interpreter" }],
-  model: "gpt-4o",
+  model: "gpt-5",
 });
 ```
 

@@ -115,7 +115,7 @@ Common Issues:
         vector_store_ids: [vectorStore.id],
       },
     },
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);

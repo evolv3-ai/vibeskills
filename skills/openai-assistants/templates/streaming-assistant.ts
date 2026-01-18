@@ -22,7 +22,7 @@ async function main() {
     name: "Streaming Tutor",
     instructions: "You are a helpful tutor. Explain concepts clearly and use code interpreter when helpful.",
     tools: [{ type: "code_interpreter" }],
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);

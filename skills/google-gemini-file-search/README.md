@@ -80,7 +80,7 @@ This skill prevents common implementation errors:
 5. **Indexing Cost Surprises** - One-time $0.15/1M tokens can add up for large corpora
 6. **Operation Polling** - Must poll operation status until `done: true`
 7. **Force Delete Required** - Stores with documents require `force: true` to delete
-8. **Unsupported Models** - Only Gemini 2.5 Pro/Flash supported (not 1.5 models)
+8. **Unsupported Models** - Only Gemini 3 Pro/Flash supported (not 2.x or 1.5 models)
 
 ## What's Included
 
@@ -152,7 +152,7 @@ while (!operation.done) {
 
 // 5. Query with natural language
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'What are the safety precautions for installation?',
   config: {
     tools: [{
@@ -230,7 +230,7 @@ await ai.fileSearchStores.uploadToFileSearchStore({
 
 // Query with metadata filtering
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'How do I reset the device?',
   config: {
     tools: [{
@@ -303,7 +303,7 @@ await ai.fileSearchStores.uploadToFileSearchStore({
 - **Skill Version**: 1.0.0
 - **Last Verified**: 2025-11-10
 - **Package Version**: @google/genai ^0.21.0
-- **Supported Models**: gemini-2.5-pro, gemini-2.5-flash
+- **Supported Models**: gemini-3-pro, gemini-3-flash
 - **Node.js**: >=18.0.0
 
 ## License

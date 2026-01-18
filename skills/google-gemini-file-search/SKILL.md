@@ -362,13 +362,13 @@ await ai.fileSearchStores.delete({ name: fileStore.name })
 
 **Symptom:**
 ```
-Error: File Search is only supported for Gemini 2.5 Pro and Flash models
+Error: File Search is only supported for Gemini 3 Pro and Flash models
 ```
 
-**Cause:** File Search requires Gemini 2.5 Pro or Gemini 2.5 Flash. Gemini 1.5 models are not supported.
+**Cause:** File Search requires Gemini 3 Pro or Gemini 3 Flash. Gemini 2.x and 1.5 models are not supported.
 
 **Prevention:**
-Always use 2.5 models:
+Always use Gemini 3 models:
 
 ```typescript
 // ❌ WRONG: Using Gemini 1.5 model
@@ -382,11 +382,11 @@ const response = await ai.models.generateContent({
   }
 })
 
-// ✅ CORRECT: Use Gemini 2.5 models
+// ✅ CORRECT: Use Gemini 3 models
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',  // ✅ Supported (fast, cost-effective)
+  model: 'gemini-3-flash',  // ✅ Supported (fast, cost-effective)
   // OR
-  // model: 'gemini-2.5-pro',   // ✅ Supported (higher quality)
+  // model: 'gemini-3-pro',   // ✅ Supported (higher quality)
   contents: 'What is the installation procedure?',
   config: {
     tools: [{
@@ -545,7 +545,7 @@ for (const operation of operations) {
 
 ```typescript
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'What are the safety precautions for installation?',
   config: {
     tools: [{
@@ -573,7 +573,7 @@ if (grounding?.groundingChunks) {
 
 ```typescript
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'How do I reset the device?',
   config: {
     tools: [{
@@ -787,7 +787,7 @@ async function uploadWithDeduplication(filePath: string) {
 ```typescript
 // ❌ EXPENSIVE: Search all 10GB of documents
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'Reset procedure?',
   config: {
     tools: [{ fileSearch: { fileSearchStoreNames: [fileStore.name] } }]
@@ -796,7 +796,7 @@ const response = await ai.models.generateContent({
 
 // ✅ CHEAPER: Filter to only troubleshooting docs (subset)
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'Reset procedure?',
   config: {
     tools: [{
@@ -812,14 +812,14 @@ const response = await ai.models.generateContent({
 ### 4. Choose Flash Over Pro for Cost Savings
 
 ```typescript
-// Gemini 2.5 Flash is 10x cheaper than Pro for queries
+// Gemini 3 Flash is 10x cheaper than Pro for queries
 // Use Flash unless you need Pro's advanced reasoning
 
 // Development/testing: Use Flash
-model: 'gemini-2.5-flash'
+model: 'gemini-3-flash'
 
 // Production (high-stakes answers): Use Pro
-model: 'gemini-2.5-pro'
+model: 'gemini-3-pro'
 ```
 
 ### 5. Monitor Storage Usage
@@ -868,7 +868,7 @@ console.log(`✅ ${docs.documents?.length} documents indexed`)
 
 ```typescript
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'What is this knowledge base about?',
   config: {
     tools: [{ fileSearch: { fileSearchStoreNames: [fileStore.name] } }]
@@ -883,7 +883,7 @@ console.log('✅ Query successful:', response.text.substring(0, 100) + '...')
 
 ```typescript
 const response = await ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash',
   contents: 'Provide a specific answer with citations.',
   config: {
     tools: [{ fileSearch: { fileSearchStoreNames: [fileStore.name] } }]

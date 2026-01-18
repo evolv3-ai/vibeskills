@@ -24,7 +24,7 @@ async function main() {
     name: "Math Tutor",
     instructions: "You are a personal math tutor. When asked a question, write and run Python code to answer the question.",
     tools: [{ type: "code_interpreter" }],
-    model: "gpt-4o",
+    model: "gpt-5",
   });
 
   console.log(`✅ Assistant created: ${assistant.id}\n`);
