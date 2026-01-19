@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-**63 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
+**87 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
 
 ~60% token savings | 400+ errors prevented | Auto-discovered by Claude
 
@@ -38,6 +38,7 @@ cd ~/Documents/claude-skills
 | **Planning** | 5 | Project workflow, session management |
 | **MCP/Tools** | 4 | FastMCP, TypeScript MCP |
 | **CMS** | 3 | TinaCMS, Sveltia, WordPress |
+| **Developer Workflow** | 1 | Developer Toolbox (7 agents for code review, debugging, testing) |
 
 **📋 Full list**: [SKILLS_CATALOG.md](SKILLS_CATALOG.md)
 
