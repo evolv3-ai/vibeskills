@@ -51,10 +51,10 @@ const agent = new Agent({
 
 ```typescript
 /* ❌ Cannot change voice/model during handoff */
-handoff({ voice: 'different-voice', model: 'gpt-4o' })
+handoff({ voice: 'different-voice', model: 'gpt-5' })
 
 /* ✅ Voice and model must match original agent */
-handoff({ voice: originalVoice, model: 'gpt-4o-realtime-preview' })
+handoff({ voice: originalVoice, model: 'gpt-5-realtime' })
 ```
 
 ## Never Send API Key to Browser
@@ -65,7 +65,7 @@ const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 // Sending to frontend...
 
 /* ✅ Generate ephemeral tokens server-side */
-const session = await client.realtime.sessions.create({ model: 'gpt-4o-realtime-preview' })
+const session = await client.realtime.sessions.create({ model: 'gpt-5-realtime' })
 // Send session.client_secret.value to frontend (expires in 60s)
 ```
 

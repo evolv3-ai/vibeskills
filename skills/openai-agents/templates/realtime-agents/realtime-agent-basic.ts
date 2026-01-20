@@ -81,7 +81,7 @@ const voiceAssistant = new RealtimeAgent({
   voice: 'alloy', // Options: alloy, echo, fable, onyx, nova, shimmer
 
   // Model (realtime API uses specific models)
-  model: 'gpt-4o-realtime-preview', // Default for realtime
+  model: 'gpt-5-realtime', // Default for realtime
 
   // Turn detection (when to consider user done speaking)
   turnDetection: {

@@ -29,9 +29,10 @@ Prompt caching reduces costs by up to 90% and latency by up to 85% by caching fr
 
 ### Minimum Cacheable Content
 
-- **Claude 3.5 Sonnet**: 1,024 tokens minimum
-- **Claude 3.5 Haiku**: 2,048 tokens minimum
-- **Claude 3.7 Sonnet**: 1,024 tokens minimum
+- **Claude Opus 4.5**: 1,024 tokens minimum
+- **Claude Sonnet 4.5**: 1,024 tokens minimum
+- **Claude Opus 4**: 1,024 tokens minimum
+- **Claude Haiku 4.5**: 2,048 tokens minimum
 
 ### Cache Lifetime
 
@@ -170,7 +171,7 @@ const response = await anthropic.messages.create({
 ### ✅ Do
 
 - Place `cache_control` on the **last block** of cacheable content
-- Cache content >= 1024 tokens (3.5 Sonnet) or >= 2048 tokens (3.5 Haiku)
+- Cache content >= 1024 tokens (Opus/Sonnet 4.x) or >= 2048 tokens (Haiku 4.5)
 - Use caching for repeated context (system prompts, documents, code)
 - Monitor cache usage in response headers
 - Cache conversation history in long chats

@@ -106,7 +106,7 @@ const triageVoiceAgent = new RealtimeAgent({
   - Explain the transfer before handing off`,
   handoffs: [billingAgent, technicalAgent],
   voice: 'nova', // This voice will be used by all agents
-  model: 'gpt-4o-realtime-preview', // This model will be used by all agents
+  model: 'gpt-5-realtime', // This model will be used by all agents
 });
 
 // ========================================

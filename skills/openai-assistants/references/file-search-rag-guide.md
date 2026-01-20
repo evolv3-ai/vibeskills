@@ -80,7 +80,7 @@ const assistant = await openai.beta.assistants.create({
       vector_store_ids: [vectorStore.id],
     },
   },
-  model: "gpt-4o",
+  model: "gpt-5",
 });
 ```
 

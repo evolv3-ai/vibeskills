@@ -250,7 +250,7 @@ console.log('Output tokens:', response.usage.output_tokens);
 console.log('Total:', response.usage.input_tokens + response.usage.output_tokens);
 
 // Check against context window
-const contextWindow = 200000; // Claude 3.5 Sonnet
+const contextWindow = 200000; // Claude Opus 4.5 / Sonnet 4.5
 if (response.usage.input_tokens > contextWindow) {
   console.warn('Approaching context limit');
 }
@@ -335,7 +335,7 @@ function pruneMessages(messages, maxTokens = 150000) {
 - Implement message history pruning
 - Use summarization for old messages
 - Use prompt caching
-- Choose model with larger context (3.7 Sonnet: 2M tokens)
+- Use prompt caching for long context
 
 ---
 
@@ -349,22 +349,24 @@ No thinking blocks in response
 **Source**: Model capabilities
 
 **Why It Happens:**
-- Using Claude 3.5 Sonnet (not supported)
-- Should use Claude 3.7 Sonnet or Claude 4
+- Using deprecated Claude 3.x models
+- Using Haiku (not supported for extended thinking)
 
 **Solution:**
 ```typescript
-// ❌ Wrong model - no extended thinking
-model: 'claude-sonnet-4-5-20250929'
+// ❌ Deprecated models - don't use
+model: 'claude-3-5-sonnet-20240620'  // Deprecated
+model: 'claude-3-7-sonnet-20250228'  // Deprecated
 
 // ✅ Correct models for extended thinking
-model: 'claude-3-7-sonnet-20250228'  // Has extended thinking
+model: 'claude-opus-4-5-20251101'    // Flagship - best for extended thinking
+model: 'claude-sonnet-4-5-20250929'  // Has extended thinking
 model: 'claude-opus-4-20250514'      // Has extended thinking
 ```
 
 **Prevention:**
-- Verify model capabilities
-- Use 3.7 Sonnet or 4.x models for extended thinking
+- Use Claude 4.x models only
+- Opus 4.5 is best for complex reasoning
 - Document model requirements
 
 ---

@@ -112,12 +112,14 @@ Create a message with Claude.
 
 ## Model IDs
 
-| Model | ID | Context Window |
-|-------|-----|----------------|
-| Claude Sonnet 4.5 | claude-sonnet-4-5-20250929 | 200k tokens |
-| Claude 3.7 Sonnet | claude-3-7-sonnet-20250228 | 2M tokens |
-| Claude Opus 4 | claude-opus-4-20250514 | 200k tokens |
-| Claude 3.5 Haiku | claude-3-5-haiku-20241022 | 200k tokens |
+| Model | ID | Context Window | Cost (per MTok) |
+|-------|-----|----------------|-----------------|
+| Claude Opus 4.5 (Flagship) | claude-opus-4-5-20251101 | 200k tokens | $5/$25 |
+| Claude Sonnet 4.5 | claude-sonnet-4-5-20250929 | 200k tokens | $3/$15 |
+| Claude Opus 4 | claude-opus-4-20250514 | 200k tokens | $15/$75 |
+| Claude Haiku 4.5 | claude-haiku-4-5-20250929 | 200k tokens | $1/$5 |
+
+**Deprecated**: All Claude 3.x models (3.5 Sonnet, 3.7 Sonnet, 3.5 Haiku) are deprecated. Use Claude 4.x+ models.
 
 ## Tool Definition
 

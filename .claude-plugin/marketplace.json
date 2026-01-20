@@ -6,8 +6,8 @@
   },
   "metadata": {
     "description": "Production-tested skills for Claude Code - Cloudflare, AI, React, Tailwind v4, and modern web development",
-    "version": "3.0.0",
-    "updated": "2026-01-11"
+    "version": "3.1.0",
+    "updated": "2026-01-14"
   },
   "plugins": [
     {
@@ -86,6 +86,21 @@
       ]
     },
     {
+      "name": "design",
+      "description": "Web design and accessibility skills - color palettes, SEO metadata, responsive images, WCAG 2.1 AA compliance, favicon generation, Gemini image generation, icon selection, and reusable Tailwind patterns. 8 skills for modern, accessible websites.",
+      "source": "./",
+      "skills": [
+        "./skills/accessibility",
+        "./skills/color-palette",
+        "./skills/favicon-gen",
+        "./skills/icon-design",
+        "./skills/image-gen",
+        "./skills/responsive-images",
+        "./skills/seo-meta",
+        "./skills/tailwind-patterns"
+      ]
+    },
+    {
       "name": "auth",
       "description": "Authentication skills - Clerk and Better Auth integrations for user management and security.",
       "source": "./",
@@ -132,6 +147,14 @@
         "./skills/typescript-mcp",
         "./skills/fastmcp",
         "./skills/ts-agent-sdk"
+      ]
+    },
+    {
+      "name": "office",
+      "description": "Office document generation - create DOCX, XLSX, and PDF documents with TypeScript. Works in Claude Code CLI, Cloudflare Workers, and browsers.",
+      "source": "./",
+      "skills": [
+        "./skills/office"
       ]
     },
     {

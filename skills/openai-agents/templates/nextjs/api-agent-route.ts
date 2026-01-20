@@ -34,7 +34,7 @@ const assistantAgent = new Agent({
   name: 'Assistant',
   instructions: 'You are a helpful assistant. Use the search tool when you need to find information.',
   tools: [searchTool],
-  model: 'gpt-4o-mini',
+  model: 'gpt-5-mini',
 });
 
 // ========================================

@@ -86,7 +86,7 @@ const message = await anthropic.messages.create({
 
 **Requirements:**
 - **Beta header**: `structured-outputs-2025-11-13` (via `betas` array)
-- **Models**: Claude Sonnet 4.5, Claude Opus 4.1 only
+- **Models**: Claude Opus 4.5, Claude Sonnet 4.5, Claude Opus 4 (best models only)
 - **SDK**: v0.69.0+ required
 
 **Limitations:**
@@ -108,13 +108,16 @@ const message = await anthropic.messages.create({
 - ❌ Claude 3.5 Sonnet (all versions)
 - ❌ Claude 3.7 Sonnet - DEPRECATED (Oct 28, 2025)
 
-**Active Models (Nov 2025):**
+**Active Models (Jan 2026):**
 
 | Model | ID | Context | Best For | Cost (per MTok) |
 |-------|-----|---------|----------|-----------------|
+| **Claude Opus 4.5** | claude-opus-4-5-20251101 | 200k | Flagship - best reasoning, coding, agents | $5/$25 (in/out) |
 | **Claude Sonnet 4.5** | claude-sonnet-4-5-20250929 | 200k | Balanced performance | $3/$15 (in/out) |
-| **Claude Opus 4** | claude-opus-4-20250514 | 200k | Highest capability | $15/$75 |
-| **Claude Haiku 4.5** | claude-3-5-haiku-20241022 | 200k | Near-frontier, fast | $1/$5 |
+| **Claude Opus 4** | claude-opus-4-20250514 | 200k | High capability | $15/$75 |
+| **Claude Haiku 4.5** | claude-haiku-4-5-20250929 | 200k | Near-frontier, fast | $1/$5 |
+
+**Note**: Claude 3.x models (3.5 Sonnet, 3.7 Sonnet, etc.) are deprecated. Use Claude 4.x+ models.
 
 ### 3. Context Management (Oct 28, 2025)
 
@@ -300,6 +303,7 @@ if (!validFormats.includes(mimeType)) {
 **⚠️ Model Compatibility:**
 - ❌ Claude 3.7 Sonnet - DEPRECATED (Oct 28, 2025)
 - ❌ Claude 3.5 Sonnet - RETIRED (not supported)
+- ✅ Claude Opus 4.5 - Extended thinking supported (flagship)
 - ✅ Claude Sonnet 4.5 - Extended thinking supported
 - ✅ Claude Opus 4 - Extended thinking supported
 
@@ -426,7 +430,7 @@ This skill prevents **12** documented issues:
 **Error**: No thinking blocks in response
 **Source**: Model capabilities
 **Why It Happens**: Using retired/deprecated models (3.5/3.7 Sonnet)
-**Prevention**: Only use extended thinking with Claude Sonnet 4.5 or Claude Opus 4
+**Prevention**: Only use extended thinking with Claude Opus 4.5, Claude Sonnet 4.5, or Claude Opus 4
 
 ### Issue #10: API Key Exposure in Client Code
 **Error**: CORS errors, security vulnerability
@@ -492,4 +496,4 @@ This skill prevents **12** documented issues:
 
 ---
 
-**Last verified**: 2026-01-09 | **Skill version**: 2.0.1 | **Changes**: Updated SDK version to 0.71.2
+**Last verified**: 2026-01-18 | **Skill version**: 2.1.0 | **Changes**: Added Claude Opus 4.5 as flagship model (claude-opus-4-5-20251101), updated pricing

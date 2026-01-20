@@ -48,11 +48,12 @@ This skill automatically activates when you mention:
 - claude image understanding
 
 **Models**:
-- claude 3.5 sonnet
+- claude opus 4.5
+- claude-opus-4-5
+- claude sonnet 4.5
 - claude-sonnet-4-5
-- claude 3.7 sonnet
-- claude sonnet 4
 - claude opus 4
+- claude haiku 4.5
 - claude haiku
 
 **Platform Integration**:
@@ -127,7 +128,7 @@ This skill automatically activates when you mention:
 - ✅ Prompt caching for 90% cost savings
 - ✅ Tool use (function calling) patterns
 - ✅ Vision (image understanding) capabilities
-- ✅ Extended thinking mode (Claude 3.7/4)
+- ✅ Extended thinking mode (Claude 4.x models)
 - ✅ Error handling and rate limits
 - ✅ Cloudflare Workers, Next.js, Node.js examples
 - ✅ 13 production-ready templates
@@ -274,12 +275,12 @@ Process and analyze images.
 **Template**: `templates/vision-image.ts`
 **Guide**: `references/vision-capabilities.md`
 
-### 🧠 Extended Thinking (Claude 3.7/4)
+### 🧠 Extended Thinking (Claude 4.x)
 
 Deep reasoning for complex problems.
 
 **Template**: `templates/extended-thinking.ts`
-**Note**: Only works with Claude 3.7 Sonnet or Claude 4 models
+**Note**: Only works with Claude Opus 4.5, Sonnet 4.5, and Opus 4 models
 
 ### ⚡ Platform Support
 
@@ -364,7 +365,7 @@ See: `templates/vision-image.ts`
 **Solution**: See `references/tool-use-patterns.md` - validate JSON schemas
 
 **Problem**: Extended thinking not showing
-**Solution**: Use Claude 3.7 Sonnet or Claude 4 models (NOT 3.5 Sonnet)
+**Solution**: Use Claude Opus 4.5, Sonnet 4.5, or Opus 4 (NOT deprecated 3.x models)
 
 **Full Error Reference**: `references/top-errors.md`
 
@@ -372,12 +373,12 @@ See: `templates/vision-image.ts`
 
 ## Package Versions
 
-**Last Verified**: 2025-10-25
+**Last Verified**: 2026-01-18
 
 ```json
 {
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.67.0"
+    "@anthropic-ai/sdk": "^0.71.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -407,10 +408,10 @@ See: `templates/vision-image.ts`
 ✅ All templates tested and working
 ✅ All 12 documented errors have solutions
 ✅ Prompt caching verified (90% savings confirmed)
-✅ Extended thinking clarified (3.7/4 only)
+✅ Extended thinking clarified (4.x models only)
 ✅ Cloudflare Workers + Node.js + Next.js tested
 ✅ Rate limits documented (official sources)
-✅ Package versions current (0.67.0)
+✅ Package versions current (0.71.2)
 
 ---
 

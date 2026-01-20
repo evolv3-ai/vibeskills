@@ -204,7 +204,7 @@ Priority order:
 
 ### Key Decisions Made:
 1. **Chunking Defaults:** Recommended 500 tokens/chunk, 50 overlap for technical docs
-2. **Model Preference:** gemini-2.5-flash for most use cases (cost-effective)
+2. **Model Preference:** gemini-3-flash for most use cases (cost-effective)
 3. **Metadata Limit:** Emphasized 20 key-value pair max in all examples
 4. **Storage Calculation:** 3x multiplier prominently featured in all cost examples
 
@@ -218,7 +218,7 @@ Priority order:
 ### Package Versions Locked:
 - @google/genai: ^0.21.0
 - Node.js: >=18.0.0
-- Supported Models: gemini-2.5-pro, gemini-2.5-flash
+- Supported Models: gemini-3-pro, gemini-3-flash
 
 ---
 

@@ -10,7 +10,7 @@ user-invocable: true
 # Sub-Agents in Claude Code
 
 **Status**: Production Ready ✅
-**Last Updated**: 2026-01-10
+**Last Updated**: 2026-01-14
 **Source**: https://code.claude.com/docs/en/sub-agents
 
 Sub-agents are specialized AI assistants that Claude Code can delegate tasks to. Each sub-agent has its own context window, configurable tools, and custom system prompt.
@@ -207,14 +207,79 @@ Complete list of tools that can be assigned to sub-agents:
 
 **Tool Access Patterns by Agent Type:**
 
-| Agent Type | Recommended Tools |
-|------------|-------------------|
-| Read-only reviewers | `Read, Grep, Glob, LS` |
-| Code writers | `Read, Write, Edit, Bash, Glob, Grep` |
-| Research agents | `Read, Grep, Glob, WebFetch, WebSearch` |
-| Documentation | `Read, Write, Edit, Glob, Grep, WebFetch` |
-| Orchestrators | `Read, Grep, Glob, Task` |
-| Full access | Omit `tools` field (inherits all) |
+| Agent Type | Recommended Tools | Notes |
+|------------|-------------------|-------|
+| Read-only reviewers | `Read, Grep, Glob, LS` | No write capability |
+| File creators | `Read, Write, Edit, Glob, Grep` | ⚠️ **No Bash** - avoids approval spam |
+| Script runners | `Read, Write, Edit, Glob, Grep, Bash` | Use when CLI execution needed |
+| Research agents | `Read, Grep, Glob, WebFetch, WebSearch` | Read-only external access |
+| Documentation | `Read, Write, Edit, Glob, Grep, WebFetch` | No Bash for cleaner workflow |
+| Orchestrators | `Read, Grep, Glob, Task` | Minimal tools, delegates to specialists |
+| Full access | Omit `tools` field (inherits all) | Use sparingly |
+
+**⚠️ Tool Access Principle**: If an agent doesn't need Bash, don't give it Bash. Each bash command requires approval, causing workflow interruptions. See "Avoiding Bash Approval Spam" below.
+
+### Avoiding Bash Approval Spam (CRITICAL)
+
+When sub-agents have Bash in their tools list, they often default to using `cat > file << 'EOF'` heredocs for file creation instead of the Write tool. Each unique bash command requires user approval, causing:
+
+- Dozens of approval prompts per agent run
+- Slow, frustrating workflow
+- Hard to review (heredocs are walls of minified content)
+
+**Root Causes**:
+1. **Models default to bash for file ops** - Training data bias toward shell commands
+2. **Bash in tools list = Bash gets used** - Even if Write tool is available
+3. **Instructions get buried** - A "don't use bash" rule at line 300 of a 450-line prompt gets ignored
+
+**Solutions** (in order of preference):
+
+1. **Remove Bash from tools list** (if not needed):
+   ```yaml
+   # Before - causes approval spam
+   tools: Read, Write, Edit, Glob, Grep, Bash
+
+   # After - clean file operations
+   tools: Read, Write, Edit, Glob, Grep
+   ```
+   If the agent only creates files, it doesn't need Bash. The orchestrator can run necessary scripts after.
+
+2. **Put critical instructions FIRST** (immediately after frontmatter):
+   ```markdown
+   ---
+   name: site-builder
+   tools: Read, Write, Edit, Glob, Grep
+   model: sonnet
+   ---
+
+   ## ⛔ CRITICAL: USE WRITE TOOL FOR ALL FILES
+
+   **You do NOT have Bash access.** Create ALL files using the **Write tool**.
+
+   ---
+
+   [rest of prompt...]
+   ```
+   Instructions at the top get followed. Instructions buried 300 lines deep get ignored.
+
+3. **Remove contradictory instructions**:
+   ```markdown
+   # BAD - contradictory
+   Line 75: "Copy images with `cp -r intake/images/* build/images/`"
+   Line 300: "NEVER use cp, mkdir, cat, or echo"
+
+   # GOOD - consistent
+   Only mention the pattern you want used. Remove all bash examples if you want Write tool.
+   ```
+
+**When to keep Bash:**
+- Agent needs to run external CLIs (wrangler, npm, git)
+- Agent needs to execute scripts
+- Agent needs to check command outputs
+
+**Testing**: Before vs after removing Bash:
+- **Before** (with Bash): 11+ heredoc approval prompts, wrong patterns applied
+- **After** (no Bash): Mostly Write tool usage, correct patterns, minimal prompts
 
 ### Using /agents Command (Recommended)
 
@@ -445,28 +510,50 @@ Send agents to the background while continuing work in your main session:
 
 ### Model Selection Strategy
 
-Match model to task requirements for cost and speed optimization:
+**Quality-First Approach**: Default to Sonnet for most agents. The cost savings from Haiku rarely outweigh the quality loss.
 
-| Model | Best For | Speed | Cost |
-|-------|----------|-------|------|
-| `haiku` | Simple lookups, format checks, fast reads | 2x faster | 3x cheaper |
-| `sonnet` | Complex reasoning, code generation | Balanced | Standard |
-| `opus` | Deep analysis, architectural decisions | Slower | Premium |
-| `inherit` | Match main conversation | Varies | Varies |
+| Model | Best For | Speed | Cost | Quality |
+|-------|----------|-------|------|---------|
+| `sonnet` | **Default for most agents** - content generation, reasoning, file creation | Balanced | Standard | ✅ High |
+| `opus` | Creative work, complex reasoning, quality-critical outputs | Slower | Premium | ✅ Highest |
+| `haiku` | **Only for simple script execution** where quality doesn't matter | 2x faster | 3x cheaper | ⚠️ Variable |
+| `inherit` | Match main conversation | Varies | Varies | Matches parent |
 
-**Pattern**: Use Haiku for high-volume simple tasks, Sonnet for judgment-heavy work:
+**Why Sonnet Default?**
+
+Testing showed significant quality differences:
+- **Haiku**: Wrong stylesheet links, missing CSS, wrong values, incorrect patterns
+- **Sonnet**: Correct patterns, proper validation, fewer errors
+
+| Task Type | Recommended Model | Why |
+|-----------|-------------------|-----|
+| Content generation | Sonnet | Quality matters |
+| File creation | Sonnet | Patterns must be correct |
+| Code writing | Sonnet | Bugs are expensive |
+| Audits/reviews | Sonnet | Judgment required |
+| Creative work | Opus | Maximum quality |
+| Deploy scripts | Haiku (OK) | Just running commands |
+| Simple format checks | Haiku (OK) | Pass/fail only |
+
+**Pattern**: Default Sonnet, use Opus for creative, Haiku only when quality truly doesn't matter:
 
 ```yaml
 ---
-name: format-checker
-model: haiku  # Fast, cheap - just checking patterns
-tools: Read, Grep, Glob
+name: site-builder
+model: sonnet  # Content quality matters - NOT haiku
+tools: Read, Write, Edit, Glob, Grep
 ---
 
 ---
-name: architecture-reviewer
-model: opus  # Deep reasoning needed
-tools: Read, Grep, Glob, Bash
+name: creative-director
+model: opus  # Creative work needs maximum quality
+tools: Read, Write, Edit, Glob, Grep
+---
+
+---
+name: deploy-runner
+model: haiku  # Just running wrangler commands - quality irrelevant
+tools: Read, Bash
 ---
 ```
 
@@ -907,9 +994,12 @@ Rare (agents work on different items), but if it happens:
 1. **Start with Claude-generated agents**: Use `/agents` to generate initial config, then customize
 2. **Design focused sub-agents**: Single, clear responsibility per agent
 3. **Write detailed prompts**: Specific instructions, examples, constraints
-4. **Limit tool access**: Only grant necessary tools (security + focus)
-5. **Version control**: Check `.claude/agents/` into git for team sharing
-6. **Use inherit for model**: Adapts to main conversation's model choice
+4. **Don't give Bash unless needed**: Prevents approval spam (see "Avoiding Bash Approval Spam")
+5. **Put critical instructions FIRST**: Instructions at top of prompt get followed, buried ones get ignored
+6. **Remove contradictory instructions**: If you want Write tool, remove all bash examples
+7. **Default to Sonnet model**: Quality matters more than cost savings (see Model Selection)
+8. **Version control**: Check `.claude/agents/` into git for team sharing
+9. **Use inherit for model sparingly**: Better to explicitly set model for predictable behavior
 
 ---
 
@@ -940,12 +1030,22 @@ Config fields:
   name, description (required)
   tools, model, permissionMode, skills, hooks (optional)
 
-Core tools:
-  Read-only: Read, Grep, Glob, LS, TodoRead
-  Write:     Write, Edit, MultiEdit, NotebookEdit
-  Execute:   Bash, BashOutput, KillShell
-  Web:       WebFetch, WebSearch
-  Advanced:  Task, Skill, LSP, MCPSearch
+Tool access principle:
+  ⚠️ Don't give Bash unless agent needs CLI execution
+  File creators: Read, Write, Edit, Glob, Grep (no Bash!)
+  Script runners: Read, Write, Edit, Glob, Grep, Bash (only if needed)
+  Research: Read, Grep, Glob, WebFetch, WebSearch
+
+Model selection (quality-first):
+  Default: sonnet (most agents - quality matters)
+  Creative: opus (maximum quality)
+  Scripts only: haiku (just running commands)
+  ⚠️ Avoid Haiku for content generation - quality drops significantly
+
+Instruction placement:
+  ⛔ Critical instructions go FIRST (right after frontmatter)
+  ⚠️ Instructions buried 300+ lines deep get ignored
+  ✅ Remove contradictory instructions (pick one pattern)
 
 Delegation:
   Batch size: 5-8 items per agent
@@ -959,7 +1059,6 @@ Orchestration:
 
 Advanced:
   Background: Ctrl+B during agent execution
-  Models: haiku (fast), sonnet (balanced), opus (deep)
   Context: 130k+ and 90+ tool calls work fine for real work
   Hooks: PreToolUse, PostToolUse, Stop events
 
@@ -986,4 +1085,4 @@ Resume agents:
 
 ---
 
-**Last Updated**: 2026-01-10
+**Last Updated**: 2026-01-14

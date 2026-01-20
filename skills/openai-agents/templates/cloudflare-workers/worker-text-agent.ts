@@ -34,7 +34,7 @@ const docsAgent = new Agent({
   name: 'Documentation Assistant',
   instructions: 'Help users find information in our documentation. Use the search tool when needed.',
   tools: [searchTool],
-  model: 'gpt-4o-mini', // Use smaller model for cost efficiency
+  model: 'gpt-5-mini', // Use smaller model for cost efficiency
 });
 
 // ========================================

@@ -20,13 +20,13 @@ import { Agent, run, tool } from '@openai/agents';
 const summarizerAgent = new Agent({
   name: 'Summarizer',
   instructions: 'Summarize text concisely in 2-3 sentences.',
-  model: 'gpt-4o-mini',
+  model: 'gpt-5-mini',
 });
 
 const translatorAgent = new Agent({
   name: 'Translator',
   instructions: 'Translate text accurately while preserving meaning and tone.',
-  model: 'gpt-4o-mini',
+  model: 'gpt-5-mini',
 });
 
 const analyzerTool = tool({
@@ -54,7 +54,7 @@ const analyzerAgent = new Agent({
   name: 'Analyzer',
   instructions: 'Analyze text for sentiment, tone, and key themes.',
   tools: [analyzerTool],
-  model: 'gpt-4o-mini',
+  model: 'gpt-5-mini',
 });
 
 // ========================================

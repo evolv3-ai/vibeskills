@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-**63 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
+**87 production-ready skills** for Claude Code CLI — Cloudflare, React, AI integrations, and more.
 
 ~60% token savings | 400+ errors prevented | Auto-discovered by Claude
 
@@ -38,6 +38,7 @@ cd ~/Documents/claude-skills
 | **Planning** | 5 | Project workflow, session management |
 | **MCP/Tools** | 4 | FastMCP, TypeScript MCP |
 | **CMS** | 3 | TinaCMS, Sveltia, WordPress |
+| **Developer Workflow** | 1 | Developer Toolbox (7 agents for code review, debugging, testing) |
 
 **📋 Full list**: [SKILLS_CATALOG.md](SKILLS_CATALOG.md)
 
@@ -53,6 +54,35 @@ Claude: "Found cloudflare-worker-base and cloudflare-d1 skills. Use them?"
 You: "Yes"
 → Production-ready setup, zero errors
 ```
+
+---
+
+## Bundled Agents
+
+Some skills include **sub-agents** that can be invoked via the Task tool for specialized tasks:
+
+| Bundle | Agents | Purpose |
+|--------|--------|---------|
+| **design** | `a11y-auditor`, `favicon-crafter`, `image-prompter` | Accessibility audits, favicon generation, image prompts |
+| **cloudflare** | `cloudflare-deploy`, `cloudflare-debug`, `d1-migration`, `worker-scaffold` | Deployment, debugging, migrations |
+
+**Note**: Agents require manual installation to `~/.claude/agents/`:
+
+```bash
+# List available agents
+./scripts/install-skill-agents.sh list
+
+# Install agents from a bundle
+./scripts/install-skill-agents.sh design
+./scripts/install-skill-agents.sh cloudflare
+
+# Install all agents
+./scripts/install-skill-agents.sh all
+
+# Restart Claude Code to discover new agents
+```
+
+After installation, agents appear in the Task tool's available agents.
 
 ---
 

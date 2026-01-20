@@ -212,7 +212,7 @@ const agent = new Agent({
 2. **Use Stricter Models**:
 ```typescript
 const agent = new Agent({
-  model: 'gpt-4o', // More reliable than gpt-4o-mini for structured output
+  model: 'gpt-5', // More reliable than gpt-5-mini for structured output
   outputType: mySchema,
 });
 ```

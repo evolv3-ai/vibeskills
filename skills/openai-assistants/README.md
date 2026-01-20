@@ -106,7 +106,7 @@ const assistant = await openai.beta.assistants.create({
   name: "Math Tutor",
   instructions: "You are a math tutor. Use code to solve problems.",
   tools: [{ type: "code_interpreter" }],
-  model: "gpt-4o",
+  model: "gpt-5",
 });
 
 // 2. Create thread
