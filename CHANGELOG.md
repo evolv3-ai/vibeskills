@@ -7,7 +7,131 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.0] - 2026-01-20
+
+### Added - Developer Toolbox 🛠️
+
+**Change**: New skill with 7 essential development workflow agents
+
+**Agents** (7 total):
+- `commit-helper` - Generate conventional commit messages from staged changes
+- `build-verifier` - Verify dist/ matches source after builds
+- `code-reviewer` - Security audits, OWASP checks, code quality reviews
+- `debugger` - Systematic debugging with root cause analysis
+- `test-runner` - TDD workflow, test creation, coverage improvement
+- `orchestrator` - Coordinate complex multi-step projects
+- `documentation-expert` - README, API docs, architecture diagrams
+
+**Rules** (1):
+- `agent-first-thinking` - Behavioral interrupt to consider agents before manual work
+
+**Installation**:
+```bash
+/plugin install developer-toolbox@claude-skills
+```
+
+### Added - Agent Development Skills 🤖
+
+- `agent-development` - Building custom Claude Code agents with proper frontmatter
+- `oauth-integrations` - OAuth patterns for MCP servers and Workers
+
+### Updated - AI Model References 🧠
+
+Updated all AI skills to current models (January 2026):
+- OpenAI: GPT-5.1, GPT-5.2, o3, o3-mini
+- Anthropic: Claude 4.5 Opus, Sonnet, Haiku
+- Google: Gemini 2.5 Pro/Flash
+
+---
+
+## [2.11.0] - 2026-01-14
+
+### Added - Design Bundle 🎨
+
+**Change**: New plugin bundle with 8 web design and accessibility skills
+
+**Skills** (8 total):
+- `accessibility` - WCAG 2.1 AA compliance, semantic HTML, ARIA patterns
+- `color-palette` - Generate 11-shade scales from single brand hex
+- `favicon-gen` - Custom favicons from logos, text, or brand colors
+- `icon-design` - Icon selection, library recommendations, migration guides
+- `image-gen` - Gemini image generation for website assets
+- `responsive-images` - srcset, lazy loading, modern formats
+- `seo-meta` - Title, description, Open Graph, Twitter Cards, JSON-LD
+- `tailwind-patterns` - Production-ready Tailwind CSS patterns
+
+**Bundled Agents** (6):
+- `a11y-auditor` - WCAG compliance audits with scoring
+- `favicon-crafter` - SVG favicon generation (9 shapes, gradients)
+- `icon-selector` - Icon library selection and migration
+- `image-prompter` - Gemini prompt crafting with negative prompts
+- `palette-generator` - Color palette generation with contrast checking
+- `seo-generator` - Complete SEO metadata generation
+
+**Installation**:
+```bash
+/plugin install design@claude-skills
+```
+
+**Sub-Agent Patterns Updated**:
+- Tool access principle: Don't give Bash unless needed
+- Model selection guidance: Sonnet default, Haiku only for scripts
+- Effective prompt templates for parallel agents
+
+---
+
 ## [Unreleased]
+
+### Added - snowflake-platform Skill ❄️
+
+**Date**: 2026-01-09
+
+**Change**: New comprehensive Snowflake platform skill covering snow CLI, Cortex AI, Native Apps, and Snowpark
+
+**Features**:
+- Cortex AI functions (COMPLETE, SUMMARIZE, TRANSLATE, AI_FILTER, AI_CLASSIFY)
+- snow CLI 3.14.0+ command reference
+- JWT key-pair authentication with account identifier gotcha
+- Native App development workflow with release channels
+- Marketplace publishing workflow
+- Consolidated 6 scattered rules into skill
+
+**Keywords**: snowflake, cortex ai, snow cli, native app, jwt auth, snowpark
+
+---
+
+### Added - sub-agent-patterns Skill 🤖
+
+**Date**: 2026-01-09
+
+**Change**: New skill documenting multi-agent coordination patterns for Claude Code
+
+**Features**:
+- Parallel agent spawning patterns
+- Agent result aggregation
+- When to use sub-agents vs sequential processing
+- Error handling across agents
+
+---
+
+### Added - Deep Audit System (Phases 1-4) 🔍
+
+**Date**: 2026-01-09
+
+**Change**: Complete `/deep-audit` command for content accuracy verification
+
+**Phases Implemented**:
+1. **Foundation**: Firecrawl integration, doc_sources metadata
+2. **Sub-Agent Comparison**: 4 parallel agents (API, patterns, errors, ecosystem)
+3. **Change Tracking**: Content hashing, audit history
+4. **Bulk Operations**: Pattern matching, tier support
+
+**Audit Results**:
+- 68 skills audited across 10 tiers
+- All skills marked complete in SKILL_AUDIT_QUEUE.md
+- Version references updated to current
+
+---
 
 ### Added - Marketplace Sync Verification 🔄
 

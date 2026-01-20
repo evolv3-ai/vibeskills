@@ -59,3 +59,6 @@ SESSION.md                    # Working session tracking (constantly changing)
 SKILLS_CATALOG.md             # Generated catalog (regenerate with scripts)
 archive/session-logs/         # Working audit logs (archived when needed)
 .claude/settings.local.json   # Local Claude Code settings
+.venv/
+archive/audit-cache/*
+!archive/audit-cache/.gitkeep
